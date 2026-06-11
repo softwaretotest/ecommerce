@@ -5,7 +5,8 @@ COPY . .
 RUN npm install --legacy-peer-deps && npm run build
 
 # === STAGE 2: Setup PHP Laravel Backend ===
-FROM serversideup/php:8.3-fpm-nginx
+# 👉 FIXED: Changed PHP version from 8.3 to 8.4 to satisfy Laravel package requirements
+FROM serversideup/php:8.4-fpm-nginx
 WORKDIR /var/www/html
 COPY --chown=www-data:www-data . .
 COPY --from=frontend-builder /app/public/build ./public/build
