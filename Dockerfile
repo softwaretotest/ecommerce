@@ -20,6 +20,5 @@ RUN composer install --no-dev --optimize-autoloader
 # Expose required web port
 EXPOSE 8080
 
-# 👉 FIXED: Use proper execution commands instead of php artisan serve to fix port conflict (500 Error)
-ENTRYPOINT ["/init"]
+# 👉 FIXED: Let ServerSideUp handles Nginx and startup natively. No ENTRYPOINT needed.
 CMD ["php", "artisan", "migrate", "--force"]
