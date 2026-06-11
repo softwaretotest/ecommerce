@@ -1,27 +1,24 @@
 # === STAGE 1: Build React Frontend ===
-# Use Node.js image to compile the frontend assets
-FROM node:20-alpine AS frontend-builder
+# 👉 CHANGED: Switch from alpine to standard node:20 for compiler compatibility
+FROM node:20 AS frontend-builder
 WORKDIR /app
 
-# Copy all project files into the node container
+# Copy project files and compile assets
 COPY . .
-
-# Install frontend packages and compile React assets into static files
 RUN npm install --legacy-peer-deps && npm run build
 
 # === STAGE 2: Setup PHP Laravel Backend ===
-# Use the official serversideup PHP image with Nginx integrated
 FROM serversideup/php:8.3-fpm-nginx
 WORKDIR /var/www/html
 
-# Copy all project files and set correct permissions for www-data user
+# Copy project files and set permissions
 COPY --chown=www-data:www-data . .
 
-# Copy the compiled React assets from STAGE 1 into Laravel's public folder
+# Copy compiled frontend assets from STAGE 1
 COPY --from=frontend-builder /app/public/build ./public/build
 
-# Install backend PHP packages securely for production environment
+# Install backend PHP packages securely
 RUN composer install --no-dev --optimize-autoloader
 
-# Expose port 8080 as required by Render.com
+# Expose required web port
 EXPOSE 8080
