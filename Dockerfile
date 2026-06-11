@@ -2,7 +2,6 @@
 FROM node:20 AS frontend-builder
 WORKDIR /app
 COPY . .
-# Standard npm install is enough now for Vite 5!
 RUN npm install --legacy-peer-deps && npm run build
 
 # === STAGE 2: Setup PHP Laravel Backend ===
