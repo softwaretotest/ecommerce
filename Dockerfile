@@ -20,5 +20,5 @@ RUN composer install --no-dev --optimize-autoloader
 # Expose required web port
 EXPOSE 8080
 
-# 👉 FIXED: Let ServerSideUp handles Nginx and startup natively. No ENTRYPOINT needed.
-CMD ["php", "artisan", "migrate", "--force"]
+# 👉 FIXED: Run migration first, then start the main Nginx web server properly
+CMD ["sh", "-c", "php artisan migrate --force && exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf"]
