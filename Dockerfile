@@ -1,10 +1,12 @@
 # === STAGE 1: Build React Frontend ===
-# 👉 CHANGED: Switch from alpine to standard node:20 for compiler compatibility
 FROM node:20 AS frontend-builder
 WORKDIR /app
-
-# Copy project files and compile assets
 COPY . .
+
+# 👉 ADDED: Install explicit Linux bindings for Vite 8 / Rolldown compiler compatibility
+RUN npm install @rolldown/binding-linux-x64-gnu --save-optional
+
+# Install frontend packages and compile assets
 RUN npm install --legacy-peer-deps && npm run build
 
 # === STAGE 2: Setup PHP Laravel Backend ===
