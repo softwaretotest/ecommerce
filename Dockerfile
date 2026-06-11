@@ -5,10 +5,21 @@ COPY . .
 RUN npm install --legacy-peer-deps && npm run build
 
 # === STAGE 2: Setup PHP Laravel Backend ===
-# 👉 FIXED: Changed PHP version from 8.3 to 8.4 to satisfy Laravel package requirements
 FROM serversideup/php:8.4-fpm-nginx
 WORKDIR /var/www/html
+
+# Copy project files and set correct permissions
 COPY --chown=www-data:www-data . .
+
+# Copy compiled frontend assets from STAGE 1
 COPY --from=frontend-builder /app/public/build ./public/build
+
+# Install backend PHP packages securely
 RUN composer install --no-dev --optimize-autoloader
+
+# Expose required web port
 EXPOSE 8080
+
+# 👉 FIXED: Use proper execution commands instead of php artisan serve to fix port conflict (500 Error)
+ENTRYPOINT ["/init"]
+CMD ["php", "artisan", "migrate", "--force"]
