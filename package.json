@@ -4,7 +4,8 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "version": "powershell -ExecutionPolicy Bypass -File scripts/check-version.ps1"
     },
     "devDependencies": {
         "@headlessui/react": "^2.0.0",
