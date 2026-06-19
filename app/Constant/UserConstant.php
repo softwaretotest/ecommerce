@@ -9,6 +9,7 @@ class UserConstant extends BaseConstant
     protected static function childFields(): array
     {
         return [
+            s::TEST_s_1,
             s::EMAIL,
             f::IS_ACTIVE,
         ];
