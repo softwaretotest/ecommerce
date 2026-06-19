@@ -4,7 +4,7 @@ namespace App\Constant;
 
 class Checker
 {
-    public static function checkDuplicate(): void
+    public static function checkDuplicate(): bool
     {
         $classes = ['f', 's', 'd', 'u', 'cd', 'cu', 'cud', 't'];
         $sameFields = [];
@@ -17,7 +17,12 @@ class Checker
             $errors = array_merge($errors, self::validateConstant($fullClassName, $sameFields));
         }
 
-        self::reportErrors($errors);
+        if (!empty($errors)) {
+            self::reportErrors($errors);
+            return false;
+        }
+
+        return true;
     }
 
     private static function validateConstant(string $fullClassName, array $samefields): array
@@ -64,13 +69,16 @@ class Checker
              */
             $cName = is_array($c) ? $c[0] : $c;
 
-            // ตรวจสอบว่าเคยเจอ $cName นี้มาก่อนในลูปเดียวกันนี้หรือไม่
+            // check if we have same $cName 
             if (isset($sameConstraints[$cName])) {
-                // ใส่ Error ตาม Format ที่คุณกำหนด
                 $constraintErrors[] = "[Constraint] Duplicate '{$cName}' found in field at [{$source}]";
             }
 
-            // บันทึกว่าเจอแล้ว
+            /**
+             * marked as checked , 
+             * e.g. Array ( [nullable] => 1  , [unique]   => 1 )
+             * to use this array in if-isset next loop
+             */
             $sameConstraints[$cName] = true;
         }
 
