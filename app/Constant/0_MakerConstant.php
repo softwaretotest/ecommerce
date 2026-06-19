@@ -11,7 +11,7 @@ class f
     public const IMAGE      = ['image',     d::STRING,  u::FILE];
     public const NAME       = ['name',      d::STRING,  u::TEXT,    cud::REQUIRED]; //Base
     public const PRICE      = ['price',     s::CURRENCY];
-    public const STOCK      = ['stock',     d::DECIMAL, u::NUMBER,  cd::DEFAULT_NR];
+    public const STOCK      = ['stock',     d::DECIMAL, u::NUMBER,  cd::DEFAULT_NR_0];
     public const IS_ACTIVE  = ['is_active', d::BOOLEAN, u::SELECT,  cd::DEFAULT_TRUE];
     public const ORDER_NR   = ['order_nr',  d::STRING,  u::TEXT];
 
@@ -19,9 +19,6 @@ class f
     public const ORDER_ID = ['order_id', cd::FOREIGN];
     public const SHOP_ID  = ['shop_id',  cd::FOREIGN];
     public const USER_ID  = ['user_id',  cd::FOREIGN]; //Base
-
-    // TEST f
-    public const TEST_f_1      = ['TEST_f_1',     s::TEST_s_1];
 }
 
 /**
@@ -31,9 +28,6 @@ class s
 {
     public const EMAIL = ['email', d::STRING,  u::TEXT, cd::UNIQUE];
     public const CURRENCY = ['currency', d::DECIMAL,  u::TEL];
-
-    // TEST f    
-    public const TEST_s_1 = ['TEST_s_1', d::DECIMAL,  u::TEL, cu::READONLY, cd::DEFAULT_NR, cud::REQUIRED];
 }
 
 /**
@@ -73,7 +67,7 @@ class u
 class cd
 {
     public const NULLABLE = 'nullable';
-    public const DEFAULT_NR = ['default_nr', 0];
+    public const DEFAULT_NR_0 = ['default_nr_0', 0];
     public const DEFAULT_TRUE = ['default_true', true];
     public const PRIMARY = 'primary';
     public const FOREIGN = 'foreign';
@@ -96,4 +90,31 @@ class cu
 class cud
 {
     public const REQUIRED = 'required';
+}
+
+
+/**
+ * TEST FIELDS - Centralized Test Registry
+ */
+class t
+{
+    public const test_table_name = 'tests';
+
+    // Test Special Field
+    public const TEST_f_1   = ['TEST_f_1',     t::TEST_s_1];
+    public const TEST_s_1 = [
+        'TEST_s_1',
+        d::DECIMAL,
+        u::TEL,
+        cu::READONLY,
+        cd::DEFAULT_NR_0,
+        cud::REQUIRED
+    ];
+
+    // Test normal Field
+    public const test_f_1 = ['test_f_1', f::IMAGE];
+    public const test_d_1 = ['test_d_1', d::DECIMAL];
+    public const test_u_1 = ['test_u_1', u::NUMBER];
+    public const test_cd_1 = ['test_cd_1', cd::UNIQUE];
+    // public const test_cd_duplicate_constraint = ['test_cd_duplicate_constraint', cd::UNIQUE, cd::UNIQUE];
 }
