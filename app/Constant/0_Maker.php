@@ -41,7 +41,7 @@ class Maker
     }
 
     /**
-     * Example $schema = 
+     * Example $schema =
                 Array
                 (
                     [db] => Array
@@ -58,7 +58,6 @@ class Maker
      */
     private static function analyzeField(string $name, array $field): array
     {
-        // ... (Logic เดิมของคุณเป๊ะๆ)
         $schema = ['db' => [], 'ui' => []];
         $map = [
             'd' => ['db' => true],
@@ -71,6 +70,12 @@ class Maker
 
         foreach ($field as $item) {
             $val = is_array($item) ? $item[0] : $item;
+            // Handle array structures (e.g., [cd::DEFAULT, true]) directly
+            if (is_array($item)) {
+                $schema['db'][] = $item;
+                continue;
+            }
+
             foreach ($map as $key => $targets) {
                 $ref = new \ReflectionClass("App\\Constant\\" . strtoupper($key));
                 if (in_array($val, array_values($ref->getConstants()))) {
@@ -78,7 +83,9 @@ class Maker
                     if ($targets['ui'] ?? false) $schema['ui'][] = $val;
                 }
             }
-            if ($val === 'default_nr' || $val === 'default_true') $schema['db'][] = $item;
+            if (is_array($item) && strpos($item[0], 'default') !== false) {
+                $schema['db'][] = $item;
+            }
         }
 
         echo "Field: " . str_pad($name, 20) .

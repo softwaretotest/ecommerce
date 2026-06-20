@@ -10,9 +10,9 @@ class f
 {
     public const IMAGE      = ['image',     d::STRING,  u::FILE];
     public const NAME       = ['name',      d::STRING,  u::TEXT,    cud::REQUIRED]; //Base
-    public const PRICE      = ['price',     s::CURRENCY];
-    public const STOCK      = ['stock',     d::DECIMAL, u::NUMBER,  cd::DEFAULT_NR_0];
-    public const IS_ACTIVE  = ['is_active', d::BOOLEAN, u::SELECT,  cd::DEFAULT_TRUE];
+    public const PRICE      = ['price',     d::DECIMAL, u::NUMBER,  [cd::DEFAULT, 0],   s::CURRENCY];
+    public const STOCK      = ['stock',     d::DECIMAL, u::NUMBER,  [cd::DEFAULT, 0], cud::REQUIRED];
+    public const IS_ACTIVE  = ['is_active', d::BOOLEAN, u::SELECT,  [cd::DEFAULT, true]];
     public const ORDER_NR   = ['order_nr',  d::STRING,  u::TEXT];
 
     // FOREIGN
@@ -23,11 +23,12 @@ class f
 
 /**
  * SPECIAL UI FIELD exist neither in DB nor html-UI
+ * must be validated in UI
  */
 class s
 {
-    public const EMAIL = ['email', d::STRING,  u::TEXT, cd::UNIQUE];
-    public const CURRENCY = ['currency', d::DECIMAL,  u::TEL];
+    public const EMAIL    = ['email',    d::STRING,  u::TEXT, cd::UNIQUE];
+    public const CURRENCY = ['currency', d::DECIMAL, u::TEL];
 }
 
 /**
@@ -67,8 +68,7 @@ class u
 class cd
 {
     public const NULLABLE = 'nullable';
-    public const DEFAULT_NR_0 = ['default_nr_0', 0];
-    public const DEFAULT_TRUE = ['default_true', true];
+    public const DEFAULT = 'default';
     public const PRIMARY = 'primary';
     public const FOREIGN = 'foreign';
     public const UNIQUE = 'unique';
@@ -107,7 +107,7 @@ class t
         d::DECIMAL,
         u::TEL,
         cu::READONLY,
-        cd::DEFAULT_NR_0,
+        [cd::DEFAULT, 0],
         cud::REQUIRED
     ];
 

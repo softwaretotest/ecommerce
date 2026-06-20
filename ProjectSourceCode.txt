@@ -1,0 +1,1525 @@
+
+--- FOLDER: app/Constant ---
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\0_Checker.php]
+
+<?php
+
+namespace App\Constant;
+
+class Checker
+{
+    public static function checkDuplicate(): bool
+    {
+        $classes = ['f', 's', 'd', 'u', 'cd', 'cu', 'cud', 't'];
+        $sameFields = [];
+        $errors = [];
+
+        foreach ($classes as $className) {
+            $fullClassName = 'App\\Constant\\' . $className;
+            if (!class_exists($fullClassName)) continue;
+
+            $errors = array_merge($errors, self::validateConstant($fullClassName, $sameFields));
+        }
+
+        if (!empty($errors)) {
+            self::reportErrors($errors);
+            return false;
+        }
+
+        return true;
+    }
+
+    private static function validateConstant(string $fullClassName, array $samefields): array
+    {
+        $localErrors = [];
+        $constants = (new \ReflectionClass($fullClassName))->getConstants();
+
+        foreach ($constants as $varname => $field) {
+            $field = is_array($field) ? $field : [$field];
+            $source = "{$fullClassName}::{$varname}";
+
+            // 1. check field name
+            if (!isset($field[0])) {
+                $localErrors[] = "[Field Name] Missing name definition in [{$source}]";
+            }
+
+            $name = $field[0] ?? 'UNKNOWN';
+
+            // 2. check duplicate field name
+            if (isset($samefields[$name])) {
+                $localErrors[] = "[Field Name] Duplicate '{$name}' found in [{$samefields[$name]}] and [{$source}]";
+            }
+            $samefields[$name] = $source;
+
+            // 3. check duplicate constraints
+            $localErrors = array_merge($localErrors, self::checkConstraints(array_slice($field, 1), $source));
+        }
+        return $localErrors;
+    }
+
+    private static function checkConstraints($constraints, $source): array
+    {
+        if (count($constraints) <= 1) {
+            return [];
+        }
+
+        $constraintErrors = [];
+        $sameConstraints = [];
+
+        foreach ($constraints as $c) {
+            /**
+             * get constraint name
+             * cause some are string,
+             * but, some are array e.g. ['default', 0]
+             */
+            $cName = is_array($c) ? $c[0] : $c;
+
+            // check if we have same $cName 
+            if (isset($sameConstraints[$cName])) {
+                $constraintErrors[] = "[Constraint] Duplicate '{$cName}' found in field at [{$source}]";
+            }
+
+            /**
+             * marked as checked , 
+             * e.g. Array ( [nullable] => 1  , [unique]   => 1 )
+             * to use this array in if-isset next loop
+             */
+            $sameConstraints[$cName] = true;
+        }
+
+        return $constraintErrors;
+    }
+
+    private static function reportErrors(array $errors): void
+    {
+        if (!empty($errors)) {
+            echo "\n[ALERT] SYSTEM VALIDATION FAILED!\n" . implode("\n", $errors) . "\n\n";
+        } else {
+            echo "--- Maker: Global Validator Passed! ---\n\n";
+        }
+    }
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\0_create_entity_table.php]
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('tablename', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('tablename');
+    }
+};
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\0_create_users_table.php]
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('users', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->rememberToken();
+            $table->timestamps();
+        });
+
+        Schema::create('password_reset_tokens', function (Blueprint $table) {
+            $table->string('email')->primary();
+            $table->string('token');
+            $table->timestamp('created_at')->nullable();
+        });
+
+        Schema::create('sessions', function (Blueprint $table) {
+            $table->string('id')->primary();
+            $table->foreignId('user_id')->nullable()->index();
+            $table->string('ip_address', 45)->nullable();
+            $table->text('user_agent')->nullable();
+            $table->longText('payload');
+            $table->integer('last_activity')->index();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('users');
+        Schema::dropIfExists('password_reset_tokens');
+        Schema::dropIfExists('sessions');
+    }
+};
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\0_MakeMigration.php]
+
+<?php
+
+namespace App\Constant;
+//0_MakeMigration.php
+
+class MakeMigration
+{
+    private static array $dbSchema = [];
+
+    /**
+     * Entry point to trigger migration analysis or creation.
+     */
+    public static function run(string $tableName, array $schema): void
+    {
+        echo "--- Maker: Generating migration for {$tableName} ---\n";
+        self::$dbSchema = [];
+        foreach ($schema as $fieldName => $data) {
+            self::$dbSchema[$fieldName] = $data['db'];
+        }
+
+        echo "--- Maker: Current DB Schema Config ---\n";
+        print_r(self::$dbSchema);
+        echo "--------------------------------------\n";
+
+        echo "--- Maker: Starting User Migration Generation ---\n";
+
+        $files = glob(__DIR__ . '/../../database/migrations/*_create_users_table.php');
+
+        if (!empty($files) && is_string($files[0])) {
+            echo "--- Maker: Found existing user migration. Preparing to analyze... ---\n";
+            self::replaceExisting($files[0]);
+        } else {
+            echo "--- Maker: No user migration found. Preparing to create new one... ---\n";
+            self::createNew();
+        }
+    }
+
+    /**
+     * Overwrite the existing migration file with the processed content.
+     */
+    private static function replaceExisting(string $filePath): void
+    {
+        $content = file_get_contents($filePath);
+        $newContent = self::updateMigration($content);
+
+        if ($content !== $newContent) {
+            // if (is_writable($filePath)) {
+            //     file_put_contents($filePath, $newContent);
+            //     echo "--- Maker: Successfully updated migration file at [{$filePath}] ---\n";
+            // } else {
+            //     echo "--- Maker: Error! File is not writable: [{$filePath}] ---\n";
+            // }
+        } else {
+            echo "--- Maker: No changes detected. Migration file is already up to date. ---\n";
+        }
+    }
+
+    /**
+     * Orchestrates the transformation of the migration content.
+     */
+    private static function updateMigration(string $content): string
+    {
+        $lines = explode("\n", $content);
+        $processedFields = [];
+
+        $lines = self::updateLines($lines, $processedFields);
+        self::addMissingLines($lines, $processedFields);
+
+        echo "--- Maker: Fields processed: " . implode(', ', $processedFields) . " ---\n";
+        return implode("\n", $lines);
+    }
+
+    /**
+     * updates fields on users table
+     */
+    private static function updateLines(array $lines, array &$processedFields): array
+    {
+        $inUsersTable = false;
+
+        foreach ($lines as $index => $line) {
+            if (strpos($line, "Schema::create('users'") !== false) {
+                $inUsersTable = true;
+                echo "--- Maker: Entered users table scope at line " . ($index + 1) . " ---\n";
+            }
+
+            if ($inUsersTable && strpos($line, "});") !== false) {
+                $inUsersTable = false;
+                echo "--- Maker: Exited users table scope at line " . ($index + 1) . " ---\n";
+            }
+
+            if ($inUsersTable) {
+                foreach (self::$dbSchema as $fieldName => $dbOptions) {
+                    if (strpos($line, "'{$fieldName}'") !== false) {
+                        echo "Found match for [{$fieldName}] at line " . ($index + 1) . ": " . trim($line) . "\n";
+                        $lines[$index] = "            " . self::makeLine($fieldName, $dbOptions) . ";";
+                        $processedFields[] = $fieldName;
+                    }
+                }
+            }
+        }
+        return $lines;
+    }
+
+    /**
+     * Generates a single blueprint line string based on schema options.
+     */
+    private static function makeLine(string $fieldName, array $dbOptions): string
+    {
+        $type = $dbOptions[0] ?? 'string';
+        $line = '$table->' . $type . "('{$fieldName}')";
+
+        /**
+         array_splice(
+                $lines,    // 1. Array หลักที่เราจะแก้ไข (คือไฟล์ migration ทั้งไฟล์ที่แตกเป็นบรรทัด)
+                $index,    // 2. ตำแหน่งที่จะเริ่มลงมีด (ในที่นี้คือตำแหน่งบรรทัดของ $table->timestamps();)
+                0,         // 3. จำนวนรายการที่จะ "ลบออก" (ใส่ 0 คือไม่ลบอะไรเลย แค่แทรกเข้าไป)
+                $newLines  // 4. ข้อมูลใหม่ที่จะ "ยัดเข้าไป" ณ ตำแหน่งนั้น
+            );
+         */
+        $options = array_slice($dbOptions, 1);
+
+        foreach ($options as $option) {
+            if (is_string($option)) {
+                $line .= '->' . $option . '()';
+            } elseif (is_array($option)) {
+                $key = $option[0];
+                $val = $option[1];
+                if (strpos($key, 'default') !== false) {
+
+                    if (is_bool($val)) {
+                        $valueStr = $val ? 'true' : 'false';
+                    } elseif (is_string($val)) {
+                        $valueStr = "'" . $val . "'";
+                    } else {
+                        $valueStr = $val; // กรณีที่เป็นตัวเลข (0, 1, ฯลฯ) ให้ใส่เข้าไปตรงๆ เลย
+                    }
+
+                    $line .= "->default({$valueStr})";
+                }
+            }
+        }
+        echo "--- Maker: Replacing with: " . $line . " ---\n";
+        return $line;
+    }
+
+    /**
+     * Injects missing schema fields before the timestamps definition.
+     */
+    private static function addMissingLines(array &$lines, array $processedFields): void
+    {
+        $newLines = [];
+        foreach (self::$dbSchema as $fieldName => $dbOptions) {
+            if (!in_array($fieldName, $processedFields)) {
+                echo "--- Maker: Adding missing field [{$fieldName}] ---\n";
+                $newLine = self::makeLine($fieldName, $dbOptions);
+                $newLines[] = "            " . $newLine . ";";
+            }
+        }
+
+        if (!empty($newLines)) {
+            foreach ($lines as $index => $line) {
+                if (strpos($line, '$table->timestamps();') !== false) {
+                    echo "--- Maker: Inserting " . count($newLines) . " missing fields before line " . ($index + 1) . " ---\n";
+                    array_splice($lines, $index, 0, $newLines);
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * Creates a new migration file from the template stub.
+     */
+    private static function createNew(): void
+    {
+        $stubPath = __DIR__ . '/0_create_users_table.php';
+        $destinationPath = __DIR__ . '/../../database/migrations/0001_01_01_000000_create_users_table.php';
+
+        if (file_exists($stubPath)) {
+            echo "--- Maker: Found stub file. Copying to migrations directory... ---\n";
+
+            if (copy($stubPath, $destinationPath)) {
+                echo "--- Maker: Successfully created new migration: 0001_01_01_000000_create_users_table.php ---\n";
+
+                self::replaceExisting($destinationPath);
+            } else {
+                echo "--- Maker: Error! Failed to copy migration file. ---\n";
+            }
+        } else {
+            echo "--- Maker: Error! Stub file not found at [{$stubPath}] ---\n";
+        }
+    }
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\0_Maker.php]
+
+<?php
+
+namespace App\Constant;
+//0_Maker.php
+
+class Maker
+{
+    public static function run(string $className): void
+    {
+        $schema = [];
+        if (!Checker::checkDuplicate()) {
+            echo "--- Maker: Aborted due to validation errors! ---\n";
+            return;
+        }
+
+        $tableName = self::checkTableName($className);
+        if (!$tableName) return;
+
+        if (!class_exists($className)) {
+            echo "Class {$className} not found!\n";
+            return;
+        }
+
+        $fields = $className::fields();
+
+        echo "--- Maker: Analyzing {$className} ---\n";
+        echo "Table: " . $className::TABLE_NAME . "\n";
+
+        foreach ($fields as $field) {
+            $name = array_shift($field);
+            $schema[$name] = self::analyzeField($name, $field);
+        }
+        echo "--------------------------------------\n";
+
+        if (empty($schema)) {
+            echo "Error: No fields defined or analysis failed in [{$className}].\n";
+            return;
+        }
+
+        MakeMigration::run($tableName, $schema);
+    }
+
+    /**
+     * Example $schema =
+                Array
+                (
+                    [db] => Array
+                        (
+                            [0] => unique
+                            [1] => decimal
+                            [2] => default_nr
+                        )
+                    [ui] => Array
+                        (
+                            [0] => default_true
+                        )
+                )
+     */
+    private static function analyzeField(string $name, array $field): array
+    {
+        $schema = ['db' => [], 'ui' => []];
+        $map = [
+            'd' => ['db' => true],
+            'u' => ['ui' => true],
+            'cd' => ['db' => true],
+            'cu' => ['ui' => true],
+            'cud' => ['db' => true, 'ui' => true],
+            's' => ['db' => true, 'ui' => true]
+        ];
+
+        foreach ($field as $item) {
+            $val = is_array($item) ? $item[0] : $item;
+            // Handle array structures (e.g., [cd::DEFAULT, true]) directly
+            if (is_array($item)) {
+                $schema['db'][] = $item;
+                continue;
+            }
+
+            foreach ($map as $key => $targets) {
+                $ref = new \ReflectionClass("App\\Constant\\" . strtoupper($key));
+                if (in_array($val, array_values($ref->getConstants()))) {
+                    if ($targets['db'] ?? false) $schema['db'][] = $val;
+                    if ($targets['ui'] ?? false) $schema['ui'][] = $val;
+                }
+            }
+            if (is_array($item) && strpos($item[0], 'default') !== false) {
+                $schema['db'][] = $item;
+            }
+        }
+
+        echo "Field: " . str_pad($name, 20) .
+            " | DB: " . json_encode($schema['db']) .
+            " | UI: " . json_encode($schema['ui']) . "\n";
+
+        return $schema;
+    }
+
+    private static function checkTableName(string $className): ?string
+    {
+        if (!class_exists($className)) {
+            echo "Error: Class {$className} does not exist.\n";
+            return null;
+        }
+
+        $reflection = new \ReflectionClass($className);
+
+        if (!$reflection->hasConstant('TABLE_NAME')) {
+            echo "Error: {$className} is missing 'TABLE_NAME' constant.\n";
+            return null;
+        }
+
+        $tableName = $className::TABLE_NAME;
+        if (empty($tableName)) {
+            echo "Error: 'TABLE_NAME' in {$className} cannot be empty.\n";
+            return null;
+        }
+
+        return $tableName;
+    }
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\0_MakerConstant.php]
+
+<?php
+
+namespace App\Constant;
+//0_MakerConstant.php
+
+/**
+ * FIELD 
+ */
+class f
+{
+    public const IMAGE      = ['image',     d::STRING,  u::FILE];
+    public const NAME       = ['name',      d::STRING,  u::TEXT,    cud::REQUIRED]; //Base
+    public const PRICE      = ['price',     s::CURRENCY];
+    public const STOCK      = ['stock',     d::DECIMAL, u::NUMBER,  [cd::DEFAULT, 0], cud::REQUIRED];
+    public const IS_ACTIVE  = ['is_active', d::BOOLEAN, u::SELECT,  [cd::DEFAULT, true]];
+    public const ORDER_NR   = ['order_nr',  d::STRING,  u::TEXT];
+
+    // FOREIGN
+    public const ORDER_ID = ['order_id', cd::FOREIGN];
+    public const SHOP_ID  = ['shop_id',  cd::FOREIGN];
+    public const USER_ID  = ['user_id',  cd::FOREIGN]; //Base
+}
+
+/**
+ * SPECIAL UI FIELD exist neither in DB nor html-UI
+ * must be validated in UI
+ */
+class s
+{
+    public const EMAIL    = ['email',    d::STRING,  u::TEXT, cd::UNIQUE];
+    public const CURRENCY = ['currency', d::DECIMAL, u::TEL];
+}
+
+/**
+ * DB FIELD TYPE
+ */
+class d
+{
+    public const BOOLEAN = 'boolean';
+    public const STRING = 'string';
+    public const INTEGER = 'integer';
+    public const DECIMAL = 'decimal';
+
+    // TABLE NAME
+    public const users = 'users';
+    public const products = 'products';
+    public const shops = 'shops';
+    public const orders = 'orders';
+}
+
+
+/**
+ * UI FIELD TYPE
+ */
+class u
+{
+    public const TEXT = 'text';
+    public const NUMBER = 'number';
+    public const SELECT = 'select';
+    public const FILE = 'file';
+    public const TEL = 'tel';
+}
+
+
+/**
+ * CONSTRAINT DB
+ */
+class cd
+{
+    public const NULLABLE = 'nullable';
+    public const DEFAULT = 'default';
+    public const PRIMARY = 'primary';
+    public const FOREIGN = 'foreign';
+    public const UNIQUE = 'unique';
+    public const INDEX = 'index';
+}
+
+/**
+ * CONSTRAINT UI 
+ */
+class cu
+{
+    public const READONLY = 'readonly';
+    public const DISABLED = 'disabled';
+}
+
+/**
+ * CONSTRAINT UI and DB
+ */
+class cud
+{
+    public const REQUIRED = 'required';
+}
+
+
+/**
+ * TEST FIELDS - Centralized Test Registry
+ */
+class t
+{
+    public const test_table_name = 'tests';
+
+    // Test Special Field
+    public const TEST_f_1   = ['TEST_f_1',     t::TEST_s_1];
+    public const TEST_s_1 = [
+        'TEST_s_1',
+        d::DECIMAL,
+        u::TEL,
+        cu::READONLY,
+        [cd::DEFAULT, 0],
+        cud::REQUIRED
+    ];
+
+    // Test normal Field
+    public const test_f_1 = ['test_f_1', f::IMAGE];
+    public const test_d_1 = ['test_d_1', d::DECIMAL];
+    public const test_u_1 = ['test_u_1', u::NUMBER];
+    public const test_cd_1 = ['test_cd_1', cd::UNIQUE];
+    // public const test_cd_duplicate_constraint = ['test_cd_duplicate_constraint', cd::UNIQUE, cd::UNIQUE];
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\0_MakerTest.php]
+
+<?php
+
+namespace App\Constant;
+//0_MakerTest.php
+require 'vendor/autoload.php';
+
+// Checker::checkDuplicate();
+// Maker::run(TestEntityConstant::class);
+Maker::run(UserConstant::class);
+// Maker::run(ShopConstant::class);
+// Maker::run(ProductConstant::class);
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\0_TestEntityConstant.php]
+
+<?php
+
+namespace App\Constant;
+// 0_TestEntityConstant.php
+class TestEntityConstant extends BaseConstant
+{
+    public const TABLE_NAME = t::test_table_name;
+
+    protected static function childFields(): array
+    {
+        return [
+            t::TEST_s_1, // Test Special Field
+            t::test_f_1,
+            t::test_d_1,
+            t::test_u_1,
+            // t::test_cd_duplicate_constraint,
+        ];
+    }
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\BaseConstant.php]
+
+<?php
+
+namespace App\Constant;
+
+abstract class BaseConstant
+{
+    private static array $baseFields = [
+        f::USER_ID,
+        f::NAME,
+        f::IMAGE,
+    ];
+
+    public static function fields(): array
+    {
+        if (!defined('static::TABLE_NAME')) {
+            throw new \Exception("Class " . static::class . " must define public const TABLE_NAME!");
+        }
+
+        // 1. แปลง $baseFields ให้เป็น Associative Array โดยใช้ชื่อฟิลด์ (index 0) เป็น Key
+        $fields = [];
+        foreach (self::$baseFields as $field) {
+            $fields[$field[0]] = $field;
+        }
+
+        $tableName = static::TABLE_NAME;
+
+        // 2. ตอนนี้เราสามารถ unset ด้วยชื่อฟิลด์ได้แล้ว!
+        if ($tableName === d::users) {
+            unset($fields['user_id']); // ใช้ชื่อคีย์ที่เป็น String
+        }
+
+        if ($tableName === d::orders) {
+            unset($fields['image']);
+        }
+
+        // 3. รวมกับ childFields
+        $childFields = static::childFields();
+        foreach ($childFields as $field) {
+            $fields[$field[0]] = $field;
+        }
+
+        // 4. คืนค่าเป็น Indexed Array เพื่อให้โครงสร้างเดิมใช้งานได้
+        return array_values($fields);
+    }
+
+    abstract protected static function childFields(): array;
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\ProductConstant.php]
+
+<?php
+
+namespace App\Constant;
+
+class ProductConstant extends BaseConstant
+{
+    public const TABLE_NAME = d::products;
+
+    public const PRICE_TOTAL = 10;
+    public const PRICE_DECIMAL = 2;
+
+    public const QTY_TOTAL = 65;
+    public const QTY_DECIMAL = 18;
+
+    public const STOCK_MIN = -999999;
+
+    protected static function childFields(): array
+    {
+        return [
+            f::SHOP_ID,
+            f::PRICE,
+            f::STOCK,
+        ];
+    }
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\ShopConstant.php]
+
+<?php
+
+namespace App\Constant;
+
+class ShopConstant extends BaseConstant
+{
+    public const TABLE_NAME = d::shops;
+
+    protected static function childFields(): array
+    {
+        return [];
+    }
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\UserConstant.php]
+
+<?php
+
+namespace App\Constant;
+
+class UserConstant extends BaseConstant
+{
+    public const TABLE_NAME = d::users;
+
+    protected static function childFields(): array
+    {
+        return [
+            s::EMAIL,
+            f::IS_ACTIVE,
+        ];
+    }
+}
+
+
+
+--- FOLDER: app/DTOs ---
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\DTOs\ProductDTO.php]
+
+<?php
+
+namespace App\DTOs;
+
+readonly class ProductDTO
+{
+     public function __construct(
+          public string $name,
+          public ?string $image_url = null,
+     ) {}
+}
+
+
+
+--- FOLDER: app/Models ---
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Models\BaseModel.php]
+
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+
+/**
+ * Base entity for all records.
+ * there is no db table names "records"
+ */
+abstract class BaseModel extends Model
+{
+    // protected $guarded = []; // opposite of fillable
+
+    public function getName(): ?string
+    {
+        return $this->name ?? null;
+    }
+
+    public function hasName(): bool
+    {
+        return !empty($this->name);
+    }
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Models\Order.php]
+
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Order extends Model
+{
+    use HasFactory;
+    protected $fillable = ['user_id', 'product_id', 'order_nr'];
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::created(function ($order) {
+
+            $order->order_nr = $order->id . '_' . $order->user_id . '_' . $order->product_id . '_' . time();
+            $order->saveQuietly();
+        });
+    }
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Models\Product.php]
+
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
+class Product extends BaseModel
+{
+    use HasFactory;
+
+    // app/Models/Product.php
+
+    protected $fillable = [
+        'name',
+        'image_url',
+        'price',
+        'stock',
+    ];
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Models\User.php]
+
+<?php
+
+namespace App\Models;
+
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Database\Factories\UserFactory;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+
+#[Fillable(['name', 'email', 'password'])]
+#[Hidden(['password', 'remember_token'])]
+class User extends Authenticatable implements MustVerifyEmail
+{
+    /** @use HasFactory<UserFactory> */
+    use HasFactory;
+    use Notifiable;
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
+    }
+}
+
+
+
+--- FOLDER: app/Services ---
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Services\BaseService.php]
+
+<?php
+
+namespace App\Services;
+
+abstract class BaseService
+{
+     protected string $modelClass;
+
+     public function create(array $data)
+     {
+          return ($this->modelClass)::create($data);
+     }
+
+     public function getById($id)
+     {
+          return ($this->modelClass)::find($id);
+     }
+
+     public function getAll()
+     {
+          return ($this->modelClass)::all();
+     }
+
+     public function delete($id)
+     {
+          return ($this->modelClass)::findOrFail($id)->delete();
+     }
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Services\ProductService.php]
+
+<?php
+
+namespace App\Services;
+
+use App\Models\Product;
+
+class ProductService extends BaseService
+{
+     protected string $modelClass = Product::class;
+}
+
+
+
+--- FOLDER: app/Http/Controllers ---
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Http\Controllers\Controller.php]
+
+<?php
+
+namespace App\Http\Controllers;
+
+abstract class Controller
+{
+    //
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Http\Controllers\ProfileController.php]
+
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\ProfileUpdateRequest;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
+use Inertia\Inertia;
+use Inertia\Response;
+
+class ProfileController extends Controller
+{
+    /**
+     * Display the user's profile form.
+     */
+    public function edit(Request $request): Response
+    {
+        return Inertia::render('Profile/Edit', [
+            'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
+            'status' => session('status'),
+        ]);
+    }
+
+    /**
+     * Update the user's profile information.
+     */
+    public function update(ProfileUpdateRequest $request): RedirectResponse
+    {
+        $request->user()->fill($request->validated());
+
+        if ($request->user()->isDirty('email')) {
+            $request->user()->email_verified_at = null;
+        }
+
+        $request->user()->save();
+
+        return Redirect::route('profile.edit');
+    }
+
+    /**
+     * Delete the user's account.
+     */
+    public function destroy(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'password' => ['required', 'current_password'],
+        ]);
+
+        $user = $request->user();
+
+        Auth::logout();
+
+        $user->delete();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return Redirect::to('/');
+    }
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Http\Controllers\Api\ProductApiController.php]
+
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Services\ProductService;
+use Illuminate\Http\JsonResponse;
+
+class ProductApiController extends Controller
+{
+    protected ProductService $productService;
+
+    public function __construct(ProductService $productService)
+    {
+        $this->productService = $productService;
+    }
+
+    /**
+     * send all data to JSON
+     */
+    public function index(): JsonResponse
+    {
+        $products = $this->productService->getAll();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Product list retrieved successfully',
+            'data' => $products
+        ], 200);
+    }
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Http\Controllers\Auth\AuthenticatedSessionController.php]
+
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\LoginRequest;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
+use Inertia\Response;
+
+class AuthenticatedSessionController extends Controller
+{
+    /**
+     * Display the login view.
+     */
+    public function create(): Response
+    {
+        return Inertia::render('Auth/Login', [
+            'canResetPassword' => Route::has('password.request'),
+            'status' => session('status'),
+        ]);
+    }
+
+    /**
+     * Handle an incoming authentication request.
+     */
+    public function store(LoginRequest $request): RedirectResponse
+    {
+        $request->authenticate();
+
+        $request->session()->regenerate();
+
+        return redirect()->intended(route('dashboard', absolute: false));
+    }
+
+    /**
+     * Destroy an authenticated session.
+     */
+    public function destroy(Request $request): RedirectResponse
+    {
+        Auth::guard('web')->logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return redirect('/');
+    }
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Http\Controllers\Auth\ConfirmablePasswordController.php]
+
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
+use Inertia\Response;
+
+class ConfirmablePasswordController extends Controller
+{
+    /**
+     * Show the confirm password view.
+     */
+    public function show(): Response
+    {
+        return Inertia::render('Auth/ConfirmPassword');
+    }
+
+    /**
+     * Confirm the user's password.
+     */
+    public function store(Request $request): RedirectResponse
+    {
+        if (! Auth::guard('web')->validate([
+            'email' => $request->user()->email,
+            'password' => $request->password,
+        ])) {
+            throw ValidationException::withMessages([
+                'password' => __('auth.password'),
+            ]);
+        }
+
+        $request->session()->put('auth.password_confirmed_at', time());
+
+        return redirect()->intended(route('dashboard', absolute: false));
+    }
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Http\Controllers\Auth\EmailVerificationNotificationController.php]
+
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+
+class EmailVerificationNotificationController extends Controller
+{
+    /**
+     * Send a new email verification notification.
+     */
+    public function store(Request $request): RedirectResponse
+    {
+        if ($request->user()->hasVerifiedEmail()) {
+            return redirect()->intended(route('dashboard', absolute: false));
+        }
+
+        $request->user()->sendEmailVerificationNotification();
+
+        return back()->with('status', 'verification-link-sent');
+    }
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Http\Controllers\Auth\EmailVerificationPromptController.php]
+
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
+
+class EmailVerificationPromptController extends Controller
+{
+    /**
+     * Display the email verification prompt.
+     */
+    public function __invoke(Request $request): RedirectResponse|Response
+    {
+        return $request->user()->hasVerifiedEmail()
+                    ? redirect()->intended(route('dashboard', absolute: false))
+                    : Inertia::render('Auth/VerifyEmail', ['status' => session('status')]);
+    }
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Http\Controllers\Auth\NewPasswordController.php]
+
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rules;
+use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
+use Inertia\Response;
+
+class NewPasswordController extends Controller
+{
+    /**
+     * Display the password reset view.
+     */
+    public function create(Request $request): Response
+    {
+        return Inertia::render('Auth/ResetPassword', [
+            'email' => $request->email,
+            'token' => $request->route('token'),
+        ]);
+    }
+
+    /**
+     * Handle an incoming new password request.
+     *
+     * @throws ValidationException
+     */
+    public function store(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
+
+        // Here we will attempt to reset the user's password. If it is successful we
+        // will update the password on an actual user model and persist it to the
+        // database. Otherwise we will parse the error and return the response.
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user) use ($request) {
+                $user->forceFill([
+                    'password' => Hash::make($request->password),
+                    'remember_token' => Str::random(60),
+                ])->save();
+
+                event(new PasswordReset($user));
+            }
+        );
+
+        // If the password was successfully reset, we will redirect the user back to
+        // the application's home authenticated view. If there is an error we can
+        // redirect them back to where they came from with their error message.
+        if ($status == Password::PASSWORD_RESET) {
+            return redirect()->route('login')->with('status', __($status));
+        }
+
+        throw ValidationException::withMessages([
+            'email' => [trans($status)],
+        ]);
+    }
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Http\Controllers\Auth\PasswordController.php]
+
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
+
+class PasswordController extends Controller
+{
+    /**
+     * Update the user's password.
+     */
+    public function update(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', Password::defaults(), 'confirmed'],
+        ]);
+
+        $request->user()->update([
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        return back();
+    }
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Http\Controllers\Auth\PasswordResetLinkController.php]
+
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
+use Inertia\Response;
+
+class PasswordResetLinkController extends Controller
+{
+    /**
+     * Display the password reset link request view.
+     */
+    public function create(): Response
+    {
+        return Inertia::render('Auth/ForgotPassword', [
+            'status' => session('status'),
+        ]);
+    }
+
+    /**
+     * Handle an incoming password reset link request.
+     *
+     * @throws ValidationException
+     */
+    public function store(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        // We will send the password reset link to this user. Once we have attempted
+        // to send the link, we will examine the response then see the message we
+        // need to show to the user. Finally, we'll send out a proper response.
+        $status = Password::sendResetLink(
+            $request->only('email')
+        );
+
+        if ($status == Password::RESET_LINK_SENT) {
+            return back()->with('status', __($status));
+        }
+
+        throw ValidationException::withMessages([
+            'email' => [trans($status)],
+        ]);
+    }
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Http\Controllers\Auth\RegisteredUserController.php]
+
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use App\Http\Controllers\Controller;
+use App\Models\User;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules;
+use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
+use Inertia\Response;
+
+class RegisteredUserController extends Controller
+{
+    /**
+     * Display the registration view.
+     */
+    public function create(): Response
+    {
+        return Inertia::render('Auth/Register');
+    }
+
+    /**
+     * Handle an incoming registration request.
+     *
+     * @throws ValidationException
+     */
+    public function store(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+
+        event(new Registered($user));
+
+        Auth::login($user);
+
+        return redirect(route('dashboard', absolute: false));
+    }
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Http\Controllers\Auth\VerifyEmailController.php]
+
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Auth\Events\Verified;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\RedirectResponse;
+
+class VerifyEmailController extends Controller
+{
+    /**
+     * Mark the authenticated user's email address as verified.
+     */
+    public function __invoke(EmailVerificationRequest $request): RedirectResponse
+    {
+        if ($request->user()->hasVerifiedEmail()) {
+            return redirect()->intended(route('dashboard', absolute: false).'?verified=1');
+        }
+
+        if ($request->user()->markEmailAsVerified()) {
+            event(new Verified($request->user()));
+        }
+
+        return redirect()->intended(route('dashboard', absolute: false).'?verified=1');
+    }
+}
+
+

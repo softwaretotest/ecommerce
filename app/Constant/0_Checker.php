@@ -52,6 +52,7 @@ class Checker
         }
         return $localErrors;
     }
+
     private static function checkConstraints($constraints, $source): array
     {
         if (count($constraints) <= 1) {
@@ -65,7 +66,7 @@ class Checker
             /**
              * get constraint name
              * cause some are string,
-             * but, some are array e.g. ['default_nr', 0]
+             * but, some are array e.g. ['default', 0]
              */
             $cName = is_array($c) ? $c[0] : $c;
 

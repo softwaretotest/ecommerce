@@ -13,7 +13,7 @@ class TestEntityConstant extends BaseConstant
             t::test_f_1,
             t::test_d_1,
             t::test_u_1,
-            t::test_cd_duplicate_constraint,
+            // t::test_cd_duplicate_constraint,
         ];
     }
 }

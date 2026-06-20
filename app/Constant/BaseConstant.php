@@ -4,10 +4,6 @@ namespace App\Constant;
 
 abstract class BaseConstant
 {
-    // POSITION AUF DB or UI TYPE in $map
-    public const DB_MAP_POSITION = 0; // 0 = key position
-    public const UI_MAP_POSITION = 1; // 1 = value position
-
     private static array $baseFields = [
         f::USER_ID,
         f::NAME,
