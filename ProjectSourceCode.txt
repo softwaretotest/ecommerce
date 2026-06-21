@@ -2,36 +2,37 @@
 --- FOLDER: app/Constant ---
 
 
-[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\0_Checker.php]
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\0_CheckDuplicate.php]
 
 <?php
 
 namespace App\Constant;
 
-class Checker
+class CheckDuplicate
 {
+    private static array $sameFields = [];
+
     public static function checkDuplicate(): bool
     {
         $classes = ['f', 's', 'd', 'u', 'cd', 'cu', 'cud', 't'];
-        $sameFields = [];
         $errors = [];
 
         foreach ($classes as $className) {
             $fullClassName = 'App\\Constant\\' . $className;
             if (!class_exists($fullClassName)) continue;
 
-            $errors = array_merge($errors, self::validateConstant($fullClassName, $sameFields));
+            $errors = array_merge($errors, self::validateConstant($fullClassName));
         }
 
         if (!empty($errors)) {
-            self::reportErrors($errors);
+            self::dieReportErrors($errors);
             return false;
         }
 
         return true;
     }
 
-    private static function validateConstant(string $fullClassName, array $samefields): array
+    private static function validateConstant(string $fullClassName): array
     {
         $localErrors = [];
         $constants = (new \ReflectionClass($fullClassName))->getConstants();
@@ -92,10 +93,10 @@ class Checker
         return $constraintErrors;
     }
 
-    private static function reportErrors(array $errors): void
+    private static function dieReportErrors(array $errors): void
     {
         if (!empty($errors)) {
-            echo "\n[ALERT] SYSTEM VALIDATION FAILED!\n" . implode("\n", $errors) . "\n\n";
+            die("\n[ALERT] SYSTEM VALIDATION FAILED!\n" . implode("\n", $errors) . "\n\n");
         } else {
             echo "--- Maker: Global Validator Passed! ---\n\n";
         }
@@ -190,6 +191,157 @@ return new class extends Migration
 
 
 
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\0_DBOption.php]
+
+<?php
+
+namespace App\Constant;
+//0_DBOption.php
+
+class DBOption
+{
+    /**
+     * Main entry to process all lines in a migration file.
+     */
+    public static function makeLines(array $lines, array &$processedFields, string $tableName, array $dbSchema): array
+    {
+        // 1. Update existing lines
+        $lines = self::updateLines($lines, $processedFields, $tableName, $dbSchema);
+
+        // 2. Add missing lines
+        self::addMissingLines($lines, $processedFields, $dbSchema);
+
+        return $lines;
+    }
+
+    private static function updateLines(array $lines, array &$processedFields, string $tableName, array $dbSchema): array
+    {
+        $inTable = false;
+        foreach ($lines as $index => $line) {
+            if (strpos($line, "Schema::create('{$tableName}'") !== false) {
+                $inTable = true;
+            }
+            if ($inTable && strpos($line, "});") !== false) {
+                $inTable = false;
+            }
+
+            if ($inTable) {
+                foreach ($dbSchema as $fieldName => $dbOptions) {
+                    if (strpos($line, "'{$fieldName}'") !== false) {
+                        $lines[$index] = "            " . self::makeLine($fieldName, $dbOptions) . ";";
+                        $processedFields[] = $fieldName;
+                    }
+                }
+            }
+        }
+        return $lines;
+    }
+
+    private static function addMissingLines(array &$lines, array $processedFields, array $dbSchema): void
+    {
+        $normalLines = [];
+        $foreignLines = [];
+
+        foreach ($dbSchema as $fieldName => $dbOptions) {
+            if (!in_array($fieldName, $processedFields)) {
+                $newLine = self::makeLine($fieldName, $dbOptions);
+                if ($dbOptions[0] === 'foreign') {
+                    $foreignLines[] = "            " . $newLine . ";";
+                } else {
+                    $normalLines[] = "            " . $newLine . ";";
+                }
+            }
+        }
+
+        $allNewLines = array_merge($normalLines, $foreignLines);
+        if (!empty($allNewLines)) {
+            foreach ($lines as $index => $line) {
+                if (strpos($line, '$table->timestamps();') !== false) {
+                    array_splice($lines, $index, 0, $allNewLines);
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * @param string $fieldName
+     * @param array $dbOptions (e.g., [[d::DECIMAL, 10, 2], [cd::DEFAULT, 0], cd::NULLABLE])
+     */
+    public static function makeLine(string $fieldName, array $dbOptions): string
+    {
+        // 1. Extract Type: assume first element is always the type definition
+        $typeDef = array_shift($dbOptions);
+
+        // Handle Foreign
+        if ($typeDef === 'foreign') {
+            echo $fieldName . "\n";
+            $targetTable = str_replace('_id', 's', $fieldName);
+            // $onDelete = 'cascade'; // better not use cascade on production , can delete many data by accident
+            $onDelete = 'restrict';
+            return "\$table->foreignId('{$fieldName}')->constrained('{$targetTable}')->onDelete('{$onDelete}')";
+        }
+
+        // 2. Identify the Method Name (Type)
+        // If $typeDef is array [d::DECIMAL, 10, 2], Method is 'decimal'
+        // If $typeDef is string 'string', Method is 'string'
+        $method = is_array($typeDef) ? $typeDef[0] : $typeDef;
+
+        // 3. Build base line
+        $line = "\$table->{$method}('{$fieldName}'";
+
+        // If $typeDef was array with params (like decimal, 10, 2), add them
+        if (is_array($typeDef) && count($typeDef) > 1) {
+            $params = array_slice($typeDef, 1);
+            $line .= ', ' . implode(', ', $params);
+        }
+        $line .= ")"; //close the method call
+
+        // 4. Append additional constraints
+        foreach ($dbOptions as $option) {
+            $line .= self::format($option);
+        }
+
+        return $line;
+    }
+
+    /**
+     * @example ->nullable()
+     * @example ->default(0)
+     * @example ->decimal(10, 2)
+     */
+    public static function format($option): string
+    {
+        // 1. Handle String
+        if (is_string($option)) {
+            return "->{$option}()";
+        }
+
+        // 2. Handle Array
+        if (is_array($option)) {
+            $method = array_shift($option);
+            $params = [];
+
+            foreach ($option as $val) {
+                if (is_bool($val)) {
+                    $params[] = $val ? 'true' : 'false';
+                } elseif (is_string($val)) {
+                    $params[] = "'{$val}'";
+                } else {
+                    $params[] = $val;
+                }
+            }
+
+            $paramString = implode(', ', $params);
+            return "->{$method}({$paramString})";
+        }
+
+        return "";
+    }
+}
+
+
+
 [FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\0_MakeMigration.php]
 
 <?php
@@ -202,187 +354,79 @@ class MakeMigration
     private static array $dbSchema = [];
 
     /**
+     * Instance counter ensures unique migration 
+     * timestamps and prevents filename collisions.
+     */
+    private int $entityCounter = 0;
+
+    /**
      * Entry point to trigger migration analysis or creation.
      */
     public static function run(string $tableName, array $schema): void
     {
-        echo "--- Maker: Generating migration for {$tableName} ---\n";
+        echo "--- Maker: Get DB schema for {$tableName} ---\n\n";
+
         self::$dbSchema = [];
         foreach ($schema as $fieldName => $data) {
             self::$dbSchema[$fieldName] = $data['db'];
         }
 
-        echo "--- Maker: Current DB Schema Config ---\n";
-        print_r(self::$dbSchema);
-        echo "--------------------------------------\n";
+        // echo "--- Maker: Current DB Schema Config ---\n\n";
+        // print_r(self::$dbSchema);
+        // echo "--------------------------------------\n\n";
 
-        echo "--- Maker: Starting User Migration Generation ---\n";
+        echo "--- Maker: Starting Migration Generation for [{$tableName}] ---\n\n";
 
-        $files = glob(__DIR__ . '/../../database/migrations/*_create_users_table.php');
+        // Search for the migration file dynamically based on tableName
+        $files = glob(__DIR__ . "/../../database/migrations/*_create_{$tableName}_table.php");
 
-        if (!empty($files) && is_string($files[0])) {
-            echo "--- Maker: Found existing user migration. Preparing to analyze... ---\n";
-            self::replaceExisting($files[0]);
+        if (!empty($files) && is_string($files[0]) && $tableName === 'users') {
+            echo "--- Maker: Found existing migration for [{$tableName}]. Preparing to analyze... ---\n\n";
+            self::replaceExisting($files[0], $tableName);
         } else {
-            echo "--- Maker: No user migration found. Preparing to create new one... ---\n";
-            self::createNew();
+            echo "--- Maker: No migration found for [{$tableName}]. Preparing to create new one... ---\n\n";
+            MigrationFile::createNew($tableName);
         }
     }
 
     /**
      * Overwrite the existing migration file with the processed content.
      */
-    private static function replaceExisting(string $filePath): void
+    public static function replaceExisting(string $filePath, string $tableName): void
     {
         $content = file_get_contents($filePath);
-        $newContent = self::updateMigration($content);
+        $newContent = self::updateMigration($content, $tableName);
 
         if ($content !== $newContent) {
-            // if (is_writable($filePath)) {
-            //     file_put_contents($filePath, $newContent);
-            //     echo "--- Maker: Successfully updated migration file at [{$filePath}] ---\n";
-            // } else {
-            //     echo "--- Maker: Error! File is not writable: [{$filePath}] ---\n";
-            // }
+            if (is_writable($filePath)) {
+                file_put_contents($filePath, $newContent);
+                echo "--- Maker: Successfully updated migration file at [{$filePath}] ---\n\n";
+            } else {
+                echo "--- Maker: Error! File is not writable: [{$filePath}] ---\n\n";
+            }
         } else {
-            echo "--- Maker: No changes detected. Migration file is already up to date. ---\n";
+            echo "--- Maker: No changes detected. Migration file is already up to date. ---\n\n";
         }
     }
 
     /**
      * Orchestrates the transformation of the migration content.
      */
-    private static function updateMigration(string $content): string
+    private static function updateMigration(string $content, string $tableName): string
     {
+        $content = str_replace('tablename', $tableName, $content);
+
         $lines = explode("\n", $content);
-        $processedFields = [];
-
-        $lines = self::updateLines($lines, $processedFields);
-        self::addMissingLines($lines, $processedFields);
-
-        echo "--- Maker: Fields processed: " . implode(', ', $processedFields) . " ---\n";
-        return implode("\n", $lines);
-    }
-
-    /**
-     * updates fields on users table
-     */
-    private static function updateLines(array $lines, array &$processedFields): array
-    {
-        $inUsersTable = false;
-
-        foreach ($lines as $index => $line) {
-            if (strpos($line, "Schema::create('users'") !== false) {
-                $inUsersTable = true;
-                echo "--- Maker: Entered users table scope at line " . ($index + 1) . " ---\n";
-            }
-
-            if ($inUsersTable && strpos($line, "});") !== false) {
-                $inUsersTable = false;
-                echo "--- Maker: Exited users table scope at line " . ($index + 1) . " ---\n";
-            }
-
-            if ($inUsersTable) {
-                foreach (self::$dbSchema as $fieldName => $dbOptions) {
-                    if (strpos($line, "'{$fieldName}'") !== false) {
-                        echo "Found match for [{$fieldName}] at line " . ($index + 1) . ": " . trim($line) . "\n";
-                        $lines[$index] = "            " . self::makeLine($fieldName, $dbOptions) . ";";
-                        $processedFields[] = $fieldName;
-                    }
-                }
-            }
-        }
-        return $lines;
-    }
-
-    /**
-     * Generates a single blueprint line string based on schema options.
-     */
-    private static function makeLine(string $fieldName, array $dbOptions): string
-    {
-        $type = $dbOptions[0] ?? 'string';
-        $line = '$table->' . $type . "('{$fieldName}')";
+        $fields = [];
 
         /**
-         array_splice(
-                $lines,    // 1. Array หลักที่เราจะแก้ไข (คือไฟล์ migration ทั้งไฟล์ที่แตกเป็นบรรทัด)
-                $index,    // 2. ตำแหน่งที่จะเริ่มลงมีด (ในที่นี้คือตำแหน่งบรรทัดของ $table->timestamps();)
-                0,         // 3. จำนวนรายการที่จะ "ลบออก" (ใส่ 0 คือไม่ลบอะไรเลย แค่แทรกเข้าไป)
-                $newLines  // 4. ข้อมูลใหม่ที่จะ "ยัดเข้าไป" ณ ตำแหน่งนั้น
-            );
+         * Before: $table->string('name');
+         * After:  $table->string('name')->required();
          */
-        $options = array_slice($dbOptions, 1);
+        $lines = DBOption::makeLines($lines, $fields, $tableName, self::$dbSchema);
 
-        foreach ($options as $option) {
-            if (is_string($option)) {
-                $line .= '->' . $option . '()';
-            } elseif (is_array($option)) {
-                $key = $option[0];
-                $val = $option[1];
-                if (strpos($key, 'default') !== false) {
-
-                    if (is_bool($val)) {
-                        $valueStr = $val ? 'true' : 'false';
-                    } elseif (is_string($val)) {
-                        $valueStr = "'" . $val . "'";
-                    } else {
-                        $valueStr = $val; // กรณีที่เป็นตัวเลข (0, 1, ฯลฯ) ให้ใส่เข้าไปตรงๆ เลย
-                    }
-
-                    $line .= "->default({$valueStr})";
-                }
-            }
-        }
-        echo "--- Maker: Replacing with: " . $line . " ---\n";
-        return $line;
-    }
-
-    /**
-     * Injects missing schema fields before the timestamps definition.
-     */
-    private static function addMissingLines(array &$lines, array $processedFields): void
-    {
-        $newLines = [];
-        foreach (self::$dbSchema as $fieldName => $dbOptions) {
-            if (!in_array($fieldName, $processedFields)) {
-                echo "--- Maker: Adding missing field [{$fieldName}] ---\n";
-                $newLine = self::makeLine($fieldName, $dbOptions);
-                $newLines[] = "            " . $newLine . ";";
-            }
-        }
-
-        if (!empty($newLines)) {
-            foreach ($lines as $index => $line) {
-                if (strpos($line, '$table->timestamps();') !== false) {
-                    echo "--- Maker: Inserting " . count($newLines) . " missing fields before line " . ($index + 1) . " ---\n";
-                    array_splice($lines, $index, 0, $newLines);
-                    break;
-                }
-            }
-        }
-    }
-
-    /**
-     * Creates a new migration file from the template stub.
-     */
-    private static function createNew(): void
-    {
-        $stubPath = __DIR__ . '/0_create_users_table.php';
-        $destinationPath = __DIR__ . '/../../database/migrations/0001_01_01_000000_create_users_table.php';
-
-        if (file_exists($stubPath)) {
-            echo "--- Maker: Found stub file. Copying to migrations directory... ---\n";
-
-            if (copy($stubPath, $destinationPath)) {
-                echo "--- Maker: Successfully created new migration: 0001_01_01_000000_create_users_table.php ---\n";
-
-                self::replaceExisting($destinationPath);
-            } else {
-                echo "--- Maker: Error! Failed to copy migration file. ---\n";
-            }
-        } else {
-            echo "--- Maker: Error! Stub file not found at [{$stubPath}] ---\n";
-        }
+        echo "--- Maker: Fields processed: " . implode(', ', $fields) . " ---\n\n";
+        return implode("\n", $lines);
     }
 }
 
@@ -397,12 +441,13 @@ namespace App\Constant;
 
 class Maker
 {
+    private static ?MakeMigration $makeMigration = null;
+
     public static function run(string $className): void
     {
         $schema = [];
-        if (!Checker::checkDuplicate()) {
+        if (!CheckDuplicate::checkDuplicate()) {
             echo "--- Maker: Aborted due to validation errors! ---\n";
-            return;
         }
 
         $tableName = self::checkTableName($className);
@@ -415,12 +460,40 @@ class Maker
 
         $fields = $className::fields();
 
-        echo "--- Maker: Analyzing {$className} ---\n";
-        echo "Table: " . $className::TABLE_NAME . "\n";
+        $tableName = $className::TABLE_NAME;
+        $line = str_repeat("=", strlen($tableName) + 4);
+
+        echo "\n";
+        echo "╔{$line}╗\n";
+        echo "║  {$tableName}  ║\n";
+        echo "╚{$line}╝\n";
+        echo "\n";
 
         foreach ($fields as $field) {
+
+            /**
+             * array_shift() 
+             * move the first array element to $name variable 
+             * and remove it from array
+             * the first element is the field name 
+             * according to M-Project convention
+             * a field (business field) is always and array)
+             * Example: 
+            class f
+            {
+                public const IMAGE = ['image', d::STRING, u::FILE ];
+            }
+            class s
+            {
+                public const CURRENCY = ['currency', u::TEL ];
+            }
+             */
             $name = array_shift($field);
-            $schema[$name] = self::analyzeField($name, $field);
+
+            if ($className === "App\Constant\ProductConstant")
+                echo print_r($name, true) . "\n\n";
+
+            $schema[$name] = MakeSchema::separate_db_ui($name, $field);
         }
         echo "--------------------------------------\n";
 
@@ -429,62 +502,11 @@ class Maker
             return;
         }
 
-        MakeMigration::run($tableName, $schema);
-    }
-
-    /**
-     * Example $schema =
-                Array
-                (
-                    [db] => Array
-                        (
-                            [0] => unique
-                            [1] => decimal
-                            [2] => default_nr
-                        )
-                    [ui] => Array
-                        (
-                            [0] => default_true
-                        )
-                )
-     */
-    private static function analyzeField(string $name, array $field): array
-    {
-        $schema = ['db' => [], 'ui' => []];
-        $map = [
-            'd' => ['db' => true],
-            'u' => ['ui' => true],
-            'cd' => ['db' => true],
-            'cu' => ['ui' => true],
-            'cud' => ['db' => true, 'ui' => true],
-            's' => ['db' => true, 'ui' => true]
-        ];
-
-        foreach ($field as $item) {
-            $val = is_array($item) ? $item[0] : $item;
-            // Handle array structures (e.g., [cd::DEFAULT, true]) directly
-            if (is_array($item)) {
-                $schema['db'][] = $item;
-                continue;
-            }
-
-            foreach ($map as $key => $targets) {
-                $ref = new \ReflectionClass("App\\Constant\\" . strtoupper($key));
-                if (in_array($val, array_values($ref->getConstants()))) {
-                    if ($targets['db'] ?? false) $schema['db'][] = $val;
-                    if ($targets['ui'] ?? false) $schema['ui'][] = $val;
-                }
-            }
-            if (is_array($item) && strpos($item[0], 'default') !== false) {
-                $schema['db'][] = $item;
-            }
+        if (self::$makeMigration === null) {
+            self::$makeMigration = new MakeMigration();
         }
 
-        echo "Field: " . str_pad($name, 20) .
-            " | DB: " . json_encode($schema['db']) .
-            " | UI: " . json_encode($schema['ui']) . "\n";
-
-        return $schema;
+        self::$makeMigration->run($tableName, $schema);
     }
 
     private static function checkTableName(string $className): ?string
@@ -525,17 +547,26 @@ namespace App\Constant;
  */
 class f
 {
-    public const IMAGE      = ['image',     d::STRING,  u::FILE];
-    public const NAME       = ['name',      d::STRING,  u::TEXT,    cud::REQUIRED]; //Base
-    public const PRICE      = ['price',     s::CURRENCY];
-    public const STOCK      = ['stock',     d::DECIMAL, u::NUMBER,  [cd::DEFAULT, 0], cud::REQUIRED];
-    public const IS_ACTIVE  = ['is_active', d::BOOLEAN, u::SELECT,  [cd::DEFAULT, true]];
-    public const ORDER_NR   = ['order_nr',  d::STRING,  u::TEXT];
+    public const IMAGE      = ['image',     d::STRING,          u::FILE];
+    public const NAME       = ['name',      d::STRING,          u::TEXT,                        cud::REQUIRED]; //Base
+    public const PRICE      = ['price',     [d::DECIMAL, 10, 2],  u::NUMBER,  [cd::DEFAULT, 0],   s::CURRENCY];
+    public const STOCK      = ['stock',     [d::DECIMAL, 10, 10], u::NUMBER,  [cd::DEFAULT, 0], cud::REQUIRED];
+    public const IS_ACTIVE  = ['is_active', d::BOOLEAN,         u::SELECT,    [cd::DEFAULT, true]];
+    public const ORDER_NR   = ['order_nr',  d::STRING,          u::TEXT];
 
     // FOREIGN
     public const ORDER_ID = ['order_id', cd::FOREIGN];
     public const SHOP_ID  = ['shop_id',  cd::FOREIGN];
     public const USER_ID  = ['user_id',  cd::FOREIGN]; //Base
+}
+
+class t
+{
+    // TABLE NAME
+    public const users = 'users';
+    public const products = 'products';
+    public const shops = 'shops';
+    public const orders = 'orders';
 }
 
 /**
@@ -545,39 +576,8 @@ class f
 class s
 {
     public const EMAIL    = ['email',    d::STRING,  u::TEXT, cd::UNIQUE];
-    public const CURRENCY = ['currency', d::DECIMAL, u::TEL];
+    public const CURRENCY = ['currency', u::TEL];
 }
-
-/**
- * DB FIELD TYPE
- */
-class d
-{
-    public const BOOLEAN = 'boolean';
-    public const STRING = 'string';
-    public const INTEGER = 'integer';
-    public const DECIMAL = 'decimal';
-
-    // TABLE NAME
-    public const users = 'users';
-    public const products = 'products';
-    public const shops = 'shops';
-    public const orders = 'orders';
-}
-
-
-/**
- * UI FIELD TYPE
- */
-class u
-{
-    public const TEXT = 'text';
-    public const NUMBER = 'number';
-    public const SELECT = 'select';
-    public const FILE = 'file';
-    public const TEL = 'tel';
-}
-
 
 /**
  * CONSTRAINT DB
@@ -590,6 +590,65 @@ class cd
     public const FOREIGN = 'foreign';
     public const UNIQUE = 'unique';
     public const INDEX = 'index';
+}
+
+/**
+ * DB FIELD TYPE
+ */
+class d
+{
+    public const BOOLEAN = 'boolean';
+    /**
+     * @example [d::DEFAULT, $value]
+     */
+    public const DEFAULT = 'default';
+
+    /**
+     * @example [d::DECIMAL, int $total, int $places]
+     */
+    public const DECIMAL = 'decimal';
+
+    /**
+     * @example [d::STRING, int $length]
+     */
+    public const STRING = 'string';
+
+    /**
+     * @example [d::FOREIGN, string $table, string $onDelete = 'cascade']
+     */
+    public const FOREIGN = 'foreign';
+
+    /**
+     * @example [d::UNSIGNED_BIG_INTEGER]
+     */
+    public const UNSIGNED_BIG_INTEGER = 'unsignedBigInteger';
+
+    /**
+     * @example [d::NULLABLE]
+     */
+    public const NULLABLE = 'nullable';
+
+    /**
+     * @example [d::INDEX]
+     */
+    public const INDEX = 'index';
+
+    /**
+     * @example [d::UNIQUE]
+     */
+    public const UNIQUE = 'unique';
+}
+
+/**
+ * UI FIELD TYPE
+ */
+class u
+{
+    public const TEXT = 'text';
+    public const NUMBER = 'number';
+    public const SELECT = 'select';
+    public const FILE = 'file';
+    public const TEL = 'tel';
 }
 
 /**
@@ -613,12 +672,12 @@ class cud
 /**
  * TEST FIELDS - Centralized Test Registry
  */
-class t
+class test
 {
     public const test_table_name = 'tests';
 
     // Test Special Field
-    public const TEST_f_1   = ['TEST_f_1',     t::TEST_s_1];
+    public const TEST_f_1   = ['TEST_f_1',     test::TEST_s_1];
     public const TEST_s_1 = [
         'TEST_s_1',
         d::DECIMAL,
@@ -646,11 +705,255 @@ namespace App\Constant;
 //0_MakerTest.php
 require 'vendor/autoload.php';
 
-// Checker::checkDuplicate();
-// Maker::run(TestEntityConstant::class);
-Maker::run(UserConstant::class);
-// Maker::run(ShopConstant::class);
-// Maker::run(ProductConstant::class);
+class MakerTest
+{
+    public const MAX_MIGRATIONS = 10;
+    public static int $entityCounter = 0;
+
+    public static function run(): void
+    {
+        $entities = [
+            UserConstant::class,
+            ShopConstant::class,
+            ProductConstant::class
+        ];
+
+        $count = count($entities);
+        if ($count > self::MAX_MIGRATIONS) {
+            die("--- CRITICAL: Migration limit exceeded. "
+                . "\n Found {$count} tables, limit is " . self::MAX_MIGRATIONS
+                . "\n Please split your migration tasks across multiple runs. ---\n\n");
+        }
+
+        foreach ($entities as $entity) {
+            /**
+             * skip users table , because made by laravel
+             * 0001_01_01_000000_create_users_table.php
+             */
+            if ($entity !== UserConstant::class) {
+                self::$entityCounter++;
+            }
+
+            echo "--- MakerTest: Running for {$entity} (Index: " . self::$entityCounter . ") ---\n\n";
+
+            Maker::run($entity);
+        }
+    }
+}
+
+MakerTest::run();
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\0_MakeSchema.php]
+
+<?php
+
+namespace App\Constant;
+//0_MakeSchema.php
+
+class MakeSchema
+{
+    /**
+     * Example $schema =
+                Array
+                (
+                    [db] => Array
+                        (
+                            [0] => unique
+                            [1] => decimal
+                            [2] => default_nr
+                        )
+                    [ui] => Array
+                        (
+                            [0] => default_true
+                        )
+                )
+     */
+    public static function separate_db_ui(string $name, array $field): array
+    {
+        $schema = ['db' => [], 'ui' => []];
+
+        //d_u_cd_cu_cud are classes in MakerConstant.php
+        $map_d_u_cd_cu_cud = [
+            'd' => ['db' => true],
+            'u' => ['ui' => true],
+            'cd' => ['db' => true],
+            'cu' => ['ui' => true],
+            'cud' => ['db' => true, 'ui' => true]
+        ];
+
+        foreach ($field as $item) {
+            $val = is_array($item) ? $item[0] : $item;
+            if (SpecialField::successfully_added($item, $schema)) {
+                continue;
+            }
+
+            /**
+             * this is_array to fix duplicates e.g.
+             * DB: ["foreign","foreign"]
+             * DB: ["decimal","default","default",["default",0]]
+             * DB: ["decimal","default","default",["default",0],"required"]
+             */
+            if (is_array($item)) {
+                $schema['db'][] = $item;
+                continue; // skip loop avoid duplicates
+            }
+
+            foreach ($map_d_u_cd_cu_cud as $key => $targets) {
+                $ref = new \ReflectionClass("App\\Constant\\" . strtoupper($key));
+                if (in_array($val, array_values($ref->getConstants()))) {
+                    if ($targets['db'] ?? false) $schema['db'][] = $val;
+                    if ($targets['ui'] ?? false) $schema['ui'][] = $val;
+                }
+            }
+            if (is_array($item) && strpos($item[0], 'default') !== false) {
+                $schema['db'][] = $item;
+            }
+        }
+
+        /**
+         * 25 = width of culumn
+        Field: user_id                  DB: ["foreign","foreign"]
+        Field: name                     DB: ["string","required"]
+        Field: shop_id                  DB: ["foreign","foreign"]
+         */
+        $padName = str_pad($name, 25);
+        echo "Field: {$padName} DB: " . json_encode($schema['db']) . "\n\n";
+        echo "Field: {$padName} UI: " . json_encode($schema['ui']) . "\n\n";
+        echo "-----------------------------------------------------\n\n";
+        // ----------------------------------------------------
+
+        return $schema;
+    }
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\0_MigrationFile.php]
+
+<?php
+
+namespace App\Constant;
+//0_MigrationFile.php
+
+class MigrationFile
+{
+    private static string $tableName;
+    private static string $draftPath;
+    private static string $destinationPath;
+    private static string $fileName;
+    private static string $filePrefix;
+
+    public static function createNew(string $tableName): void
+    {
+        // Preparation Zone
+        self::$tableName = $tableName;
+        $isUser = ($tableName === 'users');
+        self::$draftPath = __DIR__ . '/' . ($isUser ? '0_create_users_table.php' : '0_create_entity_table.php');
+
+        $paddingLength = strlen((string) \App\Constant\MakerTest::MAX_MIGRATIONS);
+
+        /**
+         * Example: If entityCounter is 1 and MAX_MIGRATIONS is 100
+         * Before: 1 -> After: '01'
+         */
+        $counterPadding = str_pad(
+            (string) \App\Constant\MakerTest::$entityCounter,
+            $paddingLength,
+            '0',
+            STR_PAD_LEFT
+        );
+
+        self::$filePrefix = date('Y_m_d_His') . "_{$counterPadding}";
+        self::$fileName = $isUser
+            ? '0001_01_01_000000_create_users_table.php'
+            : self::$filePrefix . "_create_{$tableName}_table.php";
+        self::$destinationPath = __DIR__ . "/../../database/migrations/" . self::$fileName;
+
+        // Validation Zone
+        self::dieSameMigration($isUser);
+
+        // Execution Zone
+        self::makeFile();
+    }
+
+    private static function dieSameMigration(bool $isUser): void
+    {
+        if (!file_exists(self::$draftPath)) {
+            die("\n--- Maker: Error! Draft file not found at [" . self::$draftPath . "] ---\n\n");
+        }
+
+        if (!$isUser) {
+            $existingFiles = glob(__DIR__ . "/../../database/migrations/" . self::$filePrefix . "_*.php");
+            if (!empty($existingFiles)) {
+                die("\n--- CRITICAL: Migration conflict detected. ---"
+                    . "\nA file with prefix [" . self::$filePrefix . "] already exists."
+                    . "\n\n");
+            }
+        }
+    }
+
+    private static function makeFile(): void
+    {
+        echo "--- Maker: Found draft file. Copying to migrations directory... ---\n\n";
+
+        if (copy(self::$draftPath, self::$destinationPath)) {
+            echo "--- Maker: Successfully created new migration: " . self::$fileName . " ---\n\n";
+            MakeMigration::replaceExisting(self::$destinationPath, self::$tableName);
+        } else {
+            echo "\n--- Maker: Error! Failed to copy migration file. ---\n\n";
+        }
+    }
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\0_SpecialField.php]
+
+<?php
+
+namespace App\Constant;
+//0_SpecialField.php
+
+class SpecialField
+{
+    /**
+     * Checks if a field is a special 
+     * and handle field specially
+     * We use first element of array for name,
+     * because it our Bot convention e.g.
+     * s::EMAIL[0]
+     * s::CURRENCY[0]
+     */
+    public static function successfully_added($item, &$schema): bool
+    {
+        $isSpecial = false;
+        $fieldName = is_array($item) ? $item[0] : $item;
+        if ($fieldName === s::EMAIL[0]) {
+            echo $fieldName . " DB UI field, SPECIAL.\n";
+            $schema['db'][] = $item;
+            $schema['ui'][] = $item;
+            $isSpecial = true;
+        }
+
+        if ($fieldName === s::CURRENCY[0]) {
+            echo $fieldName . " UI field, SPECIAL\n";
+            $schema['ui'][] = $item;
+            $isSpecial = true;
+        }
+
+        /**
+         * check if the field is a special field and add it to the schema if it is.
+         */
+        // $msg = "Checking if '{$fieldName}' ";
+        // $special_text = $isSpecial ? " IS YES" : " IS NOT";
+        // $msg .= $special_text . " a special field.\n";
+        // echo $msg;
+
+        return $isSpecial;
+    }
+}
 
 
 
@@ -662,16 +965,16 @@ namespace App\Constant;
 // 0_TestEntityConstant.php
 class TestEntityConstant extends BaseConstant
 {
-    public const TABLE_NAME = t::test_table_name;
+    public const TABLE_NAME = test::test_table_name;
 
     protected static function childFields(): array
     {
         return [
-            t::TEST_s_1, // Test Special Field
-            t::test_f_1,
-            t::test_d_1,
-            t::test_u_1,
-            // t::test_cd_duplicate_constraint,
+            test::TEST_s_1, // Test Special Field
+            test::test_f_1,
+            test::test_d_1,
+            test::test_u_1,
+            // test::test_cd_duplicate_constraint,
         ];
     }
 }
@@ -695,10 +998,14 @@ abstract class BaseConstant
     public static function fields(): array
     {
         if (!defined('static::TABLE_NAME')) {
-            throw new \Exception("Class " . static::class . " must define public const TABLE_NAME!");
+            throw new \Exception("Class " . static::class
+                . " must define public const TABLE_NAME!");
         }
 
-        // 1. แปลง $baseFields ให้เป็น Associative Array โดยใช้ชื่อฟิลด์ (index 0) เป็น Key
+        /**
+         * make associative array from baseFields 
+         * for easier key access
+         */
         $fields = [];
         foreach (self::$baseFields as $field) {
             $fields[$field[0]] = $field;
@@ -706,12 +1013,11 @@ abstract class BaseConstant
 
         $tableName = static::TABLE_NAME;
 
-        // 2. ตอนนี้เราสามารถ unset ด้วยชื่อฟิลด์ได้แล้ว!
-        if ($tableName === d::users) {
-            unset($fields['user_id']); // ใช้ชื่อคีย์ที่เป็น String
+        if ($tableName === t::users) {
+            unset($fields['user_id']);
         }
 
-        if ($tableName === d::orders) {
+        if ($tableName === t::orders) {
             unset($fields['image']);
         }
 
@@ -738,13 +1044,13 @@ namespace App\Constant;
 
 class ProductConstant extends BaseConstant
 {
-    public const TABLE_NAME = d::products;
+    public const TABLE_NAME = t::products;
 
     public const PRICE_TOTAL = 10;
     public const PRICE_DECIMAL = 2;
 
-    public const QTY_TOTAL = 65;
-    public const QTY_DECIMAL = 18;
+    public const STOCK_TOTAL = 10;
+    public const STOCK_DECIMAL = 10;
 
     public const STOCK_MIN = -999999;
 
@@ -768,7 +1074,7 @@ namespace App\Constant;
 
 class ShopConstant extends BaseConstant
 {
-    public const TABLE_NAME = d::shops;
+    public const TABLE_NAME = t::shops;
 
     protected static function childFields(): array
     {
@@ -786,7 +1092,7 @@ namespace App\Constant;
 
 class UserConstant extends BaseConstant
 {
-    public const TABLE_NAME = d::users;
+    public const TABLE_NAME = t::users;
 
     protected static function childFields(): array
     {

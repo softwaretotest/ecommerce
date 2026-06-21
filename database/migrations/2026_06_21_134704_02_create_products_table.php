@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('name')->required();
             $table->string('image');
-            $table->decimal('price')->default(0);
-            $table->decimal('stock')->default(0)->required();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('shop_id')->constrained('shops')->onDelete('cascade');
+            $table->decimal('price', 10, 2)->default(0);
+            $table->decimal('stock', 10, 10)->default(0)->required();
+            $table->foreignId('user_id')->constrained('users')->onDelete('restrict');
+            $table->foreignId('shop_id')->constrained('shops')->onDelete('restrict');
             $table->timestamps();
         });
     }

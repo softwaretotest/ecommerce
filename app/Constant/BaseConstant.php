@@ -13,10 +13,14 @@ abstract class BaseConstant
     public static function fields(): array
     {
         if (!defined('static::TABLE_NAME')) {
-            throw new \Exception("Class " . static::class . " must define public const TABLE_NAME!");
+            throw new \Exception("Class " . static::class
+                . " must define public const TABLE_NAME!");
         }
 
-        // 1. แปลง $baseFields ให้เป็น Associative Array โดยใช้ชื่อฟิลด์ (index 0) เป็น Key
+        /**
+         * make associative array from baseFields 
+         * for easier key access
+         */
         $fields = [];
         foreach (self::$baseFields as $field) {
             $fields[$field[0]] = $field;
@@ -24,12 +28,11 @@ abstract class BaseConstant
 
         $tableName = static::TABLE_NAME;
 
-        // 2. ตอนนี้เราสามารถ unset ด้วยชื่อฟิลด์ได้แล้ว!
-        if ($tableName === d::users) {
-            unset($fields['user_id']); // ใช้ชื่อคีย์ที่เป็น String
+        if ($tableName === t::users) {
+            unset($fields['user_id']);
         }
 
-        if ($tableName === d::orders) {
+        if ($tableName === t::orders) {
             unset($fields['image']);
         }
 

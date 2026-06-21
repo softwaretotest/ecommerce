@@ -2,30 +2,31 @@
 
 namespace App\Constant;
 
-class Checker
+class CheckDuplicate
 {
+    private static array $sameFields = [];
+
     public static function checkDuplicate(): bool
     {
         $classes = ['f', 's', 'd', 'u', 'cd', 'cu', 'cud', 't'];
-        $sameFields = [];
         $errors = [];
 
         foreach ($classes as $className) {
             $fullClassName = 'App\\Constant\\' . $className;
             if (!class_exists($fullClassName)) continue;
 
-            $errors = array_merge($errors, self::validateConstant($fullClassName, $sameFields));
+            $errors = array_merge($errors, self::validateConstant($fullClassName));
         }
 
         if (!empty($errors)) {
-            self::reportErrors($errors);
+            self::dieReportErrors($errors);
             return false;
         }
 
         return true;
     }
 
-    private static function validateConstant(string $fullClassName, array $samefields): array
+    private static function validateConstant(string $fullClassName): array
     {
         $localErrors = [];
         $constants = (new \ReflectionClass($fullClassName))->getConstants();
@@ -86,10 +87,10 @@ class Checker
         return $constraintErrors;
     }
 
-    private static function reportErrors(array $errors): void
+    private static function dieReportErrors(array $errors): void
     {
         if (!empty($errors)) {
-            echo "\n[ALERT] SYSTEM VALIDATION FAILED!\n" . implode("\n", $errors) . "\n\n";
+            die("\n[ALERT] SYSTEM VALIDATION FAILED!\n" . implode("\n", $errors) . "\n\n");
         } else {
             echo "--- Maker: Global Validator Passed! ---\n\n";
         }

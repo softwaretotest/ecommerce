@@ -5,12 +5,13 @@ namespace App\Constant;
 
 class Maker
 {
+    private static ?MakeMigration $makeMigration = null;
+
     public static function run(string $className): void
     {
         $schema = [];
-        if (!Checker::checkDuplicate()) {
+        if (!CheckDuplicate::checkDuplicate()) {
             echo "--- Maker: Aborted due to validation errors! ---\n";
-            return;
         }
 
         $tableName = self::checkTableName($className);
@@ -23,12 +24,40 @@ class Maker
 
         $fields = $className::fields();
 
-        echo "--- Maker: Analyzing {$className} ---\n";
-        echo "Table: " . $className::TABLE_NAME . "\n";
+        $tableName = $className::TABLE_NAME;
+        $line = str_repeat("=", strlen($tableName) + 4);
+
+        echo "\n";
+        echo "╔{$line}╗\n";
+        echo "║  {$tableName}  ║\n";
+        echo "╚{$line}╝\n";
+        echo "\n";
 
         foreach ($fields as $field) {
+
+            /**
+             * array_shift() 
+             * move the first array element to $name variable 
+             * and remove it from array
+             * the first element is the field name 
+             * according to M-Project convention
+             * a field (business field) is always and array)
+             * Example: 
+            class f
+            {
+                public const IMAGE = ['image', d::STRING, u::FILE ];
+            }
+            class s
+            {
+                public const CURRENCY = ['currency', u::TEL ];
+            }
+             */
             $name = array_shift($field);
-            $schema[$name] = self::analyzeField($name, $field);
+
+            if ($className === "App\Constant\ProductConstant")
+                echo print_r($name, true) . "\n\n";
+
+            $schema[$name] = MakeSchema::separate_db_ui($name, $field);
         }
         echo "--------------------------------------\n";
 
@@ -37,62 +66,11 @@ class Maker
             return;
         }
 
-        MakeMigration::run($tableName, $schema);
-    }
-
-    /**
-     * Example $schema =
-                Array
-                (
-                    [db] => Array
-                        (
-                            [0] => unique
-                            [1] => decimal
-                            [2] => default_nr
-                        )
-                    [ui] => Array
-                        (
-                            [0] => default_true
-                        )
-                )
-     */
-    private static function analyzeField(string $name, array $field): array
-    {
-        $schema = ['db' => [], 'ui' => []];
-        $map = [
-            'd' => ['db' => true],
-            'u' => ['ui' => true],
-            'cd' => ['db' => true],
-            'cu' => ['ui' => true],
-            'cud' => ['db' => true, 'ui' => true],
-            's' => ['db' => true, 'ui' => true]
-        ];
-
-        foreach ($field as $item) {
-            $val = is_array($item) ? $item[0] : $item;
-            // Handle array structures (e.g., [cd::DEFAULT, true]) directly
-            if (is_array($item)) {
-                $schema['db'][] = $item;
-                continue;
-            }
-
-            foreach ($map as $key => $targets) {
-                $ref = new \ReflectionClass("App\\Constant\\" . strtoupper($key));
-                if (in_array($val, array_values($ref->getConstants()))) {
-                    if ($targets['db'] ?? false) $schema['db'][] = $val;
-                    if ($targets['ui'] ?? false) $schema['ui'][] = $val;
-                }
-            }
-            if (is_array($item) && strpos($item[0], 'default') !== false) {
-                $schema['db'][] = $item;
-            }
+        if (self::$makeMigration === null) {
+            self::$makeMigration = new MakeMigration();
         }
 
-        echo "Field: " . str_pad($name, 20) .
-            " | DB: " . json_encode($schema['db']) .
-            " | UI: " . json_encode($schema['ui']) . "\n";
-
-        return $schema;
+        self::$makeMigration->run($tableName, $schema);
     }
 
     private static function checkTableName(string $className): ?string

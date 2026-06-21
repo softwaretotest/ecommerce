@@ -4,7 +4,7 @@ namespace App\Constant;
 
 class UserConstant extends BaseConstant
 {
-    public const TABLE_NAME = d::users;
+    public const TABLE_NAME = t::users;
 
     protected static function childFields(): array
     {
