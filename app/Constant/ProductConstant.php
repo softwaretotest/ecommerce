@@ -2,7 +2,7 @@
 
 namespace App\Constant;
 
-class ProductConstant extends BaseConstant
+class ProductConstant
 {
     public const TABLE_NAME = t::products;
 
@@ -14,9 +14,11 @@ class ProductConstant extends BaseConstant
 
     public const STOCK_MIN = -999999;
 
-    protected static function childFields(): array
+    public static function fields(): array
     {
         return [
+            f::NAME,
+            f::IMAGE,
             f::SHOP_ID,
             f::PRICE,
             f::STOCK,

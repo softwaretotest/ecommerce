@@ -2,12 +2,16 @@
 
 namespace App\Constant;
 
-class ShopConstant extends BaseConstant
+class ShopConstant
 {
     public const TABLE_NAME = t::shops;
 
-    protected static function childFields(): array
+    public static function fields(): array
     {
-        return [];
+        return [
+            f::NAME,
+            f::IMAGE,
+            f::USER_ID,
+        ];
     }
 }

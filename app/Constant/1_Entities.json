@@ -1,0 +1,30 @@
+{
+    "_comment": "1_Entities.json",
+    "entities": {
+        "t::orders": [
+            "f::ORDER_NR",
+            "f::PRODUCT_ID",
+            "f::USER_ID",
+            "f::QUANTITY",
+            "f::CONFIRM_ORDER"
+        ],
+        "t::products": [
+            "f::NAME",
+            "f::IMAGE",
+            "f::SHOP_ID",
+            "f::PRICE",
+            "f::STOCK"
+        ],
+        "t::shops": [
+            "f::NAME",
+            "f::IMAGE",
+            "f::USER_ID"
+        ],
+        "t::users": [
+            "f::NAME",
+            "f::IMAGE",
+            "s::EMAIL",
+            "f::IS_ACTIVE"
+        ]
+    }
+}

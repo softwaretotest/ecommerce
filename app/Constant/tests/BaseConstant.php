@@ -28,6 +28,7 @@ abstract class BaseConstant
 
         $tableName = static::TABLE_NAME;
 
+        // Exceptions for specific tables
         if ($tableName === t::users) {
             unset($fields['user_id']);
         }
@@ -37,13 +38,13 @@ abstract class BaseConstant
             unset($fields['name']);
         }
 
-        // 3. รวมกับ childFields
+        // 3. together with childFields
         $childFields = static::childFields();
         foreach ($childFields as $field) {
             $fields[$field[0]] = $field;
         }
 
-        // 4. คืนค่าเป็น Indexed Array เพื่อให้โครงสร้างเดิมใช้งานได้
+        // 4. return as Indexed Array for backward compatibility
         return array_values($fields);
     }
 

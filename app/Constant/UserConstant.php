@@ -2,13 +2,15 @@
 
 namespace App\Constant;
 
-class UserConstant extends BaseConstant
+class UserConstant
 {
     public const TABLE_NAME = t::users;
 
-    protected static function childFields(): array
+    public static function fields(): array
     {
         return [
+            f::NAME,
+            f::IMAGE,
             s::EMAIL,
             f::IS_ACTIVE,
         ];
