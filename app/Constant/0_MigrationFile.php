@@ -18,14 +18,14 @@ class MigrationFile
         $isUser = ($tableName === 'users');
         self::$draftPath = __DIR__ . '/' . ($isUser ? '0_create_users_table.php' : '0_create_entity_table.php');
 
-        $paddingLength = strlen((string) \App\Constant\MakerTest::MAX_MIGRATIONS);
+        $paddingLength = strlen((string) Runner::MAX_MIGRATIONS);
 
         /**
          * Example: If entityCounter is 1 and MAX_MIGRATIONS is 100
          * Before: 1 -> After: '01'
          */
         $counterPadding = str_pad(
-            (string) \App\Constant\MakerTest::$entityCounter,
+            (string) Runner::$entityCounter,
             $paddingLength,
             '0',
             STR_PAD_LEFT

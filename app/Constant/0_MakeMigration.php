@@ -8,12 +8,6 @@ class MakeMigration
     private static array $dbSchema = [];
 
     /**
-     * Instance counter ensures unique migration 
-     * timestamps and prevents filename collisions.
-     */
-    private int $entityCounter = 0;
-
-    /**
      * Entry point to trigger migration analysis or creation.
      */
     public static function run(string $tableName, array $schema): void

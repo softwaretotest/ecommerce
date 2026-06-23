@@ -34,6 +34,7 @@ abstract class BaseConstant
 
         if ($tableName === t::orders) {
             unset($fields['image']);
+            unset($fields['name']);
         }
 
         // 3. รวมกับ childFields

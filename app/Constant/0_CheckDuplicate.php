@@ -2,7 +2,7 @@
 
 namespace App\Constant;
 
-class CheckDuplicate
+class Checker
 {
     private static array $sameFields = [];
 

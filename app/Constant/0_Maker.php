@@ -5,12 +5,23 @@ namespace App\Constant;
 
 class Maker
 {
+    /**
+     * Singleton instance of MakeMigration.
+     * * PURPOSE:
+     * - Serves as a persistent state coordinator for the migration runner.
+     * - Allows MigrationFile::createNew() to access the global Runner::$entityCounter.
+     * * WHY SINGLETON:
+     * - Without this, the counter state would be lost between cycles.
+     * - Enables sequential filename generation (e.g., ..._01_create_shops_table.php).
+     *  ? = nullable (> PHP 8.2))
+     *  in PHP , static object can be instantiated (not in Java/.NET)
+     */
     private static ?MakeMigration $makeMigration = null;
 
     public static function run(string $className): void
     {
         $schema = [];
-        if (!CheckDuplicate::checkDuplicate()) {
+        if (!Checker::checkDuplicate()) {
             echo "--- Maker: Aborted due to validation errors! ---\n";
         }
 
@@ -66,6 +77,9 @@ class Maker
             return;
         }
 
+        /**
+         * Initialize the MakeMigration to make Singleton 
+         */
         if (self::$makeMigration === null) {
             self::$makeMigration = new MakeMigration();
         }

@@ -1,12 +1,19 @@
 <?php
 
 namespace App\Constant;
-//0_MakerTest.php
+//0_Runner.php
 require 'vendor/autoload.php';
 
-class MakerTest
+class Runner
 {
     public const MAX_MIGRATIONS = 10;
+    /**
+     * Instance counter ensures unique migration 
+     * timestamps and prevents filename collisions.
+     * e.g.
+     * 2026_06_23_080333_01_create_shops_table.php
+     * 2026_06_23_080333_02_create_products_table.php
+     */
     public static int $entityCounter = 0;
 
     public static function run(): void
@@ -14,7 +21,8 @@ class MakerTest
         $entities = [
             UserConstant::class,
             ShopConstant::class,
-            ProductConstant::class
+            ProductConstant::class,
+            OrderConstant::class
         ];
 
         $count = count($entities);
@@ -40,4 +48,4 @@ class MakerTest
     }
 }
 
-MakerTest::run();
+Runner::run();
