@@ -1,4 +1,4 @@
-﻿Generated  : 2026-06-15 11:12:24
+﻿Generated  : 2026-06-24 21:39:54
 
 PHP        : 8.5.7
 Composer   : 2.10.1
@@ -12,7 +12,7 @@ Database   : pgsql
 Cache      : database
 Queue      : database
 Session    : database
-Mail       : log
+Mail       : smtp
 
 Environment: local
 Debug      : True

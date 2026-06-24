@@ -1,0 +1,110 @@
+/* --- Dashboard Containers --- */
+.m-tab-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+.m-content-box {
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+/* --- Sub-Tabs --- */
+.subtabs-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+.subtab-button {
+    padding: 5px 15px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    background-color: #eee;
+}
+.subtab-button.active {
+    background-color: #333;
+    color: #fff;
+}
+
+/* --- Data Grid & Columns --- */
+.content-grid {
+    display: flex;
+    gap: 30px;
+}
+.column-flex {
+    flex: 1;
+}
+
+/* --- Inputs & Fields --- */
+.field-wrapper {
+    margin-bottom: 15px;
+}
+.field-label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+.field-input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    width: 100%;
+    border-radius: 4px;
+}
+
+/* --- JSON Preview --- */
+.json-preview-column {
+    background-color: #2d2d2d;
+    color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    max-height: 500px;
+    overflow-y: auto;
+}
+.json-header {
+    margin-top: 0;
+}
+.json-pre {
+    font-size: 14px;
+    white-space: pre-wrap;
+}
+.config-header {
+    margin-top: 0;
+}
+
+/* --- Dashboard Main Layout --- */
+.dashboard-wrapper {
+    padding: 40px;
+    max-width: 1000px;
+    margin: 0 auto;
+    font-family: Arial;
+}
+.dashboard-header {
+    margin-bottom: 20px;
+}
+.tab-switcher-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+.dashboard-main-box {
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 8px;
+    min-height: 400px;
+}
+
+/* --- Dashboard Buttons --- */
+.nav-button {
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #ddd;
+}
+.nav-button.active {
+    background-color: #333;
+}

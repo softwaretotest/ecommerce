@@ -4,29 +4,6 @@ namespace App\Constant;
 //0_Constant_M.php
 
 /**
- * SPECIAL UI FIELD exist neither in DB nor html-UI
- * must be validated in UI
- */
-class s
-{
-    public const EMAIL    = ['email',    d::STRING,  u::TEXT, cd::UNIQUE];
-    public const CURRENCY = ['currency', u::TEL];
-}
-
-/**
- * CONSTRAINT DB
- */
-class cd
-{
-    public const NULLABLE = 'nullable';
-    public const DEFAULT = 'default';
-    public const PRIMARY = 'primary';
-    public const FOREIGN = 'foreign';
-    public const UNIQUE = 'unique';
-    public const INDEX = 'index';
-}
-
-/**
  * DB FIELD TYPE
  */
 class d
@@ -86,6 +63,19 @@ class u
 }
 
 /**
+ * CONSTRAINT DB
+ */
+class cd
+{
+    public const NULLABLE = 'nullable';
+    public const DEFAULT = 'default';
+    public const PRIMARY = 'primary';
+    public const FOREIGN = 'foreign';
+    public const UNIQUE = 'unique';
+    public const INDEX = 'index';
+}
+
+/**
  * CONSTRAINT UI 
  */
 class cu
@@ -100,4 +90,14 @@ class cu
 class cud
 {
     public const REQUIRED = 'required';
+}
+
+/**
+ * SPECIAL UI FIELD exist neither in DB nor html-UI
+ * must be validated in UI
+ */
+class s
+{
+    public const EMAIL    = ['email',    d::STRING,  u::TEXT, cd::UNIQUE];
+    public const CURRENCY = ['currency', u::TEL];
 }

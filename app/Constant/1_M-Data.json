@@ -1,25 +1,5 @@
 {
     "_comment": "1_M-Data.json",
-    "s": {
-        "EMAIL": [
-            "email",
-            "d::STRING",
-            "u::TEXT",
-            "cd::UNIQUE"
-        ],
-        "CURRENCY": [
-            "currency",
-            "u::TEL"
-        ]
-    },
-    "cd": {
-        "NULLABLE": "nullable",
-        "DEFAULT": "default",
-        "PRIMARY": "primary",
-        "FOREIGN": "foreign",
-        "UNIQUE": "unique",
-        "INDEX": "index"
-    },
     "d": {
         "BOOLEAN": "boolean",
         "DEFAULT": "default",
@@ -38,11 +18,31 @@
         "FILE": "file",
         "TEL": "tel"
     },
+    "cd": {
+        "NULLABLE": "nullable",
+        "DEFAULT": "default",
+        "PRIMARY": "primary",
+        "FOREIGN": "foreign",
+        "UNIQUE": "unique",
+        "INDEX": "index"
+    },
     "cu": {
         "READONLY": "readonly",
         "DISABLED": "disabled"
     },
     "cud": {
         "REQUIRED": "required"
+    },
+    "s": {
+        "EMAIL": [
+            "email",
+            "d::STRING",
+            "u::TEXT",
+            "cd::UNIQUE"
+        ],
+        "CURRENCY": [
+            "currency",
+            "u::TEL"
+        ]
     }
 }

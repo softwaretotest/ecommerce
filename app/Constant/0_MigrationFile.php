@@ -67,6 +67,12 @@ class MigrationFile
         if (copy(self::$draftPath, self::$destinationPath)) {
             echo "--- Maker: Successfully created new migration: " . self::$fileName . " ---\n\n";
             MakeMigration::replaceExisting(self::$destinationPath, self::$tableName);
+            // แสดงกรอบความสำเร็จ
+            echo "\n";
+            echo "╔" . str_repeat("═", 48) . "╗\n";
+            echo "║" . str_pad("SUCCESSFUL", 48, " ", STR_PAD_BOTH) . "║\n";
+            echo "╚" . str_repeat("═", 48) . "╝\n";
+            echo "\n";
         } else {
             echo "\n--- Maker: Error! Failed to copy migration file. ---\n\n";
         }
