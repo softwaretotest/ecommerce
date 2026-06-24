@@ -8,7 +8,7 @@
 
 namespace App\Constant;
 
-class CheckDuplicate
+class Checker
 {
     private static array $sameFields = [];
 
@@ -101,6 +101,153 @@ class CheckDuplicate
             echo "--- Maker: Global Validator Passed! ---\n\n";
         }
     }
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\0_Constant_APP.php]
+
+<?php
+
+namespace App\Constant;
+//0_Constant_APP.php
+
+/**
+ * FIELD 
+ */
+class f
+{
+    public const IMAGE      = ['image',     d::STRING,          u::FILE]; //Base
+    public const NAME       = ['name',      d::STRING,          u::TEXT,                        cud::REQUIRED]; //Base
+    public const PRICE      = ['price',     [d::DECIMAL, 10, 2],  u::NUMBER,  [cd::DEFAULT, 0],   s::CURRENCY];
+    public const STOCK      = ['stock',     [d::DECIMAL, 10, 10], u::NUMBER,  [cd::DEFAULT, 0], cud::REQUIRED];
+    public const IS_ACTIVE  = ['is_active', d::BOOLEAN,         u::SELECT,    [cd::DEFAULT, true]];
+    public const QUANTITY   = ['quantity',  d::DECIMAL,         u::NUMBER,    [cd::DEFAULT, 1], cud::REQUIRED];
+    public const CONFIRM_ORDER = ['confirm_order', d::BOOLEAN,  u::SELECT,    [cd::DEFAULT, false]];
+    public const ORDER_NR   = ['order_nr',  d::STRING,          u::TEXT];
+
+    // FOREIGN
+    public const ORDER_ID = ['order_id', cd::FOREIGN];
+    public const PRODUCT_ID = ['product_id', d::FOREIGN];
+    public const SHOP_ID  = ['shop_id',  cd::FOREIGN];
+    public const USER_ID  = ['user_id',  cd::FOREIGN]; //Base
+}
+
+class t
+{
+    // TABLE NAME
+    public const users = 'users';
+    public const products = 'products';
+    public const shops = 'shops';
+    public const orders = 'orders';
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\0_Constant_M.php]
+
+<?php
+
+namespace App\Constant;
+//0_Constant_M.php
+
+/**
+ * SPECIAL UI FIELD exist neither in DB nor html-UI
+ * must be validated in UI
+ */
+class s
+{
+    public const EMAIL    = ['email',    d::STRING,  u::TEXT, cd::UNIQUE];
+    public const CURRENCY = ['currency', u::TEL];
+}
+
+/**
+ * CONSTRAINT DB
+ */
+class cd
+{
+    public const NULLABLE = 'nullable';
+    public const DEFAULT = 'default';
+    public const PRIMARY = 'primary';
+    public const FOREIGN = 'foreign';
+    public const UNIQUE = 'unique';
+    public const INDEX = 'index';
+}
+
+/**
+ * DB FIELD TYPE
+ */
+class d
+{
+    public const BOOLEAN = 'boolean';
+    /**
+     * @example [d::DEFAULT, $value]
+     */
+    public const DEFAULT = 'default';
+
+    /**
+     * @example [d::DECIMAL, int $total, int $places]
+     */
+    public const DECIMAL = 'decimal';
+
+    /**
+     * @example [d::STRING, int $length]
+     */
+    public const STRING = 'string';
+
+    /**
+     * @example [d::FOREIGN, string $table, string $onDelete = 'cascade']
+     */
+    public const FOREIGN = 'foreign';
+
+    /**
+     * @example [d::UNSIGNED_BIG_INTEGER]
+     */
+    public const UNSIGNED_BIG_INTEGER = 'unsignedBigInteger';
+
+    /**
+     * @example [d::NULLABLE]
+     */
+    public const NULLABLE = 'nullable';
+
+    /**
+     * @example [d::INDEX]
+     */
+    public const INDEX = 'index';
+
+    /**
+     * @example [d::UNIQUE]
+     */
+    public const UNIQUE = 'unique';
+}
+
+/**
+ * UI FIELD TYPE
+ */
+class u
+{
+    public const TEXT = 'text';
+    public const NUMBER = 'number';
+    public const SELECT = 'select';
+    public const FILE = 'file';
+    public const TEL = 'tel';
+}
+
+/**
+ * CONSTRAINT UI 
+ */
+class cu
+{
+    public const READONLY = 'readonly';
+    public const DISABLED = 'disabled';
+}
+
+/**
+ * CONSTRAINT UI and DB
+ */
+class cud
+{
+    public const REQUIRED = 'required';
 }
 
 
@@ -354,12 +501,6 @@ class MakeMigration
     private static array $dbSchema = [];
 
     /**
-     * Instance counter ensures unique migration 
-     * timestamps and prevents filename collisions.
-     */
-    private int $entityCounter = 0;
-
-    /**
      * Entry point to trigger migration analysis or creation.
      */
     public static function run(string $tableName, array $schema): void
@@ -441,12 +582,23 @@ namespace App\Constant;
 
 class Maker
 {
+    /**
+     * Singleton instance of MakeMigration.
+     * * PURPOSE:
+     * - Serves as a persistent state coordinator for the migration runner.
+     * - Allows MigrationFile::createNew() to access the global Runner::$entityCounter.
+     * * WHY SINGLETON:
+     * - Without this, the counter state would be lost between cycles.
+     * - Enables sequential filename generation (e.g., ..._01_create_shops_table.php).
+     *  ? = nullable (> PHP 8.2))
+     *  in PHP , static object can be instantiated (not in Java/.NET)
+     */
     private static ?MakeMigration $makeMigration = null;
 
     public static function run(string $className): void
     {
         $schema = [];
-        if (!CheckDuplicate::checkDuplicate()) {
+        if (!Checker::checkDuplicate()) {
             echo "--- Maker: Aborted due to validation errors! ---\n";
         }
 
@@ -502,6 +654,9 @@ class Maker
             return;
         }
 
+        /**
+         * Initialize the MakeMigration to make Singleton 
+         */
         if (self::$makeMigration === null) {
             self::$makeMigration = new MakeMigration();
         }
@@ -532,216 +687,6 @@ class Maker
         return $tableName;
     }
 }
-
-
-
-[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\0_MakerConstant.php]
-
-<?php
-
-namespace App\Constant;
-//0_MakerConstant.php
-
-/**
- * FIELD 
- */
-class f
-{
-    public const IMAGE      = ['image',     d::STRING,          u::FILE];
-    public const NAME       = ['name',      d::STRING,          u::TEXT,                        cud::REQUIRED]; //Base
-    public const PRICE      = ['price',     [d::DECIMAL, 10, 2],  u::NUMBER,  [cd::DEFAULT, 0],   s::CURRENCY];
-    public const STOCK      = ['stock',     [d::DECIMAL, 10, 10], u::NUMBER,  [cd::DEFAULT, 0], cud::REQUIRED];
-    public const IS_ACTIVE  = ['is_active', d::BOOLEAN,         u::SELECT,    [cd::DEFAULT, true]];
-    public const ORDER_NR   = ['order_nr',  d::STRING,          u::TEXT];
-
-    // FOREIGN
-    public const ORDER_ID = ['order_id', cd::FOREIGN];
-    public const SHOP_ID  = ['shop_id',  cd::FOREIGN];
-    public const USER_ID  = ['user_id',  cd::FOREIGN]; //Base
-}
-
-class t
-{
-    // TABLE NAME
-    public const users = 'users';
-    public const products = 'products';
-    public const shops = 'shops';
-    public const orders = 'orders';
-}
-
-/**
- * SPECIAL UI FIELD exist neither in DB nor html-UI
- * must be validated in UI
- */
-class s
-{
-    public const EMAIL    = ['email',    d::STRING,  u::TEXT, cd::UNIQUE];
-    public const CURRENCY = ['currency', u::TEL];
-}
-
-/**
- * CONSTRAINT DB
- */
-class cd
-{
-    public const NULLABLE = 'nullable';
-    public const DEFAULT = 'default';
-    public const PRIMARY = 'primary';
-    public const FOREIGN = 'foreign';
-    public const UNIQUE = 'unique';
-    public const INDEX = 'index';
-}
-
-/**
- * DB FIELD TYPE
- */
-class d
-{
-    public const BOOLEAN = 'boolean';
-    /**
-     * @example [d::DEFAULT, $value]
-     */
-    public const DEFAULT = 'default';
-
-    /**
-     * @example [d::DECIMAL, int $total, int $places]
-     */
-    public const DECIMAL = 'decimal';
-
-    /**
-     * @example [d::STRING, int $length]
-     */
-    public const STRING = 'string';
-
-    /**
-     * @example [d::FOREIGN, string $table, string $onDelete = 'cascade']
-     */
-    public const FOREIGN = 'foreign';
-
-    /**
-     * @example [d::UNSIGNED_BIG_INTEGER]
-     */
-    public const UNSIGNED_BIG_INTEGER = 'unsignedBigInteger';
-
-    /**
-     * @example [d::NULLABLE]
-     */
-    public const NULLABLE = 'nullable';
-
-    /**
-     * @example [d::INDEX]
-     */
-    public const INDEX = 'index';
-
-    /**
-     * @example [d::UNIQUE]
-     */
-    public const UNIQUE = 'unique';
-}
-
-/**
- * UI FIELD TYPE
- */
-class u
-{
-    public const TEXT = 'text';
-    public const NUMBER = 'number';
-    public const SELECT = 'select';
-    public const FILE = 'file';
-    public const TEL = 'tel';
-}
-
-/**
- * CONSTRAINT UI 
- */
-class cu
-{
-    public const READONLY = 'readonly';
-    public const DISABLED = 'disabled';
-}
-
-/**
- * CONSTRAINT UI and DB
- */
-class cud
-{
-    public const REQUIRED = 'required';
-}
-
-
-/**
- * TEST FIELDS - Centralized Test Registry
- */
-class test
-{
-    public const test_table_name = 'tests';
-
-    // Test Special Field
-    public const TEST_f_1   = ['TEST_f_1',     test::TEST_s_1];
-    public const TEST_s_1 = [
-        'TEST_s_1',
-        d::DECIMAL,
-        u::TEL,
-        cu::READONLY,
-        [cd::DEFAULT, 0],
-        cud::REQUIRED
-    ];
-
-    // Test normal Field
-    public const test_f_1 = ['test_f_1', f::IMAGE];
-    public const test_d_1 = ['test_d_1', d::DECIMAL];
-    public const test_u_1 = ['test_u_1', u::NUMBER];
-    public const test_cd_1 = ['test_cd_1', cd::UNIQUE];
-    // public const test_cd_duplicate_constraint = ['test_cd_duplicate_constraint', cd::UNIQUE, cd::UNIQUE];
-}
-
-
-
-[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\0_MakerTest.php]
-
-<?php
-
-namespace App\Constant;
-//0_MakerTest.php
-require 'vendor/autoload.php';
-
-class MakerTest
-{
-    public const MAX_MIGRATIONS = 10;
-    public static int $entityCounter = 0;
-
-    public static function run(): void
-    {
-        $entities = [
-            UserConstant::class,
-            ShopConstant::class,
-            ProductConstant::class
-        ];
-
-        $count = count($entities);
-        if ($count > self::MAX_MIGRATIONS) {
-            die("--- CRITICAL: Migration limit exceeded. "
-                . "\n Found {$count} tables, limit is " . self::MAX_MIGRATIONS
-                . "\n Please split your migration tasks across multiple runs. ---\n\n");
-        }
-
-        foreach ($entities as $entity) {
-            /**
-             * skip users table , because made by laravel
-             * 0001_01_01_000000_create_users_table.php
-             */
-            if ($entity !== UserConstant::class) {
-                self::$entityCounter++;
-            }
-
-            echo "--- MakerTest: Running for {$entity} (Index: " . self::$entityCounter . ") ---\n\n";
-
-            Maker::run($entity);
-        }
-    }
-}
-
-MakerTest::run();
 
 
 
@@ -852,14 +797,14 @@ class MigrationFile
         $isUser = ($tableName === 'users');
         self::$draftPath = __DIR__ . '/' . ($isUser ? '0_create_users_table.php' : '0_create_entity_table.php');
 
-        $paddingLength = strlen((string) \App\Constant\MakerTest::MAX_MIGRATIONS);
+        $paddingLength = strlen((string) Runner::MAX_MIGRATIONS);
 
         /**
          * Example: If entityCounter is 1 and MAX_MIGRATIONS is 100
          * Before: 1 -> After: '01'
          */
         $counterPadding = str_pad(
-            (string) \App\Constant\MakerTest::$entityCounter,
+            (string) Runner::$entityCounter,
             $paddingLength,
             '0',
             STR_PAD_LEFT
@@ -906,6 +851,62 @@ class MigrationFile
         }
     }
 }
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\0_Runner.php]
+
+<?php
+
+namespace App\Constant;
+//0_Runner.php
+require 'vendor/autoload.php';
+
+class Runner
+{
+    public const MAX_MIGRATIONS = 10;
+    /**
+     * Instance counter ensures unique migration 
+     * timestamps and prevents filename collisions.
+     * e.g.
+     * 2026_06_23_080333_01_create_shops_table.php
+     * 2026_06_23_080333_02_create_products_table.php
+     */
+    public static int $entityCounter = 0;
+
+    public static function run(): void
+    {
+        $entities = [
+            UserConstant::class,
+            ShopConstant::class,
+            ProductConstant::class,
+            OrderConstant::class
+        ];
+
+        $count = count($entities);
+        if ($count > self::MAX_MIGRATIONS) {
+            die("--- CRITICAL: Migration limit exceeded. "
+                . "\n Found {$count} tables, limit is " . self::MAX_MIGRATIONS
+                . "\n Please split your migration tasks across multiple runs. ---\n\n");
+        }
+
+        foreach ($entities as $entity) {
+            /**
+             * skip users table , because made by laravel
+             * 0001_01_01_000000_create_users_table.php
+             */
+            if ($entity !== UserConstant::class) {
+                self::$entityCounter++;
+            }
+
+            echo "--- MakerTest: Running for {$entity} (Index: " . self::$entityCounter . ") ---\n\n";
+
+            Maker::run($entity);
+        }
+    }
+}
+
+Runner::run();
 
 
 
@@ -957,7 +958,439 @@ class SpecialField
 
 
 
-[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\0_TestEntityConstant.php]
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\1_Constant_M_APP_to_JSON.php]
+
+<?php
+
+namespace App\Constant;
+// 1_Constant_M_APP_to_JSON.php
+
+require __DIR__ . '/../../vendor/autoload.php';
+
+use PhpParser\NodeVisitorAbstract;
+use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassConst;
+
+class Constant_M_APP_to_JSON extends NodeVisitorAbstract
+{
+    public $data = [];
+    private $currentClassName = '';
+
+    /**
+     * 
+     */
+    public function enterNode($node)
+    {
+        // 1. Detect Class
+        // e.g., class OrderConstant { ... } -> 'OrderConstant'
+        if ($node instanceof Class_) {
+            $this->currentClassName = $node->name->toString();
+            $this->data[$this->currentClassName] = [];
+        }
+
+        // 2. Process Constants if inside a class
+        // e.g., const TABLE_NAME = 'orders';
+        if ($node instanceof ClassConst && !empty($this->currentClassName)) {
+            foreach ($node->consts as $const) {
+                $name = $const->name->toString();
+                $value = $this->resolveValue($const->value);
+
+                // Assign to class data
+                $this->data[$this->currentClassName][$name] = $value;
+            }
+        }
+    }
+
+    /**
+     * DICTIONARY:
+     * AST  = Code structure from *Constant.php files (e.g., class f, class d)
+     * NODE = Specific element (e.g., Array_, String_, ClassConstFetch)
+     * * EXAMPLES (Mapped from your project):
+     * - String_ ('text')         -> "text" (from class u)
+     * - Array_  (['image', d::STRING, u::FILE]) 
+     * -> ["image", "string", "file"] (from class f)
+     * - ClassConstFetch (d::STRING) -> "d::STRING" (from class f)
+     */
+    private function resolveValue($node)
+    {
+        // String_: e.g., 'text', 'boolean'
+        if ($node instanceof \PhpParser\Node\Scalar\String_) {
+            return $node->value;
+        }
+
+        // LNumber: e.g., 10, 2 (from [d::DECIMAL, 10, 2])
+        if ($node instanceof \PhpParser\Node\Scalar\LNumber) {
+            return $node->value;
+        }
+
+        // Array_: e.g., ['price', [d::DECIMAL, 10, 2], u::NUMBER, ...]
+        if ($node instanceof \PhpParser\Node\Expr\Array_) {
+            $arr = [];
+            foreach ($node->items as $item) {
+                $arr[] = $this->resolveValue($item->value);
+            }
+            return $arr;
+        }
+
+        // ClassConstFetch: e.g., d::STRING, u::FILE
+        if ($node instanceof \PhpParser\Node\Expr\ClassConstFetch) {
+            $class = $node->class->toString();
+            $const = $node->name->toString();
+            return "{$class}::{$const}";
+        }
+
+        return null;
+    }
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\1_Entities_to_JSON.php]
+
+<?php
+
+namespace App\Constant;
+// Entities_to_JSON.php
+
+require __DIR__ . '/../../vendor/autoload.php';
+
+use PhpParser\ParserFactory;
+use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitorAbstract;
+use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassConst;
+use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Scalar\String_;
+use PhpParser\Node\Scalar\LNumber;
+use PhpParser\Node\Expr\Array_;
+
+class Entities_to_JSON extends NodeVisitorAbstract
+{
+    public $entities = [];
+
+    /**
+     * Traverses each node to extract metadata.
+     * 1. Extracts TABLE_NAME (e.g., const TABLE_NAME = 'users';)
+     * 2. Extracts fields 
+     * e.g., 
+            f::NAME,
+            f::IMAGE,
+
+    !!!! $node->stmts = Statement !!!!
+
+    class UserConstant {
+
+            const TABLE_NAME = 'users'; // [Statement 1]
+        
+            public static function fields() { // [Statement 2]
+        
+            return [
+                f::NAME,
+                f::IMAGE,
+            ];
+        }
+    }
+     */
+    public function enterNode($node)
+    {
+        if ($node instanceof Class_ && str_ends_with($node->name->toString(), 'Constant')) {
+            $tableName = null;
+            $fields = [];
+
+            foreach ($node->stmts as $stmt) {
+                // Extract TABLE_NAME
+                if ($stmt instanceof ClassConst) {
+                    foreach ($stmt->consts as $const) {
+                        if ($const->name->toString() === 'TABLE_NAME') {
+                            $tableName = $this->resolveValue($const->value);
+                        }
+                    }
+                }
+
+                // Extract fields from function fields() method
+                if ($stmt instanceof ClassMethod && $stmt->name->toString() === 'fields') {
+                    foreach ($stmt->stmts as $subStmt) {
+                        if ($subStmt instanceof \PhpParser\Node\Stmt\Return_) {
+                            $fields = $this->resolveValue($subStmt->expr);
+                        }
+                    }
+                }
+            }
+
+            if ($tableName) {
+                $this->entities[$tableName] = $fields;
+            }
+        }
+    }
+
+    /**
+     * DICTIONARY:
+     * AST  = Code structure from *Constant.php files parsed by PhpParser
+     * NODE = A specific element within the AST
+     * * EXAMPLES of $node (input):
+     * - String_ ('id')         -> "id"
+     * - Array_ ([id, name])    -> ["id", "name"]
+     * - ClassConstFetch (t::ID)-> "t::ID"
+     */
+    private function resolveValue($node)
+    {
+        if ($node instanceof String_) {
+            return $node->value;
+        }
+
+        if ($node instanceof LNumber) {
+            return $node->value;
+        }
+
+        if ($node instanceof Array_) {
+            $arr = [];
+            foreach ($node->items as $item) {
+                $arr[] = $this->resolveValue($item->value);
+            }
+            return $arr;
+        }
+
+        if ($node instanceof ClassConstFetch) {
+            // e.g. t::USER_ID -> "t::USER_ID"
+            $className = $node->class->toString();
+            $constName = $node->name->toString();
+            return "{$className}::{$constName}";
+        }
+
+        return null;
+    }
+}
+
+// Execution Logic
+$parser = (new ParserFactory)->createForNewestSupportedVersion();
+$scanner = new Entities_to_JSON();
+
+// Scan files in directory
+foreach (glob(__DIR__ . '/*Constant.php') as $file) {
+    // e.g. basename('App/Constant/Entities_to_JSON.php') -> 'Entities_to_JSON.php'
+    if (basename($file) === 'Entities_to_JSON.php') continue;
+
+    $code = file_get_contents($file);
+    $ast = $parser->parse($code);
+    $traverser = new NodeTraverser();
+    $traverser->addVisitor($scanner);
+    $traverser->traverse($ast);
+}
+
+$finalData = [
+    "_comment" => "1_Entities.json",
+    "entities" => $scanner->entities
+];
+
+file_put_contents(__DIR__ . '/1_Entities.json', json_encode($finalData, JSON_PRETTY_PRINT));
+
+echo "--- MSync: Successfully parsed Entities to 1_Entities.json ---\n";
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\1_MSync.php]
+
+<?php
+
+namespace App\Constant;
+
+require __DIR__ . '/../../vendor/autoload.php';
+
+use PhpParser\ParserFactory;
+use PhpParser\NodeTraverser;
+
+class MSync
+{
+    public static function syncAll(): void
+    {
+        // Generate M-Data and App-Data
+        self::runPHPToJSON('0_Constant_M.php', '1_M-Data.json');
+        self::runPHPToJSON('0_Constant_APP.php', '1_App-Data.json');
+
+        // Generate Entities data
+        self::runEntitiesSync();
+    }
+
+    private static function runPHPToJSON($sourceFile, $jsonFile): void
+    {
+        $parser = (new ParserFactory)->createForNewestSupportedVersion();
+        $code = file_get_contents(__DIR__ . '/' . $sourceFile);
+        $ast = $parser->parse($code);
+
+        $visitor = new Constant_M_APP_to_JSON();
+        $traverser = new NodeTraverser();
+        $traverser->addVisitor($visitor);
+        $traverser->traverse($ast);
+
+        $outputData = array_merge(["_comment" => $jsonFile], $visitor->data);
+        file_put_contents(__DIR__ . '/' . $jsonFile, json_encode($outputData, JSON_PRETTY_PRINT));
+        echo "--- MSync: Created {$jsonFile} ---\n";
+    }
+
+    private static function runEntitiesSync(): void
+    {
+        $parser = (new ParserFactory)->createForNewestSupportedVersion();
+        $scanner = new Entities_to_JSON();
+
+        foreach (glob(__DIR__ . '/*Constant.php') as $file) {
+            if (str_contains($file, 'Entities_to_JSON')) continue;
+
+            $code = file_get_contents($file);
+            $ast = $parser->parse($code);
+            $traverser = new NodeTraverser();
+            $traverser->addVisitor($scanner);
+            $traverser->traverse($ast);
+        }
+
+        $finalData = ["_comment" => "1_Entities.json", "entities" => $scanner->entities];
+        file_put_contents(__DIR__ . '/1_Entities.json', json_encode($finalData, JSON_PRETTY_PRINT));
+        echo "--- MSync: Created 1_Entities.json ---\n";
+    }
+}
+
+// Trigger sync
+\App\Constant\MSync::syncAll();
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\OrderConstant.php]
+
+<?php
+
+namespace App\Constant;
+
+class OrderConstant
+{
+    public const TABLE_NAME = t::orders;
+
+    public static function fields(): array
+    {
+        return [
+            f::ORDER_NR,
+            f::PRODUCT_ID,
+            f::USER_ID,
+            f::QUANTITY,
+            f::CONFIRM_ORDER,
+        ];
+    }
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\ProductConstant.php]
+
+<?php
+
+namespace App\Constant;
+
+class ProductConstant
+{
+    public const TABLE_NAME = t::products;
+
+    public const PRICE_TOTAL = 10;
+    public const PRICE_DECIMAL = 2;
+
+    public const STOCK_TOTAL = 10;
+    public const STOCK_DECIMAL = 10;
+
+    public const STOCK_MIN = -999999;
+
+    public static function fields(): array
+    {
+        return [
+            f::NAME,
+            f::IMAGE,
+            f::SHOP_ID,
+            f::PRICE,
+            f::STOCK,
+        ];
+    }
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\ShopConstant.php]
+
+<?php
+
+namespace App\Constant;
+
+class ShopConstant
+{
+    public const TABLE_NAME = t::shops;
+
+    public static function fields(): array
+    {
+        return [
+            f::NAME,
+            f::IMAGE,
+            f::USER_ID,
+        ];
+    }
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\UserConstant.php]
+
+<?php
+
+namespace App\Constant;
+
+class UserConstant
+{
+    public const TABLE_NAME = t::users;
+
+    public static function fields(): array
+    {
+        return [
+            f::NAME,
+            f::IMAGE,
+            s::EMAIL,
+            f::IS_ACTIVE,
+        ];
+    }
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\tests\0_TestClass.php]
+
+<?php
+
+namespace App\Constant;
+//0_TestClass.php
+
+/**
+ * TEST FIELDS - Centralized Test Registry
+ */
+class test
+{
+    public const test_table_name = 'tests';
+
+    // Test Special Field
+    public const TEST_f_1   = ['TEST_f_1',     test::TEST_s_1];
+    public const TEST_s_1 = [
+        'TEST_s_1',
+        d::DECIMAL,
+        u::TEL,
+        cu::READONLY,
+        [cd::DEFAULT, 0],
+        cud::REQUIRED
+    ];
+
+    // Test normal Field
+    public const test_f_1 = ['test_f_1', f::IMAGE];
+    public const test_d_1 = ['test_d_1', d::DECIMAL];
+    public const test_u_1 = ['test_u_1', u::NUMBER];
+    public const test_cd_1 = ['test_cd_1', cd::UNIQUE];
+    // public const test_cd_duplicate_constraint = ['test_cd_duplicate_constraint', cd::UNIQUE, cd::UNIQUE];
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\tests\0_TestEntityConstant.php]
 
 <?php
 
@@ -981,7 +1414,7 @@ class TestEntityConstant extends BaseConstant
 
 
 
-[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\BaseConstant.php]
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\tests\BaseConstant.php]
 
 <?php
 
@@ -1013,94 +1446,27 @@ abstract class BaseConstant
 
         $tableName = static::TABLE_NAME;
 
+        // Exceptions for specific tables
         if ($tableName === t::users) {
             unset($fields['user_id']);
         }
 
         if ($tableName === t::orders) {
             unset($fields['image']);
+            unset($fields['name']);
         }
 
-        // 3. รวมกับ childFields
+        // 3. together with childFields
         $childFields = static::childFields();
         foreach ($childFields as $field) {
             $fields[$field[0]] = $field;
         }
 
-        // 4. คืนค่าเป็น Indexed Array เพื่อให้โครงสร้างเดิมใช้งานได้
+        // 4. return as Indexed Array for backward compatibility
         return array_values($fields);
     }
 
     abstract protected static function childFields(): array;
-}
-
-
-
-[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\ProductConstant.php]
-
-<?php
-
-namespace App\Constant;
-
-class ProductConstant extends BaseConstant
-{
-    public const TABLE_NAME = t::products;
-
-    public const PRICE_TOTAL = 10;
-    public const PRICE_DECIMAL = 2;
-
-    public const STOCK_TOTAL = 10;
-    public const STOCK_DECIMAL = 10;
-
-    public const STOCK_MIN = -999999;
-
-    protected static function childFields(): array
-    {
-        return [
-            f::SHOP_ID,
-            f::PRICE,
-            f::STOCK,
-        ];
-    }
-}
-
-
-
-[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\ShopConstant.php]
-
-<?php
-
-namespace App\Constant;
-
-class ShopConstant extends BaseConstant
-{
-    public const TABLE_NAME = t::shops;
-
-    protected static function childFields(): array
-    {
-        return [];
-    }
-}
-
-
-
-[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\UserConstant.php]
-
-<?php
-
-namespace App\Constant;
-
-class UserConstant extends BaseConstant
-{
-    public const TABLE_NAME = t::users;
-
-    protected static function childFields(): array
-    {
-        return [
-            s::EMAIL,
-            f::IS_ACTIVE,
-        ];
-    }
 }
 
 
@@ -1314,6 +1680,53 @@ abstract class Controller
 
 
 
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Http\Controllers\M_Controller.php]
+
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\JsonResponse;
+
+class M_Controller extends Controller
+{
+    /**
+     * DICTIONARY:
+     * - app_data: Content of 1_App-Data.json
+     * - m_data:   Content of 1_M-Data.json
+     * - entities: Content of 1_Entities.json
+     */
+    public function getMetadata(): JsonResponse
+    {
+        $files = [
+            'app_data' => base_path('app/Constant/1_App-Data.json'),
+            'm_data'   => base_path('app/Constant/1_M-Data.json'),
+            'entities' => base_path('app/Constant/1_Entities.json'),
+        ];
+
+        $combinedMetadata = [];
+
+        foreach ($files as $key => $path) {
+            if (!file_exists($path)) {
+                return response()->json(['error' => "Metadata file not found: {$key}"], 404);
+            }
+
+            $content = file_get_contents($path);
+            $jsonData = json_decode($content, true);
+
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                return response()->json(['error' => "Invalid JSON in {$key}: " . json_last_error_msg()], 500);
+            }
+
+            $combinedMetadata[$key] = $jsonData;
+        }
+
+        return response()->json($combinedMetadata);
+    }
+}
+
+
+
 [FILE: C:\Users\o\.vscode\react\ecommerce\app\Http\Controllers\ProfileController.php]
 
 <?php
@@ -1413,418 +1826,6 @@ class ProductApiController extends Controller
             'message' => 'Product list retrieved successfully',
             'data' => $products
         ], 200);
-    }
-}
-
-
-
-[FILE: C:\Users\o\.vscode\react\ecommerce\app\Http\Controllers\Auth\AuthenticatedSessionController.php]
-
-<?php
-
-namespace App\Http\Controllers\Auth;
-
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\LoginRequest;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
-use Inertia\Response;
-
-class AuthenticatedSessionController extends Controller
-{
-    /**
-     * Display the login view.
-     */
-    public function create(): Response
-    {
-        return Inertia::render('Auth/Login', [
-            'canResetPassword' => Route::has('password.request'),
-            'status' => session('status'),
-        ]);
-    }
-
-    /**
-     * Handle an incoming authentication request.
-     */
-    public function store(LoginRequest $request): RedirectResponse
-    {
-        $request->authenticate();
-
-        $request->session()->regenerate();
-
-        return redirect()->intended(route('dashboard', absolute: false));
-    }
-
-    /**
-     * Destroy an authenticated session.
-     */
-    public function destroy(Request $request): RedirectResponse
-    {
-        Auth::guard('web')->logout();
-
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
-
-        return redirect('/');
-    }
-}
-
-
-
-[FILE: C:\Users\o\.vscode\react\ecommerce\app\Http\Controllers\Auth\ConfirmablePasswordController.php]
-
-<?php
-
-namespace App\Http\Controllers\Auth;
-
-use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
-use Inertia\Inertia;
-use Inertia\Response;
-
-class ConfirmablePasswordController extends Controller
-{
-    /**
-     * Show the confirm password view.
-     */
-    public function show(): Response
-    {
-        return Inertia::render('Auth/ConfirmPassword');
-    }
-
-    /**
-     * Confirm the user's password.
-     */
-    public function store(Request $request): RedirectResponse
-    {
-        if (! Auth::guard('web')->validate([
-            'email' => $request->user()->email,
-            'password' => $request->password,
-        ])) {
-            throw ValidationException::withMessages([
-                'password' => __('auth.password'),
-            ]);
-        }
-
-        $request->session()->put('auth.password_confirmed_at', time());
-
-        return redirect()->intended(route('dashboard', absolute: false));
-    }
-}
-
-
-
-[FILE: C:\Users\o\.vscode\react\ecommerce\app\Http\Controllers\Auth\EmailVerificationNotificationController.php]
-
-<?php
-
-namespace App\Http\Controllers\Auth;
-
-use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-
-class EmailVerificationNotificationController extends Controller
-{
-    /**
-     * Send a new email verification notification.
-     */
-    public function store(Request $request): RedirectResponse
-    {
-        if ($request->user()->hasVerifiedEmail()) {
-            return redirect()->intended(route('dashboard', absolute: false));
-        }
-
-        $request->user()->sendEmailVerificationNotification();
-
-        return back()->with('status', 'verification-link-sent');
-    }
-}
-
-
-
-[FILE: C:\Users\o\.vscode\react\ecommerce\app\Http\Controllers\Auth\EmailVerificationPromptController.php]
-
-<?php
-
-namespace App\Http\Controllers\Auth;
-
-use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Inertia\Response;
-
-class EmailVerificationPromptController extends Controller
-{
-    /**
-     * Display the email verification prompt.
-     */
-    public function __invoke(Request $request): RedirectResponse|Response
-    {
-        return $request->user()->hasVerifiedEmail()
-                    ? redirect()->intended(route('dashboard', absolute: false))
-                    : Inertia::render('Auth/VerifyEmail', ['status' => session('status')]);
-    }
-}
-
-
-
-[FILE: C:\Users\o\.vscode\react\ecommerce\app\Http\Controllers\Auth\NewPasswordController.php]
-
-<?php
-
-namespace App\Http\Controllers\Auth;
-
-use App\Http\Controllers\Controller;
-use Illuminate\Auth\Events\PasswordReset;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Str;
-use Illuminate\Validation\Rules;
-use Illuminate\Validation\ValidationException;
-use Inertia\Inertia;
-use Inertia\Response;
-
-class NewPasswordController extends Controller
-{
-    /**
-     * Display the password reset view.
-     */
-    public function create(Request $request): Response
-    {
-        return Inertia::render('Auth/ResetPassword', [
-            'email' => $request->email,
-            'token' => $request->route('token'),
-        ]);
-    }
-
-    /**
-     * Handle an incoming new password request.
-     *
-     * @throws ValidationException
-     */
-    public function store(Request $request): RedirectResponse
-    {
-        $request->validate([
-            'token' => 'required',
-            'email' => 'required|email',
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
-
-        // Here we will attempt to reset the user's password. If it is successful we
-        // will update the password on an actual user model and persist it to the
-        // database. Otherwise we will parse the error and return the response.
-        $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
-            function ($user) use ($request) {
-                $user->forceFill([
-                    'password' => Hash::make($request->password),
-                    'remember_token' => Str::random(60),
-                ])->save();
-
-                event(new PasswordReset($user));
-            }
-        );
-
-        // If the password was successfully reset, we will redirect the user back to
-        // the application's home authenticated view. If there is an error we can
-        // redirect them back to where they came from with their error message.
-        if ($status == Password::PASSWORD_RESET) {
-            return redirect()->route('login')->with('status', __($status));
-        }
-
-        throw ValidationException::withMessages([
-            'email' => [trans($status)],
-        ]);
-    }
-}
-
-
-
-[FILE: C:\Users\o\.vscode\react\ecommerce\app\Http\Controllers\Auth\PasswordController.php]
-
-<?php
-
-namespace App\Http\Controllers\Auth;
-
-use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\Password;
-
-class PasswordController extends Controller
-{
-    /**
-     * Update the user's password.
-     */
-    public function update(Request $request): RedirectResponse
-    {
-        $validated = $request->validate([
-            'current_password' => ['required', 'current_password'],
-            'password' => ['required', Password::defaults(), 'confirmed'],
-        ]);
-
-        $request->user()->update([
-            'password' => Hash::make($validated['password']),
-        ]);
-
-        return back();
-    }
-}
-
-
-
-[FILE: C:\Users\o\.vscode\react\ecommerce\app\Http\Controllers\Auth\PasswordResetLinkController.php]
-
-<?php
-
-namespace App\Http\Controllers\Auth;
-
-use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Validation\ValidationException;
-use Inertia\Inertia;
-use Inertia\Response;
-
-class PasswordResetLinkController extends Controller
-{
-    /**
-     * Display the password reset link request view.
-     */
-    public function create(): Response
-    {
-        return Inertia::render('Auth/ForgotPassword', [
-            'status' => session('status'),
-        ]);
-    }
-
-    /**
-     * Handle an incoming password reset link request.
-     *
-     * @throws ValidationException
-     */
-    public function store(Request $request): RedirectResponse
-    {
-        $request->validate([
-            'email' => 'required|email',
-        ]);
-
-        // We will send the password reset link to this user. Once we have attempted
-        // to send the link, we will examine the response then see the message we
-        // need to show to the user. Finally, we'll send out a proper response.
-        $status = Password::sendResetLink(
-            $request->only('email')
-        );
-
-        if ($status == Password::RESET_LINK_SENT) {
-            return back()->with('status', __($status));
-        }
-
-        throw ValidationException::withMessages([
-            'email' => [trans($status)],
-        ]);
-    }
-}
-
-
-
-[FILE: C:\Users\o\.vscode\react\ecommerce\app\Http\Controllers\Auth\RegisteredUserController.php]
-
-<?php
-
-namespace App\Http\Controllers\Auth;
-
-use App\Http\Controllers\Controller;
-use App\Models\User;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
-use Illuminate\Validation\ValidationException;
-use Inertia\Inertia;
-use Inertia\Response;
-
-class RegisteredUserController extends Controller
-{
-    /**
-     * Display the registration view.
-     */
-    public function create(): Response
-    {
-        return Inertia::render('Auth/Register');
-    }
-
-    /**
-     * Handle an incoming registration request.
-     *
-     * @throws ValidationException
-     */
-    public function store(Request $request): RedirectResponse
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        event(new Registered($user));
-
-        Auth::login($user);
-
-        return redirect(route('dashboard', absolute: false));
-    }
-}
-
-
-
-[FILE: C:\Users\o\.vscode\react\ecommerce\app\Http\Controllers\Auth\VerifyEmailController.php]
-
-<?php
-
-namespace App\Http\Controllers\Auth;
-
-use App\Http\Controllers\Controller;
-use Illuminate\Auth\Events\Verified;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
-use Illuminate\Http\RedirectResponse;
-
-class VerifyEmailController extends Controller
-{
-    /**
-     * Mark the authenticated user's email address as verified.
-     */
-    public function __invoke(EmailVerificationRequest $request): RedirectResponse
-    {
-        if ($request->user()->hasVerifiedEmail()) {
-            return redirect()->intended(route('dashboard', absolute: false).'?verified=1');
-        }
-
-        if ($request->user()->markEmailAsVerified()) {
-            event(new Verified($request->user()));
-        }
-
-        return redirect()->intended(route('dashboard', absolute: false).'?verified=1');
     }
 }
 
