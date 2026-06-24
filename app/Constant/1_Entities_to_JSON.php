@@ -24,7 +24,7 @@ class Entities_to_JSON extends NodeVisitorAbstract
      * Traverses each node to extract metadata.
      * 1. Extracts TABLE_NAME (e.g., const TABLE_NAME = 'users';)
      * 2. Extracts fields 
-     * e.g.,     
+     * e.g., 
             f::NAME,
             f::IMAGE,
 

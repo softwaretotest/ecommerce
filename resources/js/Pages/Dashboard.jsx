@@ -1,26 +1,20 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+// Dashboard.jsx
+
 import { Head } from '@inertiajs/react';
+import { use_M_Data } from '@/Services/0_M_DataProvider';
 
 export default function Dashboard() {
-    return (
-        <AuthenticatedLayout
-            header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                    Dashboard
-                </h2>
-            }
-        >
-            <Head title="Dashboard" />
+    const m_data = use_M_Data();
 
-            <div className="py-12">
-                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-                        <div className="p-6 text-gray-900">
-                            You're logged in!
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </AuthenticatedLayout>
+    return (
+        <div className="p-10">
+            <Head title="Dashboard" />
+            <h1 className="text-2xl font-bold mb-4">Metadata Test</h1>
+            
+            {/* show M-Data */}
+            <pre className="bg-gray-100 p-4 rounded text-xs">
+                {JSON.stringify(m_data, null, 2)}
+            </pre>
+        </div>
     );
 }
