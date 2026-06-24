@@ -25,7 +25,7 @@ class MSync
         $code = file_get_contents(__DIR__ . '/' . $sourceFile);
         $ast = $parser->parse($code);
 
-        $visitor = new PHP_to_JSON();
+        $visitor = new Constant_M_APP_to_JSON();
         $traverser = new NodeTraverser();
         $traverser->addVisitor($visitor);
         $traverser->traverse($ast);

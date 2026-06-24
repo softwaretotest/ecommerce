@@ -23,14 +23,25 @@ class Entities_to_JSON extends NodeVisitorAbstract
     /**
      * Traverses each node to extract metadata.
      * 1. Extracts TABLE_NAME (e.g., const TABLE_NAME = 'users';)
-     * 2. Extracts fields from fields() method 
-     * (e.g., public static function fields() { 
-             return [
+     * 2. Extracts fields 
+     * e.g.,     
             f::NAME,
             f::IMAGE,
-            f::USER_ID,
-        ];
-     *  })
+
+    !!!! $node->stmts = Statement !!!!
+
+    class UserConstant {
+
+            const TABLE_NAME = 'users'; // [Statement 1]
+        
+            public static function fields() { // [Statement 2]
+        
+            return [
+                f::NAME,
+                f::IMAGE,
+            ];
+        }
+    }
      */
     public function enterNode($node)
     {
@@ -48,7 +59,7 @@ class Entities_to_JSON extends NodeVisitorAbstract
                     }
                 }
 
-                // Extract fields from fields() method
+                // Extract fields from function fields() method
                 if ($stmt instanceof ClassMethod && $stmt->name->toString() === 'fields') {
                     foreach ($stmt->stmts as $subStmt) {
                         if ($subStmt instanceof \PhpParser\Node\Stmt\Return_) {
@@ -65,10 +76,13 @@ class Entities_to_JSON extends NodeVisitorAbstract
     }
 
     /**
-     * Resolves AST nodes into PHP values.
-     * e.g. String_ ('id') -> "id"
-     * e.g. Array_ ([id, name]) -> ["id", "name"]
-     * e.g. ClassConstFetch (t::ID) -> "t::ID"
+     * DICTIONARY:
+     * AST  = Code structure from *Constant.php files parsed by PhpParser
+     * NODE = A specific element within the AST
+     * * EXAMPLES of $node (input):
+     * - String_ ('id')         -> "id"
+     * - Array_ ([id, name])    -> ["id", "name"]
+     * - ClassConstFetch (t::ID)-> "t::ID"
      */
     private function resolveValue($node)
     {

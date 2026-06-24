@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Constant;
-// 1_PHP_to_JSON.php
+// 1_Constant_M_APP_to_JSON.php
 
 require __DIR__ . '/../../vendor/autoload.php';
 
@@ -9,11 +9,14 @@ use PhpParser\NodeVisitorAbstract;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
 
-class PHP_to_JSON extends NodeVisitorAbstract
+class Constant_M_APP_to_JSON extends NodeVisitorAbstract
 {
     public $data = [];
     private $currentClassName = '';
 
+    /**
+     * 
+     */
     public function enterNode($node)
     {
         // 1. Detect Class
@@ -36,19 +39,29 @@ class PHP_to_JSON extends NodeVisitorAbstract
         }
     }
 
+    /**
+     * DICTIONARY:
+     * AST  = Code structure from *Constant.php files (e.g., class f, class d)
+     * NODE = Specific element (e.g., Array_, String_, ClassConstFetch)
+     * * EXAMPLES (Mapped from your project):
+     * - String_ ('text')         -> "text" (from class u)
+     * - Array_  (['image', d::STRING, u::FILE]) 
+     * -> ["image", "string", "file"] (from class f)
+     * - ClassConstFetch (d::STRING) -> "d::STRING" (from class f)
+     */
     private function resolveValue($node)
     {
-        // e.g., 'value' -> "value"
+        // String_: e.g., 'text', 'boolean'
         if ($node instanceof \PhpParser\Node\Scalar\String_) {
             return $node->value;
         }
 
-        // e.g., 123 -> 123
+        // LNumber: e.g., 10, 2 (from [d::DECIMAL, 10, 2])
         if ($node instanceof \PhpParser\Node\Scalar\LNumber) {
             return $node->value;
         }
 
-        // e.g., [a, b] -> ["a", "b"]
+        // Array_: e.g., ['price', [d::DECIMAL, 10, 2], u::NUMBER, ...]
         if ($node instanceof \PhpParser\Node\Expr\Array_) {
             $arr = [];
             foreach ($node->items as $item) {
@@ -57,7 +70,7 @@ class PHP_to_JSON extends NodeVisitorAbstract
             return $arr;
         }
 
-        // e.g., t::orders -> "t::orders"
+        // ClassConstFetch: e.g., d::STRING, u::FILE
         if ($node instanceof \PhpParser\Node\Expr\ClassConstFetch) {
             $class = $node->class->toString();
             $const = $node->name->toString();
