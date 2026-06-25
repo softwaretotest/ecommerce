@@ -7,7 +7,7 @@ require __DIR__ . '/../../vendor/autoload.php';
 use PhpParser\ParserFactory;
 use PhpParser\NodeTraverser;
 
-class MSync
+class M_Sync
 {
     public static function syncAll(): void
     {
@@ -32,7 +32,7 @@ class MSync
 
         $outputData = array_merge(["_comment" => $jsonFile], $visitor->data);
         file_put_contents(__DIR__ . '/' . $jsonFile, json_encode($outputData, JSON_PRETTY_PRINT));
-        echo "--- MSync: Created {$jsonFile} ---\n";
+        echo "--- M_Sync: Created {$jsonFile} ---\n";
     }
 
     private static function runEntitiesSync(): void
@@ -52,9 +52,9 @@ class MSync
 
         $finalData = ["_comment" => "1_Entities.json", "entities" => $scanner->entities];
         file_put_contents(__DIR__ . '/1_Entities.json', json_encode($finalData, JSON_PRETTY_PRINT));
-        echo "--- MSync: Created 1_Entities.json ---\n";
+        echo "--- M_Sync: Created 1_Entities.json ---\n";
     }
 }
 
 // Trigger sync
-\App\Constant\MSync::syncAll();
+\App\Constant\M_Sync::syncAll();

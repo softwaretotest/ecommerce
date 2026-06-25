@@ -32,7 +32,7 @@ class d
     /**
      * @example [d::UNSIGNED_BIG_INTEGER]
      */
-    public const UNSIGNED_BIG_INTEGER = 'unsignedBigInteger';
+    public const UNSIGNED_BINT = 'unsignedBigInteger';
 
     /**
      * @example [d::NULLABLE]

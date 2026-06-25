@@ -1,50 +1,66 @@
-// resources/js/Components/0_M_TabContent.jsx
-import React, { useState } from "react";
-import M_DataClass from "./0_M_DataClass";
-import "../../css/0_M_UI.css";
+import React from "react";
+import SpecialField from "@/Components/0_M_SpecialField.jsx";
+import Field from "@/Components/0_M_Field.jsx";
 
-export default function TabContent({ data, onUpdate }) {
-    if (!data) return <div>ไม่มีข้อมูล</div>;
+export default function TabContent({ M_Class_Name, M_value, onUpdate }) {
+    if (!M_value || typeof M_value !== "object") {
+        return (
+            <div className="ui-placeholder">ไม่มี UI สำหรับ {M_Class_Name}</div>
+        );
+    }
 
-    const subTabs = Object.keys(data).filter(
-        (key) => typeof data[key] === "object",
-    );
-    const [activeSubTab, setActiveSubTab] = useState(subTabs[0]);
+    const handleChange = (key, newValue) => {
+        onUpdate({ ...M_value, [key]: newValue });
+    };
 
     return (
-        <div>
-            {/* S CD D U CU CUD */}
-            <div className="subtabs-container">
-                {subTabs.map((key) => (
-                    <button
-                        key={key}
-                        onClick={() => setActiveSubTab(key)}
-                        className={`subtab-button ${activeSubTab === key ? "active" : ""}`}
-                    >
-                        {key.toUpperCase()}
-                    </button>
-                ))}
+        <div className="input-engine-container">
+            <div>
+                <label>M_Class_Name = {M_Class_Name}</label>
             </div>
+            {Object.entries(M_value).map(([key, val]) => (
+                <div key={key} className="field-row-wrapper-custom">
+                    {/* left column: Capital Letter (Key) */}
+                    {M_Class_Name !== "f" && M_Class_Name !== "s" && (
+                        <>
+                            <input
+                                className="field-key-input"
+                                defaultValue={
+                                    M_Class_Name === "t"
+                                        ? key
+                                        : key.toUpperCase()
+                                }
+                                onBlur={(e) =>
+                                    handleKeyChange(key, e.target.value)
+                                }
+                            />
+                            <span className="field-separator-colon">:</span>
+                        </>
+                    )}
 
-            {/* show 2 column */}
-            <div className="content-box content-grid">
-                {/* left column = Input Boxes */}
-                <div className="column-flex">
-                    <M_DataClass
-                        label={activeSubTab}
-                        value={data[activeSubTab]}
-                        onUpdate={onUpdate}
-                    />
-                </div>
+                    {/* คอลัมน์ขวา: Input หรือ Field Component */}
+                    <div className="field-input-wrapper">
+                        {M_Class_Name === "s" && Array.isArray(val) && (
+                            <SpecialField field_data={val} />
+                        )}
 
-                {/* right column = JSON */}
-                <div className="column-flex json-preview-column">
-                    <h3 className="json-header">JSON Data</h3>
-                    <pre className="json-pre">
-                        {JSON.stringify(data[activeSubTab], null, 2)}
-                    </pre>
+                        {M_Class_Name === "f" && Array.isArray(val) && (
+                            <Field field_data={val} />
+                        )}
+
+                        {M_Class_Name !== "s" && M_Class_Name !== "f" && (
+                            <input
+                                type="text"
+                                className="M_field-value-input"
+                                defaultValue={val}
+                                onBlur={(e) =>
+                                    handleChange(key, e.target.value)
+                                }
+                            />
+                        )}
+                    </div>
                 </div>
-            </div>
+            ))}
         </div>
     );
 }

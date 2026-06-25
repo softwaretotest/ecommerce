@@ -136,4 +136,4 @@ $finalData = [
 
 file_put_contents(__DIR__ . '/1_Entities.json', json_encode($finalData, JSON_PRETTY_PRINT));
 
-echo "--- MSync: Successfully parsed Entities to 1_Entities.json ---\n";
+echo "--- M_Sync: Successfully parsed Entities to 1_Entities.json ---\n";

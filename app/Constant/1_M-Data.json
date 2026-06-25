@@ -6,7 +6,7 @@
         "DECIMAL": "decimal",
         "STRING": "string",
         "FOREIGN": "foreign",
-        "UNSIGNED_BIG_INTEGER": "unsignedBigInteger",
+        "UNSIGNED_BINT": "unsignedBigInteger",
         "NULLABLE": "nullable",
         "INDEX": "index",
         "UNIQUE": "unique"

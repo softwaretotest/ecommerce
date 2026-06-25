@@ -1,6 +1,8 @@
+// 0_M_Dashboard.jsx
+
 import React, { useState } from "react";
 import { use_M_Data } from "@/Services/0_M_DataProvider";
-import TabContent from "@/Components/0_M_TabContent.jsx";
+import SubTab from "@/Components/0_M_SubTab.jsx";
 import "@/../css/0_M_UI.css";
 
 export default function M_Dashboard() {
@@ -32,14 +34,9 @@ export default function M_Dashboard() {
             </div>
 
             <div className="dashboard-main-box">
-                {/* ส่งข้อมูลเฉพาะส่วนที่เลือกไปที่ TabContent */}
-                {activeTab === "m_data" && <TabContent data={data.m_data} />}
-                {activeTab === "app_data" && (
-                    <TabContent data={data.app_data} />
-                )}
-                {activeTab === "entities" && (
-                    <TabContent data={data.entities} />
-                )}
+                {activeTab === "m_data" && <SubTab data={data.m_data} />}
+                {activeTab === "app_data" && <SubTab data={data.app_data} />}
+                {activeTab === "entities" && <SubTab data={data.entities} />}
             </div>
         </div>
     );

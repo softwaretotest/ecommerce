@@ -30,8 +30,9 @@
 
 /* --- Data Grid & Columns --- */
 .content-grid {
-    display: flex;
-    gap: 30px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
 }
 .column-flex {
     flex: 1;
@@ -57,20 +58,20 @@
 .json-preview-column {
     background-color: #2d2d2d;
     color: #fff;
-    padding: 20px;
+    padding: 15px;
     border-radius: 8px;
     max-height: 500px;
     overflow-y: auto;
 }
 .json-header {
     margin-top: 0;
+    font-size: 1.1rem;
 }
 .json-pre {
-    font-size: 14px;
+    overflow-x: auto;
+    font-family: monospace;
     white-space: pre-wrap;
-}
-.config-header {
-    margin-top: 0;
+    font-size: 14px;
 }
 
 /* --- Dashboard Main Layout --- */
@@ -107,4 +108,102 @@
 }
 .nav-button.active {
     background-color: #333;
+}
+
+.input-engine-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 3px;
+}
+.field-row {
+    display: grid;
+    grid-template-columns: 1fr 40px 1fr;
+    align-items: center;
+    gap: 10px;
+}
+.field-separator {
+    text-align: center;
+    font-weight: bold;
+    padding: 0 5px;
+}
+
+/* --- Field Row & Wrapper --- */
+.field-row-wrapper-custom {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+
+.field-key-capital {
+    border: 1px solid #000;
+    padding: 5px 10px;
+    font-weight: bold;
+    min-width: 120px;
+    text-align: center;
+}
+.field-input-wrapper {
+    flex: 1;
+}
+
+/* --- Field Component Styles --- */
+.field-wrapper-box {
+    border: 1px solid #000;
+    padding: 15px;
+    margin-top: 10px;
+}
+.field-header-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    gap: 10px;
+}
+.field-input-blue {
+    border: 2px solid #3498db;
+    padding: 5px;
+    font-weight: bold;
+    width: 150px;
+}
+.field-input-green {
+    border: 2px solid green;
+    padding: 5px;
+    color: green;
+    font-weight: bold;
+    width: 200px;
+}
+.field-separator-colon {
+    font-weight: bold;
+}
+.field-dropdown-grid {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+.dropdown-column {
+    flex: 1;
+    text-align: center;
+}
+.dropdown-label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+.M_field-dropdown {
+    width: 100%;
+}
+
+.M_checkbox-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.M_checkbox-list label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.M_checkbox-list input[type="checkbox"] {
+    margin-right: 8px;
 }

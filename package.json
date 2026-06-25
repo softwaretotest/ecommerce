@@ -5,7 +5,8 @@
     "scripts": {
         "build": "vite build",
         "dev": "vite",
-        "version": "powershell -ExecutionPolicy Bypass -File scripts/check-version.ps1"
+        "version": "powershell -ExecutionPolicy Bypass -File scripts/check-version.ps1",
+        "clear": "rm -rf node_modules/.vite && echo 'Cache cleared!'"
     },
     "devDependencies": {
         "@headlessui/react": "^2.0.0",
