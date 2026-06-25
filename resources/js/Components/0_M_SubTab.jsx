@@ -20,17 +20,23 @@ export default function SubTab({ data, onUpdate }) {
     );
     const [activeSubTab, setActiveSubTab] = useState(subTabs[0]);
 
+    const [focus_Siderbar_Button, set_Focus_Siderbar_Button] = useState(null);
+
+    const fieldNames = Object.keys(data[activeSubTab] || {});
+
     return (
-        <div>
-            {/* S CD D U CU CUD */}
+        <div className="subtab-wrapper">
+            {/* M-DATA   S CD D U CU CUD */}
+            {/* APP-DATA F T */}
+            {/* ENTITIES */}
             <div className="subtabs-container">
                 {subTabs.map((M_Class_Name) => (
                     <button
                         key={M_Class_Name}
+                        className={`subtab-button ${activeSubTab === M_Class_Name ? "active" : ""}`}
                         onClick={() => {
                             setActiveSubTab(M_Class_Name);
                         }}
-                        className={`subtab-button ${activeSubTab === M_Class_Name ? "active" : ""}`}
                     >
                         {M_Class_Name.toUpperCase()}
                     </button>
@@ -39,12 +45,33 @@ export default function SubTab({ data, onUpdate }) {
 
             {/* show 2 column */}
             <div className="content-box content-grid">
+                <nav className="field-sidebar">
+                    {fieldNames.map((fieldName) => (
+                        <button
+                            key={fieldName}
+                            className={`field-nav-link ${focus_Siderbar_Button === fieldName ? "active" : ""}`}
+                            onClick={() => {
+                                set_Focus_Siderbar_Button(fieldName);
+                                window.dispatchEvent(
+                                    new CustomEvent("focus-field", {
+                                        detail: fieldName,
+                                    }),
+                                );
+                            }}
+                        >
+                            {fieldName.toUpperCase()}
+                        </button>
+                    ))}
+                </nav>
+
                 {/* left column = Input Boxes */}
                 <div className="column-flex">
                     <TabContent
                         M_Class_Name={activeSubTab}
                         M_value={data[activeSubTab]}
                         onUpdate={onUpdate}
+                        focus_Siderbar_Button={focus_Siderbar_Button}
+                        set_Focus_Siderbar_Button={set_Focus_Siderbar_Button}
                     />
                 </div>
 
