@@ -7,7 +7,7 @@ import { useState } from "react";
  * @param {*} ALL_DB_options e.g. ["NULLABLE", "PRIMARY", ...] (ตัวเลือกทั้งหมดที่อนุญาต)
  */
 export function CD_Rule({ DB_options, ALL_DB_options }) {
-    const [checkedItems, setCheckedItems] = useState(DB_options);
+    const [checked_CD, setChecked_CD] = useState(DB_options);
 
     function updateRules(currentItems, option, isChecked) {
         let nextItems = isChecked
@@ -38,16 +38,16 @@ export function CD_Rule({ DB_options, ALL_DB_options }) {
                     <input
                         type="checkbox"
                         value={option}
-                        // ตรวจสอบจาก checkedItems ว่าอยู่ในลิสต์ที่ถูกเลือกไหม
-                        checked={checkedItems.includes(option)}
+                        // ตรวจสอบจาก checked_CD ว่าอยู่ในลิสต์ที่ถูกเลือกไหม
+                        checked={checked_CD.includes(option)}
                         onChange={(e) => {
                             const isChecked = e.target.checked;
                             const nextState = updateRules(
-                                checkedItems,
+                                checked_CD,
                                 option,
                                 isChecked,
                             );
-                            setCheckedItems(nextState);
+                            setChecked_CD(nextState);
                         }}
                     />
                     {option}

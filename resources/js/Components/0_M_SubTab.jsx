@@ -1,5 +1,8 @@
 // resources/js/Components/0_M_SubTab.jsx
 import React, { useState } from "react";
+
+import { use_M_Store } from "@/Stores/0_M_Store.jsx";
+
 import TabContent from "@/Components/0_M_TabContent.jsx";
 import "../../css/0_M_UI.css";
 
@@ -13,16 +16,28 @@ import "../../css/0_M_UI.css";
  }
  */
 export default function SubTab({ data, onUpdate }) {
-    if (!data) return <div>ไม่มีข้อมูล</div>;
+    const initRules = use_M_Store((state) => state.initRules);
+
+    const set_M_Store = (key, val) => {
+        // 1. อ่านค่าจาก UI (val คือข้อมูลของฟิลด์ที่คลิกอยู่)
+        // สมมติว่า val มีข้อมูลที่บอกว่าฟิลด์นี้มี Rules อะไรบ้าง
+        // เราจะ filter หรือเลือกเฉพาะ rules ที่เกี่ยวข้องส่งเข้าไป
+        const currentInitialRules = Array.isArray(val) ? val : [];
+
+        // 2. สั่ง Store ให้เตรียม State สำหรับฟิลด์นี้
+        initRules(key, currentInitialRules);
+    };
 
     const subTabs = Object.keys(data).filter(
         (M_Class_Name) => typeof data[M_Class_Name] === "object",
     );
     const [activeSubTab, setActiveSubTab] = useState(subTabs[0]);
 
+    const M_value = data[activeSubTab];
+
     const [focus_Siderbar_Button, set_Focus_Siderbar_Button] = useState(null);
 
-    const fieldNames = Object.keys(data[activeSubTab] || {});
+    const fieldNames = Object.keys(M_value || {});
 
     return (
         <div className="subtab-wrapper">
@@ -51,6 +66,7 @@ export default function SubTab({ data, onUpdate }) {
                             key={fieldName}
                             className={`field-nav-link ${focus_Siderbar_Button === fieldName ? "active" : ""}`}
                             onClick={() => {
+                                set_M_Store(fieldName, M_value[fieldName]);
                                 set_Focus_Siderbar_Button(fieldName);
                                 window.dispatchEvent(
                                     new CustomEvent("focus-field", {
@@ -68,7 +84,7 @@ export default function SubTab({ data, onUpdate }) {
                 <div className="column-flex-form">
                     <TabContent
                         M_Class_Name={activeSubTab}
-                        M_value={data[activeSubTab]}
+                        M_value={M_value}
                         onUpdate={onUpdate}
                         focus_Siderbar_Button={focus_Siderbar_Button}
                         set_Focus_Siderbar_Button={set_Focus_Siderbar_Button}
@@ -79,7 +95,7 @@ export default function SubTab({ data, onUpdate }) {
                 <div className="column-flex json-preview-column">
                     <h3 className="json-header">JSON Data</h3>
                     <pre className="json-pre">
-                        {JSON.stringify(data[activeSubTab], null, 2)}
+                        {JSON.stringify(M_value, null, 2)}
                     </pre>
                 </div>
             </div>

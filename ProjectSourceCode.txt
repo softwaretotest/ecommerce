@@ -2,6 +2,122 @@
 --- FOLDER: app/Constant ---
 
 
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\tests\0_TestClass.php]
+
+<?php
+
+namespace App\Constant;
+//0_TestClass.php
+
+/**
+ * TEST FIELDS - Centralized Test Registry
+ */
+class test
+{
+    public const test_table_name = 'tests';
+
+    // Test Special Field
+    public const TEST_f_1   = ['TEST_f_1',     test::TEST_s_1];
+    public const TEST_s_1 = [
+        'TEST_s_1',
+        d::DECIMAL,
+        u::TEL,
+        cu::READONLY,
+        [cd::DEFAULT, 0],
+        cud::REQUIRED
+    ];
+
+    // Test normal Field
+    public const test_f_1 = ['test_f_1', f::IMAGE];
+    public const test_d_1 = ['test_d_1', d::DECIMAL];
+    public const test_u_1 = ['test_u_1', u::NUMBER];
+    public const test_cd_1 = ['test_cd_1', cd::UNIQUE];
+    // public const test_cd_duplicate_constraint = ['test_cd_duplicate_constraint', cd::UNIQUE, cd::UNIQUE];
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\tests\0_TestEntityConstant.php]
+
+<?php
+
+namespace App\Constant;
+// 0_TestEntityConstant.php
+class TestEntityConstant extends BaseConstant
+{
+    public const TABLE_NAME = test::test_table_name;
+
+    protected static function childFields(): array
+    {
+        return [
+            test::TEST_s_1, // Test Special Field
+            test::test_f_1,
+            test::test_d_1,
+            test::test_u_1,
+            // test::test_cd_duplicate_constraint,
+        ];
+    }
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\tests\BaseConstant.php]
+
+<?php
+
+namespace App\Constant;
+
+abstract class BaseConstant
+{
+    private static array $baseFields = [
+        f::USER_ID,
+        f::NAME,
+        f::IMAGE,
+    ];
+
+    public static function fields(): array
+    {
+        if (!defined('static::TABLE_NAME')) {
+            throw new \Exception("Class " . static::class
+                . " must define public const TABLE_NAME!");
+        }
+
+        /**
+         * make associative array from baseFields 
+         * for easier key access
+         */
+        $fields = [];
+        foreach (self::$baseFields as $field) {
+            $fields[$field[0]] = $field;
+        }
+
+        $tableName = static::TABLE_NAME;
+
+        // Exceptions for specific tables
+        if ($tableName === t::users) {
+            unset($fields['user_id']);
+        }
+
+        if ($tableName === t::orders) {
+            unset($fields['image']);
+            unset($fields['name']);
+        }
+
+        // 3. together with childFields
+        $childFields = static::childFields();
+        foreach ($childFields as $field) {
+            $fields[$field[0]] = $field;
+        }
+
+        // 4. return as Indexed Array for backward compatibility
+        return array_values($fields);
+    }
+
+    abstract protected static function childFields(): array;
+}
+
+
+
 [FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\0_CheckDuplicate.php]
 
 <?php
@@ -1361,122 +1477,6 @@ class UserConstant
 
 
 
-[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\tests\0_TestClass.php]
-
-<?php
-
-namespace App\Constant;
-//0_TestClass.php
-
-/**
- * TEST FIELDS - Centralized Test Registry
- */
-class test
-{
-    public const test_table_name = 'tests';
-
-    // Test Special Field
-    public const TEST_f_1   = ['TEST_f_1',     test::TEST_s_1];
-    public const TEST_s_1 = [
-        'TEST_s_1',
-        d::DECIMAL,
-        u::TEL,
-        cu::READONLY,
-        [cd::DEFAULT, 0],
-        cud::REQUIRED
-    ];
-
-    // Test normal Field
-    public const test_f_1 = ['test_f_1', f::IMAGE];
-    public const test_d_1 = ['test_d_1', d::DECIMAL];
-    public const test_u_1 = ['test_u_1', u::NUMBER];
-    public const test_cd_1 = ['test_cd_1', cd::UNIQUE];
-    // public const test_cd_duplicate_constraint = ['test_cd_duplicate_constraint', cd::UNIQUE, cd::UNIQUE];
-}
-
-
-
-[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\tests\0_TestEntityConstant.php]
-
-<?php
-
-namespace App\Constant;
-// 0_TestEntityConstant.php
-class TestEntityConstant extends BaseConstant
-{
-    public const TABLE_NAME = test::test_table_name;
-
-    protected static function childFields(): array
-    {
-        return [
-            test::TEST_s_1, // Test Special Field
-            test::test_f_1,
-            test::test_d_1,
-            test::test_u_1,
-            // test::test_cd_duplicate_constraint,
-        ];
-    }
-}
-
-
-
-[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\tests\BaseConstant.php]
-
-<?php
-
-namespace App\Constant;
-
-abstract class BaseConstant
-{
-    private static array $baseFields = [
-        f::USER_ID,
-        f::NAME,
-        f::IMAGE,
-    ];
-
-    public static function fields(): array
-    {
-        if (!defined('static::TABLE_NAME')) {
-            throw new \Exception("Class " . static::class
-                . " must define public const TABLE_NAME!");
-        }
-
-        /**
-         * make associative array from baseFields 
-         * for easier key access
-         */
-        $fields = [];
-        foreach (self::$baseFields as $field) {
-            $fields[$field[0]] = $field;
-        }
-
-        $tableName = static::TABLE_NAME;
-
-        // Exceptions for specific tables
-        if ($tableName === t::users) {
-            unset($fields['user_id']);
-        }
-
-        if ($tableName === t::orders) {
-            unset($fields['image']);
-            unset($fields['name']);
-        }
-
-        // 3. together with childFields
-        $childFields = static::childFields();
-        foreach ($childFields as $field) {
-            $fields[$field[0]] = $field;
-        }
-
-        // 4. return as Indexed Array for backward compatibility
-        return array_values($fields);
-    }
-
-    abstract protected static function childFields(): array;
-}
-
-
-
 --- FOLDER: app/DTOs ---
 
 
@@ -1622,6 +1622,21 @@ class User extends Authenticatable implements MustVerifyEmail
 --- FOLDER: app/Services ---
 
 
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Services\api.js]
+
+// Service/api.js
+
+/**
+ * pull M-Data to keep in Global State or Context
+ * @returns
+ */
+export const getMetadata = async () => {
+    const response = await fetch("/api/m-data");
+    return await response.json();
+};
+
+
+
 [FILE: C:\Users\o\.vscode\react\ecommerce\app\Services\BaseService.php]
 
 <?php
@@ -1671,6 +1686,42 @@ class ProductService extends BaseService
 
 
 --- FOLDER: app/Http/Controllers ---
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Http\Controllers\Api\ProductApiController.php]
+
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Services\ProductService;
+use Illuminate\Http\JsonResponse;
+
+class ProductApiController extends Controller
+{
+    protected ProductService $productService;
+
+    public function __construct(ProductService $productService)
+    {
+        $this->productService = $productService;
+    }
+
+    /**
+     * send all data to JSON
+     */
+    public function index(): JsonResponse
+    {
+        $products = $this->productService->getAll();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Product list retrieved successfully',
+            'data' => $products
+        ], 200);
+    }
+}
+
 
 
 [FILE: C:\Users\o\.vscode\react\ecommerce\app\Http\Controllers\Controller.php]
@@ -1801,38 +1852,1818 @@ class ProfileController extends Controller
 
 
 
-[FILE: C:\Users\o\.vscode\react\ecommerce\app\Http\Controllers\Api\ProductApiController.php]
+--- FOLDER: resources ---
 
-<?php
 
-namespace App\Http\Controllers\Api;
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Components\LR_default_compo\ApplicationLogo.jsx]
 
-use App\Http\Controllers\Controller;
-use App\Services\ProductService;
-use Illuminate\Http\JsonResponse;
-
-class ProductApiController extends Controller
-{
-    protected ProductService $productService;
-
-    public function __construct(ProductService $productService)
-    {
-        $this->productService = $productService;
-    }
-
-    /**
-     * send all data to JSON
-     */
-    public function index(): JsonResponse
-    {
-        $products = $this->productService->getAll();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Product list retrieved successfully',
-            'data' => $products
-        ], 200);
-    }
+export default function ApplicationLogo(props) {
+    return (
+        <svg
+            {...props}
+            viewBox="0 0 316 316"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <path d="M305.8 81.125C305.77 80.995 305.69 80.885 305.65 80.755C305.56 80.525 305.49 80.285 305.37 80.075C305.29 79.935 305.17 79.815 305.07 79.685C304.94 79.515 304.83 79.325 304.68 79.175C304.55 79.045 304.39 78.955 304.25 78.845C304.09 78.715 303.95 78.575 303.77 78.475L251.32 48.275C249.97 47.495 248.31 47.495 246.96 48.275L194.51 78.475C194.33 78.575 194.19 78.725 194.03 78.845C193.89 78.955 193.73 79.045 193.6 79.175C193.45 79.325 193.34 79.515 193.21 79.685C193.11 79.815 192.99 79.935 192.91 80.075C192.79 80.285 192.71 80.525 192.63 80.755C192.58 80.875 192.51 80.995 192.48 81.125C192.38 81.495 192.33 81.875 192.33 82.265V139.625L148.62 164.795V52.575C148.62 52.185 148.57 51.805 148.47 51.435C148.44 51.305 148.36 51.195 148.32 51.065C148.23 50.835 148.16 50.595 148.04 50.385C147.96 50.245 147.84 50.125 147.74 49.995C147.61 49.825 147.5 49.635 147.35 49.485C147.22 49.355 147.06 49.265 146.92 49.155C146.76 49.025 146.62 48.885 146.44 48.785L93.99 18.585C92.64 17.805 90.98 17.805 89.63 18.585L37.18 48.785C37 48.885 36.86 49.035 36.7 49.155C36.56 49.265 36.4 49.355 36.27 49.485C36.12 49.635 36.01 49.825 35.88 49.995C35.78 50.125 35.66 50.245 35.58 50.385C35.46 50.595 35.38 50.835 35.3 51.065C35.25 51.185 35.18 51.305 35.15 51.435C35.05 51.805 35 52.185 35 52.575V232.235C35 233.795 35.84 235.245 37.19 236.025L142.1 296.425C142.33 296.555 142.58 296.635 142.82 296.725C142.93 296.765 143.04 296.835 143.16 296.865C143.53 296.965 143.9 297.015 144.28 297.015C144.66 297.015 145.03 296.965 145.4 296.865C145.5 296.835 145.59 296.775 145.69 296.745C145.95 296.655 146.21 296.565 146.45 296.435L251.36 236.035C252.72 235.255 253.55 233.815 253.55 232.245V174.885L303.81 145.945C305.17 145.165 306 143.725 306 142.155V82.265C305.95 81.875 305.89 81.495 305.8 81.125ZM144.2 227.205L100.57 202.515L146.39 176.135L196.66 147.195L240.33 172.335L208.29 190.625L144.2 227.205ZM244.75 114.995V164.795L226.39 154.225L201.03 139.625V89.825L219.39 100.395L244.75 114.995ZM249.12 57.105L292.81 82.265L249.12 107.425L205.43 82.265L249.12 57.105ZM114.49 184.425L96.13 194.995V85.305L121.49 70.705L139.85 60.135V169.815L114.49 184.425ZM91.76 27.425L135.45 52.585L91.76 77.745L48.07 52.585L91.76 27.425ZM43.67 60.135L62.03 70.705L87.39 85.305V202.545V202.555V202.565C87.39 202.735 87.44 202.895 87.46 203.055C87.49 203.265 87.49 203.485 87.55 203.695V203.705C87.6 203.875 87.69 204.035 87.76 204.195C87.84 204.375 87.89 204.575 87.99 204.745C87.99 204.745 87.99 204.755 88 204.755C88.09 204.905 88.22 205.035 88.33 205.175C88.45 205.335 88.55 205.495 88.69 205.635L88.7 205.645C88.82 205.765 88.98 205.855 89.12 205.965C89.28 206.085 89.42 206.225 89.59 206.325C89.6 206.325 89.6 206.325 89.61 206.335C89.62 206.335 89.62 206.345 89.63 206.345L139.87 234.775V285.065L43.67 229.705V60.135ZM244.75 229.705L148.58 285.075V234.775L219.8 194.115L244.75 179.875V229.705ZM297.2 139.625L253.49 164.795V114.995L278.85 100.395L297.21 89.825V139.625H297.2Z" />
+        </svg>
+    );
 }
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Components\LR_default_compo\Checkbox.jsx]
+
+export default function Checkbox({ className = '', ...props }) {
+    return (
+        <input
+            {...props}
+            type="checkbox"
+            className={
+                'rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500 ' +
+                className
+            }
+        />
+    );
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Components\LR_default_compo\DangerButton.jsx]
+
+export default function DangerButton({
+    className = '',
+    disabled,
+    children,
+    ...props
+}) {
+    return (
+        <button
+            {...props}
+            className={
+                `inline-flex items-center rounded-md border border-transparent bg-red-600 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition duration-150 ease-in-out hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 active:bg-red-700 ${
+                    disabled && 'opacity-25'
+                } ` + className
+            }
+            disabled={disabled}
+        >
+            {children}
+        </button>
+    );
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Components\LR_default_compo\Dropdown.jsx]
+
+import { Transition } from '@headlessui/react';
+import { Link } from '@inertiajs/react';
+import { createContext, useContext, useState } from 'react';
+
+const DropDownContext = createContext();
+
+const Dropdown = ({ children }) => {
+    const [open, setOpen] = useState(false);
+
+    const toggleOpen = () => {
+        setOpen((previousState) => !previousState);
+    };
+
+    return (
+        <DropDownContext.Provider value={{ open, setOpen, toggleOpen }}>
+            <div className="relative">{children}</div>
+        </DropDownContext.Provider>
+    );
+};
+
+const Trigger = ({ children }) => {
+    const { open, setOpen, toggleOpen } = useContext(DropDownContext);
+
+    return (
+        <>
+            <div onClick={toggleOpen}>{children}</div>
+
+            {open && (
+                <div
+                    className="fixed inset-0 z-40"
+                    onClick={() => setOpen(false)}
+                ></div>
+            )}
+        </>
+    );
+};
+
+const Content = ({
+    align = 'right',
+    width = '48',
+    contentClasses = 'py-1 bg-white',
+    children,
+}) => {
+    const { open, setOpen } = useContext(DropDownContext);
+
+    let alignmentClasses = 'origin-top';
+
+    if (align === 'left') {
+        alignmentClasses = 'ltr:origin-top-left rtl:origin-top-right start-0';
+    } else if (align === 'right') {
+        alignmentClasses = 'ltr:origin-top-right rtl:origin-top-left end-0';
+    }
+
+    let widthClasses = '';
+
+    if (width === '48') {
+        widthClasses = 'w-48';
+    }
+
+    return (
+        <>
+            <Transition
+                show={open}
+                enter="transition ease-out duration-200"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="transition ease-in duration-75"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+            >
+                <div
+                    className={`absolute z-50 mt-2 rounded-md shadow-lg ${alignmentClasses} ${widthClasses}`}
+                    onClick={() => setOpen(false)}
+                >
+                    <div
+                        className={
+                            `rounded-md ring-1 ring-black ring-opacity-5 ` +
+                            contentClasses
+                        }
+                    >
+                        {children}
+                    </div>
+                </div>
+            </Transition>
+        </>
+    );
+};
+
+const DropdownLink = ({ className = '', children, ...props }) => {
+    return (
+        <Link
+            {...props}
+            className={
+                'block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:bg-gray-100 focus:outline-none ' +
+                className
+            }
+        >
+            {children}
+        </Link>
+    );
+};
+
+Dropdown.Trigger = Trigger;
+Dropdown.Content = Content;
+Dropdown.Link = DropdownLink;
+
+export default Dropdown;
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Components\LR_default_compo\InputError.jsx]
+
+export default function InputError({ message, className = '', ...props }) {
+    return message ? (
+        <p
+            {...props}
+            className={'text-sm text-red-600 ' + className}
+        >
+            {message}
+        </p>
+    ) : null;
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Components\LR_default_compo\InputLabel.jsx]
+
+export default function InputLabel({
+    value,
+    className = '',
+    children,
+    ...props
+}) {
+    return (
+        <label
+            {...props}
+            className={
+                `block text-sm font-medium text-gray-700 ` +
+                className
+            }
+        >
+            {value ? value : children}
+        </label>
+    );
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Components\LR_default_compo\Modal.jsx]
+
+import {
+    Dialog,
+    DialogPanel,
+    Transition,
+    TransitionChild,
+} from '@headlessui/react';
+
+export default function Modal({
+    children,
+    show = false,
+    maxWidth = '2xl',
+    closeable = true,
+    onClose = () => {},
+}) {
+    const close = () => {
+        if (closeable) {
+            onClose();
+        }
+    };
+
+    const maxWidthClass = {
+        sm: 'sm:max-w-sm',
+        md: 'sm:max-w-md',
+        lg: 'sm:max-w-lg',
+        xl: 'sm:max-w-xl',
+        '2xl': 'sm:max-w-2xl',
+    }[maxWidth];
+
+    return (
+        <Transition show={show} leave="duration-200">
+            <Dialog
+                as="div"
+                id="modal"
+                className="fixed inset-0 z-50 flex transform items-center overflow-y-auto px-4 py-6 transition-all sm:px-0"
+                onClose={close}
+            >
+                <TransitionChild
+                    enter="ease-out duration-300"
+                    enterFrom="opacity-0"
+                    enterTo="opacity-100"
+                    leave="ease-in duration-200"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+                >
+                    <div className="absolute inset-0 bg-gray-500/75" />
+                </TransitionChild>
+
+                <TransitionChild
+                    enter="ease-out duration-300"
+                    enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                    enterTo="opacity-100 translate-y-0 sm:scale-100"
+                    leave="ease-in duration-200"
+                    leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                    leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                >
+                    <DialogPanel
+                        className={`mb-6 transform overflow-hidden rounded-lg bg-white shadow-xl transition-all sm:mx-auto sm:w-full ${maxWidthClass}`}
+                    >
+                        {children}
+                    </DialogPanel>
+                </TransitionChild>
+            </Dialog>
+        </Transition>
+    );
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Components\LR_default_compo\NavLink.jsx]
+
+import { Link } from '@inertiajs/react';
+
+export default function NavLink({
+    active = false,
+    className = '',
+    children,
+    ...props
+}) {
+    return (
+        <Link
+            {...props}
+            className={
+                'inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium leading-5 transition duration-150 ease-in-out focus:outline-none ' +
+                (active
+                    ? 'border-indigo-400 text-gray-900 focus:border-indigo-700'
+                    : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 focus:border-gray-300 focus:text-gray-700') +
+                className
+            }
+        >
+            {children}
+        </Link>
+    );
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Components\LR_default_compo\PrimaryButton.jsx]
+
+export default function PrimaryButton({
+    className = '',
+    disabled,
+    children,
+    ...props
+}) {
+    return (
+        <button
+            {...props}
+            className={
+                `inline-flex items-center rounded-md border border-transparent bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition duration-150 ease-in-out hover:bg-gray-700 focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 active:bg-gray-900 ${
+                    disabled && 'opacity-25'
+                } ` + className
+            }
+            disabled={disabled}
+        >
+            {children}
+        </button>
+    );
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Components\LR_default_compo\ResponsiveNavLink.jsx]
+
+import { Link } from '@inertiajs/react';
+
+export default function ResponsiveNavLink({
+    active = false,
+    className = '',
+    children,
+    ...props
+}) {
+    return (
+        <Link
+            {...props}
+            className={`flex w-full items-start border-l-4 py-2 pe-4 ps-3 ${
+                active
+                    ? 'border-indigo-400 bg-indigo-50 text-indigo-700 focus:border-indigo-700 focus:bg-indigo-100 focus:text-indigo-800'
+                    : 'border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800 focus:border-gray-300 focus:bg-gray-50 focus:text-gray-800'
+            } text-base font-medium transition duration-150 ease-in-out focus:outline-none ${className}`}
+        >
+            {children}
+        </Link>
+    );
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Components\LR_default_compo\SecondaryButton.jsx]
+
+export default function SecondaryButton({
+    type = 'button',
+    className = '',
+    disabled,
+    children,
+    ...props
+}) {
+    return (
+        <button
+            {...props}
+            type={type}
+            className={
+                `inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gray-700 shadow-sm transition duration-150 ease-in-out hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 ${
+                    disabled && 'opacity-25'
+                } ` + className
+            }
+            disabled={disabled}
+        >
+            {children}
+        </button>
+    );
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Components\LR_default_compo\TextInput.jsx]
+
+import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
+
+export default forwardRef(function TextInput(
+    { type = 'text', className = '', isFocused = false, ...props },
+    ref,
+) {
+    const localRef = useRef(null);
+
+    useImperativeHandle(ref, () => ({
+        focus: () => localRef.current?.focus(),
+    }));
+
+    useEffect(() => {
+        if (isFocused) {
+            localRef.current?.focus();
+        }
+    }, [isFocused]);
+
+    return (
+        <input
+            {...props}
+            type={type}
+            className={
+                'rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ' +
+                className
+            }
+            ref={localRef}
+        />
+    );
+});
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Components\0_M_CheckBox.jsx]
+
+// 0_M_CheckBox.jsx
+import { CD_Rule } from "@/Components/0_M_Rule_CD.jsx";
+import { UI_Rule } from "@/Components/0_M_Rule_UI.jsx";
+
+export function renderCheckboxList(
+    M_Class_Name_List,
+    fieldDataList = [],
+    getOptions_for_Checkbox_or_Dropdown,
+    groupLabel, // CD , CU
+) {
+    // 1. กรองเฉพาะข้อมูลที่อยู่ในกลุ่มที่เกี่ยวข้องกับ Column นี้
+    const foundValues = fieldDataList.filter((item) => {
+        let val = Array.isArray(item) ? item[0] : item;
+        return (
+            typeof val === "string" &&
+            M_Class_Name_List.some((c) => val.startsWith(c + "::"))
+        );
+    });
+
+    // 2. แยก Data ตามประเภท (โดยตัด prefix ออก)
+    const DB_options = foundValues
+        .filter((v) => {
+            const val = Array.isArray(v) ? v[0] : v;
+            return val.startsWith("cd::") || val.startsWith("cud::");
+        })
+        .map((v) => (Array.isArray(v) ? v[0] : v).split("::")[1]);
+
+    const UI_options = foundValues
+        .filter((v) => {
+            const val = Array.isArray(v) ? v[0] : v;
+            return val.startsWith("u::") || val.startsWith("cud::");
+        })
+        .map((v) => (Array.isArray(v) ? v[0] : v).split("::")[1]);
+
+    const ALL_DB_options =
+        groupLabel === "CD"
+            ? Array.from(
+                  new Set(
+                      M_Class_Name_List.flatMap((M_Class_Name) =>
+                          getOptions_for_Checkbox_or_Dropdown(M_Class_Name),
+                      ),
+                  ),
+              )
+            : []; // if no CD selected
+
+    const ALL_UI_options =
+        groupLabel === "CU"
+            ? Array.from(
+                  new Set(
+                      M_Class_Name_List.flatMap((M_Class_Name) =>
+                          getOptions_for_Checkbox_or_Dropdown(M_Class_Name),
+                      ),
+                  ),
+              )
+            : [];
+
+    return (
+        <>
+            <CD_Rule DB_options={DB_options} ALL_DB_options={ALL_DB_options} />
+            <UI_Rule UI_options={UI_options} ALL_UI_options={ALL_UI_options} />
+        </>
+    );
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Components\0_M_Dropdown.jsx]
+
+// 0_M_Dropdown.jsx
+
+export function M_Option(props) {
+    const {
+        M_Class_Name_List,
+        getOptions_for_Checkbox_or_Dropdown,
+        fieldDataList,
+    } = props;
+
+    if (!M_Class_Name_List) return null;
+
+    return M_Class_Name_List.flatMap(function (M_Class_Name) {
+        const options = getOptions_for_Checkbox_or_Dropdown(M_Class_Name);
+
+        const prefix = M_Class_Name + "::";
+        const foundItem = fieldDataList
+            ? fieldDataList.find((i) => {
+                  const valueToTest = Array.isArray(i) ? i[0] : i;
+                  return (
+                      typeof valueToTest === "string" &&
+                      valueToTest.startsWith(prefix)
+                  );
+              })
+            : null;
+
+        const defaultValue = foundItem
+            ? Array.isArray(foundItem)
+                ? foundItem[0].split("::")[1]
+                : foundItem.split("::")[1]
+            : null;
+
+        return options.map(function (item) {
+            return (
+                <option key={item} value={item}>
+                    {item}
+                </option>
+            );
+        });
+    });
+}
+export function renderDropdown(
+    M_Class_Name_List,
+    fieldDataList = [],
+    getOptions_for_Checkbox_or_Dropdown,
+) {
+    const foundValue = fieldDataList.find(function (item) {
+        /**
+         * check is Array , because e.g.
+         * sometime item = ["cd::DEFAULT",0]   array
+         * sometime item = "u::NUMBER"         string
+         */
+        let valueToTest = item;
+        if (Array.isArray(item)) {
+            valueToTest = item[0];
+        }
+
+        if (typeof valueToTest !== "string") return false;
+
+        // startsWith check convention e.g. cud::REQUIRED
+        return M_Class_Name_List.some(function (className) {
+            return valueToTest.startsWith(className + "::");
+        });
+    });
+
+    let defaultValue = "";
+    if (foundValue) {
+        const stringValue = Array.isArray(foundValue)
+            ? foundValue[0]
+            : foundValue;
+        defaultValue = stringValue.split("::")[1];
+    }
+
+    return (
+        <select className="M_field-dropdown" defaultValue={defaultValue}>
+            <option value="">--</option>
+            <M_Option
+                M_Class_Name_List={M_Class_Name_List}
+                getOptions_for_Checkbox_or_Dropdown={
+                    getOptions_for_Checkbox_or_Dropdown
+                } // ส่งต่อไปให้ M_Option
+                fieldDataList={fieldDataList} // อย่าลืมส่งตัวนี้ไปด้วยถ้า M_Option ต้องการใช้
+            />
+        </select>
+    );
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Components\0_M_Field.jsx]
+
+// resources/js/Components/0_M_Field.jsx
+import { M_Option, renderDropdown } from "@/Components/0_M_Dropdown.jsx";
+import { renderCheckboxList } from "@/Components/0_M_CheckBox.jsx";
+import { use_M_Data } from "@/Services/0_M_DataProvider.jsx";
+
+export default function Field({ field_data }) {
+    const metadata = use_M_Data();
+
+    const [name, ...fieldDataList] = field_data;
+
+    const groups = [
+        { label: "D", keys: ["d"] },
+        { label: "U", keys: ["u"] },
+        { label: "CD", keys: ["cd", "cud"] },
+        { label: "CU", keys: ["cu", "cud"] },
+    ];
+
+    function getOptions_for_Checkbox_or_Dropdown(M_Class_Name) {
+        if (!metadata) return [];
+
+        const mDataContainer = metadata.m_data;
+
+        const targetClass = mDataContainer?.[M_Class_Name];
+
+        if (targetClass) {
+            const keys = Object.keys(targetClass);
+            return keys;
+        }
+
+        return [];
+    }
+
+    return (
+        <div className="field-wrapper-box">
+            <div className="field-header-container">
+                <input
+                    type="text"
+                    defaultValue={name.toUpperCase()}
+                    className="field-input-blue"
+                />
+                <span className="field-separator-colon">:</span>
+                <input
+                    type="text"
+                    defaultValue={name}
+                    className="field-input-green"
+                />
+            </div>
+
+            <div className="field-dropdown-grid">
+                {groups.map(function (group) {
+                    const M_Class_Name_List = group.keys;
+
+                    return (
+                        <div key={group.label} className="dropdown-column">
+                            <div className="dropdown-label">{group.label}</div>
+
+                            {group.label === "D" || group.label === "U"
+                                ? // Dropdown for D and U
+                                  renderDropdown(
+                                      M_Class_Name_List,
+                                      fieldDataList,
+                                      getOptions_for_Checkbox_or_Dropdown,
+                                  )
+                                : // Checkbox for CD and CU
+                                  renderCheckboxList(
+                                      M_Class_Name_List,
+                                      fieldDataList,
+                                      getOptions_for_Checkbox_or_Dropdown,
+                                      group.label, // CD , CU
+                                  )}
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
+    );
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Components\0_M_Rule_CD.jsx]
+
+// 0_M_Rule_CD.jsx
+import { useState } from "react";
+
+/**
+ * make checkboxes for cd and insert rule in onChange
+ * @param {*} DB_options e.g. ["REQUIRED"] (สิ่งที่ถูกเลือกจาก DB)
+ * @param {*} ALL_DB_options e.g. ["NULLABLE", "PRIMARY", ...] (ตัวเลือกทั้งหมดที่อนุญาต)
+ */
+export function CD_Rule({ DB_options, ALL_DB_options }) {
+    const [checked_CD, setChecked_CD] = useState(DB_options);
+
+    function updateRules(currentItems, option, isChecked) {
+        let nextItems = isChecked
+            ? [...currentItems, option]
+            : currentItems.filter((item) => item !== option);
+
+        if (option === "PRIMARY" && isChecked) {
+            nextItems = nextItems.filter(
+                (i) => !["FOREIGN", "UNIQUE", "NULLABLE"].includes(i),
+            );
+        }
+        if (option === "REQUIRED" && isChecked) {
+            nextItems = nextItems.filter((i) => i !== "NULLABLE");
+        }
+        if (option === "NULLABLE" && isChecked) {
+            nextItems = nextItems.filter(
+                (i) => !["PRIMARY", "REQUIRED"].includes(i),
+            );
+        }
+
+        return nextItems;
+    }
+
+    return (
+        <div className="M_checkbox-list">
+            {ALL_DB_options.map((option) => (
+                <label key={option}>
+                    <input
+                        type="checkbox"
+                        value={option}
+                        // ตรวจสอบจาก checked_CD ว่าอยู่ในลิสต์ที่ถูกเลือกไหม
+                        checked={checked_CD.includes(option)}
+                        onChange={(e) => {
+                            const isChecked = e.target.checked;
+                            const nextState = updateRules(
+                                checked_CD,
+                                option,
+                                isChecked,
+                            );
+                            setChecked_CD(nextState);
+                        }}
+                    />
+                    {option}
+                </label>
+            ))}
+        </div>
+    );
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Components\0_M_Rule_UI.jsx]
+
+// 0_M_Rule_UI.jsx
+import { useState } from "react";
+
+/**
+ * make checkboxes for UI rules (READONLY, DISABLED, etc.)
+ * @param {*} UI_options e.g. ["READONLY"] (สิ่งที่ถูกเลือกจาก DB)
+ * @param {*} ALL_UI_options e.g. ["READONLY", "DISABLED", ...] (ตัวเลือกทั้งหมดของ UI)
+ */
+export function UI_Rule({ UI_options, ALL_UI_options }) {
+    const [checked_CU, setChecked_CU] = useState(UI_options);
+
+    function updateUIRules(currentItems, option, isChecked) {
+        let nextItems = isChecked
+            ? [...currentItems, option]
+            : currentItems.filter((item) => item !== option);
+
+        // ใส่กฎของ UI ตรงนี้ (ตัวอย่าง: ถ้า DISABLED แล้วห้าม READONLY)
+        if (option === "DISABLED" && isChecked) {
+            nextItems = nextItems.filter((i) => i !== "READONLY");
+        }
+        if (option === "READONLY" && isChecked) {
+            nextItems = nextItems.filter((i) => i !== "DISABLED");
+        }
+
+        return nextItems;
+    }
+
+    return (
+        <div className="M_checkbox-list">
+            {ALL_UI_options.map((option) => (
+                <label key={option}>
+                    <input
+                        type="checkbox"
+                        value={option}
+                        checked={checked_CU.includes(option)}
+                        onChange={(e) => {
+                            const isChecked = e.target.checked;
+                            const nextState = updateUIRules(
+                                checked_CU,
+                                option,
+                                isChecked,
+                            );
+                            setChecked_CU(nextState);
+                        }}
+                    />
+                    {option}
+                </label>
+            ))}
+        </div>
+    );
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Components\0_M_SpecialField.jsx]
+
+// resources/js/Components/0_M_SpecialField.jsx
+import React from "react";
+import Field from "@/Components/0_M_Field.jsx";
+
+// ปรับให้รับ field_data และ m_data_all เหมือนกับ Field
+export default function SpecialField({ field_data }) {
+    // ในอนาคตถ้ามี Logic พิเศษสำหรับ SpecialField ให้เขียนไว้ตรงนี้
+    // เช่น: if (field_data[0] === 'some_special_key') { return <OtherComponent /> }
+
+    return <Field field_data={field_data} />;
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Components\0_M_SubTab.jsx]
+
+// resources/js/Components/0_M_SubTab.jsx
+import React, { useState } from "react";
+import TabContent from "@/Components/0_M_TabContent.jsx";
+import "../../css/0_M_UI.css";
+
+/**
+ *  Tabs of Classes S CD D U CU CUD
+ * @param {*} data  = content of the Classes
+ Class D 
+ {
+  "BOOLEAN": "boolean",
+  ....
+ }
+ */
+export default function SubTab({ data, onUpdate }) {
+    if (!data) return <div>ไม่มีข้อมูล</div>;
+
+    const subTabs = Object.keys(data).filter(
+        (M_Class_Name) => typeof data[M_Class_Name] === "object",
+    );
+    const [activeSubTab, setActiveSubTab] = useState(subTabs[0]);
+
+    const [focus_Siderbar_Button, set_Focus_Siderbar_Button] = useState(null);
+
+    const fieldNames = Object.keys(data[activeSubTab] || {});
+
+    return (
+        <div className="subtab-wrapper">
+            {/* M-DATA   S CD D U CU CUD */}
+            {/* APP-DATA F T */}
+            {/* ENTITIES */}
+            <div className="subtabs-container">
+                {subTabs.map((M_Class_Name) => (
+                    <button
+                        key={M_Class_Name}
+                        className={`subtab-button ${activeSubTab === M_Class_Name ? "active" : ""}`}
+                        onClick={() => {
+                            setActiveSubTab(M_Class_Name);
+                        }}
+                    >
+                        {M_Class_Name.toUpperCase()}
+                    </button>
+                ))}
+            </div>
+
+            {/* show 2 column */}
+            <div className="content-box content-grid">
+                <nav className="field-sidebar">
+                    {fieldNames.map((fieldName) => (
+                        <button
+                            key={fieldName}
+                            className={`field-nav-link ${focus_Siderbar_Button === fieldName ? "active" : ""}`}
+                            onClick={() => {
+                                set_Focus_Siderbar_Button(fieldName);
+                                window.dispatchEvent(
+                                    new CustomEvent("focus-field", {
+                                        detail: fieldName,
+                                    }),
+                                );
+                            }}
+                        >
+                            {fieldName.toUpperCase()}
+                        </button>
+                    ))}
+                </nav>
+
+                {/* left column = Input Boxes */}
+                <div className="column-flex-form">
+                    <TabContent
+                        M_Class_Name={activeSubTab}
+                        M_value={data[activeSubTab]}
+                        onUpdate={onUpdate}
+                        focus_Siderbar_Button={focus_Siderbar_Button}
+                        set_Focus_Siderbar_Button={set_Focus_Siderbar_Button}
+                    />
+                </div>
+
+                {/* right column = JSON */}
+                <div className="column-flex json-preview-column">
+                    <h3 className="json-header">JSON Data</h3>
+                    <pre className="json-pre">
+                        {JSON.stringify(data[activeSubTab], null, 2)}
+                    </pre>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Components\0_M_TabContent.jsx]
+
+import { React, useState, useRef, useEffect } from "react";
+import SpecialField from "@/Components/0_M_SpecialField.jsx";
+import Field from "@/Components/0_M_Field.jsx";
+
+export default function TabContent({
+    M_Class_Name,
+    M_value,
+    onUpdate,
+    focus_Siderbar_Button,
+    set_Focus_Siderbar_Button,
+}) {
+    if (!M_value || typeof M_value !== "object") {
+        return (
+            <div className="ui-placeholder">ไม่มี UI สำหรับ {M_Class_Name}</div>
+        );
+    }
+
+    const handleChange = (key, newValue) => {
+        onUpdate({ ...M_value, [key]: newValue });
+    };
+
+    const [focusField, setFocusField] = useState(null);
+
+    const scrollRefs = useRef({});
+
+    useEffect(() => {
+        if (
+            focus_Siderbar_Button &&
+            scrollRefs.current[focus_Siderbar_Button]
+        ) {
+            scrollRefs.current[focus_Siderbar_Button].scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+            });
+        }
+    }, [focus_Siderbar_Button]);
+
+    useEffect(() => {
+        const handleFocus = (e) => {
+            const fieldName = e.detail;
+            setFocusField(fieldName);
+
+            // auto Scroll to Ref of that field
+            if (scrollRefs.current[fieldName]) {
+                scrollRefs.current[fieldName].scrollIntoView({
+                    behavior: "smooth",
+                    block: "center",
+                });
+            }
+        };
+
+        window.addEventListener("focus-field", handleFocus);
+        return () => window.removeEventListener("focus-field", handleFocus);
+    }, []);
+
+    return (
+        <>
+            <div>
+                <label>M_Class_Name = {M_Class_Name}</label>
+            </div>
+            <div className="input-engine-container">
+                {/* LOOP OF FIELDS e.g. M_Class_Name = f , t , s , d , u , cd , cu , cud */}
+                {Object.entries(M_value).map(([key, val]) => (
+                    <div
+                        key={key}
+                        ref={(el) => (scrollRefs.current[key] = el)}
+                        className={`field-row-wrapper-custom ${focusField === key ? "is-focused" : ""}`}
+                        onClick={() => {
+                            setFocusField(key);
+                            set_Focus_Siderbar_Button(key);
+                        }}
+                    >
+                        {/* left column: Capital Letter (Key) */}
+                        {M_Class_Name !== "f" && M_Class_Name !== "s" && (
+                            <>
+                                <input
+                                    className="field-key-input"
+                                    defaultValue={
+                                        M_Class_Name === "t"
+                                            ? key
+                                            : key.toUpperCase()
+                                    }
+                                    onBlur={(e) =>
+                                        handleKeyChange(key, e.target.value)
+                                    }
+                                />
+                                <span className="field-separator-colon">:</span>
+                            </>
+                        )}
+
+                        {/* คอลัมน์ขวา: Input หรือ Field Component */}
+                        <div className="field-input-wrapper">
+                            {M_Class_Name === "s" && Array.isArray(val) && (
+                                <SpecialField field_data={val} />
+                            )}
+
+                            {M_Class_Name === "f" && Array.isArray(val) && (
+                                <Field field_data={val} />
+                            )}
+
+                            {M_Class_Name !== "s" && M_Class_Name !== "f" && (
+                                <input
+                                    type="text"
+                                    className="M_field-value-input"
+                                    defaultValue={val}
+                                    onBlur={(e) =>
+                                        handleChange(key, e.target.value)
+                                    }
+                                />
+                            )}
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </>
+    );
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Layouts\AuthenticatedLayout.jsx]
+
+import ApplicationLogo from '@/Components/ApplicationLogo';
+import Dropdown from '@/Components/Dropdown';
+import NavLink from '@/Components/NavLink';
+import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
+import { Link, usePage } from '@inertiajs/react';
+import { useState } from 'react';
+
+export default function AuthenticatedLayout({ header, children }) {
+    const user = usePage().props.auth.user;
+
+    const [showingNavigationDropdown, setShowingNavigationDropdown] =
+        useState(false);
+
+    return (
+        <div className="min-h-screen bg-gray-100">
+            <nav className="border-b border-gray-100 bg-white">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div className="flex h-16 justify-between">
+                        <div className="flex">
+                            <div className="flex shrink-0 items-center">
+                                <Link href="/">
+                                    <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
+                                </Link>
+                            </div>
+
+                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink
+                                    href={route('dashboard')}
+                                    active={route().current('dashboard')}
+                                >
+                                    M_Dashboard
+                                </NavLink>
+                            </div>
+                        </div>
+
+                        <div className="hidden sm:ms-6 sm:flex sm:items-center">
+                            <div className="relative ms-3">
+                                <Dropdown>
+                                    <Dropdown.Trigger>
+                                        <span className="inline-flex rounded-md">
+                                            <button
+                                                type="button"
+                                                className="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
+                                            >
+                                                {user.name}
+
+                                                <svg
+                                                    className="-me-0.5 ms-2 h-4 w-4"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    viewBox="0 0 20 20"
+                                                    fill="currentColor"
+                                                >
+                                                    <path
+                                                        fillRule="evenodd"
+                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                        clipRule="evenodd"
+                                                    />
+                                                </svg>
+                                            </button>
+                                        </span>
+                                    </Dropdown.Trigger>
+
+                                    <Dropdown.Content>
+                                        <Dropdown.Link
+                                            href={route('profile.edit')}
+                                        >
+                                            Profile
+                                        </Dropdown.Link>
+                                        <Dropdown.Link
+                                            href={route('logout')}
+                                            method="post"
+                                            as="button"
+                                        >
+                                            Log Out
+                                        </Dropdown.Link>
+                                    </Dropdown.Content>
+                                </Dropdown>
+                            </div>
+                        </div>
+
+                        <div className="-me-2 flex items-center sm:hidden">
+                            <button
+                                onClick={() =>
+                                    setShowingNavigationDropdown(
+                                        (previousState) => !previousState,
+                                    )
+                                }
+                                className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 transition duration-150 ease-in-out hover:bg-gray-100 hover:text-gray-500 focus:bg-gray-100 focus:text-gray-500 focus:outline-none"
+                            >
+                                <svg
+                                    className="h-6 w-6"
+                                    stroke="currentColor"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        className={
+                                            !showingNavigationDropdown
+                                                ? 'inline-flex'
+                                                : 'hidden'
+                                        }
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M4 6h16M4 12h16M4 18h16"
+                                    />
+                                    <path
+                                        className={
+                                            showingNavigationDropdown
+                                                ? 'inline-flex'
+                                                : 'hidden'
+                                        }
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M6 18L18 6M6 6l12 12"
+                                    />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    className={
+                        (showingNavigationDropdown ? 'block' : 'hidden') +
+                        ' sm:hidden'
+                    }
+                >
+                    <div className="space-y-1 pb-3 pt-2">
+                        <ResponsiveNavLink
+                            href={route('dashboard')}
+                            active={route().current('dashboard')}
+                        >
+                            M_Dashboard
+                        </ResponsiveNavLink>
+                    </div>
+
+                    <div className="border-t border-gray-200 pb-1 pt-4">
+                        <div className="px-4">
+                            <div className="text-base font-medium text-gray-800">
+                                {user.name}
+                            </div>
+                            <div className="text-sm font-medium text-gray-500">
+                                {user.email}
+                            </div>
+                        </div>
+
+                        <div className="mt-3 space-y-1">
+                            <ResponsiveNavLink href={route('profile.edit')}>
+                                Profile
+                            </ResponsiveNavLink>
+                            <ResponsiveNavLink
+                                method="post"
+                                href={route('logout')}
+                                as="button"
+                            >
+                                Log Out
+                            </ResponsiveNavLink>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            {header && (
+                <header className="bg-white shadow">
+                    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                        {header}
+                    </div>
+                </header>
+            )}
+
+            <main>{children}</main>
+        </div>
+    );
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Layouts\GuestLayout.jsx]
+
+import ApplicationLogo from '@/Components/ApplicationLogo';
+import { Link } from '@inertiajs/react';
+
+export default function GuestLayout({ children }) {
+    return (
+        <div className="flex min-h-screen flex-col items-center bg-gray-100 pt-6 sm:justify-center sm:pt-0">
+            <div>
+                <Link href="/">
+                    <ApplicationLogo className="h-20 w-20 fill-current text-gray-500" />
+                </Link>
+            </div>
+
+            <div className="mt-6 w-full overflow-hidden bg-white px-6 py-4 shadow-md sm:max-w-md sm:rounded-lg">
+                {children}
+            </div>
+        </div>
+    );
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\lib\utils.js]
+
+import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge"
+
+export function cn(...inputs) {
+  return twMerge(clsx(inputs));
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Pages\Profile\Partials\DeleteUserForm.jsx]
+
+import DangerButton from '@/Components/DangerButton';
+import InputError from '@/Components/InputError';
+import InputLabel from '@/Components/InputLabel';
+import Modal from '@/Components/Modal';
+import SecondaryButton from '@/Components/SecondaryButton';
+import TextInput from '@/Components/TextInput';
+import { useForm } from '@inertiajs/react';
+import { useRef, useState } from 'react';
+
+export default function DeleteUserForm({ className = '' }) {
+    const [confirmingUserDeletion, setConfirmingUserDeletion] = useState(false);
+    const passwordInput = useRef();
+
+    const {
+        data,
+        setData,
+        delete: destroy,
+        processing,
+        reset,
+        errors,
+        clearErrors,
+    } = useForm({
+        password: '',
+    });
+
+    const confirmUserDeletion = () => {
+        setConfirmingUserDeletion(true);
+    };
+
+    const deleteUser = (e) => {
+        e.preventDefault();
+
+        destroy(route('profile.destroy'), {
+            preserveScroll: true,
+            onSuccess: () => closeModal(),
+            onError: () => passwordInput.current.focus(),
+            onFinish: () => reset(),
+        });
+    };
+
+    const closeModal = () => {
+        setConfirmingUserDeletion(false);
+
+        clearErrors();
+        reset();
+    };
+
+    return (
+        <section className={`space-y-6 ${className}`}>
+            <header>
+                <h2 className="text-lg font-medium text-gray-900">
+                    Delete Account
+                </h2>
+
+                <p className="mt-1 text-sm text-gray-600">
+                    Once your account is deleted, all of its resources and data
+                    will be permanently deleted. Before deleting your account,
+                    please download any data or information that you wish to
+                    retain.
+                </p>
+            </header>
+
+            <DangerButton onClick={confirmUserDeletion}>
+                Delete Account
+            </DangerButton>
+
+            <Modal show={confirmingUserDeletion} onClose={closeModal}>
+                <form onSubmit={deleteUser} className="p-6">
+                    <h2 className="text-lg font-medium text-gray-900">
+                        Are you sure you want to delete your account?
+                    </h2>
+
+                    <p className="mt-1 text-sm text-gray-600">
+                        Once your account is deleted, all of its resources and
+                        data will be permanently deleted. Please enter your
+                        password to confirm you would like to permanently delete
+                        your account.
+                    </p>
+
+                    <div className="mt-6">
+                        <InputLabel
+                            htmlFor="password"
+                            value="Password"
+                            className="sr-only"
+                        />
+
+                        <TextInput
+                            id="password"
+                            type="password"
+                            name="password"
+                            ref={passwordInput}
+                            value={data.password}
+                            onChange={(e) =>
+                                setData('password', e.target.value)
+                            }
+                            className="mt-1 block w-3/4"
+                            isFocused
+                            placeholder="Password"
+                        />
+
+                        <InputError
+                            message={errors.password}
+                            className="mt-2"
+                        />
+                    </div>
+
+                    <div className="mt-6 flex justify-end">
+                        <SecondaryButton onClick={closeModal}>
+                            Cancel
+                        </SecondaryButton>
+
+                        <DangerButton className="ms-3" disabled={processing}>
+                            Delete Account
+                        </DangerButton>
+                    </div>
+                </form>
+            </Modal>
+        </section>
+    );
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Pages\Profile\Partials\UpdatePasswordForm.jsx]
+
+import InputError from '@/Components/InputError';
+import InputLabel from '@/Components/InputLabel';
+import PrimaryButton from '@/Components/PrimaryButton';
+import TextInput from '@/Components/TextInput';
+import { Transition } from '@headlessui/react';
+import { useForm } from '@inertiajs/react';
+import { useRef } from 'react';
+
+export default function UpdatePasswordForm({ className = '' }) {
+    const passwordInput = useRef();
+    const currentPasswordInput = useRef();
+
+    const {
+        data,
+        setData,
+        errors,
+        put,
+        reset,
+        processing,
+        recentlySuccessful,
+    } = useForm({
+        current_password: '',
+        password: '',
+        password_confirmation: '',
+    });
+
+    const updatePassword = (e) => {
+        e.preventDefault();
+
+        put(route('password.update'), {
+            preserveScroll: true,
+            onSuccess: () => reset(),
+            onError: (errors) => {
+                if (errors.password) {
+                    reset('password', 'password_confirmation');
+                    passwordInput.current.focus();
+                }
+
+                if (errors.current_password) {
+                    reset('current_password');
+                    currentPasswordInput.current.focus();
+                }
+            },
+        });
+    };
+
+    return (
+        <section className={className}>
+            <header>
+                <h2 className="text-lg font-medium text-gray-900">
+                    Update Password
+                </h2>
+
+                <p className="mt-1 text-sm text-gray-600">
+                    Ensure your account is using a long, random password to stay
+                    secure.
+                </p>
+            </header>
+
+            <form onSubmit={updatePassword} className="mt-6 space-y-6">
+                <div>
+                    <InputLabel
+                        htmlFor="current_password"
+                        value="Current Password"
+                    />
+
+                    <TextInput
+                        id="current_password"
+                        ref={currentPasswordInput}
+                        value={data.current_password}
+                        onChange={(e) =>
+                            setData('current_password', e.target.value)
+                        }
+                        type="password"
+                        className="mt-1 block w-full"
+                        autoComplete="current-password"
+                    />
+
+                    <InputError
+                        message={errors.current_password}
+                        className="mt-2"
+                    />
+                </div>
+
+                <div>
+                    <InputLabel htmlFor="password" value="New Password" />
+
+                    <TextInput
+                        id="password"
+                        ref={passwordInput}
+                        value={data.password}
+                        onChange={(e) => setData('password', e.target.value)}
+                        type="password"
+                        className="mt-1 block w-full"
+                        autoComplete="new-password"
+                    />
+
+                    <InputError message={errors.password} className="mt-2" />
+                </div>
+
+                <div>
+                    <InputLabel
+                        htmlFor="password_confirmation"
+                        value="Confirm Password"
+                    />
+
+                    <TextInput
+                        id="password_confirmation"
+                        value={data.password_confirmation}
+                        onChange={(e) =>
+                            setData('password_confirmation', e.target.value)
+                        }
+                        type="password"
+                        className="mt-1 block w-full"
+                        autoComplete="new-password"
+                    />
+
+                    <InputError
+                        message={errors.password_confirmation}
+                        className="mt-2"
+                    />
+                </div>
+
+                <div className="flex items-center gap-4">
+                    <PrimaryButton disabled={processing}>Save</PrimaryButton>
+
+                    <Transition
+                        show={recentlySuccessful}
+                        enter="transition ease-in-out"
+                        enterFrom="opacity-0"
+                        leave="transition ease-in-out"
+                        leaveTo="opacity-0"
+                    >
+                        <p className="text-sm text-gray-600">
+                            Saved.
+                        </p>
+                    </Transition>
+                </div>
+            </form>
+        </section>
+    );
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Pages\Profile\Partials\UpdateProfileInformationForm.jsx]
+
+import InputError from '@/Components/InputError';
+import InputLabel from '@/Components/InputLabel';
+import PrimaryButton from '@/Components/PrimaryButton';
+import TextInput from '@/Components/TextInput';
+import { Transition } from '@headlessui/react';
+import { Link, useForm, usePage } from '@inertiajs/react';
+
+export default function UpdateProfileInformation({
+    mustVerifyEmail,
+    status,
+    className = '',
+}) {
+    const user = usePage().props.auth.user;
+
+    const { data, setData, patch, errors, processing, recentlySuccessful } =
+        useForm({
+            name: user.name,
+            email: user.email,
+        });
+
+    const submit = (e) => {
+        e.preventDefault();
+
+        patch(route('profile.update'));
+    };
+
+    return (
+        <section className={className}>
+            <header>
+                <h2 className="text-lg font-medium text-gray-900">
+                    Profile Information
+                </h2>
+
+                <p className="mt-1 text-sm text-gray-600">
+                    Update your account's profile information and email address.
+                </p>
+            </header>
+
+            <form onSubmit={submit} className="mt-6 space-y-6">
+                <div>
+                    <InputLabel htmlFor="name" value="Name" />
+
+                    <TextInput
+                        id="name"
+                        className="mt-1 block w-full"
+                        value={data.name}
+                        onChange={(e) => setData('name', e.target.value)}
+                        required
+                        isFocused
+                        autoComplete="name"
+                    />
+
+                    <InputError className="mt-2" message={errors.name} />
+                </div>
+
+                <div>
+                    <InputLabel htmlFor="email" value="Email" />
+
+                    <TextInput
+                        id="email"
+                        type="email"
+                        className="mt-1 block w-full"
+                        value={data.email}
+                        onChange={(e) => setData('email', e.target.value)}
+                        required
+                        autoComplete="username"
+                    />
+
+                    <InputError className="mt-2" message={errors.email} />
+                </div>
+
+                {mustVerifyEmail && user.email_verified_at === null && (
+                    <div>
+                        <p className="mt-2 text-sm text-gray-800">
+                            Your email address is unverified.
+                            <Link
+                                href={route('verification.send')}
+                                method="post"
+                                as="button"
+                                className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                            >
+                                Click here to re-send the verification email.
+                            </Link>
+                        </p>
+
+                        {status === 'verification-link-sent' && (
+                            <div className="mt-2 text-sm font-medium text-green-600">
+                                A new verification link has been sent to your
+                                email address.
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                <div className="flex items-center gap-4">
+                    <PrimaryButton disabled={processing}>Save</PrimaryButton>
+
+                    <Transition
+                        show={recentlySuccessful}
+                        enter="transition ease-in-out"
+                        enterFrom="opacity-0"
+                        leave="transition ease-in-out"
+                        leaveTo="opacity-0"
+                    >
+                        <p className="text-sm text-gray-600">
+                            Saved.
+                        </p>
+                    </Transition>
+                </div>
+            </form>
+        </section>
+    );
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Pages\Profile\Edit.jsx]
+
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { Head } from '@inertiajs/react';
+import DeleteUserForm from './Partials/DeleteUserForm';
+import UpdatePasswordForm from './Partials/UpdatePasswordForm';
+import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm';
+
+export default function Edit({ mustVerifyEmail, status }) {
+    return (
+        <AuthenticatedLayout
+            header={
+                <h2 className="text-xl font-semibold leading-tight text-gray-800">
+                    Profile
+                </h2>
+            }
+        >
+            <Head title="Profile" />
+
+            <div className="py-12">
+                <div className="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
+                    <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8">
+                        <UpdateProfileInformationForm
+                            mustVerifyEmail={mustVerifyEmail}
+                            status={status}
+                            className="max-w-xl"
+                        />
+                    </div>
+
+                    <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8">
+                        <UpdatePasswordForm className="max-w-xl" />
+                    </div>
+
+                    <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8">
+                        <DeleteUserForm className="max-w-xl" />
+                    </div>
+                </div>
+            </div>
+        </AuthenticatedLayout>
+    );
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Pages\0_M_Dashboard.jsx]
+
+// 0_M_Dashboard.jsx
+
+import React, { useState } from "react";
+import { use_M_Data } from "@/Services/0_M_DataProvider";
+import SubTab from "@/Components/0_M_SubTab.jsx";
+import "@/../css/0_M_UI.css";
+
+export default function M_Dashboard() {
+    const data = use_M_Data();
+    const [activeTab, setActiveTab] = useState("m_data");
+
+    if (!data) return <div>Loading...</div>;
+
+    const tabs = [
+        { id: "m_data", label: "M_DATA", key: "m_data" },
+        { id: "app_data", label: "APP_DATA", key: "app_data" },
+        { id: "entities", label: "ENTITIES", key: "entities" },
+    ];
+
+    return (
+        <div className="dashboard-wrapper">
+            <h1 className="dashboard-header">Project M Dashboard</h1>
+
+            <div className="tab-switcher-container">
+                {tabs.map((tab) => (
+                    <button
+                        key={tab.id}
+                        onClick={() => setActiveTab(tab.id)}
+                        className={`nav-button ${activeTab === tab.id ? "active" : ""}`}
+                    >
+                        {tab.label}
+                    </button>
+                ))}
+            </div>
+
+            <div className="dashboard-main-box">
+                {activeTab === "m_data" && <SubTab data={data.m_data} />}
+                {activeTab === "app_data" && <SubTab data={data.app_data} />}
+                {activeTab === "entities" && <SubTab data={data.entities} />}
+            </div>
+        </div>
+    );
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Services\0_M_DataProvider.jsx]
+
+// // resources/js/Services/0_M_DataProvider.jsx
+
+import React, { createContext, useContext, useEffect, useState } from 'react';
+
+const MetadataContext = createContext();
+
+export const M_DataProvider = ({ children }) => {
+    const [metadata, setMetadata] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        // get M-Data from API
+        fetch('/api/m-data')
+            .then((res) => res.json())
+            .then((data) => {
+                setMetadata(data);
+                setLoading(false);
+            })
+            .catch((err) => {
+                console.error("Metadata load error:", err);
+                setLoading(false);
+            });
+    }, []);
+
+    if (loading) return <div>Loading Metadata...</div>;
+
+    return (
+        <MetadataContext.Provider value={metadata}>
+            {children}
+        </MetadataContext.Provider>
+    );
+};
+
+// Custom Hook to call M-Components
+export const use_M_Data = () => useContext(MetadataContext);
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\app.jsx]
+
+import '../css/app.css';
+import './bootstrap';
+
+import { createInertiaApp } from '@inertiajs/react';
+import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
+import { createRoot } from 'react-dom/client';
+import { M_DataProvider } from './Services/0_M_DataProvider'; 
+
+const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+
+createInertiaApp({
+    title: (title) => `${title} - ${appName}`,
+    resolve: (name) =>
+        resolvePageComponent(
+            `./Pages/${name}.jsx`,
+            import.meta.glob('./Pages/**/*.jsx'),
+        ),
+    setup({ el, App, props }) {
+        const root = createRoot(el);
+        
+        root.render(
+            <M_DataProvider>
+                <App {...props} />
+            </M_DataProvider>
+        );
+    },
+    progress: {
+        color: '#4B5563',
+    },
+});
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\bootstrap.js]
+
+// this file must be here otherwise vite error
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\views\app.blade.php]
+
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title inertia>{{ config('app.name', 'Laravel') }}</title>
+
+        <!-- Fonts -->
+        <link rel="preconnect" href="https://fonts.bunny.net">
+        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+
+        <!-- Scripts -->
+        @viteReactRefresh
+        @vite(['resources/js/app.jsx', "resources/js/Pages/{$page['component']}.jsx"])
+        @inertiaHead
+    </head>
+    <body class="font-sans antialiased">
+        @inertia
+    </body>
+</html>
 
 

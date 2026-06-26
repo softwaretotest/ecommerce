@@ -7,7 +7,7 @@ import { useState } from "react";
  * @param {*} ALL_UI_options e.g. ["READONLY", "DISABLED", ...] (ตัวเลือกทั้งหมดของ UI)
  */
 export function UI_Rule({ UI_options, ALL_UI_options }) {
-    const [checkedItems, setCheckedItems] = useState(UI_options);
+    const [checked_CU, setChecked_CU] = useState(UI_options);
 
     function updateUIRules(currentItems, option, isChecked) {
         let nextItems = isChecked
@@ -32,15 +32,15 @@ export function UI_Rule({ UI_options, ALL_UI_options }) {
                     <input
                         type="checkbox"
                         value={option}
-                        checked={checkedItems.includes(option)}
+                        checked={checked_CU.includes(option)}
                         onChange={(e) => {
                             const isChecked = e.target.checked;
                             const nextState = updateUIRules(
-                                checkedItems,
+                                checked_CU,
                                 option,
                                 isChecked,
                             );
-                            setCheckedItems(nextState);
+                            setChecked_CU(nextState);
                         }}
                     />
                     {option}
