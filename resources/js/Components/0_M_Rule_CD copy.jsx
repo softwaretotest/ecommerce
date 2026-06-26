@@ -1,6 +1,6 @@
 // 0_M_Rule_CD.jsx
-import { useState, useEffect } from "react";
-import { useShallow } from "zustand/react/shallow";
+import { useState } from "react";
+
 import { use_M_Store } from "@/Stores/0_M_Store.jsx";
 
 /**
@@ -10,12 +10,6 @@ import { use_M_Store } from "@/Stores/0_M_Store.jsx";
  */
 export function CD_Rule({ DB_options, ALL_DB_options }) {
     const [checked_CD, setChecked_CD] = useState(DB_options);
-
-    const M_Focus = use_M_Store(useShallow((state) => state.M_Focus));
-
-    // useEffect(() => {
-    console.log("[Store Updated] ข้อมูลฟิลด์ที่โฟกัสอยู่ขณะนี้:", M_Focus);
-    // }, [M_Focus]);
 
     function updateRules(currentItems, option, isChecked) {
         let nextItems = isChecked

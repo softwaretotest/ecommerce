@@ -12,17 +12,23 @@ export default function TabContent({
     focus_Siderbar_Button,
     set_Focus_Siderbar_Button,
 }) {
-    const initRules = use_M_Store((state) => state.initRules);
+    const set_M_Focus = use_M_Store((state) => state.set_M_Focus);
+    // const M_Focus = use_M_Store((state) => state.M_Focus);
 
-    const set_M_Store = (fieldname, val) => {
-        // 1. อ่านค่าจาก UI (val คือข้อมูลของฟิลด์ที่คลิกอยู่)
-        // สมมติว่า val มีข้อมูลที่บอกว่าฟิลด์นี้มี Rules อะไรบ้าง
-        // เราจะ filter หรือเลือกเฉพาะ rules ที่เกี่ยวข้องส่งเข้าไป
+    const set_M_Store = (key, val) => {
         const currentInitialRules = Array.isArray(val) ? val : [];
 
-        // 2. สั่ง Store ให้เตรียม State สำหรับฟิลด์นี้
-        initRules(fieldname, currentInitialRules);
+        set_M_Focus(key, currentInitialRules);
+
+        // console.log(
+        //     `[Verify] ตอนนี้โฟกัสฟิลด์: "${key}" | ข้อมูลคือ:`,
+        //     currentInitialRules,
+        // );
     };
+
+    // useEffect(() => {
+    //     console.log("[Store Updated] ข้อมูลฟิลด์ที่โฟกัสอยู่ขณะนี้:", M_Focus);
+    // }, [M_Focus]);
 
     if (!M_value || typeof M_value !== "object") {
         return (

@@ -1,5 +1,5 @@
 // resources/js/Components/0_M_SubTab.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { use_M_Store } from "@/Stores/0_M_Store.jsx";
 
@@ -16,17 +16,24 @@ import "../../css/0_M_UI.css";
  }
  */
 export default function SubTab({ data, onUpdate }) {
-    const initRules = use_M_Store((state) => state.initRules);
+    
+    const set_M_Focus = use_M_Store((state) => state.set_M_Focus);
+    // const M_Focus = use_M_Store((state) => state.M_Focus);
 
     const set_M_Store = (key, val) => {
-        // 1. อ่านค่าจาก UI (val คือข้อมูลของฟิลด์ที่คลิกอยู่)
-        // สมมติว่า val มีข้อมูลที่บอกว่าฟิลด์นี้มี Rules อะไรบ้าง
-        // เราจะ filter หรือเลือกเฉพาะ rules ที่เกี่ยวข้องส่งเข้าไป
         const currentInitialRules = Array.isArray(val) ? val : [];
 
-        // 2. สั่ง Store ให้เตรียม State สำหรับฟิลด์นี้
-        initRules(key, currentInitialRules);
+        set_M_Focus(key, currentInitialRules);
+
+        // console.log(
+        //     `[Verify] ตอนนี้โฟกัสฟิลด์: "${key}" | ข้อมูลคือ:`,
+        //     currentInitialRules,
+        // );
     };
+
+    // useEffect(() => {
+    //     console.log("[Store Updated] ข้อมูลฟิลด์ที่โฟกัสอยู่ขณะนี้:", M_Focus);
+    // }, [M_Focus]);
 
     const subTabs = Object.keys(data).filter(
         (M_Class_Name) => typeof data[M_Class_Name] === "object",
