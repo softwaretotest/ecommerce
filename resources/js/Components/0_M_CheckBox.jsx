@@ -1,56 +1,63 @@
 // 0_M_CheckBox.jsx
-import { useState } from "react";
-import { CD_Rule_Check } from "@/Components/0_M_CD_Rule_Check.jsx";
+import { CD_Rule } from "@/Components/0_M_Rule_CD.jsx";
+import { UI_Rule } from "@/Components/0_M_Rule_UI.jsx";
 
 export function renderCheckboxList(
     M_Class_Name_List,
     fieldDataList = [],
     getOptions_for_Checkbox_or_Dropdown,
+    groupLabel, // CD , CU
 ) {
-    const foundValues = fieldDataList.filter(function (item) {
-        let valueToTest = Array.isArray(item) ? item[0] : item;
-
-        if (typeof valueToTest !== "string") return false;
-
-        return M_Class_Name_List.some((className) =>
-            valueToTest.startsWith(className + "::"),
+    // 1. กรองเฉพาะข้อมูลที่อยู่ในกลุ่มที่เกี่ยวข้องกับ Column นี้
+    const foundValues = fieldDataList.filter((item) => {
+        let val = Array.isArray(item) ? item[0] : item;
+        return (
+            typeof val === "string" &&
+            M_Class_Name_List.some((c) => val.startsWith(c + "::"))
         );
     });
 
-    // e.g. a db field can have multiple cd = ["REQUIRED", "UNIQUE"])
-    const defaultValues = foundValues.map(function (val) {
-        const stringVal = Array.isArray(val) ? val[0] : val;
-        return stringVal.split("::")[1];
-    });
+    // 2. แยก Data ตามประเภท (โดยตัด prefix ออก)
+    const DB_options = foundValues
+        .filter((v) => {
+            const val = Array.isArray(v) ? v[0] : v;
+            return val.startsWith("cd::") || val.startsWith("cud::");
+        })
+        .map((v) => (Array.isArray(v) ? v[0] : v).split("::")[1]);
 
-    const options = M_Class_Name_List.flatMap((M_Class_Name) =>
-        getOptions_for_Checkbox_or_Dropdown(M_Class_Name),
-    );
+    const UI_options = foundValues
+        .filter((v) => {
+            const val = Array.isArray(v) ? v[0] : v;
+            return val.startsWith("u::") || val.startsWith("cud::");
+        })
+        .map((v) => (Array.isArray(v) ? v[0] : v).split("::")[1]);
 
-    const [checkedItems, setCheckedItems] = useState(defaultValues);
+    const ALL_DB_options =
+        groupLabel === "CD"
+            ? Array.from(
+                  new Set(
+                      M_Class_Name_List.flatMap((M_Class_Name) =>
+                          getOptions_for_Checkbox_or_Dropdown(M_Class_Name),
+                      ),
+                  ),
+              )
+            : []; // if no CD selected
+
+    const ALL_UI_options =
+        groupLabel === "CU"
+            ? Array.from(
+                  new Set(
+                      M_Class_Name_List.flatMap((M_Class_Name) =>
+                          getOptions_for_Checkbox_or_Dropdown(M_Class_Name),
+                      ),
+                  ),
+              )
+            : [];
 
     return (
-        <div className="M_checkbox-list">
-            {options.map((option) => (
-                <label key={option}>
-                    <input
-                        type="checkbox"
-                        value={option}
-                        defaultChecked={defaultValues.includes(option)}
-                        onChange={(e) => {
-                            const isChecked = e.target.checked;
-
-                            const nextState = CD_Rule_Check(
-                                checkedItems,
-                                option,
-                                isChecked,
-                            );
-                            setCheckedItems(nextState);
-                        }}
-                    />
-                    {option}
-                </label>
-            ))}
-        </div>
+        <>
+            <CD_Rule DB_options={DB_options} ALL_DB_options={ALL_DB_options} />
+            <UI_Rule UI_options={UI_options} ALL_UI_options={ALL_UI_options} />
+        </>
     );
 }

@@ -40,7 +40,7 @@ export default function TabContent({
             const fieldName = e.detail;
             setFocusField(fieldName);
 
-            // สั่ง Scroll ไปที่ Ref ของฟิลด์นั้น
+            // auto Scroll to Ref of that field
             if (scrollRefs.current[fieldName]) {
                 scrollRefs.current[fieldName].scrollIntoView({
                     behavior: "smooth",

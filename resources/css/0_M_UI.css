@@ -1,3 +1,9 @@
+:root {
+    --cd-col-width: 650px;
+}
+body {
+    background-color: #888;
+}
 /* --- Dashboard Containers --- */
 .m-tab-container {
     display: flex;
@@ -34,8 +40,14 @@
     grid-template-columns: 1fr 1fr;
     gap: 20px;
 }
+
+.column-flex-form,
 .column-flex {
     flex: 1;
+}
+
+.column-flex-form {
+    max-width: var(--cd-col-width);
 }
 
 /* --- Inputs & Fields --- */
@@ -104,7 +116,7 @@
     border-radius: 4px;
     font-weight: bold;
     color: #fff;
-    background-color: #ddd;
+    background-color: #9e6464;
 }
 .nav-button.active {
     background-color: #333;
@@ -239,7 +251,7 @@
 
 .content-box {
     display: grid;
-    grid-template-columns: min-content 1fr 300px;
+    grid-template-columns: min-content var(--cd-col-width) 250px;
     gap: 20px;
     height: 80vh;
 }

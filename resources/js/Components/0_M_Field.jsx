@@ -66,6 +66,7 @@ export default function Field({ field_data }) {
                                       M_Class_Name_List,
                                       fieldDataList,
                                       getOptions_for_Checkbox_or_Dropdown,
+                                      group.label, // CD , CU
                                   )}
                         </div>
                     );

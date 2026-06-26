@@ -65,7 +65,7 @@ export default function SubTab({ data, onUpdate }) {
                 </nav>
 
                 {/* left column = Input Boxes */}
-                <div className="column-flex">
+                <div className="column-flex-form">
                     <TabContent
                         M_Class_Name={activeSubTab}
                         M_value={data[activeSubTab]}
