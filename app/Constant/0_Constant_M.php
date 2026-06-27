@@ -9,10 +9,8 @@ namespace App\Constant;
 class d
 {
     public const BOOLEAN = 'boolean';
-    /**
-     * @example [d::DEFAULT, $value]
-     */
-    public const DEFAULT = 'default';
+
+    public const INTEGER = 'integer';
 
     /**
      * @example [d::DECIMAL, int $total, int $places]
@@ -25,28 +23,13 @@ class d
     public const STRING = 'string';
 
     /**
+     * hardcoded in 0_DBOption.php
      * @example [d::FOREIGN, string $table, string $onDelete = 'cascade']
      */
     public const FOREIGN = 'foreign';
-
-    /**
-     * @example [d::UNSIGNED_BIG_INTEGER]
-     */
     public const UNSIGNED_BINT = 'unsignedBigInteger';
-
-    /**
-     * @example [d::NULLABLE]
-     */
     public const NULLABLE = 'nullable';
-
-    /**
-     * @example [d::INDEX]
-     */
     public const INDEX = 'index';
-
-    /**
-     * @example [d::UNIQUE]
-     */
     public const UNIQUE = 'unique';
 }
 
@@ -64,12 +47,20 @@ class u
 
 /**
  * CONSTRAINT DB
+
+
+NOTE: 
+we don't need PRIMARY in Class d for now, 
+because we use use surrogate ID as PRIMARY KEY e.g. 
+in case order_id , we don't use 
+product_id + user_id + timestamp AS PRIMARY KEY
+, because less db query performance thant order_id  (upto 100,000 records)
+ Laravel $table->id() maked auto. REQUIRED UNIQUE AUTO-INCREMENT
  */
 class cd
 {
     public const NULLABLE = 'nullable';
     public const DEFAULT = 'default';
-    public const PRIMARY = 'primary';
     public const FOREIGN = 'foreign';
     public const UNIQUE = 'unique';
     public const INDEX = 'index';

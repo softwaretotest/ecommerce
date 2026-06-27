@@ -1,6 +1,8 @@
 // // resources/js/Services/0_M_DataProvider.jsx
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from "react";
+
+export let GLOBAL_METADATA = null;
 
 const MetadataContext = createContext();
 
@@ -10,9 +12,10 @@ export const M_DataProvider = ({ children }) => {
 
     useEffect(() => {
         // get M-Data from API
-        fetch('/api/m-data')
+        fetch("/api/m-data")
             .then((res) => res.json())
             .then((data) => {
+                GLOBAL_METADATA = data; // to use data in normal JS not ReactComponent
                 setMetadata(data);
                 setLoading(false);
             })

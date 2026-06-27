@@ -1,6 +1,6 @@
 // 0_M_CheckBox.jsx
-import { CD_Rule } from "@/Components/0_M_Rule_CD.jsx";
-import { UI_Rule } from "@/Components/0_M_Rule_UI.jsx";
+import { CD_Rule } from "@/Components/0_M_Rule_D_CD.jsx";
+import { UI_Rule } from "@/Components/0_M_Rule_U_UI.jsx";
 
 export function renderCheckboxList(
     M_Class_Name_List,

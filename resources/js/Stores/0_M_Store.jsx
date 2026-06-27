@@ -1,27 +1,26 @@
+//0_M_Store.jsx
+
 import { create } from "zustand";
 
 export const use_M_Store = create((set) => ({
-    // เก็บแค่ "ตัวที่โฟกัสอยู่ตัวเดียว"
-    M_Focus: {
-        key: null,
-        data: null,
-    },
+    D_States: {},
+    CD_States: {},
 
-    // Action นี้จะล้างของเก่าทิ้งเสมอ และแทนที่ด้วยของใหม่
-    set_M_Focus: (key, data) =>
+    set_States: (fieldname, CD_States, D_States) =>
         set(() => ({
-            M_Focus: {
-                key: key,
-                data: data,
+            D_States: {
+                fieldname: fieldname,
+                ...D_States,
+            },
+            CD_States: {
+                fieldname: fieldname,
+                ...CD_States,
             },
         })),
 
-    // Action สำหรับล้างค่าเวลาไม่ต้องการโฟกัสแล้ว
-    clear_M_Focus: () =>
+    unset_States: () =>
         set(() => ({
-            M_Focus: {
-                key: null,
-                data: null,
-            },
+            D_States: {},
+            CD_States: {},
         })),
 }));

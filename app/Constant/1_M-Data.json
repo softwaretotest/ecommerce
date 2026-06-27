@@ -2,7 +2,7 @@
     "_comment": "1_M-Data.json",
     "d": {
         "BOOLEAN": "boolean",
-        "DEFAULT": "default",
+        "INTEGER": "integer",
         "DECIMAL": "decimal",
         "STRING": "string",
         "FOREIGN": "foreign",
@@ -21,7 +21,6 @@
     "cd": {
         "NULLABLE": "nullable",
         "DEFAULT": "default",
-        "PRIMARY": "primary",
         "FOREIGN": "foreign",
         "UNIQUE": "unique",
         "INDEX": "index"

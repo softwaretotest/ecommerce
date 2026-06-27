@@ -1,9 +1,12 @@
 // 0_M_TabContent.jsx
 
 import { React, useState, useRef, useEffect } from "react";
-import SpecialField from "@/Components/0_M_SpecialField.jsx";
-import Field from "@/Components/0_M_Field.jsx";
+
 import { use_M_Store } from "@/Stores/0_M_Store.jsx";
+import { set_Focus_D_CD_States } from "@/Components/0_M_Focus_D_CD_States";
+
+import SpecialField from "@/Components/0_M_SpecialField";
+import Field from "@/Components/0_M_Field";
 
 export default function TabContent({
     M_Class_Name,
@@ -11,25 +14,9 @@ export default function TabContent({
     onUpdate,
     focus_Siderbar_Button,
     set_Focus_Siderbar_Button,
+    focusField,
+    setFocusField,
 }) {
-    const set_M_Focus = use_M_Store((state) => state.set_M_Focus);
-    // const M_Focus = use_M_Store((state) => state.M_Focus);
-
-    const set_M_Store = (key, val) => {
-        const currentInitialRules = Array.isArray(val) ? val : [];
-
-        set_M_Focus(key, currentInitialRules);
-
-        // console.log(
-        //     `[Verify] ตอนนี้โฟกัสฟิลด์: "${key}" | ข้อมูลคือ:`,
-        //     currentInitialRules,
-        // );
-    };
-
-    // useEffect(() => {
-    //     console.log("[Store Updated] ข้อมูลฟิลด์ที่โฟกัสอยู่ขณะนี้:", M_Focus);
-    // }, [M_Focus]);
-
     if (!M_value || typeof M_value !== "object") {
         return (
             <div className="ui-placeholder">ไม่มี UI สำหรับ {M_Class_Name}</div>
@@ -39,8 +26,6 @@ export default function TabContent({
     const handleChange = (fieldname, newValue) => {
         onUpdate({ ...M_value, [fieldname]: newValue });
     };
-
-    const [focusField, setFocusField] = useState(null);
 
     const scrollRefs = useRef({});
 
@@ -74,6 +59,22 @@ export default function TabContent({
         return () => window.removeEventListener("focus-field", handleFocus);
     }, []);
 
+    const D_States = use_M_Store.getState().D_States;
+    const CD_States = use_M_Store.getState().CD_States;
+    const set_CD_States = use_M_Store.getState().set_CD_States;
+    const set_States = use_M_Store((state) => state.set_States);
+
+    function update_All_States(fieldname, M_value) {
+        const [D_States, CD_States] = set_Focus_D_CD_States(fieldname, M_value);
+
+        set_States(fieldname, CD_States, D_States);
+    }
+
+    // useEffect(() => {
+    //     console.log("0_M_TabContent.jsx - D_States อัปเดตแล้ว:", D_States);
+    //     console.log("0_M_TabContent.jsx - CD_States อัปเดตแล้ว:", CD_States);
+    // }, [CD_States]);
+
     return (
         <>
             <div>
@@ -85,11 +86,12 @@ export default function TabContent({
                     <div
                         key={fieldname}
                         ref={(el) => (scrollRefs.current[fieldname] = el)}
-                        className={`field-row-wrapper-custom ${focusField === fieldname ? "is-focused" : ""}`}
+                        className={`form-subtab-content-row ${focusField === fieldname ? "is-focused" : ""}`}
                         onClick={() => {
                             setFocusField(fieldname);
                             set_Focus_Siderbar_Button(fieldname);
-                            set_M_Store(fieldname, M_value[fieldname]);
+
+                            update_All_States(fieldname, M_value);
                         }}
                     >
                         {/* left column: Capital Letter (Fieldname) */}
@@ -113,27 +115,25 @@ export default function TabContent({
                             </>
                         )}
 
-                        {/* คอลัมน์ขวา: Input หรือ Field Component */}
-                        <div className="field-input-wrapper">
-                            {M_Class_Name === "s" && Array.isArray(val) && (
-                                <SpecialField field_data={val} />
-                            )}
+                        {/* middle column: Input Fields */}
+                        {M_Class_Name === "s" && Array.isArray(val) && (
+                            <SpecialField field_data={val} />
+                        )}
 
-                            {M_Class_Name === "f" && Array.isArray(val) && (
-                                <Field field_data={val} />
-                            )}
+                        {M_Class_Name === "f" && Array.isArray(val) && (
+                            <Field field_data={val} />
+                        )}
 
-                            {M_Class_Name !== "s" && M_Class_Name !== "f" && (
-                                <input
-                                    type="text"
-                                    className="M_field-value-input"
-                                    defaultValue={val}
-                                    onBlur={(e) =>
-                                        handleChange(fieldname, e.target.value)
-                                    }
-                                />
-                            )}
-                        </div>
+                        {M_Class_Name !== "s" && M_Class_Name !== "f" && (
+                            <input
+                                type="text"
+                                className="M_field-value-input"
+                                defaultValue={val}
+                                onBlur={(e) =>
+                                    handleChange(fieldname, e.target.value)
+                                }
+                            />
+                        )}
                     </div>
                 ))}
             </div>

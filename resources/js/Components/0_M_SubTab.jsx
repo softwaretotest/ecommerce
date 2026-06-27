@@ -2,49 +2,52 @@
 import React, { useState, useEffect } from "react";
 
 import { use_M_Store } from "@/Stores/0_M_Store.jsx";
+import { set_Focus_D_CD_States } from "@/Components/0_M_Focus_D_CD_States";
 
-import TabContent from "@/Components/0_M_TabContent.jsx";
+import TabContent from "@/Components/0_M_TabContent";
 import "../../css/0_M_UI.css";
 
 /**
- *  Tabs of Classes S CD D U CU CUD
- * @param {*} data  = content of the Classes
- Class D 
- {
-  "BOOLEAN": "boolean",
-  ....
- }
+ * @param {*} data
+ * if SubTab = APP DATA , then data = content of 1_App-Data.json
+ * ,e.g. * f:: = Field
+ *
+ * if SubTab = M DATA , then data = content of 1_M-Data.json
+ * ,e.g. * Tabs of Classes S CD D U CU CUD
+ *
+ * if SubTab = ENTITIES , then data = content of 1_Entities.json
+ * ,e.g. * t:: = Tablename
  */
 export default function SubTab({ data, onUpdate }) {
-    
-    const set_M_Focus = use_M_Store((state) => state.set_M_Focus);
-    // const M_Focus = use_M_Store((state) => state.M_Focus);
-
-    const set_M_Store = (key, val) => {
-        const currentInitialRules = Array.isArray(val) ? val : [];
-
-        set_M_Focus(key, currentInitialRules);
-
-        // console.log(
-        //     `[Verify] ตอนนี้โฟกัสฟิลด์: "${key}" | ข้อมูลคือ:`,
-        //     currentInitialRules,
-        // );
-    };
-
-    // useEffect(() => {
-    //     console.log("[Store Updated] ข้อมูลฟิลด์ที่โฟกัสอยู่ขณะนี้:", M_Focus);
-    // }, [M_Focus]);
-
     const subTabs = Object.keys(data).filter(
         (M_Class_Name) => typeof data[M_Class_Name] === "object",
     );
+
     const [activeSubTab, setActiveSubTab] = useState(subTabs[0]);
 
     const M_value = data[activeSubTab];
 
     const [focus_Siderbar_Button, set_Focus_Siderbar_Button] = useState(null);
 
-    const fieldNames = Object.keys(M_value || {});
+    const [focusField, setFocusField] = useState(null);
+
+    const fieldnames = Object.keys(M_value || {});
+
+    const D_States = use_M_Store.getState().D_States;
+    const CD_States = use_M_Store.getState().CD_States;
+    const set_CD_States = use_M_Store.getState().set_CD_States;
+    const set_States = use_M_Store((state) => state.set_States);
+
+    function update_All_States(fieldname, M_value) {
+        const [D_States, CD_States] = set_Focus_D_CD_States(fieldname, M_value);
+
+        set_States(fieldname, CD_States, D_States);
+    }
+
+    // useEffect(() => {
+    //     console.log("0_M_SubTab.jsx - D_States อัปเดตแล้ว:", D_States);
+    //     console.log("0_M_SubTab.jsx - CD_States อัปเดตแล้ว:", CD_States);
+    // }, [CD_States]);
 
     return (
         <div className="subtab-wrapper">
@@ -68,21 +71,24 @@ export default function SubTab({ data, onUpdate }) {
             {/* show 2 column */}
             <div className="content-box content-grid">
                 <nav className="field-sidebar">
-                    {fieldNames.map((fieldName) => (
+                    {fieldnames.map((fieldname) => (
                         <button
-                            key={fieldName}
-                            className={`field-nav-link ${focus_Siderbar_Button === fieldName ? "active" : ""}`}
+                            key={fieldname}
+                            className={`field-nav-link ${focus_Siderbar_Button === fieldname ? "active" : ""}`}
                             onClick={() => {
-                                set_M_Store(fieldName, M_value[fieldName]);
-                                set_Focus_Siderbar_Button(fieldName);
+                                set_Focus_Siderbar_Button(fieldname);
+                                setFocusField(fieldname);
+
+                                update_All_States(fieldname, M_value);
+
                                 window.dispatchEvent(
                                     new CustomEvent("focus-field", {
-                                        detail: fieldName,
+                                        detail: fieldname,
                                     }),
                                 );
                             }}
                         >
-                            {fieldName.toUpperCase()}
+                            {fieldname.toUpperCase()}
                         </button>
                     ))}
                 </nav>
@@ -93,8 +99,11 @@ export default function SubTab({ data, onUpdate }) {
                         M_Class_Name={activeSubTab}
                         M_value={M_value}
                         onUpdate={onUpdate}
+                        // params for 2-way states binding
                         focus_Siderbar_Button={focus_Siderbar_Button}
                         set_Focus_Siderbar_Button={set_Focus_Siderbar_Button}
+                        focusField={focusField}
+                        setFocusField={setFocusField}
                     />
                 </div>
 

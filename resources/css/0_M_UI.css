@@ -141,11 +141,18 @@ body {
 }
 
 /* --- Field Row & Wrapper --- */
-.field-row-wrapper-custom {
+.form-subtab-content-row {
     display: flex;
     align-items: center;
     gap: 10px;
     margin-bottom: 5px;
+
+    border: 2px solid transparent;
+    padding: 10px;
+    border-radius: 6px;
+    background-color: transparent;
+
+    transition: all 0.2s ease-in-out;
 }
 
 .field-key-capital {
@@ -155,10 +162,6 @@ body {
     min-width: 120px;
     text-align: center;
 }
-.field-input-wrapper {
-    flex: 1;
-}
-
 /* --- Field Component Styles --- */
 .field-wrapper-box {
     border: 1px solid #000;
@@ -220,18 +223,9 @@ body {
     margin-right: 8px;
 }
 
-.field-row-wrapper-custom {
-    border: 2px solid transparent;
-    padding: 10px;
-    border-radius: 6px;
-    background-color: transparent;
-
-    transition: all 0.2s ease-in-out;
-}
-
-.field-row-wrapper-custom.is-focused {
+.form-subtab-content-row.is-focused {
     border: 2px solid #e3342f;
-    background-color: #ffffff;
+    background-color: #aabba3;
 
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
     transform: translateY(-2px);
@@ -259,6 +253,7 @@ body {
 .field-sidebar {
     overflow-y: auto;
     border-right: 1px solid #ddd;
+    gap: 3px;
     padding: 10px;
     display: flex;
     flex-direction: column;
