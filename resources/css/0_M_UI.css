@@ -282,3 +282,21 @@ body {
     border-color: #e3342f;
     font-weight: bold;
 }
+
+.json-list {
+    font-family: monospace;
+    padding: 10px;
+    background: #2d2d2d;
+}
+
+.json-line {
+    padding: 2px 5px;
+    transition: background-color 0.3s ease;
+}
+
+.json-highlight {
+    color: #000;
+    background-color: #38f5e8b9; /* สีเหลือง Highlight */
+    border-radius: 3px;
+    font-weight: bold;
+}

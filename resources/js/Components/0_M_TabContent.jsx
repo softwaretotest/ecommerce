@@ -16,6 +16,7 @@ export default function TabContent({
     set_Focus_Siderbar_Button,
     focusField,
     setFocusField,
+    setFocusJSON,
 }) {
     if (!M_value || typeof M_value !== "object") {
         return (
@@ -90,7 +91,7 @@ export default function TabContent({
                         onClick={() => {
                             setFocusField(fieldname);
                             set_Focus_Siderbar_Button(fieldname);
-
+                            setFocusJSON(fieldname);
                             update_All_States(fieldname, M_value);
                         }}
                     >

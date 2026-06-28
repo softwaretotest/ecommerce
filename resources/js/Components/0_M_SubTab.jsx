@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 
 import { use_M_Store } from "@/Stores/0_M_Store.jsx";
 import { set_Focus_D_CD_States } from "@/Components/0_M_Focus_D_CD_States";
+import JSON_Content from "./0_M_JSON_Content";
 
 import TabContent from "@/Components/0_M_TabContent";
 import "../../css/0_M_UI.css";
@@ -27,9 +28,12 @@ export default function SubTab({ data, onUpdate }) {
 
     const M_value = data[activeSubTab];
 
+    /**
+     * states to focus 3 Components with same click
+     */
     const [focus_Siderbar_Button, set_Focus_Siderbar_Button] = useState(null);
-
     const [focusField, setFocusField] = useState(null);
+    const [focusJSON, setFocusJSON] = useState(null);
 
     const fieldnames = Object.keys(M_value || {});
 
@@ -104,15 +108,23 @@ export default function SubTab({ data, onUpdate }) {
                         set_Focus_Siderbar_Button={set_Focus_Siderbar_Button}
                         focusField={focusField}
                         setFocusField={setFocusField}
+                        setFocusJSON={setFocusJSON}
                     />
                 </div>
 
                 {/* right column = JSON */}
                 <div className="column-flex json-preview-column">
                     <h3 className="json-header">JSON Data</h3>
-                    <pre className="json-pre">
+                    {/* <pre className="json-pre">
                         {JSON.stringify(M_value, null, 2)}
-                    </pre>
+                    </pre> */}
+                    <JSON_Content
+                        M_value={M_value}
+                        focusField={focusField}
+                        set_Focus_Siderbar_Button={set_Focus_Siderbar_Button}
+                        setFocusField={setFocusField}
+                        setFocusJSON={setFocusJSON}
+                    />
                 </div>
             </div>
         </div>
