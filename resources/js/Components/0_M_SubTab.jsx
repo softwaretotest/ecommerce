@@ -78,7 +78,7 @@ export default function SubTab({ data, onUpdate }) {
                             onClick={() => {
                                 set_Focus_Siderbar_Button(fieldname);
                                 setFocusField(fieldname);
-
+                                setFocusJSON(fieldname);
                                 update_All_States(fieldname, M_value);
 
                                 window.dispatchEvent(
