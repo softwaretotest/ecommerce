@@ -3,12 +3,12 @@
 import { use_M_Option } from "@/Hooks/use_M_Option.js";
 
 export function M_Option({ M_Class_Name_List, fieldDataList }) {
-    const { getOptions } = use_M_Option();
+    const { getOptions } = use_M_Option(); // ดึงจาก Hook โดยตรง
 
     if (!M_Class_Name_List) return null;
 
     return M_Class_Name_List.flatMap((M_Class_Name) => {
-        const options = getOptions(M_Class_Name);
+        const options = getOptions(M_Class_Name); // ใช้ getOptions จาก Hook
 
         return options.map((item) => (
             <option key={item} value={item}>
@@ -18,6 +18,16 @@ export function M_Option({ M_Class_Name_List, fieldDataList }) {
     });
 }
 
+/**
+ * Renders a dropdown select element
+ * *
+ * * Example usage:
+ * * M_Class_Name_List: ["f"]
+ * * fieldDataList: ["f::ORDER_NR"]
+ * *
+ * * Result:
+ * * <select defaultValue="ORDER_NR"> ... </select>
+ */
 export function renderDropdown(M_Class_Name_List, fieldDataList = []) {
     const foundValue = fieldDataList.find((item) => {
         let valueToTest = Array.isArray(item) ? item[0] : item;

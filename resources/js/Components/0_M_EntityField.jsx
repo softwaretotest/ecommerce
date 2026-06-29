@@ -6,34 +6,24 @@ import { use_M_Data } from "@/Services/0_M_DataProvider.jsx";
 
 /**
  * DB Table with DB Column in it
- * e.g.
-{
-    "_comment": "1_Entities.json",
-    "entities": {
-        "t::orders": [
-            "f::ORDER_NR",
-            "f::PRODUCT_ID",
-            "f::USER_ID",
-            "f::QUANTITY",
-            "f::CONFIRM_ORDER"
-        ],
-    }
-}
-*/
+ * *
+ * * {
+ * *     "_comment": "1_Entities.json",
+ * *  "entities": {
+ * *         "t::orders": [
+ * *             "f::ORDER_NR",
+ * *             "f::PRODUCT_ID",
+ * *             "f::USER_ID",
+ * *             "f::QUANTITY",
+ * *             "f::CONFIRM_ORDER"
+ * *         ],
+ * *     }
+ * * }
+ */
 export default function EntityField({ field_data, table_name }) {
     console.log("0_M_EntityField.jsx - field_data = ", field_data);
 
     const metadata = use_M_Data();
-
-    // ฟังก์ชันดึง Options สำหรับ Dropdown
-    function getOptions_for_Dropdown(M_Class_Name) {
-        if (!metadata || !metadata.m_data) return [];
-
-        const mData = metadata.m_data;
-        // ดึงจาก m_data ตามชื่อ Class ที่ส่งมา (เช่น mData['f'], mData['d'])
-        const target = mData[M_Class_Name] || {};
-        return Object.keys(target).sort();
-    }
 
     return (
         <div className="entity-wrapper-box">
@@ -53,8 +43,7 @@ export default function EntityField({ field_data, table_name }) {
                     <div key={index} className="field-row">
                         {renderDropdown(
                             ["f"], // e.g. f::NAME, f::PRICE f::STOCK
-                            [fieldItem], // ส่งข้อมูลฟิลด์ปัจจุบันเข้าไป
-                            getOptions_for_Dropdown, // ส่งฟังก์ชันที่ปรับปรุงแล้วเข้าไป
+                            [fieldItem],
                         )}
                     </div>
                 ))}

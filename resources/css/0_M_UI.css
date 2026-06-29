@@ -19,8 +19,8 @@ body {
 /* --- Sub-Tabs --- */
 .subtab-container {
     display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: 5px;
+    margin: 5px;
 }
 .subtab-button {
     padding: 5px 15px;
@@ -53,6 +53,11 @@ body {
 /* --- Inputs & Fields --- */
 .field-wrapper {
     margin-bottom: 15px;
+}
+.fields-container {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
 }
 .field-label {
     display: block;
@@ -88,13 +93,13 @@ body {
 
 /* --- Dashboard Main Layout --- */
 .dashboard-wrapper {
-    padding: 40px;
+    padding: 5px;
     max-width: 2000px;
     margin: 0 auto;
     font-family: Arial;
 }
 .dashboard-header {
-    margin-bottom: 20px;
+    margin: 5px;
 }
 .tab-switcher-container {
     display: flex;
@@ -103,7 +108,7 @@ body {
 }
 .dashboard-main-box {
     border: 1px solid #ccc;
-    padding: 20px;
+    padding: 10px;
     border-radius: 8px;
     min-height: 400px;
 }
@@ -186,6 +191,7 @@ body {
     color: green;
     font-weight: bold;
     width: 200px;
+    border-radius: 4px;
 }
 .field-separator-colon {
     font-weight: bold;
@@ -204,7 +210,9 @@ body {
     margin-bottom: 5px;
 }
 .M_field-dropdown {
+    padding: 3px;
     width: 100%;
+    border-radius: 4px;
 }
 
 .M_checkbox-list {

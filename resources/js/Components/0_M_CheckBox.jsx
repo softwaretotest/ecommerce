@@ -10,8 +10,8 @@ export function renderCheckboxList(
 ) {
     const { getOptions } = use_M_Option();
 
-    console.log("0_M_CheckBox.jsx - M_Class_Name_List:", M_Class_Name_List);
-    console.log("0_M_CheckBox.jsx - fieldDataList:", fieldDataList);
+    // console.log("0_M_CheckBox.jsx - M_Class_Name_List:", M_Class_Name_List);
+    // console.log("0_M_CheckBox.jsx - fieldDataList:", fieldDataList);
 
     if (!Array.isArray(fieldDataList)) return null;
 
@@ -55,8 +55,8 @@ export function renderCheckboxList(
               )
             : [];
 
-    console.log("0_M_CheckBox.jsx - DB_options:", DB_options);
-    console.log("0_M_CheckBox.jsx - UI_options:", UI_options);
+    // console.log("0_M_CheckBox.jsx - DB_options:", DB_options);
+    // console.log("0_M_CheckBox.jsx - UI_options:", UI_options);
 
     return (
         <>
