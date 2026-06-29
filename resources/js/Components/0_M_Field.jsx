@@ -36,13 +36,13 @@ export default function Field({ field_data }) {
                 <input
                     type="text"
                     defaultValue={name.toUpperCase()}
-                    className="field-input-blue"
+                    className="App_Data_KEY"
                 />
                 <span className="field-separator-colon">:</span>
                 <input
                     type="text"
                     defaultValue={name}
-                    className="field-input-green"
+                    className="App_Data_VALUE"
                 />
             </div>
 

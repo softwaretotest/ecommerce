@@ -8,7 +8,9 @@ export function renderCheckboxList(
     getOptions_for_Checkbox_or_Dropdown,
     groupLabel, // CD , CU
 ) {
-    // 1. กรองเฉพาะข้อมูลที่อยู่ในกลุ่มที่เกี่ยวข้องกับ Column นี้
+    /**
+     *  filter only data for this Column
+     */
     const foundValues = fieldDataList.filter((item) => {
         let val = Array.isArray(item) ? item[0] : item;
         return (
@@ -17,7 +19,9 @@ export function renderCheckboxList(
         );
     });
 
-    // 2. แยก Data ตามประเภท (โดยตัด prefix ออก)
+    /**
+     * separate Data according to prefix d:: u:: etc. and remove prefix
+     */
     const DB_options = foundValues
         .filter((v) => {
             const val = Array.isArray(v) ? v[0] : v;
@@ -56,7 +60,7 @@ export function renderCheckboxList(
 
     return (
         <>
-            <CD_Rule DB_options={DB_options} ALL_DB_options={ALL_DB_options} />
+            {/* <CD_Rule DB_options={DB_options} ALL_DB_options={ALL_DB_options} /> */}
             <UI_Rule UI_options={UI_options} ALL_UI_options={ALL_UI_options} />
         </>
     );

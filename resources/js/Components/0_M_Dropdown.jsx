@@ -1,4 +1,4 @@
-// 0_M_Dropdown.jsx
+// resources/js/Components/0_M_Dropdown.jsx
 
 export function M_Option(props) {
     const {
@@ -38,6 +38,7 @@ export function M_Option(props) {
         });
     });
 }
+
 export function renderDropdown(
     M_Class_Name_List,
     fieldDataList = [],
@@ -77,8 +78,8 @@ export function renderDropdown(
                 M_Class_Name_List={M_Class_Name_List}
                 getOptions_for_Checkbox_or_Dropdown={
                     getOptions_for_Checkbox_or_Dropdown
-                } // ส่งต่อไปให้ M_Option
-                fieldDataList={fieldDataList} // อย่าลืมส่งตัวนี้ไปด้วยถ้า M_Option ต้องการใช้
+                }
+                fieldDataList={fieldDataList}
             />
         </select>
     );

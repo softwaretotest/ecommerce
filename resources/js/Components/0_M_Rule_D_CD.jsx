@@ -23,7 +23,6 @@ export function CD_Rule({ DB_options, ALL_DB_options }) {
     //     console.log("0_M_Rule_D_CD.js - CD_States = ", CD_States);
     // }, [D_States, CD_States]);
 
-    
     function updateRules(currentItems, option, isChecked) {
         // Logic to auto. contraint UI
     }

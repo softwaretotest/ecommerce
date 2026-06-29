@@ -1,5 +1,5 @@
 :root {
-    --cd-col-width: 650px;
+    --cd-col-width: 550px;
 }
 body {
     background-color: #888;
@@ -17,7 +17,7 @@ body {
 }
 
 /* --- Sub-Tabs --- */
-.subtabs-container {
+.subtab-container {
     display: flex;
     gap: 10px;
     margin-bottom: 20px;
@@ -142,7 +142,7 @@ body {
 
 /* --- Field Row & Wrapper --- */
 .form-subtab-content-row {
-    display: flex;
+    display: inline-block;
     align-items: center;
     gap: 10px;
     margin-bottom: 5px;
@@ -174,13 +174,13 @@ body {
     margin-bottom: 15px;
     gap: 10px;
 }
-.field-input-blue {
+.App_Data_KEY {
     border: 2px solid #3498db;
     padding: 5px;
     font-weight: bold;
     width: 150px;
 }
-.field-input-green {
+.App_Data_VALUE {
     border: 2px solid green;
     padding: 5px;
     color: green;

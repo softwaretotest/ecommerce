@@ -1,65 +1,39 @@
-// 0_M_TabContent.jsx
+// resources/js/Components/0_M_TabContent.jsx
 
 import { React, useState, useRef, useEffect } from "react";
+import { useScrollIntoView } from "@/hooks/useScrollIntoView";
 
 import { use_M_Store } from "@/Stores/0_M_Store.jsx";
 import { set_Focus_D_CD_States } from "@/Components/0_M_Focus_D_CD_States";
 
 import SpecialField from "@/Components/0_M_SpecialField";
 import Field from "@/Components/0_M_Field";
+import EntityField from "@/Components/0_M_EntityField";
+import DB_Tablename from "@/Components/0_M_DB_Tablename";
 
 export default function TabContent({
     M_Class_Name,
     M_value,
-    onUpdate,
-    focus_Siderbar_Button,
-    set_Focus_Siderbar_Button,
-    focusField,
-    setFocusField,
-    setFocusJSON,
+    activeField,
+    setActiveField,
 }) {
-    if (!M_value || typeof M_value !== "object") {
-        return (
-            <div className="ui-placeholder">ไม่มี UI สำหรับ {M_Class_Name}</div>
-        );
-    }
+    const update = use_M_Store((state) => state.update);
 
-    const handleChange = (fieldname, newValue) => {
-        onUpdate({ ...M_value, [fieldname]: newValue });
+    // use path to update, e.g. "APP_DATA.NAME"
+    const handleUpdate = (fieldname, newValue) => {
+        update(`APP_DATA.${fieldname}`, newValue);
     };
 
+    if (!M_value || typeof M_value !== "object") {
+        return <div className="ui-placeholder">No UI for {M_Class_Name}</div>;
+    }
+
     const scrollRefs = useRef({});
+    useScrollIntoView(activeField, scrollRefs);
 
-    useEffect(() => {
-        if (
-            focus_Siderbar_Button &&
-            scrollRefs.current[focus_Siderbar_Button]
-        ) {
-            scrollRefs.current[focus_Siderbar_Button].scrollIntoView({
-                behavior: "smooth",
-                block: "center",
-            });
-        }
-    }, [focus_Siderbar_Button]);
-
-    useEffect(() => {
-        const handleFocus = (e) => {
-            const fieldName = e.detail;
-            setFocusField(fieldName);
-
-            // auto Scroll to Ref of that field
-            if (scrollRefs.current[fieldName]) {
-                scrollRefs.current[fieldName].scrollIntoView({
-                    behavior: "smooth",
-                    block: "center",
-                });
-            }
-        };
-
-        window.addEventListener("focus-field", handleFocus);
-        return () => window.removeEventListener("focus-field", handleFocus);
-    }, []);
-
+    /**
+     * OLD solution works, will be removed
+     */
     const D_States = use_M_Store.getState().D_States;
     const CD_States = use_M_Store.getState().CD_States;
     const set_CD_States = use_M_Store.getState().set_CD_States;
@@ -67,14 +41,8 @@ export default function TabContent({
 
     function update_All_States(fieldname, M_value) {
         const [D_States, CD_States] = set_Focus_D_CD_States(fieldname, M_value);
-
         set_States(fieldname, CD_States, D_States);
     }
-
-    // useEffect(() => {
-    //     console.log("0_M_TabContent.jsx - D_States อัปเดตแล้ว:", D_States);
-    //     console.log("0_M_TabContent.jsx - CD_States อัปเดตแล้ว:", CD_States);
-    // }, [CD_States]);
 
     return (
         <>
@@ -82,58 +50,62 @@ export default function TabContent({
                 <label>M_Class_Name = {M_Class_Name}</label>
             </div>
             <div className="input-engine-container">
-                {/* LOOP OF FIELDS e.g. M_Class_Name = f , t , s , d , u , cd , cu , cud */}
-                {Object.entries(M_value).map(([fieldname, val]) => (
+                {/* LOOP OF FIELDS e.g. 
+                M_Class_Name = f , t , s , d , u , cd , cu , cud , entities*/}
+                {Object.entries(M_value).map(([fieldname, field_data]) => (
                     <div
                         key={fieldname}
-                        ref={(el) => (scrollRefs.current[fieldname] = el)}
-                        className={`form-subtab-content-row ${focusField === fieldname ? "is-focused" : ""}`}
+                        ref={(DOM_Node) =>
+                            (scrollRefs.current[fieldname] = DOM_Node)
+                        }
+                        className={`form-subtab-content-row ${activeField === fieldname ? "is-focused" : ""}`}
                         onClick={() => {
-                            setFocusField(fieldname);
-                            set_Focus_Siderbar_Button(fieldname);
-                            setFocusJSON(fieldname);
+                            setActiveField(fieldname);
                             update_All_States(fieldname, M_value);
                         }}
                     >
-                        {/* left column: Capital Letter (Fieldname) */}
-                        {M_Class_Name !== "f" && M_Class_Name !== "s" && (
+                        {["d", "u", "cd", "cu", "cud"].includes(
+                            M_Class_Name,
+                        ) && (
                             <>
+                                {/* M_Value UPPERCASE = e.g. NULLABLE */}
                                 <input
-                                    className="field-key-input"
+                                    className="M_Data_KEY"
                                     defaultValue={
                                         M_Class_Name === "t"
                                             ? fieldname
                                             : fieldname.toUpperCase()
                                     }
-                                    onBlur={(e) =>
-                                        handleKeyChange(
-                                            fieldname,
-                                            e.target.value,
-                                        )
-                                    }
                                 />
                                 <span className="field-separator-colon">:</span>
+
+                                {/* M_Value lowerCASE = e.g. nullable */}
+                                <input
+                                    type="text"
+                                    className="M_Data_VALUE"
+                                    defaultValue={field_data}
+                                    onBlur={(e) =>
+                                        handleUpdate(fieldname, e.target.value)
+                                    }
+                                />
                             </>
                         )}
 
                         {/* middle column: Input Fields */}
-                        {M_Class_Name === "s" && Array.isArray(val) && (
-                            <SpecialField field_data={val} />
+                        {M_Class_Name === "s" && Array.isArray(field_data) && (
+                            <SpecialField field_data={field_data} />
                         )}
 
-                        {M_Class_Name === "f" && Array.isArray(val) && (
-                            <Field field_data={val} />
+                        {M_Class_Name === "f" && Array.isArray(field_data) && (
+                            <Field field_data={field_data} />
                         )}
 
-                        {M_Class_Name !== "s" && M_Class_Name !== "f" && (
-                            <input
-                                type="text"
-                                className="M_field-value-input"
-                                defaultValue={val}
-                                onBlur={(e) =>
-                                    handleChange(fieldname, e.target.value)
-                                }
-                            />
+                        {M_Class_Name === "t" && (
+                            <DB_Tablename field_data={field_data} />
+                        )}
+
+                        {M_Class_Name === "entities" && (
+                            <EntityField field_data={field_data} />
                         )}
                     </div>
                 ))}

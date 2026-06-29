@@ -1,9 +1,11 @@
 // resources/js/Components/0_M_SubTab.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { useScrollIntoView } from "@/hooks/useScrollIntoView";
 
 import { use_M_Store } from "@/Stores/0_M_Store.jsx";
 import { set_Focus_D_CD_States } from "@/Components/0_M_Focus_D_CD_States";
 import JSON_Content from "./0_M_JSON_Content";
+import { M_Controller } from "@/Controllers/0_M_Controller";
 
 import TabContent from "@/Components/0_M_TabContent";
 import "../../css/0_M_UI.css";
@@ -19,7 +21,16 @@ import "../../css/0_M_UI.css";
  * if SubTab = ENTITIES , then data = content of 1_Entities.json
  * ,e.g. * t:: = Tablename
  */
-export default function SubTab({ data, onUpdate }) {
+export default function SubTab({ data }) {
+    M_Controller.updateField("Entities.User", "NewValue");
+
+    /**
+     * ONLY 1 state to focus 3 Components with same click
+     */
+    const [activeField, setActiveField] = useState(null);
+    const scrollRefs = useRef({});
+    useScrollIntoView(activeField, scrollRefs);
+
     const subTabs = Object.keys(data).filter(
         (M_Class_Name) => typeof data[M_Class_Name] === "object",
     );
@@ -28,15 +39,11 @@ export default function SubTab({ data, onUpdate }) {
 
     const M_value = data[activeSubTab];
 
-    /**
-     * states to focus 3 Components with same click
-     */
-    const [focus_Siderbar_Button, set_Focus_Siderbar_Button] = useState(null);
-    const [focusField, setFocusField] = useState(null);
-    const [focusJSON, setFocusJSON] = useState(null);
-
     const fieldnames = Object.keys(M_value || {});
 
+    /**
+     * OLD solution works, will be removed
+     */
     const D_States = use_M_Store.getState().D_States;
     const CD_States = use_M_Store.getState().CD_States;
     const set_CD_States = use_M_Store.getState().set_CD_States;
@@ -54,11 +61,12 @@ export default function SubTab({ data, onUpdate }) {
     // }, [CD_States]);
 
     return (
-        <div className="subtab-wrapper">
+        <>
+            {" "}
             {/* M-DATA   S CD D U CU CUD */}
             {/* APP-DATA F T */}
             {/* ENTITIES */}
-            <div className="subtabs-container">
+            <div className="subtab-container">
                 {subTabs.map((M_Class_Name) => (
                     <button
                         key={M_Class_Name}
@@ -71,28 +79,24 @@ export default function SubTab({ data, onUpdate }) {
                     </button>
                 ))}
             </div>
-
-            {/* show 2 column */}
+            {/* SIDEBAR , TabConten , JSON_Content */}
             <div className="content-box content-grid">
+                {/* SIDEBAR */}
                 <nav className="field-sidebar">
                     {fieldnames.map((fieldname) => (
                         <button
                             key={fieldname}
-                            className={`field-nav-link ${focus_Siderbar_Button === fieldname ? "active" : ""}`}
+                            ref={(DOM_Node) =>
+                                (scrollRefs.current[fieldname] = DOM_Node)
+                            }
+                            className={`field-nav-link ${activeField === fieldname ? "active" : ""}`}
                             onClick={() => {
-                                set_Focus_Siderbar_Button(fieldname);
-                                setFocusField(fieldname);
-                                setFocusJSON(fieldname);
+                                setActiveField(fieldname);
                                 update_All_States(fieldname, M_value);
-
-                                window.dispatchEvent(
-                                    new CustomEvent("focus-field", {
-                                        detail: fieldname,
-                                    }),
-                                );
                             }}
                         >
-                            {fieldname.toUpperCase()}
+                            {/* if Class t (DB_Tablename) remove T:: */}
+                            {fieldname.toUpperCase().replaceAll("T::", "")}
                         </button>
                     ))}
                 </nav>
@@ -102,31 +106,21 @@ export default function SubTab({ data, onUpdate }) {
                     <TabContent
                         M_Class_Name={activeSubTab}
                         M_value={M_value}
-                        onUpdate={onUpdate}
-                        // params for 2-way states binding
-                        focus_Siderbar_Button={focus_Siderbar_Button}
-                        set_Focus_Siderbar_Button={set_Focus_Siderbar_Button}
-                        focusField={focusField}
-                        setFocusField={setFocusField}
-                        setFocusJSON={setFocusJSON}
+                        activeField={activeField}
+                        setActiveField={setActiveField}
                     />
                 </div>
 
                 {/* right column = JSON */}
                 <div className="column-flex json-preview-column">
                     <h3 className="json-header">JSON Data</h3>
-                    {/* <pre className="json-pre">
-                        {JSON.stringify(M_value, null, 2)}
-                    </pre> */}
                     <JSON_Content
                         M_value={M_value}
-                        focusField={focusField}
-                        set_Focus_Siderbar_Button={set_Focus_Siderbar_Button}
-                        setFocusField={setFocusField}
-                        setFocusJSON={setFocusJSON}
+                        activeField={activeField}
+                        setActiveField={setActiveField}
                     />
                 </div>
             </div>
-        </div>
+        </>
     );
 }

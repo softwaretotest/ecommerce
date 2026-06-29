@@ -1,4 +1,4 @@
-// 0_M_Dashboard.jsx
+//resources/js/Pages/0_M_Dashboard.jsx
 
 import React, { useState } from "react";
 

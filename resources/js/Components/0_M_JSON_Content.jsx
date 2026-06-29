@@ -1,23 +1,10 @@
 // resources/js/Components/0_M_JSON_Content.jsx
 import React, { useEffect, useRef } from "react";
+import { useScrollIntoView } from "@/hooks/useScrollIntoView";
 
-export default function JSON_Content({
-    M_value,
-    focusField,
-    set_Focus_Siderbar_Button,
-    setFocusField,
-    setFocusJSON,
-}) {
+export default function JSON_Content({ M_value, activeField, setActiveField }) {
     const scrollRefs = useRef({});
-
-    useEffect(() => {
-        if (focusField && scrollRefs.current[focusField]) {
-            scrollRefs.current[focusField].scrollIntoView({
-                behavior: "smooth",
-                block: "center",
-            });
-        }
-    }, [focusField]);
+    useScrollIntoView(activeField, scrollRefs);
 
     /** renderArrayItem = e.g.
         "price",
@@ -55,12 +42,12 @@ export default function JSON_Content({
                 {Object.entries(M_value).map(([fieldname, value]) => (
                     <div
                         key={fieldname} //fieldname = e.g. PRICE , STOCK etc.
-                        ref={(el) => (scrollRefs.current[fieldname] = el)}
-                        className={`json-line ${fieldname === focusField ? "json-highlight" : ""}`}
+                        ref={(DOM_Node) =>
+                            (scrollRefs.current[fieldname] = DOM_Node)
+                        }
+                        className={`json-line ${activeField === fieldname ? "json-highlight" : ""}`}
                         onClick={() => {
-                            set_Focus_Siderbar_Button(fieldname);
-                            setFocusField(fieldname);
-                            setFocusJSON(fieldname);
+                            setActiveField(fieldname);
                         }}
                     >
                         <span className="json-fieldname">"{fieldname}"</span>:{" "}

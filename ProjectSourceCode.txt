@@ -2463,13 +2463,13 @@ export default function Field({ field_data }) {
                 <input
                     type="text"
                     defaultValue={name.toUpperCase()}
-                    className="field-input-blue"
+                    className="App_Data_KEY"
                 />
                 <span className="field-separator-colon">:</span>
                 <input
                     type="text"
                     defaultValue={name}
-                    className="field-input-green"
+                    className="App_Data_VALUE"
                 />
             </div>
 
@@ -2767,7 +2767,7 @@ export default function SubTab({ data, onUpdate }) {
             {/* M-DATA   S CD D U CU CUD */}
             {/* APP-DATA F T */}
             {/* ENTITIES */}
-            <div className="subtabs-container">
+            <div className="subtab-container">
                 {subTabs.map((M_Class_Name) => (
                     <button
                         key={M_Class_Name}
@@ -2936,7 +2936,7 @@ export default function TabContent({
                         {M_Class_Name !== "f" && M_Class_Name !== "s" && (
                             <>
                                 <input
-                                    className="field-key-input"
+                                    className="M_Data_KEY"
                                     defaultValue={
                                         M_Class_Name === "t"
                                             ? fieldname
@@ -2965,7 +2965,7 @@ export default function TabContent({
                         {M_Class_Name !== "s" && M_Class_Name !== "f" && (
                             <input
                                 type="text"
-                                className="M_field-value-input"
+                                className="M_Data_VALUE"
                                 defaultValue={val}
                                 onBlur={(e) =>
                                     handleChange(fieldname, e.target.value)

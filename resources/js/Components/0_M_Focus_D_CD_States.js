@@ -2,7 +2,7 @@
 
 import { GLOBAL_METADATA } from "@/Services/0_M_DataProvider.jsx";
 /**
- * set CD_States (global), when click on App-Data-Field on Sidebar or form-subtab-content-row
+ * set CD_States (global), when click on App-Data-Field on Sidebar or TabContent
  * @param {*} fieldname string, decimal, boolean
  * @param {*} M_Value { BOOLEAN: 'boolean', DEFAULT: 'default', DECIMAL: 'decimal', STRING: 'string', FOREIGN: 'foreign' }
  */
@@ -24,10 +24,23 @@ export function set_Focus_D_CD_States(fieldname, M_Value) {
         CD_States[item] = false;
     }
 
+    /**
+     * for now , we don't set M_States for Class d , u , cd , cu , cud , t
+     * only Class with Array item e. g. Class f , s
+     */
     function extract_cd_cud(focused_M_Field) {
+        console.log(
+            "0_M_Focus_D_CD_States.js - focused_M_Field = ",
+            focused_M_Field,
+        );
+        if (!Array.isArray(focused_M_Field)) return;
+
         const cd = [];
         const cud = [];
-
+        console.log(
+            "0_M_Focus_D_CD_States.js - focused_M_Field = ",
+            focused_M_Field,
+        );
         focused_M_Field.forEach((item) => {
             // in M Convention: if not string , it is array with array[0].typeOf String
             const val = Array.isArray(item) ? item[0] : item;
@@ -43,6 +56,7 @@ export function set_Focus_D_CD_States(fieldname, M_Value) {
     }
 
     function extract_d(focused_M_Field, fieldname) {
+        if (!Array.isArray(focused_M_Field)) return;
         let D_States = { fieldname: fieldname };
 
         focused_M_Field.forEach((item) => {
@@ -60,12 +74,6 @@ export function set_Focus_D_CD_States(fieldname, M_Value) {
     const focused_M_Field = M_Value[fieldname];
 
     const cd_cud_of_focused_M_Field = extract_cd_cud(focused_M_Field);
-
-    cd_cud_of_focused_M_Field.forEach((item) => {
-        if (item in CD_States) {
-            CD_States[item] = true;
-        }
-    });
 
     const D_States = extract_d(focused_M_Field, fieldname);
 
