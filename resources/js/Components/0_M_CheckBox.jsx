@@ -1,16 +1,20 @@
 // 0_M_CheckBox.jsx
+import { use_M_Option } from "@/Hooks/use_M_Option.js";
 import { CD_Rule } from "@/Components/0_M_Rule_D_CD.jsx";
 import { UI_Rule } from "@/Components/0_M_Rule_U_UI.jsx";
 
 export function renderCheckboxList(
     M_Class_Name_List,
     fieldDataList = [],
-    getOptions_for_Checkbox_or_Dropdown,
-    groupLabel, // CD , CU
+    groupLabel,
 ) {
-    /**
-     *  filter only data for this Column
-     */
+    const { getOptions } = use_M_Option();
+
+    console.log("0_M_CheckBox.jsx - M_Class_Name_List:", M_Class_Name_List);
+    console.log("0_M_CheckBox.jsx - fieldDataList:", fieldDataList);
+
+    if (!Array.isArray(fieldDataList)) return null;
+
     const foundValues = fieldDataList.filter((item) => {
         let val = Array.isArray(item) ? item[0] : item;
         return (
@@ -19,9 +23,6 @@ export function renderCheckboxList(
         );
     });
 
-    /**
-     * separate Data according to prefix d:: u:: etc. and remove prefix
-     */
     const DB_options = foundValues
         .filter((v) => {
             const val = Array.isArray(v) ? v[0] : v;
@@ -40,23 +41,22 @@ export function renderCheckboxList(
         groupLabel === "CD"
             ? Array.from(
                   new Set(
-                      M_Class_Name_List.flatMap((M_Class_Name) =>
-                          getOptions_for_Checkbox_or_Dropdown(M_Class_Name),
-                      ),
+                      M_Class_Name_List.flatMap((name) => getOptions(name)),
                   ),
               )
-            : []; // if no CD selected
+            : [];
 
     const ALL_UI_options =
         groupLabel === "CU"
             ? Array.from(
                   new Set(
-                      M_Class_Name_List.flatMap((M_Class_Name) =>
-                          getOptions_for_Checkbox_or_Dropdown(M_Class_Name),
-                      ),
+                      M_Class_Name_List.flatMap((name) => getOptions(name)),
                   ),
               )
             : [];
+
+    console.log("0_M_CheckBox.jsx - DB_options:", DB_options);
+    console.log("0_M_CheckBox.jsx - UI_options:", UI_options);
 
     return (
         <>
