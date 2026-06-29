@@ -1,4 +1,4 @@
-import { GLOBAL_METADATA } from "@/Services/0_M_DataProvider.jsx";
+import { GLOBAL_METADATA } from "@/Providers/0_M_DataProvider.jsx";
 
 /**
  * set CD_States (global), when click on App-Data-Field on Sidebar or TabContent

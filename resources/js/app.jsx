@@ -4,7 +4,7 @@ import "./bootstrap";
 import { createInertiaApp } from "@inertiajs/react";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { createRoot } from "react-dom/client";
-import { M_DataProvider } from "./Services/0_M_DataProvider";
+import { M_DataProvider } from "./Providers/0_M_DataProvider";
 
 const appName = import.meta.env.VITE_APP_NAME || "Laravel";
 

@@ -2,7 +2,7 @@
 
 import Field from "@/Components/0_M_Field.jsx";
 import { renderDropdown } from "@/Components/0_M_Dropdown.jsx";
-import { use_M_Data } from "@/Services/0_M_DataProvider.jsx";
+import { use_M_Data } from "@/Providers/0_M_DataProvider.jsx";
 
 /**
  * DB Table with DB Column in it

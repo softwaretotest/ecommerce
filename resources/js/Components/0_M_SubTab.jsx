@@ -20,7 +20,7 @@ import "../../css/0_M_UI.css";
  * if SubTab = ENTITIES , then data = content of 1_Entities.json
  * ,e.g. * t:: = Tablename
  */
-export default function SubTab({ data }) {
+export default function SubTab({ data, tab_label }) {
     const setFocus = use_M_Store((state) => state.setFocus);
 
     /**
@@ -92,6 +92,7 @@ export default function SubTab({ data }) {
                         M_value={M_value}
                         activeField={activeField}
                         setActiveField={setActiveField}
+                        tab_label={tab_label}
                     />
                 </div>
 

@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 
-import { use_M_Data } from "@/Services/0_M_DataProvider";
+import { use_M_Data } from "@/Providers/0_M_DataProvider";
 import { use_M_Store } from "@/Stores/0_M_Store.jsx";
 
 import SubTab from "@/Components/0_M_SubTab.jsx";
@@ -12,7 +12,8 @@ import "@/../css/0_M_UI.css";
 export default function M_Dashboard() {
     const data = use_M_Data();
 
-    const [activeTab, setActiveTab] = useState("m_data");
+    const activeTab = use_M_Store((state) => state.activeTab);
+    const setActiveTab = use_M_Store((state) => state.setActiveTab);
 
     if (!data) return <div>Loading...</div>;
 

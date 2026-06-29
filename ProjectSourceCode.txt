@@ -2468,7 +2468,7 @@ export function renderDropdown(
 
 import Field from "@/Components/0_M_Field.jsx";
 import { M_Option, renderDropdown } from "@/Components/0_M_Dropdown.jsx";
-import { use_M_Data } from "@/Services/0_M_DataProvider.jsx";
+import { use_M_Data } from "@/Providers/0_M_DataProvider.jsx";
 
 /**
  * DB Table with DB Column in it
@@ -2538,7 +2538,7 @@ export default function EntityField({ field_data }) {
 // resources/js/Components/0_M_Field.jsx
 import { M_Option, renderDropdown } from "@/Components/0_M_Dropdown.jsx";
 import { renderCheckboxList } from "@/Components/0_M_CheckBox.jsx";
-import { use_M_Data } from "@/Services/0_M_DataProvider.jsx";
+import { use_M_Data } from "@/Providers/0_M_DataProvider.jsx";
 
 export default function Field({ field_data }) {
     const metadata = use_M_Data();
@@ -2619,7 +2619,7 @@ export default function Field({ field_data }) {
 
 // 0_M_Focus_D_CD_States.js
 
-import { GLOBAL_METADATA } from "@/Services/0_M_DataProvider.jsx";
+import { GLOBAL_METADATA } from "@/Providers/0_M_DataProvider.jsx";
 /**
  * set CD_States (global), when click on App-Data-Field on Sidebar or TabContent
  * @param {*} fieldname string, decimal, boolean
@@ -3818,7 +3818,7 @@ export default function Edit({ mustVerifyEmail, status }) {
 
 import React, { useState } from "react";
 
-import { use_M_Data } from "@/Services/0_M_DataProvider";
+import { use_M_Data } from "@/Providers/0_M_DataProvider";
 import { use_M_Store } from "@/Stores/0_M_Store.jsx";
 
 import SubTab from "@/Components/0_M_SubTab.jsx";
@@ -3867,7 +3867,7 @@ export default function M_Dashboard() {
 
 [FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Services\0_M_DataProvider.jsx]
 
-// resources/js/Services/0_M_DataProvider.jsx
+// resources/js/Providers/0_M_DataProvider.jsx
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 
@@ -4008,7 +4008,7 @@ import "./bootstrap";
 import { createInertiaApp } from "@inertiajs/react";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { createRoot } from "react-dom/client";
-import { M_DataProvider } from "./Services/0_M_DataProvider";
+import { M_DataProvider } from "./Providers/0_M_DataProvider";
 
 const appName = import.meta.env.VITE_APP_NAME || "Laravel";
 
