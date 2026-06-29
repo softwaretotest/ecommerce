@@ -60,6 +60,7 @@ export default function TabContent({
                         }
                         className={`form-subtab-content-row ${activeField === fieldname ? "is-focused" : ""}`}
                         onClick={() => {
+                            setFocus(fieldname, M_value);
                             setActiveField(fieldname);
                             update_All_States(fieldname, M_value);
                         }}

@@ -60,7 +60,7 @@ export function renderCheckboxList(
 
     return (
         <>
-            {/* <CD_Rule DB_options={DB_options} ALL_DB_options={ALL_DB_options} /> */}
+            <CD_Rule DB_options={DB_options} ALL_DB_options={ALL_DB_options} />
             <UI_Rule UI_options={UI_options} ALL_UI_options={ALL_UI_options} />
         </>
     );

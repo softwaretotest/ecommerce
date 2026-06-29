@@ -29,18 +29,10 @@ export function set_Focus_D_CD_States(fieldname, M_Value) {
      * only Class with Array item e. g. Class f , s
      */
     function extract_cd_cud(focused_M_Field) {
-        console.log(
-            "0_M_Focus_D_CD_States.js - focused_M_Field = ",
-            focused_M_Field,
-        );
         if (!Array.isArray(focused_M_Field)) return;
 
         const cd = [];
         const cud = [];
-        console.log(
-            "0_M_Focus_D_CD_States.js - focused_M_Field = ",
-            focused_M_Field,
-        );
         focused_M_Field.forEach((item) => {
             // in M Convention: if not string , it is array with array[0].typeOf String
             const val = Array.isArray(item) ? item[0] : item;

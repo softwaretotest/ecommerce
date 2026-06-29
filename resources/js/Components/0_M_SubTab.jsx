@@ -5,7 +5,6 @@ import { useScrollIntoView } from "@/hooks/useScrollIntoView";
 import { use_M_Store } from "@/Stores/0_M_Store.jsx";
 import { set_Focus_D_CD_States } from "@/Components/0_M_Focus_D_CD_States";
 import JSON_Content from "./0_M_JSON_Content";
-import { M_Controller } from "@/Controllers/0_M_Controller";
 
 import TabContent from "@/Components/0_M_TabContent";
 import "../../css/0_M_UI.css";
@@ -22,7 +21,7 @@ import "../../css/0_M_UI.css";
  * ,e.g. * t:: = Tablename
  */
 export default function SubTab({ data }) {
-    M_Controller.updateField("Entities.User", "NewValue");
+    // const setFocus = use_M_Store((state) => state.setFocus);
 
     /**
      * ONLY 1 state to focus 3 Components with same click
@@ -55,10 +54,16 @@ export default function SubTab({ data }) {
         set_States(fieldname, CD_States, D_States);
     }
 
-    // useEffect(() => {
-    //     console.log("0_M_SubTab.jsx - D_States อัปเดตแล้ว:", D_States);
-    //     console.log("0_M_SubTab.jsx - CD_States อัปเดตแล้ว:", CD_States);
-    // }, [CD_States]);
+    useEffect(() => {
+        console.log(
+            "0_M_SubTab.jsx -OLD_SOLUTION- D_States อัปเดตแล้ว:",
+            D_States,
+        );
+        console.log(
+            "0_M_SubTab.jsx -OLD_SOLUTION- CD_States อัปเดตแล้ว:",
+            CD_States,
+        );
+    }, [CD_States]);
 
     return (
         <>
@@ -92,6 +97,7 @@ export default function SubTab({ data }) {
                             className={`field-nav-link ${activeField === fieldname ? "active" : ""}`}
                             onClick={() => {
                                 setActiveField(fieldname);
+                                // setFocus(fieldname, M_value);
                                 update_All_States(fieldname, M_value);
                             }}
                         >
