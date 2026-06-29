@@ -79,7 +79,7 @@
         ],
         "PRODUCT_ID": [
             "product_id",
-            "d::FOREIGN"
+            "cd::FOREIGN"
         ],
         "SHOP_ID": [
             "shop_id",

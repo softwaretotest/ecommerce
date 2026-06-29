@@ -21,7 +21,7 @@ import "../../css/0_M_UI.css";
  * ,e.g. * t:: = Tablename
  */
 export default function SubTab({ data }) {
-    // const setFocus = use_M_Store((state) => state.setFocus);
+    const setFocus = use_M_Store((state) => state.setFocus);
 
     /**
      * ONLY 1 state to focus 3 Components with same click
@@ -43,27 +43,6 @@ export default function SubTab({ data }) {
     /**
      * OLD solution works, will be removed
      */
-    const D_States = use_M_Store.getState().D_States;
-    const CD_States = use_M_Store.getState().CD_States;
-    const set_CD_States = use_M_Store.getState().set_CD_States;
-    const set_States = use_M_Store((state) => state.set_States);
-
-    function update_All_States(fieldname, M_value) {
-        const [D_States, CD_States] = set_Focus_D_CD_States(fieldname, M_value);
-
-        set_States(fieldname, CD_States, D_States);
-    }
-
-    useEffect(() => {
-        console.log(
-            "0_M_SubTab.jsx -OLD_SOLUTION- D_States อัปเดตแล้ว:",
-            D_States,
-        );
-        console.log(
-            "0_M_SubTab.jsx -OLD_SOLUTION- CD_States อัปเดตแล้ว:",
-            CD_States,
-        );
-    }, [CD_States]);
 
     return (
         <>
@@ -97,8 +76,7 @@ export default function SubTab({ data }) {
                             className={`field-nav-link ${activeField === fieldname ? "active" : ""}`}
                             onClick={() => {
                                 setActiveField(fieldname);
-                                // setFocus(fieldname, M_value);
-                                update_All_States(fieldname, M_value);
+                                setFocus(fieldname, M_value);
                             }}
                         >
                             {/* if Class t (DB_Tablename) remove T:: */}

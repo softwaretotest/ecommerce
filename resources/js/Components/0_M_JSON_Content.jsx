@@ -1,8 +1,12 @@
 // resources/js/Components/0_M_JSON_Content.jsx
 import React, { useEffect, useRef } from "react";
+import { use_M_Store } from "@/Stores/0_M_Store.jsx";
+
 import { useScrollIntoView } from "@/hooks/useScrollIntoView";
 
 export default function JSON_Content({ M_value, activeField, setActiveField }) {
+    const setFocus = use_M_Store((state) => state.setFocus);
+
     const scrollRefs = useRef({});
     useScrollIntoView(activeField, scrollRefs);
 

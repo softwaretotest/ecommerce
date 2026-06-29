@@ -17,6 +17,7 @@ export default function TabContent({
     activeField,
     setActiveField,
 }) {
+    const setFocus = use_M_Store((state) => state.setFocus);
     const update = use_M_Store((state) => state.update);
 
     // use path to update, e.g. "APP_DATA.NAME"
@@ -31,19 +32,7 @@ export default function TabContent({
     const scrollRefs = useRef({});
     useScrollIntoView(activeField, scrollRefs);
 
-    /**
-     * OLD solution works, will be removed
-     */
-    const D_States = use_M_Store.getState().D_States;
-    const CD_States = use_M_Store.getState().CD_States;
-    const set_CD_States = use_M_Store.getState().set_CD_States;
-    const set_States = use_M_Store((state) => state.set_States);
-
-    function update_All_States(fieldname, M_value) {
-        const [D_States, CD_States] = set_Focus_D_CD_States(fieldname, M_value);
-        set_States(fieldname, CD_States, D_States);
-    }
-
+    console.log("0_M_TabContent.jsx - M_Value = ", M_value);
     return (
         <>
             <div>
@@ -62,7 +51,6 @@ export default function TabContent({
                         onClick={() => {
                             setFocus(fieldname, M_value);
                             setActiveField(fieldname);
-                            update_All_States(fieldname, M_value);
                         }}
                     >
                         {["d", "u", "cd", "cu", "cud"].includes(
@@ -105,8 +93,18 @@ export default function TabContent({
                             <DB_Tablename field_data={field_data} />
                         )}
 
+                        {/* in entities fieldname is table_name e.g. 
+                            t::orders: Array(5)
+                                0: "f::ORDER_NR"
+                                1: "f::PRODUCT_ID"
+                                2: "f::USER_ID"
+                                3: "f::QUANTITY"
+                                4: "f::CONFIRM_ORDER" */}
                         {M_Class_Name === "entities" && (
-                            <EntityField field_data={field_data} />
+                            <EntityField
+                                field_data={field_data}
+                                table_name={fieldname}
+                            />
                         )}
                     </div>
                 ))}

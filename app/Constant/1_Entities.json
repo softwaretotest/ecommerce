@@ -15,7 +15,16 @@
             "f::PRICE",
             "f::STOCK"
         ],
-        "t::shops": ["f::NAME", "f::IMAGE", "f::USER_ID"],
-        "t::users": ["f::NAME", "f::IMAGE", "s::EMAIL", "f::IS_ACTIVE"]
+        "t::shops": [
+            "f::NAME",
+            "f::IMAGE",
+            "f::USER_ID"
+        ],
+        "t::users": [
+            "f::NAME",
+            "f::IMAGE",
+            "s::EMAIL",
+            "f::IS_ACTIVE"
+        ]
     }
 }

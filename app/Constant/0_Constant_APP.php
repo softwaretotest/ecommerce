@@ -19,7 +19,7 @@ class f
 
     // FOREIGN
     public const ORDER_ID = ['order_id', cd::FOREIGN];
-    public const PRODUCT_ID = ['product_id', d::FOREIGN];
+    public const PRODUCT_ID = ['product_id', cd::FOREIGN];
     public const SHOP_ID  = ['shop_id',  cd::FOREIGN];
     public const USER_ID  = ['user_id',  cd::FOREIGN]; //Base
 }

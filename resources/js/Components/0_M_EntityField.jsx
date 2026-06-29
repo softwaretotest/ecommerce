@@ -1,7 +1,7 @@
 // resources/js/Components/0_M_EntityField.jsx
 
 import Field from "@/Components/0_M_Field.jsx";
-import { M_Option, renderDropdown } from "@/Components/0_M_Dropdown.jsx";
+import { renderDropdown } from "@/Components/0_M_Dropdown.jsx";
 import { use_M_Data } from "@/Services/0_M_DataProvider.jsx";
 
 /**
@@ -20,17 +20,18 @@ import { use_M_Data } from "@/Services/0_M_DataProvider.jsx";
     }
 }
 */
-export default function EntityField({ field_data }) {
+export default function EntityField({ field_data, table_name }) {
+    console.log("0_M_EntityField.jsx - field_data = ", field_data);
+
     const metadata = use_M_Data();
-    const [tableName, ...fieldDataList] = field_data;
 
     // ฟังก์ชันดึง Options สำหรับ Dropdown
-    function getOptions_for_Dropdown() {
-        if (!metadata) return [];
-        // ปรับตามโครงสร้าง M_Data ของคุณ
+    function getOptions_for_Dropdown(M_Class_Name) {
+        if (!metadata || !metadata.m_data) return [];
+
         const mData = metadata.m_data;
-        // สมมติว่าต้องการดึงจากที่เก็บไว้ (เช่น ถ้าเป็นตาราง orders ก็ดึงจากตารางนั้น)
-        const target = mData?.["f"] || {};
+        // ดึงจาก m_data ตามชื่อ Class ที่ส่งมา (เช่น mData['f'], mData['d'])
+        const target = mData[M_Class_Name] || {};
         return Object.keys(target).sort();
     }
 
@@ -39,7 +40,7 @@ export default function EntityField({ field_data }) {
             <div className="entity-header">
                 <input
                     type="text"
-                    defaultValue={tableName.replace("t::", "")}
+                    defaultValue={table_name.replace("t::", "")}
                     className="App_Data_VALUE"
                     readOnly
                 />
@@ -48,16 +49,13 @@ export default function EntityField({ field_data }) {
             <div className="fields-container">
                 <label>Fields for this DB Table</label>
 
-                {/* วนลูปตามจำนวนฟิลด์ที่ได้รับมา */}
-                {fieldDataList.map((fieldItem, index) => (
+                {field_data.map((fieldItem, index) => (
                     <div key={index} className="field-row">
-                        <select defaultValue={fieldItem.replace("f::", "")}>
-                            {getOptions_for_Dropdown().map((option) => (
-                                <option key={option} value={option}>
-                                    {option}
-                                </option>
-                            ))}
-                        </select>
+                        {renderDropdown(
+                            ["f"], // e.g. f::NAME, f::PRICE f::STOCK
+                            [fieldItem], // ส่งข้อมูลฟิลด์ปัจจุบันเข้าไป
+                            getOptions_for_Dropdown, // ส่งฟังก์ชันที่ปรับปรุงแล้วเข้าไป
+                        )}
                     </div>
                 ))}
             </div>
