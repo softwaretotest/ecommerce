@@ -2277,7 +2277,9 @@ export function renderCheckboxList(
     getOptions_for_Checkbox_or_Dropdown,
     groupLabel, // CD , CU
 ) {
-    // 1. กรองเฉพาะข้อมูลที่อยู่ในกลุ่มที่เกี่ยวข้องกับ Column นี้
+    /**
+     *  filter only data for this Column
+     */
     const foundValues = fieldDataList.filter((item) => {
         let val = Array.isArray(item) ? item[0] : item;
         return (
@@ -2286,7 +2288,9 @@ export function renderCheckboxList(
         );
     });
 
-    // 2. แยก Data ตามประเภท (โดยตัด prefix ออก)
+    /**
+     * separate Data according to prefix d:: u:: etc. and remove prefix
+     */
     const DB_options = foundValues
         .filter((v) => {
             const val = Array.isArray(v) ? v[0] : v;
@@ -2333,9 +2337,43 @@ export function renderCheckboxList(
 
 
 
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Components\0_M_DB_Tablename.jsx]
+
+//resources/js/Components/0_M_DB_Tablename.jsx
+
+/**
+ * DB Table with DB Column in it
+ * e.g.
+{
+    "_comment": "1_App-Data.json",
+    
+    ... any f::FIELDNAME ...
+    
+    "t": {
+        "users": "users",
+        "products": "products",
+        "shops": "shops",
+        "orders": "orders"
+    }
+}
+*/
+export default function DB_Tablename({ field_data }) {
+    console.log("0_M_DB_Tablename.jsx - field_data = ", field_data);
+    return (
+        <input
+            type="text"
+            className="M_Data_VALUE"
+            defaultValue={field_data}
+            // onBlur={(e) => handleUpdate(fieldname, e.target.value)}
+        />
+    );
+}
+
+
+
 [FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Components\0_M_Dropdown.jsx]
 
-// 0_M_Dropdown.jsx
+// resources/js/Components/0_M_Dropdown.jsx
 
 export function M_Option(props) {
     const {
@@ -2375,6 +2413,7 @@ export function M_Option(props) {
         });
     });
 }
+
 export function renderDropdown(
     M_Class_Name_List,
     fieldDataList = [],
@@ -2414,10 +2453,81 @@ export function renderDropdown(
                 M_Class_Name_List={M_Class_Name_List}
                 getOptions_for_Checkbox_or_Dropdown={
                     getOptions_for_Checkbox_or_Dropdown
-                } // ส่งต่อไปให้ M_Option
-                fieldDataList={fieldDataList} // อย่าลืมส่งตัวนี้ไปด้วยถ้า M_Option ต้องการใช้
+                }
+                fieldDataList={fieldDataList}
             />
         </select>
+    );
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Components\0_M_EntityField.jsx]
+
+// resources/js/Components/0_M_EntityField.jsx
+
+import Field from "@/Components/0_M_Field.jsx";
+import { M_Option, renderDropdown } from "@/Components/0_M_Dropdown.jsx";
+import { use_M_Data } from "@/Services/0_M_DataProvider.jsx";
+
+/**
+ * DB Table with DB Column in it
+ * e.g.
+{
+    "_comment": "1_Entities.json",
+    "entities": {
+        "t::orders": [
+            "f::ORDER_NR",
+            "f::PRODUCT_ID",
+            "f::USER_ID",
+            "f::QUANTITY",
+            "f::CONFIRM_ORDER"
+        ],
+    }
+}
+*/
+export default function EntityField({ field_data }) {
+    const metadata = use_M_Data();
+    const [tableName, ...fieldDataList] = field_data;
+
+    // ฟังก์ชันดึง Options สำหรับ Dropdown
+    function getOptions_for_Dropdown() {
+        if (!metadata) return [];
+        // ปรับตามโครงสร้าง M_Data ของคุณ
+        const mData = metadata.m_data;
+        // สมมติว่าต้องการดึงจากที่เก็บไว้ (เช่น ถ้าเป็นตาราง orders ก็ดึงจากตารางนั้น)
+        const target = mData?.["f"] || {};
+        return Object.keys(target).sort();
+    }
+
+    return (
+        <div className="entity-wrapper-box">
+            <div className="entity-header">
+                <input
+                    type="text"
+                    defaultValue={tableName.replace("t::", "")}
+                    className="App_Data_VALUE"
+                    readOnly
+                />
+            </div>
+
+            <div className="fields-container">
+                <label>Fields for this DB Table</label>
+
+                {/* วนลูปตามจำนวนฟิลด์ที่ได้รับมา */}
+                {fieldDataList.map((fieldItem, index) => (
+                    <div key={index} className="field-row">
+                        <select defaultValue={fieldItem.replace("f::", "")}>
+                            {getOptions_for_Dropdown().map((option) => (
+                                <option key={option} value={option}>
+                                    {option}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                ))}
+            </div>
+        </div>
     );
 }
 
@@ -2511,7 +2621,7 @@ export default function Field({ field_data }) {
 
 import { GLOBAL_METADATA } from "@/Services/0_M_DataProvider.jsx";
 /**
- * set CD_States (global), when click on App-Data-Field on Sidebar or form-subtab-content-row
+ * set CD_States (global), when click on App-Data-Field on Sidebar or TabContent
  * @param {*} fieldname string, decimal, boolean
  * @param {*} M_Value { BOOLEAN: 'boolean', DEFAULT: 'default', DECIMAL: 'decimal', STRING: 'string', FOREIGN: 'foreign' }
  */
@@ -2533,10 +2643,15 @@ export function set_Focus_D_CD_States(fieldname, M_Value) {
         CD_States[item] = false;
     }
 
+    /**
+     * for now , we don't set M_States for Class d , u , cd , cu , cud , t
+     * only Class with Array item e. g. Class f , s
+     */
     function extract_cd_cud(focused_M_Field) {
+        if (!Array.isArray(focused_M_Field)) return;
+
         const cd = [];
         const cud = [];
-
         focused_M_Field.forEach((item) => {
             // in M Convention: if not string , it is array with array[0].typeOf String
             const val = Array.isArray(item) ? item[0] : item;
@@ -2552,6 +2667,7 @@ export function set_Focus_D_CD_States(fieldname, M_Value) {
     }
 
     function extract_d(focused_M_Field, fieldname) {
+        if (!Array.isArray(focused_M_Field)) return;
         let D_States = { fieldname: fieldname };
 
         focused_M_Field.forEach((item) => {
@@ -2570,15 +2686,75 @@ export function set_Focus_D_CD_States(fieldname, M_Value) {
 
     const cd_cud_of_focused_M_Field = extract_cd_cud(focused_M_Field);
 
-    cd_cud_of_focused_M_Field.forEach((item) => {
-        if (item in CD_States) {
-            CD_States[item] = true;
-        }
-    });
-
     const D_States = extract_d(focused_M_Field, fieldname);
 
     return [D_States, CD_States];
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Components\0_M_JSON_Content.jsx]
+
+// resources/js/Components/0_M_JSON_Content.jsx
+import React, { useEffect, useRef } from "react";
+import { useScrollIntoView } from "@/hooks/useScrollIntoView";
+
+export default function JSON_Content({ M_value, activeField, setActiveField }) {
+    const scrollRefs = useRef({});
+    useScrollIntoView(activeField, scrollRefs);
+
+    /** renderArrayItem = e.g.
+        "price",
+        [
+            "d::DECIMAL",
+            10,
+            2
+        ]
+     */
+    const renderArrayItem = (value, depth = 0) => {
+        if (Array.isArray(value)) {
+            return (
+                <div className="json-array">
+                    [
+                    {value.map((item, i) => (
+                        <div
+                            key={i}
+                            className="json-item"
+                            style={{ marginLeft: "20px" }}
+                        >
+                            {renderArrayItem(item, depth + 1)}
+                            {i < value.length - 1 ? "," : ""}
+                        </div>
+                    ))}
+                    ]
+                </div>
+            );
+        }
+        return <span className="json-primitive">{JSON.stringify(value)}</span>;
+    };
+
+    return (
+        <div className="json-preview-container">
+            <div className="json-list">
+                {Object.entries(M_value).map(([fieldname, value]) => (
+                    <div
+                        key={fieldname} //fieldname = e.g. PRICE , STOCK etc.
+                        ref={(DOM_Node) =>
+                            (scrollRefs.current[fieldname] = DOM_Node)
+                        }
+                        className={`json-line ${activeField === fieldname ? "json-highlight" : ""}`}
+                        onClick={() => {
+                            setFocus(fieldname, M_value);
+                            setActiveField(fieldname);
+                        }}
+                    >
+                        <span className="json-fieldname">"{fieldname}"</span>:{" "}
+                        {renderArrayItem(value, 1)}
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
 }
 
 
@@ -2610,7 +2786,6 @@ export function CD_Rule({ DB_options, ALL_DB_options }) {
     //     console.log("0_M_Rule_D_CD.js - CD_States = ", CD_States);
     // }, [D_States, CD_States]);
 
-    
     function updateRules(currentItems, option, isChecked) {
         // Logic to auto. contraint UI
     }
@@ -2712,10 +2887,12 @@ export default function SpecialField({ field_data }) {
 [FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Components\0_M_SubTab.jsx]
 
 // resources/js/Components/0_M_SubTab.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { useScrollIntoView } from "@/hooks/useScrollIntoView";
 
 import { use_M_Store } from "@/Stores/0_M_Store.jsx";
 import { set_Focus_D_CD_States } from "@/Components/0_M_Focus_D_CD_States";
+import JSON_Content from "./0_M_JSON_Content";
 
 import TabContent from "@/Components/0_M_TabContent";
 import "../../css/0_M_UI.css";
@@ -2731,7 +2908,16 @@ import "../../css/0_M_UI.css";
  * if SubTab = ENTITIES , then data = content of 1_Entities.json
  * ,e.g. * t:: = Tablename
  */
-export default function SubTab({ data, onUpdate }) {
+export default function SubTab({ data }) {
+    // const setFocus = use_M_Store((state) => state.setFocus);
+
+    /**
+     * ONLY 1 state to focus 3 Components with same click
+     */
+    const [activeField, setActiveField] = useState(null);
+    const scrollRefs = useRef({});
+    useScrollIntoView(activeField, scrollRefs);
+
     const subTabs = Object.keys(data).filter(
         (M_Class_Name) => typeof data[M_Class_Name] === "object",
     );
@@ -2740,12 +2926,11 @@ export default function SubTab({ data, onUpdate }) {
 
     const M_value = data[activeSubTab];
 
-    const [focus_Siderbar_Button, set_Focus_Siderbar_Button] = useState(null);
-
-    const [focusField, setFocusField] = useState(null);
-
     const fieldnames = Object.keys(M_value || {});
 
+    /**
+     * OLD solution works, will be removed
+     */
     const D_States = use_M_Store.getState().D_States;
     const CD_States = use_M_Store.getState().CD_States;
     const set_CD_States = use_M_Store.getState().set_CD_States;
@@ -2757,13 +2942,20 @@ export default function SubTab({ data, onUpdate }) {
         set_States(fieldname, CD_States, D_States);
     }
 
-    // useEffect(() => {
-    //     console.log("0_M_SubTab.jsx - D_States อัปเดตแล้ว:", D_States);
-    //     console.log("0_M_SubTab.jsx - CD_States อัปเดตแล้ว:", CD_States);
-    // }, [CD_States]);
+    useEffect(() => {
+        console.log(
+            "0_M_SubTab.jsx -OLD_SOLUTION- D_States อัปเดตแล้ว:",
+            D_States,
+        );
+        console.log(
+            "0_M_SubTab.jsx -OLD_SOLUTION- CD_States อัปเดตแล้ว:",
+            CD_States,
+        );
+    }, [CD_States]);
 
     return (
-        <div className="subtab-wrapper">
+        <>
+            {" "}
             {/* M-DATA   S CD D U CU CUD */}
             {/* APP-DATA F T */}
             {/* ENTITIES */}
@@ -2780,28 +2972,25 @@ export default function SubTab({ data, onUpdate }) {
                     </button>
                 ))}
             </div>
-
-            {/* show 2 column */}
+            {/* SIDEBAR , TabConten , JSON_Content */}
             <div className="content-box content-grid">
+                {/* SIDEBAR */}
                 <nav className="field-sidebar">
                     {fieldnames.map((fieldname) => (
                         <button
                             key={fieldname}
-                            className={`field-nav-link ${focus_Siderbar_Button === fieldname ? "active" : ""}`}
+                            ref={(DOM_Node) =>
+                                (scrollRefs.current[fieldname] = DOM_Node)
+                            }
+                            className={`field-nav-link ${activeField === fieldname ? "active" : ""}`}
                             onClick={() => {
-                                set_Focus_Siderbar_Button(fieldname);
-                                setFocusField(fieldname);
-
+                                setActiveField(fieldname);
+                                // setFocus(fieldname, M_value);
                                 update_All_States(fieldname, M_value);
-
-                                window.dispatchEvent(
-                                    new CustomEvent("focus-field", {
-                                        detail: fieldname,
-                                    }),
-                                );
                             }}
                         >
-                            {fieldname.toUpperCase()}
+                            {/* if Class t (DB_Tablename) remove T:: */}
+                            {fieldname.toUpperCase().replaceAll("T::", "")}
                         </button>
                     ))}
                 </nav>
@@ -2811,24 +3000,22 @@ export default function SubTab({ data, onUpdate }) {
                     <TabContent
                         M_Class_Name={activeSubTab}
                         M_value={M_value}
-                        onUpdate={onUpdate}
-                        // params for 2-way states binding
-                        focus_Siderbar_Button={focus_Siderbar_Button}
-                        set_Focus_Siderbar_Button={set_Focus_Siderbar_Button}
-                        focusField={focusField}
-                        setFocusField={setFocusField}
+                        activeField={activeField}
+                        setActiveField={setActiveField}
                     />
                 </div>
 
                 {/* right column = JSON */}
                 <div className="column-flex json-preview-column">
                     <h3 className="json-header">JSON Data</h3>
-                    <pre className="json-pre">
-                        {JSON.stringify(M_value, null, 2)}
-                    </pre>
+                    <JSON_Content
+                        M_value={M_value}
+                        activeField={activeField}
+                        setActiveField={setActiveField}
+                    />
                 </div>
             </div>
-        </div>
+        </>
     );
 }
 
@@ -2836,67 +3023,42 @@ export default function SubTab({ data, onUpdate }) {
 
 [FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Components\0_M_TabContent.jsx]
 
-// 0_M_TabContent.jsx
+// resources/js/Components/0_M_TabContent.jsx
 
 import { React, useState, useRef, useEffect } from "react";
+import { useScrollIntoView } from "@/hooks/useScrollIntoView";
 
 import { use_M_Store } from "@/Stores/0_M_Store.jsx";
 import { set_Focus_D_CD_States } from "@/Components/0_M_Focus_D_CD_States";
 
 import SpecialField from "@/Components/0_M_SpecialField";
 import Field from "@/Components/0_M_Field";
+import EntityField from "@/Components/0_M_EntityField";
+import DB_Tablename from "@/Components/0_M_DB_Tablename";
 
 export default function TabContent({
     M_Class_Name,
     M_value,
-    onUpdate,
-    focus_Siderbar_Button,
-    set_Focus_Siderbar_Button,
-    focusField,
-    setFocusField,
+    activeField,
+    setActiveField,
 }) {
-    if (!M_value || typeof M_value !== "object") {
-        return (
-            <div className="ui-placeholder">ไม่มี UI สำหรับ {M_Class_Name}</div>
-        );
-    }
+    const update = use_M_Store((state) => state.update);
 
-    const handleChange = (fieldname, newValue) => {
-        onUpdate({ ...M_value, [fieldname]: newValue });
+    // use path to update, e.g. "APP_DATA.NAME"
+    const handleUpdate = (fieldname, newValue) => {
+        update(`APP_DATA.${fieldname}`, newValue);
     };
 
+    if (!M_value || typeof M_value !== "object") {
+        return <div className="ui-placeholder">No UI for {M_Class_Name}</div>;
+    }
+
     const scrollRefs = useRef({});
+    useScrollIntoView(activeField, scrollRefs);
 
-    useEffect(() => {
-        if (
-            focus_Siderbar_Button &&
-            scrollRefs.current[focus_Siderbar_Button]
-        ) {
-            scrollRefs.current[focus_Siderbar_Button].scrollIntoView({
-                behavior: "smooth",
-                block: "center",
-            });
-        }
-    }, [focus_Siderbar_Button]);
-
-    useEffect(() => {
-        const handleFocus = (e) => {
-            const fieldName = e.detail;
-            setFocusField(fieldName);
-
-            // auto Scroll to Ref of that field
-            if (scrollRefs.current[fieldName]) {
-                scrollRefs.current[fieldName].scrollIntoView({
-                    behavior: "smooth",
-                    block: "center",
-                });
-            }
-        };
-
-        window.addEventListener("focus-field", handleFocus);
-        return () => window.removeEventListener("focus-field", handleFocus);
-    }, []);
-
+    /**
+     * OLD solution works, will be removed
+     */
     const D_States = use_M_Store.getState().D_States;
     const CD_States = use_M_Store.getState().CD_States;
     const set_CD_States = use_M_Store.getState().set_CD_States;
@@ -2904,14 +3066,8 @@ export default function TabContent({
 
     function update_All_States(fieldname, M_value) {
         const [D_States, CD_States] = set_Focus_D_CD_States(fieldname, M_value);
-
         set_States(fieldname, CD_States, D_States);
     }
-
-    // useEffect(() => {
-    //     console.log("0_M_TabContent.jsx - D_States อัปเดตแล้ว:", D_States);
-    //     console.log("0_M_TabContent.jsx - CD_States อัปเดตแล้ว:", CD_States);
-    // }, [CD_States]);
 
     return (
         <>
@@ -2919,22 +3075,26 @@ export default function TabContent({
                 <label>M_Class_Name = {M_Class_Name}</label>
             </div>
             <div className="input-engine-container">
-                {/* LOOP OF FIELDS e.g. M_Class_Name = f , t , s , d , u , cd , cu , cud */}
-                {Object.entries(M_value).map(([fieldname, val]) => (
+                {/* LOOP OF FIELDS e.g. 
+                M_Class_Name = f , t , s , d , u , cd , cu , cud , entities*/}
+                {Object.entries(M_value).map(([fieldname, field_data]) => (
                     <div
                         key={fieldname}
-                        ref={(el) => (scrollRefs.current[fieldname] = el)}
-                        className={`form-subtab-content-row ${focusField === fieldname ? "is-focused" : ""}`}
+                        ref={(DOM_Node) =>
+                            (scrollRefs.current[fieldname] = DOM_Node)
+                        }
+                        className={`form-subtab-content-row ${activeField === fieldname ? "is-focused" : ""}`}
                         onClick={() => {
-                            setFocusField(fieldname);
-                            set_Focus_Siderbar_Button(fieldname);
-
+                            setFocus(fieldname, M_value);
+                            setActiveField(fieldname);
                             update_All_States(fieldname, M_value);
                         }}
                     >
-                        {/* left column: Capital Letter (Fieldname) */}
-                        {M_Class_Name !== "f" && M_Class_Name !== "s" && (
+                        {["d", "u", "cd", "cu", "cud"].includes(
+                            M_Class_Name,
+                        ) && (
                             <>
+                                {/* M_Value UPPERCASE = e.g. NULLABLE */}
                                 <input
                                     className="M_Data_KEY"
                                     defaultValue={
@@ -2942,35 +3102,36 @@ export default function TabContent({
                                             ? fieldname
                                             : fieldname.toUpperCase()
                                     }
-                                    onBlur={(e) =>
-                                        handleKeyChange(
-                                            fieldname,
-                                            e.target.value,
-                                        )
-                                    }
                                 />
                                 <span className="field-separator-colon">:</span>
+
+                                {/* M_Value lowerCASE = e.g. nullable */}
+                                <input
+                                    type="text"
+                                    className="M_Data_VALUE"
+                                    defaultValue={field_data}
+                                    onBlur={(e) =>
+                                        handleUpdate(fieldname, e.target.value)
+                                    }
+                                />
                             </>
                         )}
 
                         {/* middle column: Input Fields */}
-                        {M_Class_Name === "s" && Array.isArray(val) && (
-                            <SpecialField field_data={val} />
+                        {M_Class_Name === "s" && Array.isArray(field_data) && (
+                            <SpecialField field_data={field_data} />
                         )}
 
-                        {M_Class_Name === "f" && Array.isArray(val) && (
-                            <Field field_data={val} />
+                        {M_Class_Name === "f" && Array.isArray(field_data) && (
+                            <Field field_data={field_data} />
                         )}
 
-                        {M_Class_Name !== "s" && M_Class_Name !== "f" && (
-                            <input
-                                type="text"
-                                className="M_Data_VALUE"
-                                defaultValue={val}
-                                onBlur={(e) =>
-                                    handleChange(fieldname, e.target.value)
-                                }
-                            />
+                        {M_Class_Name === "t" && (
+                            <DB_Tablename field_data={field_data} />
+                        )}
+
+                        {M_Class_Name === "entities" && (
+                            <EntityField field_data={field_data} />
                         )}
                     </div>
                 ))}
@@ -2978,6 +3139,27 @@ export default function TabContent({
         </>
     );
 }
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Hooks\useScrollIntoView.js]
+
+import { useEffect } from "react";
+
+/**
+ * listen to activeField and auto. Scroll
+ */
+export const useScrollIntoView = (activeField, scrollRefs) => {
+    useEffect(() => {
+        const element = scrollRefs.current[activeField];
+        if (activeField && element) {
+            element.scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+            });
+        }
+    }, [activeField, scrollRefs]);
+};
 
 
 
@@ -3632,7 +3814,7 @@ export default function Edit({ mustVerifyEmail, status }) {
 
 [FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Pages\0_M_Dashboard.jsx]
 
-// 0_M_Dashboard.jsx
+//resources/js/Pages/0_M_Dashboard.jsx
 
 import React, { useState } from "react";
 
@@ -3685,7 +3867,7 @@ export default function M_Dashboard() {
 
 [FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Services\0_M_DataProvider.jsx]
 
-// // resources/js/Services/0_M_DataProvider.jsx
+// resources/js/Services/0_M_DataProvider.jsx
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 
@@ -3726,33 +3908,94 @@ export const use_M_Data = () => useContext(MetadataContext);
 
 
 
-[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Stores\0_M_Store.jsx]
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Stores\0_M_Store copy.jsx]
 
-//0_M_Store.jsx
-
+// resources/js/Stores/0_M_Store.jsx
 import { create } from "zustand";
 
 export const use_M_Store = create((set) => ({
+    // ... OLD solution ...
     D_States: {},
     CD_States: {},
-
     set_States: (fieldname, CD_States, D_States) =>
         set(() => ({
-            D_States: {
-                fieldname: fieldname,
-                ...D_States,
-            },
-            CD_States: {
-                fieldname: fieldname,
-                ...CD_States,
-            },
+            D_States: { fieldname: fieldname, ...D_States },
+            CD_States: { fieldname: fieldname, ...CD_States },
         })),
+    unset_States: () => set(() => ({ D_States: {}, CD_States: {} })),
 
-    unset_States: () =>
+    // ---- NEW Solution --------------------------------------------------
+    M_States: null,
+    set_M_States: (data) => set({ M_States: data }),
+
+    /**
+     * update is a test function, will be deleted
+     */
+    update: (path, value) =>
+        set((state) => {
+            const keys = path.split(".");
+            const newState = { ...state.M_States };
+
+            let current = newState;
+            for (let i = 0; i < keys.length - 1; i++) {
+                current[keys[i]] = { ...current[keys[i]] };
+                current = current[keys[i]];
+            }
+            current[keys[keys.length - 1]] = value;
+
+            console.log("Store Updated:", path, "to", value);
+            console.log("New M_States:", newState);
+
+            return { M_States: newState };
+        }),
+
+    updateField: (fieldName, newValue) =>
+        set((state) => {
+            // ตรงนี้คือที่ที่ Logic การอัปเดตจะอยู่
+            // เราสามารถเรียกฟังก์ชันเก่า (ที่ทำไว้เมื่อวาน) มาใช้คำนวณค่าในนี้ได้เลย
+            // เพื่อให้มั่นใจว่าผลลัพธ์เหมือนเดิม
+            return { ...state /* อัปเดตข้อมูล */ };
+        }),
+}));
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Stores\0_M_Store.jsx]
+
+// resources/js/Stores/0_M_Store.jsx
+import { create } from "zustand";
+import { set_Focus_D_CD_States } from "@/Components/0_M_Focus_D_CD_States";
+
+export const use_M_Store = create((set) => ({
+    // ... OLD solution ...
+    D_States: {},
+    CD_States: {},
+    set_States: (fieldname, CD_States, D_States) =>
         set(() => ({
-            D_States: {},
-            CD_States: {},
+            D_States: { fieldname: fieldname, ...D_States },
+            CD_States: { fieldname: fieldname, ...CD_States },
         })),
+    // unset_States: () => set(() => ({ D_States: {}, CD_States: {} })),
+
+    // ---- NEW Solution --------------------------------------------------
+    // M_States: null,
+
+    // setFocus: (fieldname, M_value) =>
+    //     set(() => {
+    //         const [D_States, CD_States] = set_Focus_D_CD_States(
+    //             fieldname,
+    //             M_value,
+    //         );
+
+    //         console.log("🚀 [Store Update] Focus Changed to:", fieldname);
+    //         console.log("📊 New D_States:", D_States);
+    //         console.log("📊 New CD_States:", CD_States);
+
+    //         return {
+    //             D_States: { fieldname, ...D_States },
+    //             CD_States: { fieldname, ...CD_States },
+    //         };
+    //     }),
 }));
 
 
