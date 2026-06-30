@@ -1,46 +1,70 @@
-// resources/js/Stores/0_M_Store.jsx
+// resources/js/Components/0_M_Dropdown.jsx
 
-import { create } from "zustand";
+import { use_M_Option } from "@/Hooks/use_M_Option.js";
+import { use_M_Store } from "@/Stores/0_M_Store.jsx";
 
 /**
- * M_States Registry
- * * Stores field metadata dynamically mapped by fieldname.
- * * Matches PHP Constants structure (f::NAME, f::PRICE, etc.)
- * * * Example:
- * * M_States: {
- * * "f::NAME":  ['name', d::STRING, u::TEXT, cud::REQUIRED],
- * * "f::PRICE": ['price', [d::DECIMAL, 10, 2], u::NUMBER, [cd::DEFAULT, 0], s::CURRENCY]
- * * }
+ * M_Option Component
+ * * Handles dynamic rendering based on activeTab
  */
-export const use_M_Store = create((set) => ({
-    activeTab: "m_data",
-    setActiveTab: (tab) => set({ activeTab: tab }),
+export function M_Option({ M_Class_Name_List, fieldDataList }) {
+    const { getOptions } = use_M_Option();
+    const { activeTab } = use_M_Store();
 
-    M_States: {},
+    if (!M_Class_Name_List) return null;
 
-    /**
-     * Update state for a given fieldname and its metadata values
-     * * Example:
-     * * fieldname: "f::PRICE"
-     * * M_value: { s: s::CURRENCY }
-     */
-    setFocus: (fieldname, M_value) =>
-        set((state) => {
-            const nextStates = {
-                ...state.M_States,
-                [fieldname]: {
-                    ...state.M_States?.[fieldname],
-                    ...M_value,
-                },
-            };
+    return M_Class_Name_List.flatMap((M_Class_Name) => {
+        let options = [];
 
-            console.log(
-                `M_Store - setFocus - fieldname: ${fieldname} - M_States updated:`,
-                nextStates[fieldname],
+        // Logic split by activeTab
+        if (activeTab === "app_data") {
+            options = getOptions(M_Class_Name);
+        } else if (activeTab === "m_data") {
+            // Special handling for 's' class in m_data to fix the bug
+            if (M_Class_Name === "s") {
+                // Logic for Class S options here
+                options = getOptions(M_Class_Name);
+            } else {
+                options = getOptions(M_Class_Name);
+            }
+        }
+
+        return (Array.isArray(options) ? options : []).map((item) => {
+            const label = Array.isArray(item) ? item.join("::") : item;
+            return (
+                <option key={label} value={label}>
+                    {label}
+                </option>
             );
+        });
+    });
+}
 
-            return { M_States: nextStates };
-        }),
+/**
+ * Renders a dropdown select element
+ */
+export function renderDropdown(M_Class_Name_List, fieldDataList = []) {
+    const foundValue = fieldDataList.find((item) => {
+        const val = Array.isArray(item) ? item[0] : item;
+        return (
+            typeof val === "string" &&
+            M_Class_Name_List.some((c) => val.startsWith(c + "::"))
+        );
+    });
 
-    unset_States: () => set({ M_States: {} }),
-}));
+    let defaultValue = "";
+    if (foundValue) {
+        const str = Array.isArray(foundValue) ? foundValue[0] : foundValue;
+        defaultValue = str.split("::")[1];
+    }
+
+    return (
+        <select className="M_field-dropdown" defaultValue={defaultValue}>
+            <option value="">--</option>
+            <M_Option
+                M_Class_Name_List={M_Class_Name_List}
+                fieldDataList={fieldDataList}
+            />
+        </select>
+    );
+}

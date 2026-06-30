@@ -2,10 +2,17 @@
 import { renderDropdown } from "@/Components/0_M_Dropdown.jsx";
 import { renderCheckboxList } from "@/Components/0_M_CheckBox.jsx";
 import { use_M_Option } from "@/Hooks/use_M_Option.js"; // Import new hook
+import { use_M_Store } from "@/Stores/0_M_Store.jsx";
 
 export default function Field({ field_data }) {
     const { getOptions } = use_M_Option(); // Use the hook directly
     const [name, ...fieldDataList] = field_data;
+
+    // DEBUG: ตัวนี้จะพิมพ์บอกคุณทันทีว่าตอนนี้ทำงานที่ Tab ไหนและมีข้อมูลอะไร
+    const { activeTab } = use_M_Store();
+    console.log(`[FIELD_DEBUG] Field: ${name} | Tab: ${activeTab}`, {
+        fieldDataList,
+    });
 
     const groups = [
         { label: "D", keys: ["d"] },

@@ -17,6 +17,11 @@ const formatData = (data) =>
  * * Example usage:
  * * M_Class_Name: "entities" -> uses metadata.m_data
  * * M_Class_Name: "f"        -> uses metadata.app_data
+ * *
+ * * else if (activeTab === "m_data")
+ * * here for Class s Definition in m_data
+ * *
+ * * M_Class_Name === "s" some entitiy (DB_Table) has Class s fields
  */
 export function use_M_Option() {
     const metadata = use_M_Data();
@@ -34,6 +39,8 @@ export function use_M_Option() {
                 M_Class_Name === "s"
                     ? metadata?.m_data?.[M_Class_Name]
                     : metadata?.app_data?.[M_Class_Name];
+        } else if (activeTab === "m_data") {
+            rawData = metadata?.m_data?.[M_Class_Name];
         }
 
         return rawData ? formatData(rawData) : [];

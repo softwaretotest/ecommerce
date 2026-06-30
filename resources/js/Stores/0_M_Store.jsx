@@ -1,7 +1,5 @@
 // resources/js/Stores/0_M_Store.jsx
 
-// resources/js/Stores/0_M_Store.jsx
-
 import { create } from "zustand";
 
 /**
@@ -13,6 +11,7 @@ import { create } from "zustand";
  * * }
  */
 export const use_M_Store = create((set) => ({
+    debug: true,
     activeTab: "m_data",
     setActiveTab: (tab) => set({ activeTab: tab }),
 
@@ -38,10 +37,12 @@ export const use_M_Store = create((set) => ({
                 },
             };
 
-            console.log(
-                `M_Store [SUCCESS] - Data applied to ${fieldname}:`,
-                nextStates[fieldname],
-            );
+            if (state.debug) {
+                console.log(
+                    `[M_STORE_DEBUG] ${fieldname}:`,
+                    nextStates[fieldname],
+                );
+            }
 
             return { M_States: nextStates };
         }),
