@@ -77,7 +77,6 @@ export default function SubTab({ data, tab_label }) {
                             onClick={() => {
                                 setActiveField(fieldname);
                                 setFocus(fieldname, M_value);
-                                console.log("onClick - SubTab");
                             }}
                         >
                             {/* if Class t (DB_Tablename) remove T:: */}

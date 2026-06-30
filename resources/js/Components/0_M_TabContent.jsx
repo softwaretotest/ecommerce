@@ -50,8 +50,6 @@ export default function TabContent({
                         onClick={() => {
                             setFocus(fieldname, M_value);
                             setActiveField(fieldname);
-
-                            console.log("onClick - TabContent");
                         }}
                     >
                         {["d", "u", "cd", "cu", "cud"].includes(

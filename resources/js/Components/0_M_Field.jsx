@@ -10,9 +10,10 @@ export default function Field({ field_data }) {
 
     // DEBUG: ตัวนี้จะพิมพ์บอกคุณทันทีว่าตอนนี้ทำงานที่ Tab ไหนและมีข้อมูลอะไร
     const { activeTab } = use_M_Store();
-    console.log(`[FIELD_DEBUG] Field: ${name} | Tab: ${activeTab}`, {
-        fieldDataList,
-    });
+
+    // console.log(`[FIELD_DEBUG] Field: ${name} | Tab: ${activeTab}`, {
+    //     fieldDataList,
+    // });
 
     const groups = [
         { label: "D", keys: ["d"] },

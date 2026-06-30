@@ -37,12 +37,12 @@ export const use_M_Store = create((set) => ({
                 },
             };
 
-            if (state.debug) {
-                console.log(
-                    `[M_STORE_DEBUG] ${fieldname}:`,
-                    nextStates[fieldname],
-                );
-            }
+            // if (state.debug) {
+            //     console.log(
+            //         `[M_STORE_DEBUG] ${fieldname}:`,
+            //         nextStates[fieldname],
+            //     );
+            // }
 
             return { M_States: nextStates };
         }),

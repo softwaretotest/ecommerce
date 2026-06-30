@@ -23,6 +23,8 @@ export function renderCheckboxList(
         );
     });
 
+    console.log("0_M_CheckBox.jsx - foundValues:", foundValues);
+
     const DB_options = foundValues
         .filter((v) => {
             const val = Array.isArray(v) ? v[0] : v;

@@ -52,7 +52,6 @@ export default function JSON_Content({ M_value, activeField, setActiveField }) {
                         className={`json-line ${activeField === fieldname ? "json-highlight" : ""}`}
                         onClick={() => {
                             setFocus(fieldname, M_value);
-                            console.log("onClick - JSON_Content");
                             setActiveField(fieldname);
                         }}
                     >
