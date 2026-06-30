@@ -6,18 +6,8 @@ export function M_Option({ M_Class_Name_List, fieldDataList }) {
     const { getOptions } = use_M_Option(); // ดึงจาก Hook โดยตรง
 
     if (!M_Class_Name_List) return null;
-    // console.log(
-    //     "0_M_Dropdown - M_Option - M_Class_Name_List = ",
-    //     M_Class_Name_List,
-    // );
     return M_Class_Name_List.flatMap((M_Class_Name) => {
         const options = getOptions(M_Class_Name); // use getOptions from Hook
-        // if (M_Class_Name === "s") {
-        //     throw new Error(
-        //         "0_M_Dropdown - M_Option - M_Class_Name = s - options = ",
-        //         options,
-        //     );
-        // }
 
         return options.map((item) => (
             <option key={item} value={item}>
@@ -45,11 +35,7 @@ export function renderDropdown(M_Class_Name_List, fieldDataList = []) {
             M_Class_Name_List.some((c) => valueToTest.startsWith(c + "::"))
         );
     });
-    // console.log(
-    //     "0_M_Dropdown - renderDropdown - M_Class_Name_List = ",
-    //     M_Class_Name_List,
-    // );
-    // console.log("0_M_Dropdown - renderDropdown - foundValue = ", foundValue);
+
     let defaultValue = "";
     if (foundValue) {
         const stringValue = Array.isArray(foundValue)
@@ -58,10 +44,6 @@ export function renderDropdown(M_Class_Name_List, fieldDataList = []) {
         defaultValue = stringValue.split("::")[1];
     }
 
-    // console.log(
-    //     "0_M_Dropdown - renderDropdown - defaultValue = ",
-    //     defaultValue,
-    // );
     return (
         <select className="M_field-dropdown" defaultValue={defaultValue}>
             <option value="">--</option>

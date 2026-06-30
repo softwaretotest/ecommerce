@@ -1,47 +1,46 @@
 // resources/js/Stores/0_M_Store.jsx
+
 import { create } from "zustand";
 
+/**
+ * M_States Registry
+ * * Stores field metadata dynamically mapped by fieldname.
+ * * Matches PHP Constants structure (f::NAME, f::PRICE, etc.)
+ * * * Example:
+ * * M_States: {
+ * * "f::NAME":  ['name', d::STRING, u::TEXT, cud::REQUIRED],
+ * * "f::PRICE": ['price', [d::DECIMAL, 10, 2], u::NUMBER, [cd::DEFAULT, 0], s::CURRENCY]
+ * * }
+ */
 export const use_M_Store = create((set) => ({
-    // ... OLD solution ...
-    D_States: {},
-    CD_States: {},
-    set_States: (fieldname, CD_States, D_States) =>
-        set(() => ({
-            D_States: { fieldname: fieldname, ...D_States },
-            CD_States: { fieldname: fieldname, ...CD_States },
-        })),
-    unset_States: () => set(() => ({ D_States: {}, CD_States: {} })),
+    activeTab: "m_data",
+    setActiveTab: (tab) => set({ activeTab: tab }),
 
-    // ---- NEW Solution --------------------------------------------------
-    M_States: null,
-    set_M_States: (data) => set({ M_States: data }),
+    M_States: {},
 
     /**
-     * update is a test function, will be deleted
+     * Update state for a given fieldname and its metadata values
+     * * Example:
+     * * fieldname: "f::PRICE"
+     * * M_value: { s: s::CURRENCY }
      */
-    update: (path, value) =>
+    setFocus: (fieldname, M_value) =>
         set((state) => {
-            const keys = path.split(".");
-            const newState = { ...state.M_States };
+            const nextStates = {
+                ...state.M_States,
+                [fieldname]: {
+                    ...state.M_States?.[fieldname],
+                    ...M_value,
+                },
+            };
 
-            let current = newState;
-            for (let i = 0; i < keys.length - 1; i++) {
-                current[keys[i]] = { ...current[keys[i]] };
-                current = current[keys[i]];
-            }
-            current[keys[keys.length - 1]] = value;
+            console.log(
+                `M_Store - setFocus - fieldname: ${fieldname} - M_States updated:`,
+                nextStates[fieldname],
+            );
 
-            console.log("Store Updated:", path, "to", value);
-            console.log("New M_States:", newState);
-
-            return { M_States: newState };
+            return { M_States: nextStates };
         }),
 
-    updateField: (fieldName, newValue) =>
-        set((state) => {
-            // ตรงนี้คือที่ที่ Logic การอัปเดตจะอยู่
-            // เราสามารถเรียกฟังก์ชันเก่า (ที่ทำไว้เมื่อวาน) มาใช้คำนวณค่าในนี้ได้เลย
-            // เพื่อให้มั่นใจว่าผลลัพธ์เหมือนเดิม
-            return { ...state /* อัปเดตข้อมูล */ };
-        }),
+    unset_States: () => set({ M_States: {} }),
 }));

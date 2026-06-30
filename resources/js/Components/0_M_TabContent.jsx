@@ -32,7 +32,6 @@ export default function TabContent({
     const scrollRefs = useRef({});
     useScrollIntoView(activeField, scrollRefs);
 
-    console.log("0_M_TabContent.jsx - M_Value = ", M_value);
     return (
         <>
             <div>
@@ -51,6 +50,8 @@ export default function TabContent({
                         onClick={() => {
                             setFocus(fieldname, M_value);
                             setActiveField(fieldname);
+
+                            console.log("onClick - TabContent");
                         }}
                     >
                         {["d", "u", "cd", "cu", "cud"].includes(

@@ -21,8 +21,6 @@ import { use_M_Data } from "@/Providers/0_M_DataProvider.jsx";
  * * }
  */
 export default function EntityField({ field_data, table_name }) {
-    console.log("0_M_EntityField.jsx - field_data = ", field_data);
-
     const metadata = use_M_Data();
 
     return (
