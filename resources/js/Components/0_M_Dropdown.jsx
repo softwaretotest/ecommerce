@@ -2,6 +2,7 @@
 
 import { use_M_Option } from "@/Hooks/use_M_Option.js";
 import { use_M_Store } from "@/Stores/0_M_Store.jsx";
+import { Field_Params } from "@/Components/0_M_Field_Params.jsx";
 
 export function M_Option({ M_Class_Name_List, fieldDataList }) {
     const { getOptions } = use_M_Option(); // ดึงจาก Hook โดยตรง
@@ -27,6 +28,11 @@ export function M_Option({ M_Class_Name_List, fieldDataList }) {
  * *
  * * Result:
  * * <select defaultValue="ORDER_NR"> ... </select>
+ * *
+ * * Params:
+ * * defaultValue = field name , e.g. DECIMAL , STRING
+ * * field_params = e.g. for DECIMAL ( total_digit , scale )
+ * *
  */
 export function renderDropdown(M_Class_Name_List, fieldDataList = []) {
     const { activeTab } = use_M_Store();
@@ -45,20 +51,35 @@ export function renderDropdown(M_Class_Name_List, fieldDataList = []) {
     });
 
     let defaultValue = "";
+    let field_params = [];
     if (foundValue) {
-        const stringValue = Array.isArray(foundValue)
-            ? foundValue[0]
-            : foundValue;
-        defaultValue = stringValue.split("::")[1];
+        if (Array.isArray(foundValue)) {
+            // case Array: [ "d::DECIMAL", 10, 2, ... ]
+            const [stringValue, ...params] = foundValue;
+            defaultValue = stringValue.split("::")[1];
+            field_params = params;
+        } else {
+            // case string
+            defaultValue = foundValue.split("::")[1];
+            field_params = [];
+        }
     }
 
     return (
-        <select className="M_field-dropdown" defaultValue={defaultValue}>
-            <option value="">--</option>
-            <M_Option
-                M_Class_Name_List={M_Class_Name_List}
-                fieldDataList={fieldDataList}
-            />
-        </select>
+        <>
+            <select className="M_field-dropdown" defaultValue={defaultValue}>
+                <option value="">--</option>
+                <M_Option
+                    M_Class_Name_List={M_Class_Name_List}
+                    fieldDataList={fieldDataList}
+                />
+            </select>
+            {field_params.length > 0 && (
+                <Field_Params
+                    param_name={defaultValue}
+                    field_params={field_params}
+                />
+            )}
+        </>
     );
 }
