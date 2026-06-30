@@ -42,7 +42,7 @@ export default function EntityField({ field_data, table_name }) {
                 {field_data.map((fieldItem, index) => (
                     <div key={index} className="field-row">
                         {renderDropdown(
-                            ["f"], // e.g. f::NAME, f::PRICE f::STOCK
+                            ["f", "s"], // e.g. f::NAME, f::PRICE, f::STOCK, s::EMAIL
                             [fieldItem],
                         )}
                     </div>

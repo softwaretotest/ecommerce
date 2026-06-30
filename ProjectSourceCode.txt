@@ -244,7 +244,7 @@ class f
 
     // FOREIGN
     public const ORDER_ID = ['order_id', cd::FOREIGN];
-    public const PRODUCT_ID = ['product_id', d::FOREIGN];
+    public const PRODUCT_ID = ['product_id', cd::FOREIGN];
     public const SHOP_ID  = ['shop_id',  cd::FOREIGN];
     public const USER_ID  = ['user_id',  cd::FOREIGN]; //Base
 }
@@ -2268,18 +2268,22 @@ export default forwardRef(function TextInput(
 [FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Components\0_M_CheckBox.jsx]
 
 // 0_M_CheckBox.jsx
+import { use_M_Option } from "@/Hooks/use_M_Option.js";
 import { CD_Rule } from "@/Components/0_M_Rule_D_CD.jsx";
 import { UI_Rule } from "@/Components/0_M_Rule_U_UI.jsx";
 
 export function renderCheckboxList(
     M_Class_Name_List,
     fieldDataList = [],
-    getOptions_for_Checkbox_or_Dropdown,
-    groupLabel, // CD , CU
+    groupLabel,
 ) {
-    /**
-     *  filter only data for this Column
-     */
+    const { getOptions } = use_M_Option();
+
+    // console.log("0_M_CheckBox.jsx - M_Class_Name_List:", M_Class_Name_List);
+    // console.log("0_M_CheckBox.jsx - fieldDataList:", fieldDataList);
+
+    if (!Array.isArray(fieldDataList)) return null;
+
     const foundValues = fieldDataList.filter((item) => {
         let val = Array.isArray(item) ? item[0] : item;
         return (
@@ -2288,9 +2292,6 @@ export function renderCheckboxList(
         );
     });
 
-    /**
-     * separate Data according to prefix d:: u:: etc. and remove prefix
-     */
     const DB_options = foundValues
         .filter((v) => {
             const val = Array.isArray(v) ? v[0] : v;
@@ -2309,23 +2310,22 @@ export function renderCheckboxList(
         groupLabel === "CD"
             ? Array.from(
                   new Set(
-                      M_Class_Name_List.flatMap((M_Class_Name) =>
-                          getOptions_for_Checkbox_or_Dropdown(M_Class_Name),
-                      ),
+                      M_Class_Name_List.flatMap((name) => getOptions(name)),
                   ),
               )
-            : []; // if no CD selected
+            : [];
 
     const ALL_UI_options =
         groupLabel === "CU"
             ? Array.from(
                   new Set(
-                      M_Class_Name_List.flatMap((M_Class_Name) =>
-                          getOptions_for_Checkbox_or_Dropdown(M_Class_Name),
-                      ),
+                      M_Class_Name_List.flatMap((name) => getOptions(name)),
                   ),
               )
             : [];
+
+    // console.log("0_M_CheckBox.jsx - DB_options:", DB_options);
+    // console.log("0_M_CheckBox.jsx - UI_options:", UI_options);
 
     return (
         <>
@@ -2375,67 +2375,41 @@ export default function DB_Tablename({ field_data }) {
 
 // resources/js/Components/0_M_Dropdown.jsx
 
-export function M_Option(props) {
-    const {
-        M_Class_Name_List,
-        getOptions_for_Checkbox_or_Dropdown,
-        fieldDataList,
-    } = props;
+import { use_M_Option } from "@/Hooks/use_M_Option.js";
+
+export function M_Option({ M_Class_Name_List, fieldDataList }) {
+    const { getOptions } = use_M_Option(); // ดึงจาก Hook โดยตรง
 
     if (!M_Class_Name_List) return null;
 
-    return M_Class_Name_List.flatMap(function (M_Class_Name) {
-        const options = getOptions_for_Checkbox_or_Dropdown(M_Class_Name);
+    return M_Class_Name_List.flatMap((M_Class_Name) => {
+        const options = getOptions(M_Class_Name); // ใช้ getOptions จาก Hook
 
-        const prefix = M_Class_Name + "::";
-        const foundItem = fieldDataList
-            ? fieldDataList.find((i) => {
-                  const valueToTest = Array.isArray(i) ? i[0] : i;
-                  return (
-                      typeof valueToTest === "string" &&
-                      valueToTest.startsWith(prefix)
-                  );
-              })
-            : null;
-
-        const defaultValue = foundItem
-            ? Array.isArray(foundItem)
-                ? foundItem[0].split("::")[1]
-                : foundItem.split("::")[1]
-            : null;
-
-        return options.map(function (item) {
-            return (
-                <option key={item} value={item}>
-                    {item}
-                </option>
-            );
-        });
+        return options.map((item) => (
+            <option key={item} value={item}>
+                {item}
+            </option>
+        ));
     });
 }
 
-export function renderDropdown(
-    M_Class_Name_List,
-    fieldDataList = [],
-    getOptions_for_Checkbox_or_Dropdown,
-) {
-    const foundValue = fieldDataList.find(function (item) {
-        /**
-         * check is Array , because e.g.
-         * sometime item = ["cd::DEFAULT",0]   array
-         * sometime item = "u::NUMBER"         string
-         */
-        let valueToTest = item;
-        if (Array.isArray(item)) {
-            valueToTest = item[0];
-        }
-
-        if (typeof valueToTest !== "string") return false;
-
-        // startsWith check convention e.g. cud::REQUIRED
-        return M_Class_Name_List.some(function (className) {
-            return valueToTest.startsWith(className + "::");
-        });
+/**
+ * Renders a dropdown select element
+ * *
+ * * Example usage:
+ * * M_Class_Name_List: ["f"]
+ * * fieldDataList: ["f::ORDER_NR"]
+ * *
+ * * Result:
+ * * <select defaultValue="ORDER_NR"> ... </select>
+ */
+export function renderDropdown(M_Class_Name_List, fieldDataList = []) {
+    const foundValue = fieldDataList.find((item) => {
+        let valueToTest = Array.isArray(item) ? item[0] : item;
+        return (
+            typeof valueToTest === "string" &&
+            M_Class_Name_List.some((c) => valueToTest.startsWith(c + "::"))
+        );
     });
 
     let defaultValue = "";
@@ -2451,9 +2425,6 @@ export function renderDropdown(
             <option value="">--</option>
             <M_Option
                 M_Class_Name_List={M_Class_Name_List}
-                getOptions_for_Checkbox_or_Dropdown={
-                    getOptions_for_Checkbox_or_Dropdown
-                }
                 fieldDataList={fieldDataList}
             />
         </select>
@@ -2467,45 +2438,36 @@ export function renderDropdown(
 // resources/js/Components/0_M_EntityField.jsx
 
 import Field from "@/Components/0_M_Field.jsx";
-import { M_Option, renderDropdown } from "@/Components/0_M_Dropdown.jsx";
+import { renderDropdown } from "@/Components/0_M_Dropdown.jsx";
 import { use_M_Data } from "@/Providers/0_M_DataProvider.jsx";
 
 /**
  * DB Table with DB Column in it
- * e.g.
-{
-    "_comment": "1_Entities.json",
-    "entities": {
-        "t::orders": [
-            "f::ORDER_NR",
-            "f::PRODUCT_ID",
-            "f::USER_ID",
-            "f::QUANTITY",
-            "f::CONFIRM_ORDER"
-        ],
-    }
-}
-*/
-export default function EntityField({ field_data }) {
-    const metadata = use_M_Data();
-    const [tableName, ...fieldDataList] = field_data;
+ * *
+ * * {
+ * *     "_comment": "1_Entities.json",
+ * *  "entities": {
+ * *         "t::orders": [
+ * *             "f::ORDER_NR",
+ * *             "f::PRODUCT_ID",
+ * *             "f::USER_ID",
+ * *             "f::QUANTITY",
+ * *             "f::CONFIRM_ORDER"
+ * *         ],
+ * *     }
+ * * }
+ */
+export default function EntityField({ field_data, table_name }) {
+    console.log("0_M_EntityField.jsx - field_data = ", field_data);
 
-    // ฟังก์ชันดึง Options สำหรับ Dropdown
-    function getOptions_for_Dropdown() {
-        if (!metadata) return [];
-        // ปรับตามโครงสร้าง M_Data ของคุณ
-        const mData = metadata.m_data;
-        // สมมติว่าต้องการดึงจากที่เก็บไว้ (เช่น ถ้าเป็นตาราง orders ก็ดึงจากตารางนั้น)
-        const target = mData?.["f"] || {};
-        return Object.keys(target).sort();
-    }
+    const metadata = use_M_Data();
 
     return (
         <div className="entity-wrapper-box">
             <div className="entity-header">
                 <input
                     type="text"
-                    defaultValue={tableName.replace("t::", "")}
+                    defaultValue={table_name.replace("t::", "")}
                     className="App_Data_VALUE"
                     readOnly
                 />
@@ -2514,16 +2476,12 @@ export default function EntityField({ field_data }) {
             <div className="fields-container">
                 <label>Fields for this DB Table</label>
 
-                {/* วนลูปตามจำนวนฟิลด์ที่ได้รับมา */}
-                {fieldDataList.map((fieldItem, index) => (
+                {field_data.map((fieldItem, index) => (
                     <div key={index} className="field-row">
-                        <select defaultValue={fieldItem.replace("f::", "")}>
-                            {getOptions_for_Dropdown().map((option) => (
-                                <option key={option} value={option}>
-                                    {option}
-                                </option>
-                            ))}
-                        </select>
+                        {renderDropdown(
+                            ["f"], // e.g. f::NAME, f::PRICE f::STOCK
+                            [fieldItem],
+                        )}
                     </div>
                 ))}
             </div>
@@ -2536,13 +2494,12 @@ export default function EntityField({ field_data }) {
 [FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Components\0_M_Field.jsx]
 
 // resources/js/Components/0_M_Field.jsx
-import { M_Option, renderDropdown } from "@/Components/0_M_Dropdown.jsx";
+import { renderDropdown } from "@/Components/0_M_Dropdown.jsx";
 import { renderCheckboxList } from "@/Components/0_M_CheckBox.jsx";
-import { use_M_Data } from "@/Providers/0_M_DataProvider.jsx";
+import { use_M_Option } from "@/Hooks/use_M_Option.js"; // Import new hook
 
 export default function Field({ field_data }) {
-    const metadata = use_M_Data();
-
+    const { getOptions } = use_M_Option(); // Use the hook directly
     const [name, ...fieldDataList] = field_data;
 
     const groups = [
@@ -2551,21 +2508,6 @@ export default function Field({ field_data }) {
         { label: "CD", keys: ["cd", "cud"] },
         { label: "CU", keys: ["cu", "cud"] },
     ];
-
-    function getOptions_for_Checkbox_or_Dropdown(M_Class_Name) {
-        if (!metadata) return [];
-
-        const mDataContainer = metadata.m_data;
-
-        const targetClass = mDataContainer?.[M_Class_Name];
-
-        if (targetClass) {
-            const keys = Object.keys(targetClass);
-            return keys;
-        }
-
-        return [];
-    }
 
     return (
         <div className="field-wrapper-box">
@@ -2584,30 +2526,18 @@ export default function Field({ field_data }) {
             </div>
 
             <div className="field-dropdown-grid">
-                {groups.map(function (group) {
-                    const M_Class_Name_List = group.keys;
-
-                    return (
-                        <div key={group.label} className="dropdown-column">
-                            <div className="dropdown-label">{group.label}</div>
-
-                            {group.label === "D" || group.label === "U"
-                                ? // Dropdown for D and U
-                                  renderDropdown(
-                                      M_Class_Name_List,
-                                      fieldDataList,
-                                      getOptions_for_Checkbox_or_Dropdown,
-                                  )
-                                : // Checkbox for CD and CU
-                                  renderCheckboxList(
-                                      M_Class_Name_List,
-                                      fieldDataList,
-                                      getOptions_for_Checkbox_or_Dropdown,
-                                      group.label, // CD , CU
-                                  )}
-                        </div>
-                    );
-                })}
+                {groups.map((group) => (
+                    <div key={group.label} className="dropdown-column">
+                        <div className="dropdown-label">{group.label}</div>
+                        {group.label === "D" || group.label === "U"
+                            ? renderDropdown(group.keys, fieldDataList)
+                            : renderCheckboxList(
+                                  group.keys,
+                                  fieldDataList,
+                                  group.label,
+                              )}
+                    </div>
+                ))}
             </div>
         </div>
     );
@@ -2617,78 +2547,73 @@ export default function Field({ field_data }) {
 
 [FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Components\0_M_Focus_D_CD_States.js]
 
-// 0_M_Focus_D_CD_States.js
-
 import { GLOBAL_METADATA } from "@/Providers/0_M_DataProvider.jsx";
+
 /**
  * set CD_States (global), when click on App-Data-Field on Sidebar or TabContent
  * @param {*} fieldname string, decimal, boolean
  * @param {*} M_Value { BOOLEAN: 'boolean', DEFAULT: 'default', DECIMAL: 'decimal', STRING: 'string', FOREIGN: 'foreign' }
  */
 export function set_Focus_D_CD_States(fieldname, M_Value) {
-    // we set_CD_States only wenn Parent Tab = 'APP DATA'
     const is_AppData =
         GLOBAL_METADATA?.app_data._comment.includes("App-Data.json");
     if (!is_AppData) return;
 
-    const m_data = GLOBAL_METADATA.m_data;
-    const cd = m_data.cd;
-    const cud = m_data.cud;
-
-    const all_DB_constraints = { ...cd, ...cud };
-
-    const CD_States = {};
-
-    for (const item in all_DB_constraints) {
-        CD_States[item] = false;
-    }
-
-    /**
-     * for now , we don't set M_States for Class d , u , cd , cu , cud , t
-     * only Class with Array item e. g. Class f , s
-     */
-    function extract_cd_cud(focused_M_Field) {
-        if (!Array.isArray(focused_M_Field)) return;
-
-        const cd = [];
-        const cud = [];
-        focused_M_Field.forEach((item) => {
-            // in M Convention: if not string , it is array with array[0].typeOf String
-            const val = Array.isArray(item) ? item[0] : item;
-
-            if (val.startsWith("cd::")) {
-                cd.push(val.replace("cd::", ""));
-            } else if (val.startsWith("cud::")) {
-                cud.push(val.replace("cud::", ""));
-            }
-        });
-
-        return [...cd, ...cud];
-    }
-
-    function extract_d(focused_M_Field, fieldname) {
-        if (!Array.isArray(focused_M_Field)) return;
-        let D_States = { fieldname: fieldname };
-
-        focused_M_Field.forEach((item) => {
-            const val = Array.isArray(item) ? item[0] : item;
-
-            if (val.startsWith("d::")) {
-                const dataType = val.replace("d::", "").toUpperCase();
-                D_States[dataType] = dataType.toLowerCase();
-            }
-        });
-
-        return D_States;
-    }
-
+    const { cd, cud } = GLOBAL_METADATA.m_data;
+    const CD_States = initialize_CD_States({ ...cd, ...cud });
     const focused_M_Field = M_Value[fieldname];
 
-    const cd_cud_of_focused_M_Field = extract_cd_cud(focused_M_Field);
+    const cd_cud_list = extract_cd_cud(focused_M_Field);
+
+    /**
+     * update CD_States after extracted
+     * VERY IMPORT CODE, DO NOT DELETE
+     * oterwise, onClick Field will not update CD_States
+     */
+    cd_cud_list.forEach((item) => {
+        if (item in CD_States) {
+            CD_States[item] = true;
+        }
+    });
 
     const D_States = extract_d(focused_M_Field, fieldname);
 
     return [D_States, CD_States];
+}
+
+function initialize_CD_States(constraints) {
+    const states = {};
+    for (const item in constraints) {
+        states[item] = false;
+    }
+    return states;
+}
+
+function extract_cd_cud(focused_M_Field) {
+    if (!Array.isArray(focused_M_Field)) return [];
+
+    const results = [];
+    focused_M_Field.forEach((item) => {
+        const val = Array.isArray(item) ? item[0] : item;
+        if (val.startsWith("cd::") || val.startsWith("cud::")) {
+            results.push(val.replace("cd::", "").replace("cud::", ""));
+        }
+    });
+    return results;
+}
+
+function extract_d(focused_M_Field, fieldname) {
+    if (!Array.isArray(focused_M_Field)) return { fieldname: fieldname };
+
+    let D_States = { fieldname: fieldname };
+    focused_M_Field.forEach((item) => {
+        const val = Array.isArray(item) ? item[0] : item;
+        if (val.startsWith("d::")) {
+            const dataType = val.replace("d::", "").toUpperCase();
+            D_States[dataType] = dataType.toLowerCase();
+        }
+    });
+    return D_States;
 }
 
 
@@ -2697,9 +2622,13 @@ export function set_Focus_D_CD_States(fieldname, M_Value) {
 
 // resources/js/Components/0_M_JSON_Content.jsx
 import React, { useEffect, useRef } from "react";
+import { use_M_Store } from "@/Stores/0_M_Store.jsx";
+
 import { useScrollIntoView } from "@/hooks/useScrollIntoView";
 
 export default function JSON_Content({ M_value, activeField, setActiveField }) {
+    const setFocus = use_M_Store((state) => state.setFocus);
+
     const scrollRefs = useRef({});
     useScrollIntoView(activeField, scrollRefs);
 
@@ -2772,6 +2701,8 @@ import { use_M_Store } from "@/Stores/0_M_Store";
  * @param {*} ALL_DB_options e.g. ["NULLABLE", "PRIMARY", ...] (ตัวเลือกทั้งหมดที่อนุญาต)
  */
 export function CD_Rule({ DB_options, ALL_DB_options }) {
+    // console.log("0_M_Rule_D_CD.jsx - Rendering with DB_options:", DB_options);
+
     const [checked_CD, setChecked_CD] = useState(DB_options);
 
     const D_States = use_M_Store(useShallow((state) => state.D_States));
@@ -2908,8 +2839,8 @@ import "../../css/0_M_UI.css";
  * if SubTab = ENTITIES , then data = content of 1_Entities.json
  * ,e.g. * t:: = Tablename
  */
-export default function SubTab({ data }) {
-    // const setFocus = use_M_Store((state) => state.setFocus);
+export default function SubTab({ data, tab_label }) {
+    const setFocus = use_M_Store((state) => state.setFocus);
 
     /**
      * ONLY 1 state to focus 3 Components with same click
@@ -2931,27 +2862,6 @@ export default function SubTab({ data }) {
     /**
      * OLD solution works, will be removed
      */
-    const D_States = use_M_Store.getState().D_States;
-    const CD_States = use_M_Store.getState().CD_States;
-    const set_CD_States = use_M_Store.getState().set_CD_States;
-    const set_States = use_M_Store((state) => state.set_States);
-
-    function update_All_States(fieldname, M_value) {
-        const [D_States, CD_States] = set_Focus_D_CD_States(fieldname, M_value);
-
-        set_States(fieldname, CD_States, D_States);
-    }
-
-    useEffect(() => {
-        console.log(
-            "0_M_SubTab.jsx -OLD_SOLUTION- D_States อัปเดตแล้ว:",
-            D_States,
-        );
-        console.log(
-            "0_M_SubTab.jsx -OLD_SOLUTION- CD_States อัปเดตแล้ว:",
-            CD_States,
-        );
-    }, [CD_States]);
 
     return (
         <>
@@ -2985,8 +2895,7 @@ export default function SubTab({ data }) {
                             className={`field-nav-link ${activeField === fieldname ? "active" : ""}`}
                             onClick={() => {
                                 setActiveField(fieldname);
-                                // setFocus(fieldname, M_value);
-                                update_All_States(fieldname, M_value);
+                                setFocus(fieldname, M_value);
                             }}
                         >
                             {/* if Class t (DB_Tablename) remove T:: */}
@@ -3002,6 +2911,7 @@ export default function SubTab({ data }) {
                         M_value={M_value}
                         activeField={activeField}
                         setActiveField={setActiveField}
+                        tab_label={tab_label}
                     />
                 </div>
 
@@ -3042,6 +2952,7 @@ export default function TabContent({
     activeField,
     setActiveField,
 }) {
+    const setFocus = use_M_Store((state) => state.setFocus);
     const update = use_M_Store((state) => state.update);
 
     // use path to update, e.g. "APP_DATA.NAME"
@@ -3056,19 +2967,7 @@ export default function TabContent({
     const scrollRefs = useRef({});
     useScrollIntoView(activeField, scrollRefs);
 
-    /**
-     * OLD solution works, will be removed
-     */
-    const D_States = use_M_Store.getState().D_States;
-    const CD_States = use_M_Store.getState().CD_States;
-    const set_CD_States = use_M_Store.getState().set_CD_States;
-    const set_States = use_M_Store((state) => state.set_States);
-
-    function update_All_States(fieldname, M_value) {
-        const [D_States, CD_States] = set_Focus_D_CD_States(fieldname, M_value);
-        set_States(fieldname, CD_States, D_States);
-    }
-
+    console.log("0_M_TabContent.jsx - M_Value = ", M_value);
     return (
         <>
             <div>
@@ -3087,7 +2986,6 @@ export default function TabContent({
                         onClick={() => {
                             setFocus(fieldname, M_value);
                             setActiveField(fieldname);
-                            update_All_States(fieldname, M_value);
                         }}
                     >
                         {["d", "u", "cd", "cu", "cud"].includes(
@@ -3130,14 +3028,46 @@ export default function TabContent({
                             <DB_Tablename field_data={field_data} />
                         )}
 
+                        {/* in entities fieldname is table_name e.g. 
+                            t::orders: Array(5)
+                                0: "f::ORDER_NR"
+                                1: "f::PRODUCT_ID"
+                                2: "f::USER_ID"
+                                3: "f::QUANTITY"
+                                4: "f::CONFIRM_ORDER" */}
                         {M_Class_Name === "entities" && (
-                            <EntityField field_data={field_data} />
+                            <EntityField
+                                field_data={field_data}
+                                table_name={fieldname}
+                            />
                         )}
                     </div>
                 ))}
             </div>
         </>
     );
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Components\temp.jsx]
+
+import { use_M_Data } from "@/Providers/0_M_DataProvider.jsx";
+
+/**
+ * get options for dropdown or checkbox
+ */
+export function use_M_Option() {
+    const metadata = use_M_Data();
+
+    const getOptions = (M_Class_Name) => {
+        const data =
+            M_Class_Name === "entities" ? metadata.app_data : metadata.m_data;
+        if (!data?.[M_Class_Name]) return [];
+        return Object.keys(data[M_Class_Name]).sort();
+    };
+
+    return { getOptions };
 }
 
 
@@ -3160,6 +3090,46 @@ export const useScrollIntoView = (activeField, scrollRefs) => {
         }
     }, [activeField, scrollRefs]);
 };
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Hooks\use_M_Option.js]
+
+// resources/js/Hooks/use_M_Option.jsx
+
+import { use_M_Data } from "@/Providers/0_M_DataProvider.jsx";
+import { use_M_Store } from "@/Stores/0_M_Store.jsx";
+
+/**
+ * Get options for dropdown or checkbox based on Class Name
+ * * Example usage:
+ * * M_Class_Name: "entities" -> uses metadata.m_data
+ * * M_Class_Name: "f"        -> uses metadata.app_data
+ */
+export function use_M_Option() {
+    const metadata = use_M_Data();
+    const activeTab = use_M_Store((state) => state.activeTab);
+
+    const getOptions = (M_Class_Name) => {
+        if (activeTab === "app_data") {
+            const data = metadata?.m_data?.[M_Class_Name];
+            if (!data) return [];
+
+            // for Object and Array
+            return Array.isArray(data) ? data.sort() : Object.keys(data).sort();
+        }
+
+        if (activeTab === "entities") {
+            const data = metadata?.app_data?.[M_Class_Name];
+            if (!data) return [];
+
+            // for Object and Array
+            return Array.isArray(data) ? data.sort() : Object.keys(data).sort();
+        }
+    };
+
+    return { getOptions };
+}
 
 
 
@@ -3828,7 +3798,8 @@ import "@/../css/0_M_UI.css";
 export default function M_Dashboard() {
     const data = use_M_Data();
 
-    const [activeTab, setActiveTab] = useState("m_data");
+    const activeTab = use_M_Store((state) => state.activeTab);
+    const setActiveTab = use_M_Store((state) => state.setActiveTab);
 
     if (!data) return <div>Loading...</div>;
 
@@ -3865,7 +3836,7 @@ export default function M_Dashboard() {
 
 
 
-[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Services\0_M_DataProvider.jsx]
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Providers\0_M_DataProvider.jsx]
 
 // resources/js/Providers/0_M_DataProvider.jsx
 
@@ -3967,35 +3938,28 @@ import { create } from "zustand";
 import { set_Focus_D_CD_States } from "@/Components/0_M_Focus_D_CD_States";
 
 export const use_M_Store = create((set) => ({
-    // ... OLD solution ...
+    // --- Tab State ---
+    activeTab: "m_data",
+    setActiveTab: (tab) => set({ activeTab: tab }),
+
+    // --- Existing States ---
     D_States: {},
     CD_States: {},
-    set_States: (fieldname, CD_States, D_States) =>
-        set(() => ({
-            D_States: { fieldname: fieldname, ...D_States },
-            CD_States: { fieldname: fieldname, ...CD_States },
-        })),
-    // unset_States: () => set(() => ({ D_States: {}, CD_States: {} })),
+    unset_States: () => set(() => ({ D_States: {}, CD_States: {} })),
 
-    // ---- NEW Solution --------------------------------------------------
-    // M_States: null,
-
-    // setFocus: (fieldname, M_value) =>
-    //     set(() => {
-    //         const [D_States, CD_States] = set_Focus_D_CD_States(
-    //             fieldname,
-    //             M_value,
-    //         );
-
-    //         console.log("🚀 [Store Update] Focus Changed to:", fieldname);
-    //         console.log("📊 New D_States:", D_States);
-    //         console.log("📊 New CD_States:", CD_States);
-
-    //         return {
-    //             D_States: { fieldname, ...D_States },
-    //             CD_States: { fieldname, ...CD_States },
-    //         };
-    //     }),
+    // --- Focus Logic ---
+    M_States: null,
+    setFocus: (fieldname, M_value) =>
+        set(() => {
+            const [D_States, CD_States] = set_Focus_D_CD_States(
+                fieldname,
+                M_value,
+            );
+            return {
+                D_States: { fieldname, ...D_States },
+                CD_States: { fieldname, ...CD_States },
+            };
+        }),
 }));
 
 

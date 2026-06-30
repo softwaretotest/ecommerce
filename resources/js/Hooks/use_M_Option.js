@@ -4,6 +4,15 @@ import { use_M_Data } from "@/Providers/0_M_DataProvider.jsx";
 import { use_M_Store } from "@/Stores/0_M_Store.jsx";
 
 /**
+ * Format data into a sorted array of strings
+ * * Example:
+ * * data: {EMAIL: [], CURRENCY: []} -> ["CURRENCY", "EMAIL"]
+ * * data: ["A", "B"] -> ["A", "B"]
+ */
+const formatData = (data) =>
+    Array.isArray(data) ? data.sort() : Object.keys(data).sort();
+
+/**
  * Get options for dropdown or checkbox based on Class Name
  * * Example usage:
  * * M_Class_Name: "entities" -> uses metadata.m_data
@@ -14,21 +23,20 @@ export function use_M_Option() {
     const activeTab = use_M_Store((state) => state.activeTab);
 
     const getOptions = (M_Class_Name) => {
+        let rawData;
+
         if (activeTab === "app_data") {
-            const data = metadata?.m_data?.[M_Class_Name];
-            if (!data) return [];
-
-            // for Object and Array
-            return Array.isArray(data) ? data.sort() : Object.keys(data).sort();
+            rawData =
+                metadata?.m_data?.[M_Class_Name] ||
+                metadata?.app_data?.[M_Class_Name];
+        } else if (activeTab === "entities") {
+            rawData =
+                M_Class_Name === "s"
+                    ? metadata?.m_data?.[M_Class_Name]
+                    : metadata?.app_data?.[M_Class_Name];
         }
 
-        if (activeTab === "entities") {
-            const data = metadata?.app_data?.[M_Class_Name];
-            if (!data) return [];
-
-            // for Object and Array
-            return Array.isArray(data) ? data.sort() : Object.keys(data).sort();
-        }
+        return rawData ? formatData(rawData) : [];
     };
 
     return { getOptions };
