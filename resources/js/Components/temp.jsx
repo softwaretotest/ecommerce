@@ -1,4 +1,4 @@
-import { use_M_Data } from "@/Providers/0_M_DataProvider.jsx";
+import { use_M_Data } from "@/Providers/0_M_DataProvider";
 
 /**
  * get options for dropdown or checkbox

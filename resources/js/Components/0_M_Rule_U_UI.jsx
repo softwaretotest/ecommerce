@@ -6,7 +6,7 @@ import { useState } from "react";
  * @param {*} UI_options e.g. ["READONLY"] (สิ่งที่ถูกเลือกจาก DB)
  * @param {*} ALL_UI_options e.g. ["READONLY", "DISABLED", ...] (ตัวเลือกทั้งหมดของ UI)
  */
-export function UI_Rule({ UI_options, ALL_UI_options }) {
+export function UI_Rule({ UI_options, ALL_UI_options, field_data, M_value }) {
     const [checked_CU, setChecked_CU] = useState(UI_options);
 
     function updateUIRules(currentItems, option, isChecked) {

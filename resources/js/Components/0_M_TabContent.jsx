@@ -81,11 +81,14 @@ export default function TabContent({
 
                         {/* middle column: Input Fields */}
                         {M_Class_Name === "s" && Array.isArray(field_data) && (
-                            <SpecialField field_data={field_data} />
+                            <SpecialField
+                                field_data={field_data}
+                                M_value={M_value}
+                            />
                         )}
 
                         {M_Class_Name === "f" && Array.isArray(field_data) && (
-                            <Field field_data={field_data} />
+                            <Field field_data={field_data} M_value={M_value} />
                         )}
 
                         {M_Class_Name === "t" && (

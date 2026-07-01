@@ -2,7 +2,6 @@
 
 import Field from "@/Components/0_M_Field.jsx";
 import { renderDropdown } from "@/Components/0_M_Dropdown.jsx";
-import { use_M_Data } from "@/Providers/0_M_DataProvider.jsx";
 
 /**
  * DB Table with DB Column in it
@@ -21,8 +20,6 @@ import { use_M_Data } from "@/Providers/0_M_DataProvider.jsx";
  * * }
  */
 export default function EntityField({ field_data, table_name }) {
-    const metadata = use_M_Data();
-
     return (
         <div className="entity-wrapper-box">
             <div className="entity-header">

@@ -4,21 +4,20 @@ import { renderCheckboxList } from "@/Components/0_M_CheckBox.jsx";
 import { use_M_Option } from "@/Hooks/use_M_Option.js"; // Import new hook
 import { use_M_Store } from "@/Stores/0_M_Store.jsx";
 
-export default function Field({ field_data }) {
+export default function Field({ field_data, M_value }) {
     const { getOptions } = use_M_Option(); // Use the hook directly
-    const [name, ...fieldDataList] = field_data;
-
-    // DEBUG: ตัวนี้จะพิมพ์บอกคุณทันทีว่าตอนนี้ทำงานที่ Tab ไหนและมีข้อมูลอะไร
+    const [fieldname, ...fieldDataList] = field_data;
     const { activeTab } = use_M_Store();
 
-    // console.log(`[FIELD_DEBUG] Field: ${name} | Tab: ${activeTab}`, {
+    // console.log(`[FIELD_DEBUG] Field: ${fieldname} | Tab: ${activeTab}`, {
     //     fieldDataList,
     // });
+    // console.log(`[FIELD_DEBUG] Field: field_data`, field_data);
 
     const groups = [
         { label: "D", keys: ["d"] },
-        { label: "U", keys: ["u"] },
         { label: "CD", keys: ["cd", "cud"] },
+        { label: "U", keys: ["u"] },
         { label: "CU", keys: ["cu", "cud"] },
     ];
 
@@ -27,13 +26,13 @@ export default function Field({ field_data }) {
             <div className="field-header-container">
                 <input
                     type="text"
-                    defaultValue={name.toUpperCase()}
+                    defaultValue={fieldname.toUpperCase()}
                     className="App_Data_KEY"
                 />
                 <span className="field-separator-colon">:</span>
                 <input
                     type="text"
-                    defaultValue={name}
+                    defaultValue={fieldname}
                     className="App_Data_VALUE"
                 />
             </div>
@@ -43,11 +42,18 @@ export default function Field({ field_data }) {
                     <div key={group.label} className="dropdown-column">
                         <div className="dropdown-label">{group.label}</div>
                         {group.label === "D" || group.label === "U"
-                            ? renderDropdown(group.keys, fieldDataList)
+                            ? renderDropdown(
+                                  group.keys,
+                                  fieldDataList,
+                                  field_data,
+                                  M_value,
+                              )
                             : renderCheckboxList(
                                   group.keys,
                                   fieldDataList,
                                   group.label,
+                                  field_data,
+                                  M_value,
                               )}
                     </div>
                 ))}

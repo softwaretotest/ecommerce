@@ -15,13 +15,19 @@ export const use_M_Store = create((set) => ({
     activeTab: "m_data",
     setActiveTab: (tab) => set({ activeTab: tab }),
 
+    // // e.g ['cd::DEFAULT', 10, 2]
+    // DEFAULT_Panel: [],
+    // set_DEFAULT_Panel: (arrayValue) => set({ DEFAULT_Panel: arrayValue }),
+
     M_States: {},
 
     /**
-     * Update state for a given fieldname and its metadata values
-     * * Example:
+     * * Update state for a given fieldname and its metadata values
+     * * we must cleanData before nextStates
+     * * to show actuel data in M_States
+     * * PARAMS:
      * * fieldname: "f::PRICE"
-     * * M_value: { s: s::CURRENCY }
+     * * M_value: all existing f:: in App_data.json { NAME[], PRICE[], ...}
      */
     setFocus: (fieldname, M_value) =>
         set((state) => {
@@ -30,22 +36,28 @@ export const use_M_Store = create((set) => ({
                 : M_value;
 
             const nextStates = {
-                ...state.M_States,
                 [fieldname]: {
-                    ...state.M_States?.[fieldname],
                     ...cleanData,
                 },
             };
 
-            // if (state.debug) {
-            //     console.log(
-            //         `[M_STORE_DEBUG] ${fieldname}:`,
-            //         nextStates[fieldname],
-            //     );
-            // }
+            if (state.debug) {
+                console.log(`[M_STORE_DEBUG] Focused on: ${fieldname}`);
+                console.log(`[M_STORE_DEBUG] Current M_States:`, nextStates);
+                console.log("------------------------------------");
+                console.log(`[M_STORE_DEBUG] Current M_value:`, M_value);
+            }
 
             return { M_States: nextStates };
         }),
+
+    /**
+     * * M_value = all Data from each json file
+     * * it depends on which Main Tab in Dashboard you clicked
+     * * e.g. M_DATA, APP_DATA, ENTITIES
+     */
+    M_value: {},
+    set_M_value: (new_M_value) => set({ M_value: new_M_value }),
 
     unset_States: () => set({ M_States: {} }),
 }));

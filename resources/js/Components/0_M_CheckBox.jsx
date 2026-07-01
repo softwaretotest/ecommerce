@@ -1,17 +1,23 @@
 // 0_M_CheckBox.jsx
+import { useEffect } from "react";
+
 import { use_M_Option } from "@/Hooks/use_M_Option.js";
-import { CD_Rule } from "@/Components/0_M_Rule_D_CD.jsx";
-import { UI_Rule } from "@/Components/0_M_Rule_U_UI.jsx";
+import { CD_Rule } from "@/Components/0_M_Rule_D_CD";
+import { UI_Rule } from "@/Components/0_M_Rule_U_UI";
+import { use_M_Store } from "@/Stores/0_M_Store";
 
 export function renderCheckboxList(
     M_Class_Name_List,
     fieldDataList = [],
     groupLabel,
+    field_data,
+    M_value,
 ) {
     const { getOptions } = use_M_Option();
 
     // console.log("0_M_CheckBox.jsx - M_Class_Name_List:", M_Class_Name_List);
     // console.log("0_M_CheckBox.jsx - fieldDataList:", fieldDataList);
+    // console.log("0_M_CheckBox.jsx - groupLabel:", groupLabel);
 
     if (!Array.isArray(fieldDataList)) return null;
 
@@ -22,8 +28,6 @@ export function renderCheckboxList(
             M_Class_Name_List.some((c) => val.startsWith(c + "::"))
         );
     });
-
-    console.log("0_M_CheckBox.jsx - foundValues:", foundValues);
 
     const DB_options = foundValues
         .filter((v) => {
@@ -62,8 +66,18 @@ export function renderCheckboxList(
 
     return (
         <>
-            <CD_Rule DB_options={DB_options} ALL_DB_options={ALL_DB_options} />
-            <UI_Rule UI_options={UI_options} ALL_UI_options={ALL_UI_options} />
+            <CD_Rule
+                DB_options={DB_options}
+                ALL_DB_options={ALL_DB_options}
+                field_data={field_data}
+                M_value={M_value}
+            />
+            <UI_Rule
+                UI_options={UI_options}
+                ALL_UI_options={ALL_UI_options}
+                field_data={field_data}
+                M_value={M_value}
+            />
         </>
     );
 }
