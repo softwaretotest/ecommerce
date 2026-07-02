@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { use_M_Store } from "@/Stores/0_M_Store";
 import { DEFAULT_Panel } from "@/Components/0_M_DEFAULT_Panel";
 import { prepare_new_M_value_for_Update } from "@/Components/0_M_value_Updater";
+import { Focus_CD_Rule_onChange } from "@/Components/0_M_Focus_CD_Rule_onChange";
 
 /**
  * Rule Fabric
@@ -12,40 +13,48 @@ import { prepare_new_M_value_for_Update } from "@/Components/0_M_value_Updater";
  * @param {*} DB_options e.g. ["REQUIRED"] (สิ่งที่ถูกเลือกจาก DB)
  * @param {*} ALL_DB_options e.g. ["NULLABLE", "PRIMARY", ...] (ตัวเลือกทั้งหมดที่อนุญาต)
  */
-export function CD_Rule({ DB_options, ALL_DB_options, field_data, M_value }) {
+export function CD_Rule({
+    DB_options,
+    ALL_DB_options,
+    field_data,
+    M_value,
+    activeSubTab,
+}) {
     // console.log("Rule_D_CD.jsx - DB_options = ", DB_options);
     const [checked_CD, setChecked_CD] = useState(DB_options);
 
     const setFocus = use_M_Store((state) => state.setFocus);
+    const activeTab = use_M_Store((state) => state.activeTab);
     const set_M_value = use_M_Store((state) => state.set_M_value);
 
-    const fieldname = field_data[0]; // Assuming field_data is an array and the first element is the field name
+    /**
+     * Assuming field_data is an array and the first element is the field name
+     */
+    const fieldname = field_data[0];
 
-    const [INDEX, set_INDEX] = useState(false);
-    const [UNIQUE, set_UNIQUE] = useState(false);
-    const [DEFAULT, set_DEFAULT] = useState(null);
-    const [FOREIGN, set_FOREIGN] = useState(false);
-    const [NULLABLE, set_NULLABLE] = useState(false);
-    const [REQUIRED, set_REQUIRED] = useState(false);
+    /**
+     * * setChecked_CD
+     * * prepare_new_M_value_for_Update
+     * * set_M_value
+     */
+    function set_D_CD_Actions(option, event) {
+        const checked_CD_States = event.target.checked
+            ? [...checked_CD, option]
+            : checked_CD.filter((item) => item !== option);
+        setChecked_CD(checked_CD_States);
 
-    function get_CD_State(option, states) {
-        switch (option) {
-            case "DEFAULT":
-                return states.DEFAULT;
-            case "REQUIRED":
-                return states.REQUIRED;
-            case "UNIQUE":
-                return states.UNIQUE;
-            case "NULLABLE":
-                return states.NULLABLE;
-            default:
-                return false;
-        }
+        const new_M_Value = prepare_new_M_value_for_Update(
+            M_value,
+            fieldname,
+            checked_CD_States,
+        );
+        set_M_value(new_M_Value);
     }
 
+    // const M_value_to_Log = use_M_Store((state) => state.M_value);
     // useEffect(() => {
-    //     console.log("Rule_D_CD.jsx - checked_CD = ", checked_CD);
-    // }, [checked_CD]);
+    //     console.log("Rule_D_CD.jsx - M_value_to_Log = ", M_value_to_Log);
+    // }, [M_value_to_Log]);
 
     return (
         <div className="M_checkbox-list">
@@ -62,34 +71,44 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data, M_value }) {
                              */
                             // If 'option' is in 'checked_CD' array, the box is checked.
                             checked={checked_CD.includes(option)}
-                            onChange={(e) => {
-                                // // set checked -----------------------
-                                const checked_CD_States = e.target.checked
-                                    ? [...checked_CD, option]
-                                    : checked_CD.filter(
-                                          (item) => item !== option,
-                                      );
-                                setChecked_CD(checked_CD_States);
-
-                                // set Focus in M_Store -----------------------
-
-                                const new_M_Value =
-                                    prepare_new_M_value_for_Update(
-                                        M_value,
-                                        fieldname,
-                                        checked_CD_States,
-                                    );
-                                set_M_value(new_M_Value);
+                            onChange={(event) => {
+                                update_M_value(event, field_data, M_value);
+                                Focus_CD_Rule_onChange({
+                                    element_DOM: event.target,
+                                    M_value,
+                                    field_data,
+                                });
+                                set_D_CD_Actions(option, event);
                             }}
                         />
                         {option}
                     </label>
-
-                    {option === "DEFAULT" && checked_CD.includes("DEFAULT") && (
-                        <DEFAULT_Panel field_data={field_data} />
-                    )}
+                    {/* show or hide when user click on checkbox */}
+                    {(activeTab === "app_data" ||
+                        (activeTab === "m_data" && activeSubTab === "s")) &&
+                        checked_CD.includes("DEFAULT") &&
+                        option === "DEFAULT" && (
+                            <DEFAULT_Panel field_data={field_data} />
+                        )}
                 </div>
             ))}
         </div>
     );
+}
+
+function update_M_value(event, field_data, M_value) {
+    const fieldname = field_data[0];
+    const checked_CD_States = Array.from(
+        event.target
+            .closest(".M_checkbox-list")
+            .querySelectorAll("input:checked"),
+    ).map((input) => input.value);
+
+    const new_M_Value = prepare_new_M_value_for_Update(
+        M_value,
+        fieldname,
+        checked_CD_States,
+    );
+
+    use_M_Store.getState().set_M_value(new_M_Value);
 }

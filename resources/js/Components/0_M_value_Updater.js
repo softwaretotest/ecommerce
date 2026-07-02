@@ -10,16 +10,16 @@ export function prepare_new_M_value_for_Update(
     fieldname,
     checked_CD_States,
 ) {
-    console.log(
-        "0. GLOBAL_METADATA.app_data.f.IMAGE[1] :",
-        GLOBAL_METADATA.app_data.f.IMAGE[1],
-    );
-    console.log("---------------------------------");
+    // console.log(
+    //     "0. GLOBAL_METADATA.app_data.f.IMAGE[1] :",
+    //     GLOBAL_METADATA.app_data.f.IMAGE[1],
+    // );
+    // console.log("---------------------------------");
 
-    console.log("--- [DEBUG: prepare_new_M_value] ---");
-    console.log("1. Incoming fieldname:", fieldname);
-    console.log("2. Incoming checked_CD_States:", checked_CD_States);
-    console.log("3. Incoming old_M_value:", old_M_value);
+    // console.log("--- [DEBUG: prepare_new_M_value] ---");
+    // console.log("1. Incoming fieldname:", fieldname);
+    // console.log("2. Incoming checked_CD_States:", checked_CD_States);
+    // console.log("3. Incoming old_M_value:", old_M_value);
 
     /**
      * * clone of M_value
@@ -27,7 +27,7 @@ export function prepare_new_M_value_for_Update(
      * * , when clicked on Main Tab APP_DATA, M_DATA, ENTITIES
      */
     const new_M_value = { ...old_M_value };
-    console.log("4. Cloned new_M_value:", new_M_value);
+    // console.log("4. Cloned new_M_value:", new_M_value);
 
     /**
      * fieldname_UPPERCASE = PRICE , STOCK
@@ -71,7 +71,7 @@ export function prepare_new_M_value_for_Update(
      * cud_names = ['REQUIRED']
      */
     const cud_names = Object.keys(GLOBAL_METADATA.m_data.cud || {});
-    console.log("6.1. cud_names = ", cud_names);
+    // console.log("6.1. cud_names = ", cud_names);
 
     /**
      * * make new cd , cud to add to new_M_value
@@ -84,10 +84,13 @@ export function prepare_new_M_value_for_Update(
 
         if (item.toUpperCase() === "DEFAULT") {
             // ใช้ fieldname_UPPERCASE แทน fieldname เพื่อความชัวร์ในการเข้าถึง metadata
-            const defaultValue = DEFAULT_VALUES_for_D_CD(fieldname_UPPERCASE);
-
+            const D_name = DEFAULT_VALUES_for_D_CD(fieldname_UPPERCASE);
+            // console.log(
+            //     "   0_M_value_Updater - prepare_new_M_value_for_Update - D_name = ",
+            //     D_name,
+            // );
             const prefix = isCud ? "cud" : "cd";
-            return [`${prefix}::${item}`, defaultValue];
+            return [`${prefix}::${item}`, D_name];
         }
 
         // กรณีปกติ: จัดการ Parameter อื่นๆ
@@ -97,7 +100,7 @@ export function prepare_new_M_value_for_Update(
          * * I want to know , why AI Gemini add this variable config for what ???
          */
         const config = FIELD_PARAMS_MAP[item.toUpperCase()];
-        console.log("6.2 config = ", config);
+        // console.log("6.2 config = ", config);
 
         if (config) {
             const prefix = isCud ? "cud" : "cd";
@@ -107,7 +110,7 @@ export function prepare_new_M_value_for_Update(
 
         return isCud ? `cud::${item}` : `cd::${item}`;
     });
-    console.log("7. checked_cd_cud_names (new items):", checked_cd_cud_names);
+    // console.log("7. checked_cd_cud_names (new items):", checked_cd_cud_names);
 
     new_M_value[fieldname_UPPERCASE] = [
         ...field_data_without_cd_cud,
@@ -118,12 +121,12 @@ export function prepare_new_M_value_for_Update(
      * * ['price', Array(3), 'u::NUMBER', 's::CURRENCY', Array(2), 'cud::REQUIRED']
      */
     const new_field_data = new_M_value[fieldname_UPPERCASE];
-    console.log(
-        "8. Final new_M_value[fieldname]:",
-        new_M_value[fieldname_UPPERCASE],
-    );
-    console.log("9. Full final new_M_value:", new_M_value);
-    console.log("--- [DEBUG: END] ---");
+    // console.log(
+    //     "8. Final new_M_value[fieldname]:",
+    //     new_M_value[fieldname_UPPERCASE],
+    // );
+    // console.log("9. Full final new_M_value:", new_M_value);
+    // console.log("--- [DEBUG: END] ---");
 
     return new_M_value;
 }
@@ -135,7 +138,7 @@ export function prepare_new_M_value_for_Update(
  * @param {*} keyName
  * @returns
  */
-function DEFAULT_VALUES_for_D_CD(keyName) {
+export function DEFAULT_VALUES_for_D_CD(keyName) {
     const field_data = GLOBAL_METADATA.app_data.f[keyName];
 
     // default for d::FIELDNAME = ''
@@ -148,10 +151,20 @@ function DEFAULT_VALUES_for_D_CD(keyName) {
         ? field_data[1][0]
         : field_data[1];
 
+    // console.log(
+    //     "0_M_value_Updateer - DEFAULT_VALUES_for_D_CD - rawTypeString = ",
+    //     rawTypeString,
+    // );
+
     /**
      * 'd::DECIMAL' -> 'DECIMAL'
      */
     const d_name_UPPERCASE = rawTypeString.split("::")[1].toUpperCase();
+
+    // console.log(
+    //     "0_M_value_Updateer - DEFAULT_VALUES_for_D_CD - d_name_UPPERCASE = ",
+    //     d_name_UPPERCASE,
+    // );
 
     // get from DEFAULT_VALUES_MAP matched d_name_UPPERCASE
     return DEFAULT_VALUES_MAP[d_name_UPPERCASE] ?? "";

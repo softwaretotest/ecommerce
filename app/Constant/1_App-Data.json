@@ -46,7 +46,7 @@
             "u::SELECT",
             [
                 "cd::DEFAULT",
-                null
+                true
             ]
         ],
         "QUANTITY": [
@@ -65,7 +65,7 @@
             "u::SELECT",
             [
                 "cd::DEFAULT",
-                null
+                false
             ]
         ],
         "ORDER_NR": [

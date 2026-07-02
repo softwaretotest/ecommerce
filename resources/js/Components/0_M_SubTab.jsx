@@ -38,11 +38,21 @@ export default function SubTab({ data, tab_label }) {
 
     const M_value = data[activeSubTab];
 
+    const set_M_value = use_M_Store((state) => state.set_M_value);
+
     const fieldnames = Object.keys(M_value || {});
 
     /**
-     * OLD solution works, will be removed
+     * refesh M_value, every time user
+     * click to change Tab or SubTab
+     * we add M_value to monitor-dependency
+     * to avoid set same M_value multiple times
      */
+    useEffect(() => {
+        set_M_value(M_value);
+        console.log("SubTab.jsx - M_value = ", M_value);
+        console.log("SubTab.jsx - M_value updated to: ", activeSubTab);
+    }, [tab_label, activeSubTab, M_value]);
 
     return (
         <>
@@ -93,6 +103,7 @@ export default function SubTab({ data, tab_label }) {
                         activeField={activeField}
                         setActiveField={setActiveField}
                         tab_label={tab_label}
+                        activeSubTab={activeSubTab}
                     />
                 </div>
 

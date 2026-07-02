@@ -70,6 +70,17 @@ class Constant_M_APP_to_JSON extends NodeVisitorAbstract
             return $arr;
         }
 
+        // convert true / false to JSON e.g. [cd::DEFAULT, false]
+        if ($node instanceof \PhpParser\Node\Expr\ConstFetch) {
+            $name = $node->name->toString();
+            if ($name === 'true') {
+                return true;
+            }
+            if ($name === 'false') {
+                return false;
+            }
+        }
+
         // ClassConstFetch: e.g., d::STRING, u::FILE
         if ($node instanceof \PhpParser\Node\Expr\ClassConstFetch) {
             $class = $node->class->toString();

@@ -16,6 +16,7 @@ export default function TabContent({
     M_value,
     activeField,
     setActiveField,
+    activeSubTab,
 }) {
     const setFocus = use_M_Store((state) => state.setFocus);
     const update = use_M_Store((state) => state.update);
@@ -84,11 +85,16 @@ export default function TabContent({
                             <SpecialField
                                 field_data={field_data}
                                 M_value={M_value}
+                                activeSubTab={activeSubTab}
                             />
                         )}
 
                         {M_Class_Name === "f" && Array.isArray(field_data) && (
-                            <Field field_data={field_data} M_value={M_value} />
+                            <Field
+                                field_data={field_data}
+                                M_value={M_value}
+                                activeSubTab={activeSubTab}
+                            />
                         )}
 
                         {M_Class_Name === "t" && (
