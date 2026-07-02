@@ -1,12 +1,12 @@
-// 0_M_Value_Updater.js
+// 0_M_value_Updater.js
 import { GLOBAL_METADATA } from "@/Providers/0_M_DataProvider";
 import {
     FIELD_PARAMS_MAP,
     DEFAULT_VALUES_MAP,
 } from "@/Components/0_field_params_map";
 
-export function prepare_new_M_Value_for_Update(
-    old_M_Value,
+export function prepare_new_M_value_for_Update(
+    old_M_value,
     fieldname,
     checked_CD_States,
 ) {
@@ -19,16 +19,20 @@ export function prepare_new_M_Value_for_Update(
     console.log("--- [DEBUG: prepare_new_M_Value] ---");
     console.log("1. Incoming fieldname:", fieldname);
     console.log("2. Incoming checked_CD_States:", checked_CD_States);
-    console.log("3. Incoming old_M_Value:", old_M_Value);
+    console.log("3. Incoming old_M_value:", old_M_value);
 
     // 1. Create new data object by cloning the old one
-    const new_M_Value = { ...old_M_Value };
+    const new_M_Value = { ...old_M_value };
     console.log("4. Cloned new_M_Value:", new_M_Value);
 
-    // [แก้ไขเฉพาะจุดนี้]: Search for the actual key, case-insensitive
+    // Search for the actual key, case-insensitive
+    /**
+     * actualKey = PRICE , STOCK
+     */
     const actualKey = Object.keys(new_M_Value).find(
         (key) => key.toLowerCase() === fieldname.toLowerCase(),
     );
+    console.log("4.1 actualKey = ", actualKey);
 
     // 2. Extract the field data (using the actual key found)
     const fieldData = Array.isArray(new_M_Value[actualKey])

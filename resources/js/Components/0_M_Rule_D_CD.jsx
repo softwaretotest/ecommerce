@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 
 import { use_M_Store } from "@/Stores/0_M_Store";
 import { DEFAULT_Panel } from "@/Components/0_M_DEFAULT_Panel";
-import { prepare_new_M_Value_for_Update } from "@/Components/0_M_Value_Updater";
+import { prepare_new_M_value_for_Update } from "@/Components/0_M_value_Updater";
 
 /**
  * Rule Fabric
@@ -74,7 +74,7 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data, M_value }) {
                                 // set Focus in M_Store -----------------------
 
                                 const new_M_Value =
-                                    prepare_new_M_Value_for_Update(
+                                    prepare_new_M_value_for_Update(
                                         M_value,
                                         fieldname,
                                         checked_CD_States,
@@ -82,7 +82,6 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data, M_value }) {
                                 set_M_value(new_M_Value);
                             }}
                         />
-
                         {option}
                     </label>
 
