@@ -1,7 +1,7 @@
 // 0_M_DEFAULT_Panel.jsx
 import { useState } from "react";
 import { use_M_Store } from "@/Stores/0_M_Store";
-import { DEFAULT_VALUES_MAP, FIELD_PARAMS_MAP } from "./0_field_params_map";
+import { DEFAULT_VALUES_MAP } from "./0_field_params_map";
 /**
  * Render input field for DEFAULT parameter based on field type
  * *
@@ -25,24 +25,30 @@ export function DEFAULT_Panel({ field_data }) {
     console.log(`[1] DEFAULT_Panel | Field: ${fieldname}`);
 
     const upperFieldName = fieldname.toUpperCase();
-    const sourceData = M_value ? M_value[upperFieldName] : null;
+    const M_value_field_data = M_value ? M_value[upperFieldName] : null;
     /**
-     * sourceData = ['is_active', 'd::BOOLEAN', 'u::SELECT', ['cd::DEFAULT', null]]
+     * M_value_field_data = ['is_active', 'd::BOOLEAN', 'u::SELECT', ['cd::DEFAULT', false]]
      */
-    console.log("[2.0] sourceData = ", sourceData);
+    console.log("[2.0] M_value_field_data = ", M_value_field_data);
 
     /**
-     * * effectiveData = data for replace
+     * * existing_field_data = data for replace
      * * ['is_active', 'd::BOOLEAN', 'u::SELECT', ['cd::DEFAULT', false]]
+     * *
+     * * we must include || field_data , in case first load M_value not exists
+     *
      */
-    const effectiveData = sourceData || field_data;
-    console.log(`[2.1] effectiveData for ${fieldname}:`, effectiveData);
+    const existing_field_data = M_value_field_data || field_data;
+    console.log(
+        `[2.1] existing_field_data for ${fieldname}:`,
+        existing_field_data,
+    );
 
     /**
      * * DEFAULT_array = real array with params of DEFAULT in M_value before change
      * * ['cd::DEFAULT', null]
      */
-    const DEFAULT_array = effectiveData.find(
+    const DEFAULT_array = existing_field_data.find(
         (item) => Array.isArray(item) && item[0] === "cd::DEFAULT",
     );
     console.log(`[3] DEFAULT_array for ${fieldname}:`, DEFAULT_array);
@@ -51,8 +57,8 @@ export function DEFAULT_Panel({ field_data }) {
      * * d_Class
      * * e.g. BOOLEAN for IS_ACTIVE
      */
-    const d_Class = effectiveData.find(
-        (item) => typeof item === "string" && item.includes("d:"),
+    const d_Class = existing_field_data.find(
+        (item) => typeof item === "string" && item.startsWith("d::"),
     );
     console.log(" [3.1] d_Class = ", d_Class);
 
@@ -85,24 +91,6 @@ export function DEFAULT_Panel({ field_data }) {
     console.log("[4] d_MAP_KEY = ", d_MAP_KEY);
 
     /**
-     * * fallbackValue = value of d_MAP_KEY
-     * * e.g. false  of   DEFAULT_VALUES_MAP.BOOLEAN = false,
-     */
-    let fallbackValue = "";
-    if (DEFAULT_VALUES_MAP.hasOwnProperty(d_MAP_KEY)) {
-        fallbackValue = DEFAULT_VALUES_MAP[d_MAP_KEY];
-    } else {
-        fallbackValue = "";
-    }
-    console.log(`[5] d_MAP_KEY: ${d_MAP_KEY} | fallbackValue:`, fallbackValue);
-
-    /**
-     * get data from FIELD_PARAMS_MAP
-     * */
-    const current_params =
-        FIELD_PARAMS_MAP[d_Class_Name] || FIELD_PARAMS_MAP["DEFAULT"];
-
-    /**
      * * DEFAULT_array = real array with params of DEFAULT in M_value before change
      * * ['cd::DEFAULT', null]
      */
@@ -113,48 +101,37 @@ export function DEFAULT_Panel({ field_data }) {
         current_display_value,
     );
 
-    // [7] Render แบบ Dynamic ตาม Config (ไม่มี Switch Case)
-
-    // 3. Render บล็อกแบบ Explicit ทุกเคส (ไม่มี onChange)
     return (
         <div className="M_params-container">
-            {current_params.map((param, index) => (
-                <div key={index} className="M_params-field">
-                    <label>{param.label}</label>
+            <div className="M_params-field">
+                {d_Class_Name === "BOOLEAN" && (
+                    <select
+                        className="DEFAULT_Panel"
+                        defaultValue={String(current_display_value ?? "")}
+                    >
+                        <option value="true">True</option>
+                        <option value="false">False</option>
+                    </select>
+                )}
 
-                    {/* กรณีที่ 1: เป็น BOOLEAN */}
-                    {d_Class_Name === "BOOLEAN" && (
-                        <select
-                            className="DEFAULT_Panel"
-                            defaultValue={String(param.value ?? "")}
-                        >
-                            <option value="true">True</option>
-                            <option value="false">False</option>
-                        </select>
-                    )}
+                {(d_Class_Name === "INTEGER" || d_Class_Name === "DECIMAL") && (
+                    <input
+                        className="DEFAULT_Panel"
+                        type="number"
+                        defaultValue={current_display_value ?? ""}
+                        placeholder={`Enter ${d_Class_Name} value`}
+                    />
+                )}
 
-                    {/* กรณีที่ 2: เป็น INTEGER หรือ DECIMAL */}
-                    {(d_Class_Name === "INTEGER" ||
-                        d_Class_Name === "DECIMAL") && (
-                        <input
-                            className="DEFAULT_Panel"
-                            type="number"
-                            defaultValue={param.value ?? ""}
-                            placeholder={`Enter ${param.label}`}
-                        />
-                    )}
-
-                    {/* กรณีที่ 3: เป็น STRING */}
-                    {d_Class_Name === "STRING" && (
-                        <input
-                            className="DEFAULT_Panel"
-                            type="text"
-                            defaultValue={param.value ?? ""}
-                            placeholder={`Enter ${param.label}`}
-                        />
-                    )}
-                </div>
-            ))}
+                {d_Class_Name === "STRING" && (
+                    <input
+                        className="DEFAULT_Panel"
+                        type="text"
+                        defaultValue={current_display_value ?? ""}
+                        placeholder={`Enter ${d_Class_Name} value`}
+                    />
+                )}
+            </div>
         </div>
     );
 }
