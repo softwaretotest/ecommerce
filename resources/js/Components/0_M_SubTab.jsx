@@ -48,11 +48,11 @@ export default function SubTab({ data, tab_label }) {
      * we add M_value to monitor-dependency
      * to avoid set same M_value multiple times
      */
-    useEffect(() => {
-        set_M_value(M_value);
-        console.log("SubTab.jsx - M_value = ", M_value);
-        console.log("SubTab.jsx - M_value updated to: ", activeSubTab);
-    }, [tab_label, activeSubTab, M_value]);
+    // useEffect(() => {
+    //     set_M_value(M_value);
+    //     console.log("SubTab.jsx - M_value = ", M_value);
+    //     console.log("SubTab.jsx - M_value updated to: ", activeSubTab);
+    // }, [tab_label, activeSubTab, M_value]);
 
     return (
         <>

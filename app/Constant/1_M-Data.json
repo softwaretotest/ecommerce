@@ -5,11 +5,7 @@
         "INTEGER": "integer",
         "DECIMAL": "decimal",
         "STRING": "string",
-        "FOREIGN": "foreign",
-        "UNSIGNED_BINT": "unsignedBigInteger",
-        "NULLABLE": "nullable",
-        "INDEX": "index",
-        "UNIQUE": "unique"
+        "UNSIGNED_BINT": "unsignedBigInteger"
     },
     "u": {
         "TEXT": "text",
@@ -21,9 +17,9 @@
     "cd": {
         "NULLABLE": "nullable",
         "DEFAULT": "default",
-        "FOREIGN": "foreign",
         "UNIQUE": "unique",
-        "INDEX": "index"
+        "INDEX": "index",
+        "FOREIGN": "foreign"
     },
     "cu": {
         "READONLY": "readonly",

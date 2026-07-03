@@ -35,7 +35,7 @@ export function prepare_new_M_value_for_Update(
     const fieldname_UPPERCASE = Object.keys(new_M_value).find(
         (key) => key.toLowerCase() === fieldname.toLowerCase(),
     );
-    console.log("4.1 fieldname_UPPERCASE = ", fieldname_UPPERCASE);
+    // console.log("4.1 fieldname_UPPERCASE = ", fieldname_UPPERCASE);
 
     /**
      * * field_data = we use this name exactly case-sensitive in whole app
@@ -44,7 +44,7 @@ export function prepare_new_M_value_for_Update(
     const field_data = Array.isArray(new_M_value[fieldname_UPPERCASE])
         ? [...new_M_value[fieldname_UPPERCASE]]
         : [];
-    console.log("5. Extracted field_data (before clean):", field_data);
+    // console.log("5. Extracted field_data (before clean):", field_data);
 
     /**
      * * Filter out all existing cd:: and cud:: values
@@ -62,10 +62,10 @@ export function prepare_new_M_value_for_Update(
 
         return !isCD && !isCUD;
     });
-    console.log(
-        "6. field_data_without_cd_cud (after filtering cd::):",
-        field_data_without_cd_cud,
-    );
+    // console.log(
+    //     "6. field_data_without_cd_cud (after filtering cd::):",
+    //     field_data_without_cd_cud,
+    // );
 
     /**
      * cud_names = ['REQUIRED']
@@ -144,28 +144,29 @@ export function DEFAULT_VALUES_for_D_CD(keyName) {
     // default for d::FIELDNAME = ''
     if (!field_data || !field_data[1]) return "";
 
-    // d::FIELDNAME can be string or array
-    // if Array , Array[0] = String  always (App Convention)
-    // e.g. [ 'stock', [ 'd::DECIMAL', 10, 10 ] ]
-    const rawTypeString = Array.isArray(field_data[1])
+    /**
+     * * d::FIELDNAME can be string or array
+     * * if Array , Array[0] = String  always (App Convention)
+     * * e.g. [ 'd::DECIMAL', 10, 10 ] of [ 'stock', [ 'd::DECIMAL', 10, 10 ] ]
+     * * e.g.   'd::STRING' of [ 'name', 'd::STRING' ]
+     */
+    const d_Class_UPPERCASE = Array.isArray(field_data[1])
         ? field_data[1][0]
         : field_data[1];
-
     // console.log(
-    //     "0_M_value_Updateer - DEFAULT_VALUES_for_D_CD - rawTypeString = ",
-    //     rawTypeString,
+    //     "0_M_value_Updateer - DEFAULT_VALUES_for_D_CD - d_Class_UPPERCASE = ",
+    //     d_Class_UPPERCASE,
     // );
 
     /**
-     * 'd::DECIMAL' -> 'DECIMAL'
+     * 'DECIMAL' of 'd::DECIMAL' ->
      */
-    const d_name_UPPERCASE = rawTypeString.split("::")[1].toUpperCase();
-
+    const d_Name_UPPERCASE = d_Class_UPPERCASE.split("::")[1].toUpperCase();
     // console.log(
-    //     "0_M_value_Updateer - DEFAULT_VALUES_for_D_CD - d_name_UPPERCASE = ",
-    //     d_name_UPPERCASE,
+    //     "0_M_value_Updateer - DEFAULT_VALUES_for_D_CD - d_Name_UPPERCASE = ",
+    //     d_Name_UPPERCASE,
     // );
 
-    // get from DEFAULT_VALUES_MAP matched d_name_UPPERCASE
-    return DEFAULT_VALUES_MAP[d_name_UPPERCASE] ?? "";
+    // get from DEFAULT_VALUES_MAP matched d_Name_UPPERCASE
+    return DEFAULT_VALUES_MAP[d_Name_UPPERCASE] ?? "";
 }

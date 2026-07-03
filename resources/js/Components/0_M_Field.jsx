@@ -45,6 +45,7 @@ export default function Field({ field_data, M_value, activeSubTab }) {
                             ? renderDropdown(
                                   group.keys,
                                   fieldDataList,
+                                  group.label,
                                   field_data,
                                   M_value,
                                   activeSubTab,

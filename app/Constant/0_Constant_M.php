@@ -22,15 +22,7 @@ class d
      */
     public const STRING = 'string';
 
-    /**
-     * hardcoded in 0_DBOption.php
-     * @example [d::FOREIGN, string $table, string $onDelete = 'cascade']
-     */
-    public const FOREIGN = 'foreign';
     public const UNSIGNED_BINT = 'unsignedBigInteger';
-    public const NULLABLE = 'nullable';
-    public const INDEX = 'index';
-    public const UNIQUE = 'unique';
 }
 
 /**
@@ -61,9 +53,13 @@ class cd
 {
     public const NULLABLE = 'nullable';
     public const DEFAULT = 'default';
-    public const FOREIGN = 'foreign';
     public const UNIQUE = 'unique';
     public const INDEX = 'index';
+    /**
+     * hardcoded in 0_DBOption.php
+     * @example [d::FOREIGN, string $table, string $onDelete = 'cascade']
+     */
+    public const FOREIGN = 'foreign';
 }
 
 /**

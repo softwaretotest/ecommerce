@@ -9,7 +9,7 @@ import { use_M_Store } from "@/Stores/0_M_Store";
 export function renderCheckboxList(
     M_Class_Name_List,
     fieldDataList = [],
-    groupLabel,
+    group_label,
     field_data,
     M_value,
     activeSubTab,
@@ -18,7 +18,7 @@ export function renderCheckboxList(
 
     // console.log("0_M_CheckBox.jsx - M_Class_Name_List:", M_Class_Name_List);
     // console.log("0_M_CheckBox.jsx - fieldDataList:", fieldDataList);
-    // console.log("0_M_CheckBox.jsx - groupLabel:", groupLabel);
+    // console.log("0_M_CheckBox.jsx - group_label:", group_label);
 
     if (!Array.isArray(fieldDataList)) return null;
 
@@ -45,7 +45,7 @@ export function renderCheckboxList(
         .map((v) => (Array.isArray(v) ? v[0] : v).split("::")[1]);
 
     const ALL_DB_options =
-        groupLabel === "CD"
+        group_label === "CD"
             ? Array.from(
                   new Set(
                       M_Class_Name_List.flatMap((name) => getOptions(name)),
@@ -54,7 +54,7 @@ export function renderCheckboxList(
             : [];
 
     const ALL_UI_options =
-        groupLabel === "CU"
+        group_label === "CU"
             ? Array.from(
                   new Set(
                       M_Class_Name_List.flatMap((name) => getOptions(name)),

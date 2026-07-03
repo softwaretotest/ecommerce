@@ -22,14 +22,14 @@ export function DEFAULT_Panel({ field_data }) {
     const M_value = use_M_Store((state) => state.M_value);
     const fieldname = field_data[0];
 
-    console.log(`[1] DEFAULT_Panel | Field: ${fieldname}`);
+    // console.log(`[1] DEFAULT_Panel | Field: ${fieldname}`);
 
     const upperFieldName = fieldname.toUpperCase();
     const M_value_field_data = M_value ? M_value[upperFieldName] : null;
     /**
      * M_value_field_data = ['is_active', 'd::BOOLEAN', 'u::SELECT', ['cd::DEFAULT', false]]
      */
-    console.log("[2.0] M_value_field_data = ", M_value_field_data);
+    // console.log("[2.0] M_value_field_data = ", M_value_field_data);
 
     /**
      * * existing_field_data = data for replace
@@ -39,10 +39,10 @@ export function DEFAULT_Panel({ field_data }) {
      *
      */
     const existing_field_data = M_value_field_data || field_data;
-    console.log(
-        `[2.1] existing_field_data for ${fieldname}:`,
-        existing_field_data,
-    );
+    // console.log(
+    //     `[2.1] existing_field_data for ${fieldname}:`,
+    //     existing_field_data,
+    // );
 
     /**
      * * DEFAULT_array = real array with params of DEFAULT in M_value before change
@@ -51,7 +51,7 @@ export function DEFAULT_Panel({ field_data }) {
     const DEFAULT_array = existing_field_data.find(
         (item) => Array.isArray(item) && item[0] === "cd::DEFAULT",
     );
-    console.log(`[3] DEFAULT_array for ${fieldname}:`, DEFAULT_array);
+    // console.log(`[3] DEFAULT_array for ${fieldname}:`, DEFAULT_array);
 
     /**
      * * d_Class
@@ -60,7 +60,7 @@ export function DEFAULT_Panel({ field_data }) {
     const d_Class = existing_field_data.find(
         (item) => typeof item === "string" && item.startsWith("d::"),
     );
-    console.log(" [3.1] d_Class = ", d_Class);
+    // console.log(" [3.1] d_Class = ", d_Class);
 
     /**
      * * d_Class_Name
@@ -88,7 +88,7 @@ export function DEFAULT_Panel({ field_data }) {
     } else {
         d_MAP_KEY = "UNKNOWN";
     }
-    console.log("[4] d_MAP_KEY = ", d_MAP_KEY);
+    // console.log("[4] d_MAP_KEY = ", d_MAP_KEY);
 
     /**
      * * DEFAULT_array = real array with params of DEFAULT in M_value before change
@@ -96,10 +96,10 @@ export function DEFAULT_Panel({ field_data }) {
      */
     const current_display_value = DEFAULT_array[1];
 
-    console.log(
-        `[6] Final Value determined for ${fieldname}:`,
-        current_display_value,
-    );
+    // console.log(
+    //     `[6] Final Value determined for ${fieldname}:`,
+    //     current_display_value,
+    // );
 
     return (
         <div className="M_params-container">
