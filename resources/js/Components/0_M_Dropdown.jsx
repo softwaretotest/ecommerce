@@ -37,17 +37,12 @@ export function M_Option({ M_Class_Name_List, fieldDataList }) {
 export function renderDropdown(
     M_Class_Name_List,
     fieldDataList = [],
-    group_label, // ปรับเป็น snake_case ตามที่คุณต้องการ
     field_data,
     M_value,
     activeSubTab,
 ) {
-    console.log("[1] renderDropdown START | group_label:", group_label);
-
     const { activeTab } = use_M_Store();
-    console.log("[2] activeTab:", activeTab);
 
-    // ปรับ Logic การค้นหาให้ใช้ group_label เข้ามาช่วยกรอง
     const foundValue = fieldDataList.find((item) => {
         let valueToTest = Array.isArray(item) ? item[0] : item;
         return (
@@ -55,32 +50,23 @@ export function renderDropdown(
             M_Class_Name_List.some((c) => valueToTest.startsWith(c + "::"))
         );
     });
-    console.log("[3] foundValue:", foundValue);
+    // console.log("[1] foundValue:", foundValue);
 
     let defaultValue = "";
     let field_params = [];
-    console.log("[4] defaultValue (init):", defaultValue);
-    console.log("[5] field_params (init):", field_params);
 
     if (foundValue) {
         if (Array.isArray(foundValue)) {
             const [stringValue, ...params] = foundValue;
             defaultValue = stringValue.split("::")[1];
             field_params = params;
-            console.log(
-                "[6.1] Found Array | defaultValue:",
-                defaultValue,
-                "params:",
-                field_params,
-            );
         } else {
             defaultValue = foundValue.split("::")[1];
             field_params = [];
-            console.log("[6.2] Found String | defaultValue:", defaultValue);
         }
     }
-
-    console.log("[7] renderDropdown END | Final defaultValue:", defaultValue);
+    console.log("[2] defaultValue :", defaultValue);
+    console.log("[3] field_params :", field_params);
 
     return (
         <>
@@ -89,7 +75,6 @@ export function renderDropdown(
                 <M_Option
                     M_Class_Name_List={M_Class_Name_List}
                     fieldDataList={fieldDataList}
-                    group_label={group_label} // ส่งผ่านไปให้ตัวที่กรองข้อมูล
                 />
             </select>
             {field_params.length > 0 && (
