@@ -73,11 +73,11 @@ export function CD_Rule({
                             checked={checked_CD.includes(option)}
                             onChange={(event) => {
                                 update_M_value(event, field_data, M_value);
-                                Focus_CD_Rule_onChange({
-                                    element_DOM: event.target,
-                                    M_value,
-                                    field_data,
-                                });
+                                // Focus_CD_Rule_onChange({
+                                //     element_DOM: event.target,
+                                //     M_value,
+                                //     field_data,
+                                // });
                                 set_D_CD_Actions(option, event);
                             }}
                         />

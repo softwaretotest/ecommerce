@@ -18,6 +18,7 @@ export function Focus_CD_Rule_onChange({
     console.log("element_DOM.value = ", element_DOM.value);
     console.log("old_M_value = ", old_M_value);
     console.log("field_data = ", field_data);
+    console.group("---------------------------------------");
 
     // 1. ดึง Action จาก Store
     const set_M_value = use_M_Store.getState().set_M_value;
@@ -32,9 +33,6 @@ export function Focus_CD_Rule_onChange({
     const NULLABLE = field_data.includes("cd::NULLABLE");
     const UNIQUE = field_data.includes("cd::UNIQUE");
     const REQUIRED = field_data.includes("cud::REQUIRED");
-
-    const states = { DEFAULT, FOREIGN, INDEX, NULLABLE, UNIQUE, REQUIRED };
-    console.log("Current States (Atomic):", states);
 
     if (!DEFAULT || !FOREIGN || !INDEX || !NULLABLE || !UNIQUE || !REQUIRED) {
         console.warn("Skipping: Some states are missing in field_data");

@@ -65,8 +65,8 @@ export function renderDropdown(
             field_params = [];
         }
     }
-    console.log("[2] defaultValue :", defaultValue);
-    console.log("[3] field_params :", field_params);
+    // console.log("[2] defaultValue :", defaultValue);
+    // console.log("[3] field_params :", field_params);
 
     return (
         <>
