@@ -13,13 +13,14 @@ import DB_Tablename from "@/Components/0_M_DB_Tablename";
 
 export default function TabContent({
     M_Class_Name,
-    M_value,
+    // M_value,
     activeField,
     setActiveField,
     activeSubTab,
 }) {
     const setFocus = use_M_Store((state) => state.setFocus);
     const update = use_M_Store((state) => state.update);
+    const M_value = use_M_Store((state) => state.M_value);
 
     // use path to update, e.g. "APP_DATA.NAME"
     const handleUpdate = (fieldname, newValue) => {

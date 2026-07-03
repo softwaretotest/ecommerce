@@ -4,7 +4,11 @@ import { renderCheckboxList } from "@/Components/0_M_CheckBox.jsx";
 import { use_M_Option } from "@/Hooks/use_M_Option.js"; // Import new hook
 import { use_M_Store } from "@/Stores/0_M_Store.jsx";
 
-export default function Field({ field_data, M_value, activeSubTab }) {
+export default function Field({
+    field_data,
+    // M_value,
+    activeSubTab,
+}) {
     const { getOptions } = use_M_Option(); // Use the hook directly
     const [fieldname, ...fieldDataList] = field_data;
     const { activeTab } = use_M_Store();
@@ -46,7 +50,7 @@ export default function Field({ field_data, M_value, activeSubTab }) {
                                   group.keys,
                                   fieldDataList,
                                   field_data,
-                                  M_value,
+                                  //   M_value,
                                   activeSubTab,
                               )
                             : renderCheckboxList(
@@ -54,7 +58,7 @@ export default function Field({ field_data, M_value, activeSubTab }) {
                                   fieldDataList,
                                   group.label,
                                   field_data,
-                                  M_value,
+                                  //   M_value,
                                   activeSubTab,
                               )}
                     </div>

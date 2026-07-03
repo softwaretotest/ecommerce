@@ -11,7 +11,7 @@ export function renderCheckboxList(
     fieldDataList = [],
     group_label,
     field_data,
-    M_value,
+    // M_value,
     activeSubTab,
 ) {
     const { getOptions } = use_M_Option();
@@ -71,14 +71,14 @@ export function renderCheckboxList(
                 DB_options={DB_options}
                 ALL_DB_options={ALL_DB_options}
                 field_data={field_data}
-                M_value={M_value}
+                // M_value={M_value}
                 activeSubTab={activeSubTab}
             />
             <UI_Rule
                 UI_options={UI_options}
                 ALL_UI_options={ALL_UI_options}
                 field_data={field_data}
-                M_value={M_value}
+                // M_value={M_value}
                 activeSubTab={activeSubTab}
             />
         </>

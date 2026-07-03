@@ -38,7 +38,7 @@ export default function SubTab({ data, tab_label }) {
 
     const M_value = data[activeSubTab];
 
-    const set_M_value = use_M_Store((state) => state.set_M_value);
+    const set_M_value = use_M_Store.getState().set_M_value(M_value);
 
     const fieldnames = Object.keys(M_value || {});
 
@@ -49,10 +49,10 @@ export default function SubTab({ data, tab_label }) {
      * to avoid set same M_value multiple times
      */
     // useEffect(() => {
-    //     set_M_value(M_value);
+    //     set_M_value(M_value); //error set_M_value is not a function
     //     console.log("SubTab.jsx - M_value = ", M_value);
     //     console.log("SubTab.jsx - M_value updated to: ", activeSubTab);
-    // }, [tab_label, activeSubTab, M_value]);
+    // }, [tab_label, activeSubTab]);
 
     return (
         <>
@@ -99,7 +99,7 @@ export default function SubTab({ data, tab_label }) {
                 <div className="column-flex-form">
                     <TabContent
                         M_Class_Name={activeSubTab}
-                        M_value={M_value}
+                        // M_value={M_value}
                         activeField={activeField}
                         setActiveField={setActiveField}
                         tab_label={tab_label}

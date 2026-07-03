@@ -137,24 +137,21 @@ function remove_from_M_value(cd_Name, fieldname, element_DOM) {
         //     field_data_from_M_value,
         // );
         set_M_value({ ...M_value });
-        // console.log(" ...M_value = ", M_value);
+        console.log(" ...M_value = ", M_value);
 
-        /**
-         * --------- unchecked the checkbox
-         */
-        // 1. หา wrapper ใหญ่สุดของฟิลด์นั้น
+        //------- update UI Does not work auto. because React checked_CD this State lock checkboxes
+        // we must drill checked_CD to here
+        // 1. หา wrapper ใหญ่สุด
         const wrapper = element_DOM.closest(".field-wrapper-box");
+        const cd_Class_Clean =
+            cd_Name.split("cd::")[1] || cd_Name.split("cud::")[1];
 
-        const cd_Class_Clean = cd_Name.split("cd::")[1];
-        console.log("!!!!!!!!!! cd_Class_Clean = ", cd_Class_Clean);
-        // 2. ค้นหา checkbox ที่มี value ตรงกับที่เราต้องการภายใน wrapper นั้น
-        const targetCheckbox = wrapper.querySelector(
-            `input[type="checkbox"][value="${cd_Class_Clean}"]`,
-        );
-
-        console.log("!!!!!!!!!!! targetCheckbox = ", targetCheckbox);
-        // 3. สั่งปิด
-        if (targetCheckbox) targetCheckbox.checked = false;
+        // 2. ยิง Event บอกให้ Component นั้นๆ รับทราบ
+        const event = new CustomEvent("request-uncheck", {
+            detail: { value: cd_Class_Clean },
+        });
+        wrapper.dispatchEvent(event);
+        //----------------------will be removed obove------------------------------------------------
     }
 }
 
@@ -162,6 +159,7 @@ function save_to_M_value(is_CD_Checked, cd_Class, fieldname) {
     const { M_value, set_M_value } = use_M_Store.getState();
     const field_data_from_M_value = [...(M_value[fieldname] || [])];
 
+    // กำหนดชื่อ Rule เต็มที่ใช้ใน Array
     const cd_NAME_Class_Map = {
         DEFAULT: "cd::DEFAULT",
         FOREIGN: "cd::FOREIGN",
