@@ -17,76 +17,44 @@ export function CD_Rule({
     DB_options,
     ALL_DB_options,
     field_data,
-    M_value,
+    M_value: prop_M_value, // เปลี่ยนชื่อนิดหน่อยเพื่อกันงง
     activeSubTab,
 }) {
-    // console.log("Rule_D_CD.jsx - DB_options = ", DB_options);
-    const [checked_CD, setChecked_CD] = useState(DB_options);
-
-    const setFocus = use_M_Store((state) => state.setFocus);
-    const activeTab = use_M_Store((state) => state.activeTab);
-    const set_M_value = use_M_Store((state) => state.set_M_value);
-
-    /**
-     * Assuming field_data is an array and the first element is the field name
-     */
     const fieldname = field_data[0];
+    const activeTab = use_M_Store((state) => state.activeTab);
 
-    /**
-     * * setChecked_CD
-     * * prepare_new_M_value_for_Update
-     * * set_M_value
-     */
-    function set_D_CD_Actions(option, event) {
-        const checked_CD_States = event.target.checked
-            ? [...checked_CD, option]
-            : checked_CD.filter((item) => item !== option);
-        setChecked_CD(checked_CD_States);
-
-        const new_M_Value = prepare_new_M_value_for_Update(
-            M_value,
-            fieldname,
-            checked_CD_States,
-        );
-        set_M_value(new_M_Value);
-    }
-
-    // const M_value_to_Log = use_M_Store((state) => state.M_value);
-    // useEffect(() => {
-    //     console.log("Rule_D_CD.jsx - M_value_to_Log = ", M_value_to_Log);
-    // }, [M_value_to_Log]);
+    // ใช้การอ่านค่าจาก M_value ที่ส่งมาเป็น Props ในการกำหนดค่าเริ่มแรก (Initial)
+    const M_value = use_M_Store((state) => state.M_value);
+    const set_M_value = use_M_Store((state) => state.set_M_value);
+    const initialChecked = M_value[fieldname] || DB_options || [];
 
     return (
         <div className="M_checkbox-list">
             {ALL_DB_options.map((option) => (
-                // console.log("Rule_D_CD.jsx - checked_CD = ", checked_CD),
                 <div key={option} className="M_checkbox-item">
                     <label>
                         <input
                             type="checkbox"
                             value={option}
-                            /**
-                             * !!!! react state on checked ,
-                             * always need onChange to update state !!!
-                             */
-                            // If 'option' is in 'checked_CD' array, the box is checked.
-                            checked={checked_CD.includes(option)}
+                            defaultChecked={initialChecked.includes(option)}
                             onChange={(event) => {
+                                // เราเรียกอัปเดต Store
                                 update_M_value(event, field_data, M_value);
-                                // Focus_CD_Rule_onChange({
-                                //     element_DOM: event.target,
-                                //     M_value,
-                                //     field_data,
-                                // });
-                                set_D_CD_Actions(option, event);
+
+                                // และสั่งให้ Logic อื่นทำงาน
+                                Focus_CD_Rule_onChange({
+                                    element_DOM: event.target,
+                                    M_value,
+                                    field_data,
+                                });
                             }}
                         />
                         {option}
                     </label>
-                    {/* show or hide when user click on checkbox */}
+                    {/* ... ส่วนของ DEFAULT_Panel ... */}
                     {(activeTab === "app_data" ||
                         (activeTab === "m_data" && activeSubTab === "s")) &&
-                        checked_CD.includes("DEFAULT") &&
+                        initialChecked.includes("DEFAULT") &&
                         option === "DEFAULT" && (
                             <DEFAULT_Panel field_data={field_data} />
                         )}

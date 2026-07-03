@@ -286,15 +286,7 @@ class d
      */
     public const STRING = 'string';
 
-    /**
-     * hardcoded in 0_DBOption.php
-     * @example [d::FOREIGN, string $table, string $onDelete = 'cascade']
-     */
-    public const FOREIGN = 'foreign';
     public const UNSIGNED_BINT = 'unsignedBigInteger';
-    public const NULLABLE = 'nullable';
-    public const INDEX = 'index';
-    public const UNIQUE = 'unique';
 }
 
 /**
@@ -325,9 +317,13 @@ class cd
 {
     public const NULLABLE = 'nullable';
     public const DEFAULT = 'default';
-    public const FOREIGN = 'foreign';
     public const UNIQUE = 'unique';
     public const INDEX = 'index';
+    /**
+     * hardcoded in 0_DBOption.php
+     * @example [d::FOREIGN, string $table, string $onDelete = 'cascade']
+     */
+    public const FOREIGN = 'foreign';
 }
 
 /**
@@ -1143,6 +1139,17 @@ class Constant_M_APP_to_JSON extends NodeVisitorAbstract
                 $arr[] = $this->resolveValue($item->value);
             }
             return $arr;
+        }
+
+        // convert true / false to JSON e.g. [cd::DEFAULT, false]
+        if ($node instanceof \PhpParser\Node\Expr\ConstFetch) {
+            $name = $node->name->toString();
+            if ($name === 'true') {
+                return true;
+            }
+            if ($name === 'false') {
+                return false;
+            }
         }
 
         // ClassConstFetch: e.g., d::STRING, u::FILE
@@ -2325,7 +2332,7 @@ import { use_M_Store } from "@/Stores/0_M_Store";
 export function renderCheckboxList(
     M_Class_Name_List,
     fieldDataList = [],
-    groupLabel,
+    group_label,
     field_data,
     M_value,
     activeSubTab,
@@ -2334,7 +2341,7 @@ export function renderCheckboxList(
 
     // console.log("0_M_CheckBox.jsx - M_Class_Name_List:", M_Class_Name_List);
     // console.log("0_M_CheckBox.jsx - fieldDataList:", fieldDataList);
-    // console.log("0_M_CheckBox.jsx - groupLabel:", groupLabel);
+    // console.log("0_M_CheckBox.jsx - group_label:", group_label);
 
     if (!Array.isArray(fieldDataList)) return null;
 
@@ -2361,7 +2368,7 @@ export function renderCheckboxList(
         .map((v) => (Array.isArray(v) ? v[0] : v).split("::")[1]);
 
     const ALL_DB_options =
-        groupLabel === "CD"
+        group_label === "CD"
             ? Array.from(
                   new Set(
                       M_Class_Name_List.flatMap((name) => getOptions(name)),
@@ -2370,7 +2377,7 @@ export function renderCheckboxList(
             : [];
 
     const ALL_UI_options =
-        groupLabel === "CU"
+        group_label === "CU"
             ? Array.from(
                   new Set(
                       M_Class_Name_List.flatMap((name) => getOptions(name)),
@@ -2437,110 +2444,10 @@ export default function DB_Tablename({ field_data }) {
 
 
 
-[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Components\0_M_DEFAULT_Panel copy.jsx]
-
-// 0_M_DEFAULT_Panel.jsx
-
-import { use_M_Store } from "@/Stores/0_M_Store";
-
-/**
- * Render input field for DEFAULT parameter based on field type
- * *
- * * Example usage:
- * * fieldname: "f::PRICE"
- * * DEFAULT_Panel: ["cd::DEFAULT", 0]
- * *
- * * Result:
- * * <div className="M_params-container">
- * * <span className="M_params-label">Default:</span>
- * * <input className="M_params-input" type="number" value="0" />
- * * </div>
- * *
- * * e.g. DEFAULT_Panel = [d::DEFAULT, 10, 2]
- */
-export function DEFAULT_Panel({ field_data }) {
-    const M_value = use_M_Store((state) => state.M_value);
-    const fieldname = field_data[0];
-
-    console.log("0_M_DEFAULT_Panel - [1] fieldname:", fieldname);
-    console.log("0_M_DEFAULT_Panel - [2] M_value:", M_value);
-
-    // 1. Find the default value
-    // เราจะใช้ M_value[fieldname.toUpperCase()] ถ้าไม่มีถึงจะใช้ field_data
-    const upperFieldName = fieldname.toUpperCase();
-    const sourceData = M_value ? M_value[upperFieldName] : null;
-    const effectiveData = sourceData || field_data;
-
-    console.log("0_M_DEFAULT_Panel - [3] effectiveData:", effectiveData);
-
-    const defaultItem = effectiveData.find(
-        (item) => Array.isArray(item) && item[0] === "cd::DEFAULT",
-    );
-    console.log("0_M_DEFAULT_Panel - [4] defaultItem:", defaultItem);
-
-    // 2. Find Data Type (d::)
-    const dTypeItem = effectiveData.find(
-        (item) => typeof item === "string" && item.startsWith("d::"),
-    );
-    const dType = dTypeItem ? dTypeItem : "d::STRING";
-    console.log("0_M_DEFAULT_Panel - [5] dType:", dType);
-
-    // 3. Logic to handle display rules
-    if (!defaultItem || defaultItem[1] === null || defaultItem[1] === "---") {
-        console.log(
-            "0_M_DEFAULT_Panel - [6] Result: Displaying 'Not set' input",
-        );
-        return (
-            <input
-                className="DEFAULT_Panel"
-                type="text"
-                placeholder="Not set"
-                disabled
-            />
-        );
-    }
-
-    const value = defaultItem[1];
-    console.log("0_M_DEFAULT_Panel - [7] Final value to render:", value);
-
-    switch (dType) {
-        case "d::BOOLEAN":
-            return (
-                <select
-                    className="DEFAULT_Panel"
-                    defaultValue={value ? "true" : "false"}
-                >
-                    <option value="true">True</option>
-                    <option value="false">False</option>
-                </select>
-            );
-        case "d::DECIMAL":
-        case "d::INTEGER":
-            return (
-                <input
-                    className="DEFAULT_Panel"
-                    type="number"
-                    defaultValue={value}
-                />
-            );
-        case "d::STRING":
-        default:
-            return (
-                <input
-                    className="DEFAULT_Panel"
-                    type="text"
-                    defaultValue={value}
-                />
-            );
-    }
-}
-
-
-
 [FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\Components\0_M_DEFAULT_Panel.jsx]
 
 // 0_M_DEFAULT_Panel.jsx
-
+import { useState } from "react";
 import { use_M_Store } from "@/Stores/0_M_Store";
 import { DEFAULT_VALUES_MAP } from "./0_field_params_map";
 /**
@@ -2563,39 +2470,46 @@ export function DEFAULT_Panel({ field_data }) {
     const M_value = use_M_Store((state) => state.M_value);
     const fieldname = field_data[0];
 
-    console.log(`[1] DEFAULT_Panel | Field: ${fieldname}`);
+    // console.log(`[1] DEFAULT_Panel | Field: ${fieldname}`);
 
     const upperFieldName = fieldname.toUpperCase();
-    const sourceData = M_value ? M_value[upperFieldName] : null;
+    const M_value_field_data = M_value ? M_value[upperFieldName] : null;
     /**
-     * sourceData = ['is_active', 'd::BOOLEAN', 'u::SELECT', ['cd::DEFAULT', null]]
+     * M_value_field_data = ['is_active', 'd::BOOLEAN', 'u::SELECT', ['cd::DEFAULT', false]]
      */
-    console.log("[2.0] sourceData = ", sourceData);
+    // console.log("[2.0] M_value_field_data = ", M_value_field_data);
 
     /**
-     * * effectiveData = data for replace
+     * * existing_field_data = data for replace
      * * ['is_active', 'd::BOOLEAN', 'u::SELECT', ['cd::DEFAULT', false]]
+     * *
+     * * we must include || field_data , in case first load M_value not exists
+     *
      */
-    const effectiveData = sourceData || field_data;
-    console.log(`[2.1] effectiveData for ${fieldname}:`, effectiveData);
+    const existing_field_data = M_value_field_data || field_data;
+    // console.log(
+    //     `[2.1] existing_field_data for ${fieldname}:`,
+    //     existing_field_data,
+    // );
 
     /**
      * * DEFAULT_array = real array with params of DEFAULT in M_value before change
      * * ['cd::DEFAULT', null]
      */
-    const DEFAULT_array = effectiveData.find(
+    const DEFAULT_array = existing_field_data.find(
         (item) => Array.isArray(item) && item[0] === "cd::DEFAULT",
     );
-    console.log(`[3] DEFAULT_array for ${fieldname}:`, DEFAULT_array);
+    if (!DEFAULT_array) return; // sometime if undefined (no DEFAULT checked), then do notthing
+    // console.log(`[3] DEFAULT_array for ${fieldname}:`, DEFAULT_array);
 
     /**
      * * d_Class
      * * e.g. BOOLEAN for IS_ACTIVE
      */
-    const d_Class = effectiveData.find(
-        (item) => typeof item === "string" && item.includes("d:"),
+    const d_Class = existing_field_data.find(
+        (item) => typeof item === "string" && item.startsWith("d::"),
     );
-    console.log(" [3.1] d_Class = ", d_Class);
+    // console.log(" [3.1] d_Class = ", d_Class);
 
     /**
      * * d_Class_Name
@@ -2604,7 +2518,7 @@ export function DEFAULT_Panel({ field_data }) {
     const d_Class_Name = d_Class
         ? d_Class.split("::")[1] || d_Class.split(":")[1]
         : "STRING";
-    console.log(" [3.2] d_Class_Name = ", d_Class_Name);
+    // console.log(" [3.2] d_Class_Name = ", d_Class_Name);
 
     // const dType = "d::" + d_Class_Name;
     // console.log(`[4] dType identified for ${fieldname}:`, dType);
@@ -2613,35 +2527,17 @@ export function DEFAULT_Panel({ field_data }) {
      * * d_MAP_KEY = find d_Class_Name in DEFAULT_VALUES_MAP
      * * e.g. BOOLEAN for IS_ACTIVE
      */
-    let d_MAP_KEY = d_Class_Name;
-    if (d_Class_Name === "INTEGER" || d_Class_Name === "DECIMAL") {
-        d_MAP_KEY = "INTEGER";
-    } else if (d_Class_Name === "BOOLEAN") {
-        d_MAP_KEY = "BOOLEAN";
-    } else if (d_Class_Name === "STRING") {
-        d_MAP_KEY = "STRING";
-    } else {
-        d_MAP_KEY = "UNKNOWN";
-    }
-    console.log("[4] d_MAP_KEY = ", d_MAP_KEY);
-
-    /**
-     * * fallbackValue = value of d_MAP_KEY
-     * * e.g. false  of   DEFAULT_VALUES_MAP.BOOLEAN = false,
-     */
-    let fallbackValue = "";
-    if (DEFAULT_VALUES_MAP.hasOwnProperty(d_MAP_KEY)) {
-        fallbackValue = DEFAULT_VALUES_MAP[d_MAP_KEY];
-    } else {
-        fallbackValue = "";
-    }
-    console.log(`[5] d_MAP_KEY: ${d_MAP_KEY} | fallbackValue:`, fallbackValue);
-
-    /**
-     * get data from FIELD_PARAMS_MAP
-     * */
-    const current_params =
-        FIELD_PARAMS_MAP[d_Class_Name] || FIELD_PARAMS_MAP["DEFAULT"];
+    // let d_MAP_KEY = d_Class_Name;
+    // if (d_Class_Name === "INTEGER" || d_Class_Name === "DECIMAL") {
+    //     d_MAP_KEY = "INTEGER";
+    // } else if (d_Class_Name === "BOOLEAN") {
+    //     d_MAP_KEY = "BOOLEAN";
+    // } else if (d_Class_Name === "STRING") {
+    //     d_MAP_KEY = "STRING";
+    // } else {
+    //     d_MAP_KEY = "UNKNOWN";
+    // }
+    // console.log("[4] d_MAP_KEY = ", d_MAP_KEY);
 
     /**
      * * DEFAULT_array = real array with params of DEFAULT in M_value before change
@@ -2649,52 +2545,42 @@ export function DEFAULT_Panel({ field_data }) {
      */
     const current_display_value = DEFAULT_array[1];
 
-    console.log(
-        `[6] Final Value determined for ${fieldname}:`,
-        current_display_value,
-    );
+    // console.log(
+    //     `[6] Final Value determined for ${fieldname}:`,
+    //     current_display_value,
+    // );
 
-    // [7] Render แบบ Dynamic ตาม Config (ไม่มี Switch Case)
     return (
         <div className="M_params-container">
-            {current_params.map((param, index) => (
-                <div key={index} className="M_params-field">
-                    <label>{param.label}</label>
-                    {d_Class_Name === "BOOLEAN" ? (
-                        <select
-                            className="DEFAULT_Panel"
-                            value={String(current_display_value)}
-                            onChange={(e) =>
-                                console.log(
-                                    `[onChange] ${fieldname} changed to:`,
-                                    e.target.value,
-                                )
-                            }
-                        >
-                            <option value="true">True</option>
-                            <option value="false">False</option>
-                        </select>
-                    ) : (
-                        <input
-                            className="DEFAULT_Panel"
-                            type={
-                                d_Class_Name === "INTEGER" ||
-                                d_Class_Name === "DECIMAL"
-                                    ? "number"
-                                    : "text"
-                            }
-                            value={current_display_value}
-                            onChange={(e) =>
-                                console.log(
-                                    `[onChange] ${fieldname} changed to:`,
-                                    e.target.value,
-                                )
-                            }
-                            placeholder={`Enter ${param.label}`}
-                        />
-                    )}
-                </div>
-            ))}
+            <div className="M_params-field">
+                {d_Class_Name === "BOOLEAN" && (
+                    <select
+                        className="DEFAULT_Panel"
+                        defaultValue={String(current_display_value ?? "")}
+                    >
+                        <option value="true">True</option>
+                        <option value="false">False</option>
+                    </select>
+                )}
+
+                {(d_Class_Name === "INTEGER" || d_Class_Name === "DECIMAL") && (
+                    <input
+                        className="DEFAULT_Panel"
+                        type="number"
+                        defaultValue={current_display_value ?? ""}
+                        placeholder={`Enter ${d_Class_Name} value`}
+                    />
+                )}
+
+                {d_Class_Name === "STRING" && (
+                    <input
+                        className="DEFAULT_Panel"
+                        type="text"
+                        defaultValue={current_display_value ?? ""}
+                        placeholder={`Enter ${d_Class_Name} value`}
+                    />
+                )}
+            </div>
         </div>
     );
 }
@@ -2744,14 +2630,10 @@ export function renderDropdown(
     fieldDataList = [],
     field_data,
     M_value,
+    activeSubTab,
 ) {
     const { activeTab } = use_M_Store();
-    if (activeTab === "m_data") {
-        console.log(
-            " 0_M_Dropdown.jsx - renderDropdown - M_Class_Name_List = ",
-            M_Class_Name_List,
-        );
-    }
+
     const foundValue = fieldDataList.find((item) => {
         let valueToTest = Array.isArray(item) ? item[0] : item;
         return (
@@ -2759,21 +2641,23 @@ export function renderDropdown(
             M_Class_Name_List.some((c) => valueToTest.startsWith(c + "::"))
         );
     });
+    // console.log("[1] foundValue:", foundValue);
 
     let defaultValue = "";
     let field_params = [];
+
     if (foundValue) {
         if (Array.isArray(foundValue)) {
-            // case Array: [ "d::DECIMAL", 10, 2, ... ]
             const [stringValue, ...params] = foundValue;
             defaultValue = stringValue.split("::")[1];
             field_params = params;
         } else {
-            // case string
             defaultValue = foundValue.split("::")[1];
             field_params = [];
         }
     }
+    // console.log("[2] defaultValue :", defaultValue);
+    // console.log("[3] field_params :", field_params);
 
     return (
         <>
@@ -2966,62 +2850,186 @@ export function Focus_CD_Rule_onChange({
     field_data,
 }) {
     console.group("--- [DEBUG: Focus_CD_Rule_onChange] ---");
-    console.log("element_DOM = ", element_DOM);
-    console.log("element_DOM.value = ", element_DOM.value);
-    console.log("old_M_value = ", old_M_value);
-    console.log("field_data = ", field_data);
+    // console.log("element_DOM = ", element_DOM);
+    // console.log("element_DOM.value = ", element_DOM.value);
+    // console.log("old_M_value = ", old_M_value);
+    // console.log("field_data_in_M_value = ", field_data_in_M_value);
+    // console.group("---------------------------------------");
 
     // 1. ดึง Action จาก Store
     const set_M_value = use_M_Store.getState().set_M_value;
+    const M_value = use_M_Store.getState().M_value;
 
     // 2. คว้านไส้ (Extract) สถานะปัจจุบันของ field นั้นๆ ออกมาเป็น Object
     const fieldname = field_data[0];
 
     // สร้าง Object สถานะจำลอง (Atomic State Object)
-    const DEFAULT = field_data.includes("cd::DEFAULT");
-    const FOREIGN = field_data.includes("cd::FOREIGN");
-    const INDEX = field_data.includes("cd::INDEX");
-    const NULLABLE = field_data.includes("cd::NULLABLE");
-    const UNIQUE = field_data.includes("cd::UNIQUE");
-    const REQUIRED = field_data.includes("cud::REQUIRED");
+    let DEFAULT = isExist_CD_in_M_value(fieldname, "cd::DEFAULT");
+    let FOREIGN = isExist_CD_in_M_value(fieldname, "cd::FOREIGN");
+    let INDEX = isExist_CD_in_M_value(fieldname, "cd::INDEX");
+    let NULLABLE = isExist_CD_in_M_value(fieldname, "cd::NULLABLE");
+    let UNIQUE = isExist_CD_in_M_value(fieldname, "cd::UNIQUE");
+    let REQUIRED = isExist_CD_in_M_value(fieldname, "cud::REQUIRED");
 
-    const states = { DEFAULT, FOREIGN, INDEX, NULLABLE, UNIQUE, REQUIRED };
-    console.log("Current States (Atomic):", states);
+    // TEST if exist
+    // if (DEFAULT) console.log("DEFAULT INPUT EXISTS");
+    // if (FOREIGN) console.log("FOREIGN INPUT EXISTS");
+    // if (INDEX) console.log("INDEX INPUT EXISTS");
+    // if (NULLABLE) console.log("NULLABLE INPUT EXISTS");
+    // if (UNIQUE) console.log("UNIQUE INPUT EXISTS");
+    // if (REQUIRED) console.log("REQUIRED INPUT EXISTS");
 
-    if (!DEFAULT || !FOREIGN || !INDEX || !NULLABLE || !UNIQUE || !REQUIRED) {
-        console.warn("Skipping: Some states are missing in field_data");
-        console.groupEnd();
-        return;
+    /**
+     * * HERE we use the Atomic above to
+     * * 1. calculate checkbox logic
+     * * 2. update M_value in M_Store
+     * * 3. to auto .update UI  e.g. if(NULLABLE = checked) then REQUIRED unchecked
+     * *
+     */
+
+    /**
+     * last clicked checkbox
+     * e.g. DEFAULT , FOREIGN etc.
+     */
+    const ACTION_VALUE = element_DOM.value;
+    console.log("ACTION_VALUE = ", ACTION_VALUE);
+
+    /**
+     * * 1. calculate checkbox logic
+     */
+
+    // NULLABLE vs REQUIRED
+    if (ACTION_VALUE === "NULLABLE" && NULLABLE) {
+        REQUIRED = false;
+        remove_from_M_value("cd::REQUIRED", fieldname, element_DOM);
+    }
+    if (ACTION_VALUE === "REQUIRED" && REQUIRED) {
+        NULLABLE = false;
+        remove_from_M_value("cd::NULLABLE", fieldname, element_DOM);
     }
 
-    // 3. ใส่กฎความสัมพันธ์ (Policy Layer)
-    if (DEFAULT) console.log("DEFAULT INPUT EXISTS");
-    if (FOREIGN) console.log("FOREIGN INPUT EXISTS");
-    if (INDEX) console.log("INDEX INPUT EXISTS");
-    if (NULLABLE) console.log("NULLABLE INPUT EXISTS");
-    if (UNIQUE) console.log("UNIQUE INPUT EXISTS");
-    if (REQUIRED) console.log("REQUIRED INPUT EXISTS");
+    console.log("DEFAULT = ", DEFAULT);
+    console.log("FOREIGN = ", FOREIGN);
+    console.log("INDEX = ", INDEX);
+    console.log("NULLABLE = ", NULLABLE);
+    console.log("UNIQUE = ", UNIQUE);
+    console.log("REQUIRED = ", REQUIRED);
 
-    // เตรียมตัวแปร next_states สำหรับอัปเดต
-    let next_states = { ...states };
-    // ตรงนี้จะใส่ Logic ปรับแต่ง next_states ต่อไป
+    // console.log("------- M_value -------");
+    // console.log("!!!!!!!!! M_value = ", M_value);
 
-    // 4. แปลง next_states กลับเป็น Array สำหรับ prepare_new_M_value_for_Update
-    const checked_CD_States = Object.keys(next_states).filter(
-        (key) => next_states[key],
-    );
-    console.log("checked_CD_States = ", checked_CD_States);
+    //  สั่งอัปเดต Store ครั้งเดียวจบ
+    // const new_M_value = prepare_new_M_value_for_Update(
+    //     old_M_value,
+    //     fieldname,
+    //     checked_CD_States,
+    // );
 
-    // 5. สั่งอัปเดต Store ครั้งเดียวจบ
-    const new_M_value = prepare_new_M_value_for_Update(
-        old_M_value,
-        fieldname,
-        checked_CD_States,
-    );
+    // set_M_value(new_M_value);
+    // console.log("Store Updated Successfully");
+    // console.groupEnd();
+}
+
+/**
+ *
+ * @param {*} fieldname
+ * @param {*} cd_Class = e.g. cd::DEFAULT
+ * @returns
+ */
+export function isExist_CD_in_M_value(fieldname, cd_Class) {
+    const M_value = use_M_Store.getState().M_value;
+    const fieldname_UPPERCASE = fieldname.toUpperCase();
+    const field_data_in_M_value = M_value[fieldname_UPPERCASE];
+
+    if (!field_data_in_M_value || !Array.isArray(field_data_in_M_value))
+        return false;
+
+    return field_data_in_M_value.some((item) => {
+        if (typeof item === "string") return item === cd_Class;
+        if (Array.isArray(item)) return item[0] === cd_Class;
+        return false;
+    });
+}
+
+/**
+ * e.g. remove_from_M_value("cd::REQUIRED", fieldname);
+ * @param {*} cd_Name = e.g. cd::REQUIRED
+ * @param {*} fieldname = e.g. image , price , stock , name etc.
+ */
+function remove_from_M_value(cd_Name, fieldname, element_DOM) {
+    const { M_value, set_M_value } = use_M_Store.getState();
+
+    const fieldname_UPPERCASE = fieldname.toUpperCase();
+    const field_data_from_M_value = M_value[fieldname_UPPERCASE];
+    if (!field_data_from_M_value) return;
+
+    // console.log("field_data_from_M_value before splice:", field_data_from_M_value);
+
+    const index = field_data_from_M_value.indexOf(cd_Name);
+    if (index > -1) {
+        field_data_from_M_value.splice(index, 1);
+        // console.log(
+        //     " field_data_from_M_value after splice = ",
+        //     field_data_from_M_value,
+        // );
+        set_M_value({ ...M_value });
+        // console.log(" ...M_value = ", M_value);
+
+        /**
+         * --------- unchecked the checkbox
+         */
+        // 1. หา wrapper ใหญ่สุดของฟิลด์นั้น
+        const wrapper = element_DOM.closest(".field-wrapper-box");
+
+        const cd_Class_Clean = cd_Name.split("cd::")[1];
+        console.log("!!!!!!!!!! cd_Class_Clean = ", cd_Class_Clean);
+        // 2. ค้นหา checkbox ที่มี value ตรงกับที่เราต้องการภายใน wrapper นั้น
+        const targetCheckbox = wrapper.querySelector(
+            `input[type="checkbox"][value="${cd_Class_Clean}"]`,
+        );
+
+        console.log("!!!!!!!!!!! targetCheckbox = ", targetCheckbox);
+        // 3. สั่งปิด
+        if (targetCheckbox) targetCheckbox.checked = false;
+    }
+}
+
+function save_to_M_value(is_CD_Checked, cd_Class, fieldname) {
+    const { M_value, set_M_value } = use_M_Store.getState();
+    const field_data_from_M_value = [...(M_value[fieldname] || [])];
+
+    // กำหนดชื่อ Rule เต็มที่ใช้ใน Array
+    const cd_NAME_Class_Map = {
+        DEFAULT: "cd::DEFAULT",
+        FOREIGN: "cd::FOREIGN",
+        INDEX: "cd::INDEX",
+        NULLABLE: "cd::NULLABLE",
+        UNIQUE: "cd::UNIQUE",
+        REQUIRED: "cud::REQUIRED",
+    };
+
+    const cd_Name = cd_NAME_Class_Map[cd_Class];
+
+    if (is_CD_Checked) {
+        // เพิ่ม Rule ถ้ายังไม่มี
+        if (!field_data_from_M_value.includes(cd_Name)) {
+            field_data_from_M_value.push(cd_Name);
+        }
+    } else {
+        // ลบ Rule ออก
+        const index = field_data_from_M_value.indexOf(cd_Name);
+        if (index > -1) {
+            field_data_from_M_value.splice(index, 1);
+        }
+    }
+
+    // อัปเดต Store
+    const new_M_value = {
+        ...M_value,
+        [fieldname]: field_data_from_M_value,
+    };
 
     set_M_value(new_M_value);
-    console.log("Store Updated Successfully");
-    console.groupEnd();
 }
 
 
@@ -3193,7 +3201,7 @@ export function CD_Rule({
     M_value,
     activeSubTab,
 }) {
-    // console.log("Rule_D_CD.jsx - DB_options = ", DB_options);
+    console.log("Rule_D_CD.jsx - DB_options = ", DB_options);
     const [checked_CD, setChecked_CD] = useState(DB_options);
 
     const setFocus = use_M_Store((state) => state.setFocus);
@@ -3243,7 +3251,7 @@ export function CD_Rule({
                              * always need onChange to update state !!!
                              */
                             // If 'option' is in 'checked_CD' array, the box is checked.
-                            checked={checked_CD.includes(option)}
+                            // checked={checked_CD.includes(option)}
                             onChange={(event) => {
                                 update_M_value(event, field_data, M_value);
                                 Focus_CD_Rule_onChange({
@@ -3251,7 +3259,7 @@ export function CD_Rule({
                                     M_value,
                                     field_data,
                                 });
-                                set_D_CD_Actions(option, event);
+                                // set_D_CD_Actions(option, event);
                             }}
                         />
                         {option}
@@ -3424,11 +3432,11 @@ export default function SubTab({ data, tab_label }) {
      * we add M_value to monitor-dependency
      * to avoid set same M_value multiple times
      */
-    useEffect(() => {
-        set_M_value(M_value);
-        console.log("SubTab.jsx - M_value = ", M_value);
-        console.log("SubTab.jsx - M_value updated to: ", activeSubTab);
-    }, [tab_label, activeSubTab, M_value]);
+    // useEffect(() => {
+    //     set_M_value(M_value);
+    //     console.log("SubTab.jsx - M_value = ", M_value);
+    //     console.log("SubTab.jsx - M_value updated to: ", activeSubTab);
+    // }, [tab_label, activeSubTab, M_value]);
 
     return (
         <>
@@ -3665,7 +3673,7 @@ export function prepare_new_M_value_for_Update(
     const fieldname_UPPERCASE = Object.keys(new_M_value).find(
         (key) => key.toLowerCase() === fieldname.toLowerCase(),
     );
-    console.log("4.1 fieldname_UPPERCASE = ", fieldname_UPPERCASE);
+    // console.log("4.1 fieldname_UPPERCASE = ", fieldname_UPPERCASE);
 
     /**
      * * field_data = we use this name exactly case-sensitive in whole app
@@ -3674,7 +3682,7 @@ export function prepare_new_M_value_for_Update(
     const field_data = Array.isArray(new_M_value[fieldname_UPPERCASE])
         ? [...new_M_value[fieldname_UPPERCASE]]
         : [];
-    console.log("5. Extracted field_data (before clean):", field_data);
+    // console.log("5. Extracted field_data (before clean):", field_data);
 
     /**
      * * Filter out all existing cd:: and cud:: values
@@ -3692,10 +3700,10 @@ export function prepare_new_M_value_for_Update(
 
         return !isCD && !isCUD;
     });
-    console.log(
-        "6. field_data_without_cd_cud (after filtering cd::):",
-        field_data_without_cd_cud,
-    );
+    // console.log(
+    //     "6. field_data_without_cd_cud (after filtering cd::):",
+    //     field_data_without_cd_cud,
+    // );
 
     /**
      * cud_names = ['REQUIRED']
@@ -3774,30 +3782,31 @@ export function DEFAULT_VALUES_for_D_CD(keyName) {
     // default for d::FIELDNAME = ''
     if (!field_data || !field_data[1]) return "";
 
-    // d::FIELDNAME can be string or array
-    // if Array , Array[0] = String  always (App Convention)
-    // e.g. [ 'stock', [ 'd::DECIMAL', 10, 10 ] ]
-    const rawTypeString = Array.isArray(field_data[1])
+    /**
+     * * d::FIELDNAME can be string or array
+     * * if Array , Array[0] = String  always (App Convention)
+     * * e.g. [ 'd::DECIMAL', 10, 10 ] of [ 'stock', [ 'd::DECIMAL', 10, 10 ] ]
+     * * e.g.   'd::STRING' of [ 'name', 'd::STRING' ]
+     */
+    const d_Class_UPPERCASE = Array.isArray(field_data[1])
         ? field_data[1][0]
         : field_data[1];
-
     // console.log(
-    //     "0_M_value_Updateer - DEFAULT_VALUES_for_D_CD - rawTypeString = ",
-    //     rawTypeString,
+    //     "0_M_value_Updateer - DEFAULT_VALUES_for_D_CD - d_Class_UPPERCASE = ",
+    //     d_Class_UPPERCASE,
     // );
 
     /**
-     * 'd::DECIMAL' -> 'DECIMAL'
+     * 'DECIMAL' of 'd::DECIMAL' ->
      */
-    const d_name_UPPERCASE = rawTypeString.split("::")[1].toUpperCase();
-
+    const d_Name_UPPERCASE = d_Class_UPPERCASE.split("::")[1].toUpperCase();
     // console.log(
-    //     "0_M_value_Updateer - DEFAULT_VALUES_for_D_CD - d_name_UPPERCASE = ",
-    //     d_name_UPPERCASE,
+    //     "0_M_value_Updateer - DEFAULT_VALUES_for_D_CD - d_Name_UPPERCASE = ",
+    //     d_Name_UPPERCASE,
     // );
 
-    // get from DEFAULT_VALUES_MAP matched d_name_UPPERCASE
-    return DEFAULT_VALUES_MAP[d_name_UPPERCASE] ?? "";
+    // get from DEFAULT_VALUES_MAP matched d_Name_UPPERCASE
+    return DEFAULT_VALUES_MAP[d_Name_UPPERCASE] ?? "";
 }
 
 
@@ -4691,11 +4700,11 @@ export const use_M_Store = create((set) => ({
                 },
             };
 
-            if (state.debug) {
-                console.log(`[M_STORE_DEBUG] Focused on: ${fieldname}`);
-                console.log(`[M_STORE_DEBUG] Current M_States:`, nextStates);
-                console.log("------------------------------------");
-            }
+            // if (state.debug) {
+            //     console.log(`[M_STORE_DEBUG] Focused on: ${fieldname}`);
+            //     console.log(`[M_STORE_DEBUG] Current M_States:`, nextStates);
+            //     console.log("------------------------------------");
+            // }
 
             return { M_States: nextStates };
         }),
@@ -4708,11 +4717,11 @@ export const use_M_Store = create((set) => ({
     M_value: {},
     set_M_value: (new_M_value) =>
         set((state) => {
-            if (state.debug) {
-                console.log(`[M_STORE_DEBUG] M_value updated!`);
-                console.log(`[M_STORE_DEBUG] New M_value:`, new_M_value);
-                console.log("------------------------------------");
-            }
+            // if (state.debug) {
+            //     console.log(`[M_STORE_DEBUG] M_value updated!`);
+            //     console.log(`[M_STORE_DEBUG] New M_value:`, new_M_value);
+            //     console.log("------------------------------------");
+            // }
             return { M_value: new_M_value };
         }),
 

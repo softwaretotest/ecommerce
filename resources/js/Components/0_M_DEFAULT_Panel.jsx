@@ -22,14 +22,14 @@ export function DEFAULT_Panel({ field_data }) {
     const M_value = use_M_Store((state) => state.M_value);
     const fieldname = field_data[0];
 
-    console.log(`[1] DEFAULT_Panel | Field: ${fieldname}`);
+    // console.log(`[1] DEFAULT_Panel | Field: ${fieldname}`);
 
     const upperFieldName = fieldname.toUpperCase();
     const M_value_field_data = M_value ? M_value[upperFieldName] : null;
     /**
      * M_value_field_data = ['is_active', 'd::BOOLEAN', 'u::SELECT', ['cd::DEFAULT', false]]
      */
-    console.log("[2.0] M_value_field_data = ", M_value_field_data);
+    // console.log("[2.0] M_value_field_data = ", M_value_field_data);
 
     /**
      * * existing_field_data = data for replace
