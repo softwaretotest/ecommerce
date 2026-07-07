@@ -42,7 +42,7 @@ export function renderDropdown(
     const { M_value, activeTab, activeSubTab } = use_M_Store();
     const fieldName = field_data ? field_data[0] : "UNKNOWN";
 
-    // [LOG A] เห็นภาพรวมของข้อมูลที่เข้ามา
+    // [LOG A] fieldDataList
     console.log(
         `[DEBUG: ${fieldName}] Full fieldDataList:`,
         JSON.parse(JSON.stringify(fieldDataList)),
@@ -50,11 +50,11 @@ export function renderDropdown(
 
     const foundValue = fieldDataList.find((item, index) => {
         let valueToTest = Array.isArray(item) ? item[0] : item;
-        let isMatch =
-            typeof valueToTest === "string" &&
-            M_Class_Name_List.some((c) => valueToTest.startsWith(c + "::"));
 
-        // [LOG B] ดูว่าแต่ละ item ที่วิ่งผ่านเงื่อนไข find หน้าตาเป็นยังไง
+        let isMatch =
+            typeof valueToTest === "string" && valueToTest.startsWith("d::");
+
+        // [LOG B] see all items , that pass through .find
         console.log(
             `[DEBUG: ${fieldName}] Checking index ${index}:`,
             item,
@@ -65,7 +65,7 @@ export function renderDropdown(
         return isMatch;
     });
 
-    // [LOG C] ดูผลลัพธ์ว่าตัวไหนคือผู้โชคดีที่ถูกเลือก
+    // [LOG C] see foundValue of fieldname
     console.log(`[DEBUG: ${fieldName}] Selected foundValue:`, foundValue);
 
     let defaultValue = "";
@@ -76,12 +76,12 @@ export function renderDropdown(
             const [stringValue, ...params] = foundValue;
             defaultValue = stringValue.split("::")[1];
             field_params = params;
-            // [LOG D] ถ้าเป็น Array ต้องเห็น params
+            // [LOG D] if Array must see params
             console.log(`[DEBUG: ${fieldName}] Detected Array params:`, params);
         } else {
             defaultValue = foundValue.split("::")[1];
             field_params = [];
-            // [LOG D] ถ้าเป็น String จะไม่มี params
+            // [LOG D] if String no params
             console.log(`[DEBUG: ${fieldName}] Detected String (No params)`);
         }
     } else {
