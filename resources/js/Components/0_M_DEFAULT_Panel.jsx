@@ -59,56 +59,44 @@ export function DEFAULT_Panel({ field_data }) {
     /**
      * * d_Class
      * * e.g. d::BOOLEAN for IS_ACTIVE
-     * * e.g. d::DECIMAL for STOCK
+     * * e.g. [d::DECIMAL,10,10] for STOCK
      */
-    // แก้ไขบรรทัดนี้ใน 0_M_DEFAULT_Panel.jsx
     const d_Class_Item = existing_field_data.find((item) => {
-        // ถ้าเป็น String ก็เช็คปกติ
+        // Case String
         if (typeof item === "string") return item.startsWith("d::");
-        // ถ้าเป็น Array ให้ดูสมาชิกตัวแรก (item[0])
+        // Case Array, look first Item = string (item[0]) , my App M_value convention
         if (Array.isArray(item)) return item[0] && item[0].startsWith("d::");
         return false;
     });
 
-    // เปลี่ยน Guard Clause ให้เช็ค d_Class_Item แทน
     if (!d_Class_Item) return null;
 
-    // สกัดชื่อ d_Class_Name ให้รองรับทั้ง 2 แบบ
+    // remove d:: from d_Class_Name Case String and Case Array
     const d_Class_Name = Array.isArray(d_Class_Item)
-        ? d_Class_Item[0].substring(3)
-        : d_Class_Item.substring(3);
+        ? d_Class_Item[0].substring(3) //Array
+        : d_Class_Item.substring(3); //String
 
     console.log(" [3.1] d_Class_Item = ", d_Class_Item);
     console.log(" [3.2] d_Class_Name = ", d_Class_Name);
 
-    /**
-     * * d_Class_Name
-     * * e.g. BOOLEAN for IS_ACTIVE
-     */
-    // let d_Class_Name = "STRING";
-    // if (d_Class.startsWith("d::")) {
-    //     d_Class_Name = d_Class.substring(3); // cut d:: away
-    // }
-    // console.log(" [3.2] d_Class_Name = ", d_Class_Name);
-
-    const dType = "d::" + d_Class_Name;
-    console.log(`[4] dType identified for ${fieldname}:`, dType);
+    // const dType = "d::" + d_Class_Name;
+    // console.log(`[4] dType identified for ${fieldname}:`, dType);
 
     /**
      * * d_MAP_KEY = find d_Class_Name in DEFAULT_VALUES_MAP
      * * e.g. BOOLEAN for IS_ACTIVE
      */
-    let d_MAP_KEY = d_Class_Name;
-    if (d_Class_Name === "INTEGER" || d_Class_Name === "DECIMAL") {
-        d_MAP_KEY = "INTEGER";
-    } else if (d_Class_Name === "BOOLEAN") {
-        d_MAP_KEY = "BOOLEAN";
-    } else if (d_Class_Name === "STRING") {
-        d_MAP_KEY = "STRING";
-    } else {
-        d_MAP_KEY = "UNKNOWN";
-    }
-    console.log("[4] d_MAP_KEY = ", d_MAP_KEY);
+    // let d_MAP_KEY = d_Class_Name;
+    // if (d_Class_Name === "INTEGER" || d_Class_Name === "DECIMAL") {
+    //     d_MAP_KEY = "INTEGER";
+    // } else if (d_Class_Name === "BOOLEAN") {
+    //     d_MAP_KEY = "BOOLEAN";
+    // } else if (d_Class_Name === "STRING") {
+    //     d_MAP_KEY = "STRING";
+    // } else {
+    //     d_MAP_KEY = "UNKNOWN";
+    // }
+    // console.log("[4] d_MAP_KEY = ", d_MAP_KEY);
 
     /**
      * * DEFAULT_array = real array with params of DEFAULT in M_value before change
@@ -116,10 +104,10 @@ export function DEFAULT_Panel({ field_data }) {
      */
     const current_display_value = DEFAULT_array[1];
 
-    console.log(
-        `[6] Final Value determined for ${fieldname}:`,
-        current_display_value,
-    );
+    // console.log(
+    //     `[6] Final Value determined for ${fieldname}:`,
+    //     current_display_value,
+    // );
 
     return (
         <div className="M_params-container">

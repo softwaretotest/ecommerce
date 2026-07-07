@@ -4,17 +4,16 @@
         "IMAGE": [
             "image",
             "d::STRING",
-            "u::FILE"
-        ],
-        "NAME": [
-            "name",
-            "d::STRING",
-            "u::TEXT",
-            "cud::REQUIRED",
+            "u::FILE",
             [
                 "cd::DEFAULT",
                 null
             ]
+        ],
+        "NAME": [
+            "name",
+            "d::STRING",
+            "u::TEXT"
         ],
         "PRICE": [
             "price",
@@ -43,12 +42,7 @@
         "QUANTITY": [
             "quantity",
             "d::DECIMAL",
-            "u::NUMBER",
-            "cud::REQUIRED",
-            [
-                "cd::DEFAULT",
-                0
-            ]
+            "u::NUMBER"
         ],
         "CONFIRM_ORDER": [
             "confirm_order",
