@@ -48,11 +48,38 @@ export function renderDropdown(
         JSON.parse(JSON.stringify(fieldDataList)),
     );
 
+    /**
+     * * DO NOT CHANGE
+     * * M_Class_Name_List.some((c) => valueToTest.startsWith(c + "::"))
+     * * TO HARDCODE LIKE THIS
+     * * const VALID_PREFIXES = ["t::", "f::", "s::", "u::", "d::"];
+     * * const foundValue = fieldDataList.find((item, index) => {
+     * *    let valueToTest = Array.isArray(item) ? item[0] : item;
+     * *
+     * *    // แก้ไขเงื่อนไขการตรวจสอบให้ครอบคลุมตามรายการที่กำหนด (t, f, s, u, d)
+     * *    let isMatch =
+     * *        typeof valueToTest === "string" &&
+     * *        VALID_PREFIXES.some((prefix) => valueToTest.startsWith(prefix));
+     * *
+     * *    // [LOG B] see all items , that pass through .find
+     * *    console.log(
+     * *        `[DEBUG: ${fieldName}] Checking index ${index}:`,
+     * *        item,
+     * *        " | Match:",
+     * *        isMatch,
+     * *    );
+     * *
+     * *    return isMatch;
+     * * });
+     * *
+     * * BECAUSE, IT WILL REMOVE t:: Dropdown its selected values
+     */
     const foundValue = fieldDataList.find((item, index) => {
         let valueToTest = Array.isArray(item) ? item[0] : item;
 
         let isMatch =
-            typeof valueToTest === "string" && valueToTest.startsWith("d::");
+            typeof valueToTest === "string" &&
+            M_Class_Name_List.some((c) => valueToTest.startsWith(c + "::")); // t:: f:: s:: u:: d::
 
         // [LOG B] see all items , that pass through .find
         console.log(
