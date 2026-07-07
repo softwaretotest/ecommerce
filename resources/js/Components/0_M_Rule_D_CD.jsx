@@ -84,17 +84,6 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
         );
     }
 
-    // const M_value_to_Log = use_M_Store((state) => state.M_value);
-    // useEffect(() => {
-    //     console.log("Rule_D_CD.jsx - M_value_to_Log = ", M_value_to_Log);
-    // }, [M_value_to_Log]);
-    // console.log("!!!!!!!!! CD_Rule - activeTab =", activeTab);
-    // console.log("!!!!!!!!! CD_Rule - activeSubTab =", activeSubTab);
-    // console.log(
-    //     "!!!!!!!!! CD_Rule - checked_CD.includes(DEFAULT) =",
-    //     checked_CD.includes("DEFAULT"),
-    // );
-
     return (
         <div className="M_checkbox-list">
             {ALL_DB_options.map((option) => (
@@ -123,6 +112,7 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
                         {option}
                     </label>
                     {/* show or hide when user click on checkbox */}
+                    {/* MUCH MORE STRICT CONDITIONS, COULD PREVENT ERRORS */}
                     {/* {((activeTab === "app_data" && activeSubTab === "f") ||
                         (activeTab === "m_data" && activeSubTab === "s")) &&
                         checked_CD.includes("DEFAULT") &&

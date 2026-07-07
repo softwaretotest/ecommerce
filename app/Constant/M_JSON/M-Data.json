@@ -32,7 +32,8 @@
         "EMAIL": [
             "email",
             "d::STRING",
-            "u::TEXT"
+            "u::TEXT",
+            "cd::UNIQUE"
         ],
         "CURRENCY": [
             "currency",

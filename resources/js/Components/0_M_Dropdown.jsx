@@ -43,10 +43,10 @@ export function renderDropdown(
     const fieldName = field_data ? field_data[0] : "UNKNOWN";
 
     // [LOG A] fieldDataList
-    console.log(
-        `[DEBUG: ${fieldName}] Full fieldDataList:`,
-        JSON.parse(JSON.stringify(fieldDataList)),
-    );
+    // console.log(
+    //     `[DEBUG: ${fieldName}] Full fieldDataList:`,
+    //     JSON.parse(JSON.stringify(fieldDataList)),
+    // );
 
     /**
      * * DO NOT CHANGE
@@ -82,18 +82,18 @@ export function renderDropdown(
             M_Class_Name_List.some((c) => valueToTest.startsWith(c + "::")); // t:: f:: s:: u:: d::
 
         // [LOG B] see all items , that pass through .find
-        console.log(
-            `[DEBUG: ${fieldName}] Checking index ${index}:`,
-            item,
-            " | Match:",
-            isMatch,
-        );
+        // console.log(
+        //     `[DEBUG: ${fieldName}] Checking index ${index}:`,
+        //     item,
+        //     " | Match:",
+        //     isMatch,
+        // );
 
         return isMatch;
     });
 
     // [LOG C] see foundValue of fieldname
-    console.log(`[DEBUG: ${fieldName}] Selected foundValue:`, foundValue);
+    // console.log(`[DEBUG: ${fieldName}] Selected foundValue:`, foundValue);
 
     let defaultValue = "";
     let field_params = [];
@@ -104,15 +104,15 @@ export function renderDropdown(
             defaultValue = stringValue.split("::")[1];
             field_params = params;
             // [LOG D] if Array must see params
-            console.log(`[DEBUG: ${fieldName}] Detected Array params:`, params);
+            // console.log(`[DEBUG: ${fieldName}] Detected Array params:`, params);
         } else {
             defaultValue = foundValue.split("::")[1];
             field_params = [];
             // [LOG D] if String no params
-            console.log(`[DEBUG: ${fieldName}] Detected String (No params)`);
+            // console.log(`[DEBUG: ${fieldName}] Detected String (No params)`);
         }
     } else {
-        console.warn(`[DEBUG: ${fieldName}] No foundValue detected!`);
+        // console.warn(`[DEBUG: ${fieldName}] No foundValue detected!`);
     }
 
     return (

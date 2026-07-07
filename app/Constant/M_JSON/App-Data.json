@@ -57,6 +57,10 @@
                 2
             ],
             "u::NUMBER",
+            [
+                "cd::DEFAULT",
+                1
+            ],
             "cud::REQUIRED"
         ],
         "CONFIRM_ORDER": [
