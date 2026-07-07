@@ -20,8 +20,7 @@ export function CD_Rule({
     DB_options,
     ALL_DB_options,
     field_data,
-    // M_value,
-    activeSubTab,
+    // activeSubTab,
 }) {
     // console.log("Rule_D_CD.jsx - DB_options = ", DB_options);
     const [checked_CD, setChecked_CD] = useState(DB_options);
@@ -30,13 +29,14 @@ export function CD_Rule({
         (state) => state.setJSON_Content_State,
     );
 
-    const activeField = use_M_Store((state) => state.activeField);
-    const setActiveField = use_M_Store((state) => state.setActiveField);
-
-    const setFocus = use_M_Store((state) => state.setFocus);
-    const activeTab = use_M_Store((state) => state.activeTab);
-    const M_value = use_M_Store((state) => state.M_value);
-    const set_M_value = use_M_Store((state) => state.set_M_value);
+    const {
+        setFocus,
+        update,
+        M_value,
+        activeField,
+        setActiveField,
+        activeSubTab,
+    } = use_M_Store();
     /**
      * Assuming field_data is an array and the first element is the field name
      */

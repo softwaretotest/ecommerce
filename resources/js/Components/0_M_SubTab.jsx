@@ -28,9 +28,14 @@ export default function SubTab({ data, tab_label }) {
     /**
      * ONLY 1 state to focus 3 Components with same click
      */
-    // const [activeField, setActiveField] = useState(null);
     const activeField = use_M_Store((state) => state.activeField);
     const setActiveField = use_M_Store((state) => state.setActiveField);
+
+    /**
+     * SET SubTab
+     */
+    const activeSubTab = use_M_Store((state) => state.activeSubTab);
+    const setActiveSubTab = use_M_Store((state) => state.setActiveSubTab);
 
     const scrollRefs = useRef({});
     useScrollIntoView(activeField, scrollRefs);
@@ -39,9 +44,9 @@ export default function SubTab({ data, tab_label }) {
         (M_Class_Name) => typeof data[M_Class_Name] === "object",
     );
 
-    const activeSubTab = use_M_Store((state) => state.activeSubTab);
-    const setActiveSubTab = use_M_Store((state) => state.setActiveSubTab);
-
+    /**
+     * get M_value from SubTab
+     */
     const M_value = useMemo(() => {
         return data[activeSubTab] || {};
     }, [data, activeSubTab]);
@@ -51,7 +56,7 @@ export default function SubTab({ data, tab_label }) {
     const fieldnames = Object.keys(M_value || {});
 
     /**
-     * set default Subtab
+     * SET default Subtab
      */
     useEffect(() => {
         // get all SubTab from data
@@ -80,7 +85,7 @@ export default function SubTab({ data, tab_label }) {
     }
 
     /**
-     * Add <JSON_Content /> to React.State
+     * Add <JSON_Content /> to global M_Store
      */
     // const [JSON_Content_State, setJSON_Content_State] = useState(null);
     const JSON_Content_State = use_M_Store((state) => state.JSON_Content_State);
@@ -88,13 +93,7 @@ export default function SubTab({ data, tab_label }) {
         (state) => state.setJSON_Content_State,
     );
     useEffect(() => {
-        setJSON_Content_State(
-            <JSON_Content
-                M_value={M_value}
-                // activeField={activeField}
-                // setActiveField={setActiveField}
-            />,
-        );
+        setJSON_Content_State(<JSON_Content M_value={M_value} />);
     }, [activeField, setActiveField, use_M_Store.getState().M_value]);
 
     return (
@@ -141,14 +140,7 @@ export default function SubTab({ data, tab_label }) {
 
                 {/* left column = Input Boxes */}
                 <div className="column-flex-form">
-                    <TabContent
-                        M_Class_Name={activeSubTab}
-                        // M_value={M_value}
-                        activeField={activeField}
-                        setActiveField={setActiveField}
-                        tab_label={tab_label}
-                        activeSubTab={activeSubTab}
-                    />
+                    <TabContent M_Class_Name={activeSubTab} />
                 </div>
 
                 {/* right column = JSON */}

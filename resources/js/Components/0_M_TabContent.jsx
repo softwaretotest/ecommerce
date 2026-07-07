@@ -11,16 +11,15 @@ import Field from "@/Components/0_M_Field";
 import EntityField from "@/Components/0_M_EntityField";
 import DB_Tablename from "@/Components/0_M_DB_Tablename";
 
-export default function TabContent({
-    M_Class_Name,
-    // M_value,
-    activeField,
-    setActiveField,
-    activeSubTab,
-}) {
-    const setFocus = use_M_Store((state) => state.setFocus);
-    const update = use_M_Store((state) => state.update);
-    const M_value = use_M_Store((state) => state.M_value);
+export default function TabContent({ M_Class_Name }) {
+    const {
+        setFocus,
+        update,
+        M_value,
+        activeField,
+        setActiveField,
+        activeSubTab,
+    } = use_M_Store();
 
     // use path to update, e.g. "APP_DATA.NAME"
     const handleUpdate = (fieldname, newValue) => {
@@ -83,18 +82,14 @@ export default function TabContent({
 
                         {/* middle column: Input Fields */}
                         {M_Class_Name === "s" && Array.isArray(field_data) && (
-                            <SpecialField
-                                field_data={field_data}
-                                M_value={M_value}
-                                activeSubTab={activeSubTab}
-                            />
+                            <SpecialField field_data={field_data} />
                         )}
 
                         {M_Class_Name === "f" && Array.isArray(field_data) && (
                             <Field
                                 field_data={field_data}
                                 M_value={M_value}
-                                activeSubTab={activeSubTab}
+                                // activeSubTab={activeSubTab}
                             />
                         )}
 
