@@ -88,18 +88,26 @@ export function CD_Rule({
                                 console.log(" option = ", option);
 
                                 update_M_value(event, field_data, M_value);
-                                Focus_CD_Rule_onChange({
-                                    element_DOM: event.target,
-                                    M_value,
-                                    field_data,
-                                });
+
+                                /**
+                                 * we will do this later, when project finish
+                                 * Line CRUD, CRUD form handle 7 cd States simply
+                                 */
+                                // Focus_CD_Rule_onChange({
+                                //     element_DOM: event.target,
+                                //     M_value,
+                                //     field_data,
+                                // });
+
                                 set_D_CD_Actions(option, event);
 
+                                /**
+                                 * ----------- TEST -------------------------
+                                 */
                                 // const hasOption =
                                 //     M_value[fieldname_UPPERCASE].includes(
                                 //         option,
                                 //     );
-
                                 // console.log(" hasOption = ", hasOption);
                                 // console.log(" option = ", option);
                                 // if (!hasOption) {

@@ -1,6 +1,6 @@
 //resources/js/Pages/0_M_Dashboard.jsx
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { use_M_Data } from "@/Providers/0_M_DataProvider";
 import { use_M_Store } from "@/Stores/0_M_Store.jsx";
@@ -11,6 +11,8 @@ import "@/../css/0_M_UI.css";
 
 export default function M_Dashboard() {
     const data = use_M_Data();
+    const M_value = use_M_Store((state) => state.M_value);
+    const save_All_Data = use_M_Store((state) => state.save_All_Data);
 
     const activeTab = use_M_Store((state) => state.activeTab);
     const setActiveTab = use_M_Store((state) => state.setActiveTab);
@@ -22,6 +24,18 @@ export default function M_Dashboard() {
         { id: "app_data", label: "APP_DATA", key: "app_data" },
         { id: "entities", label: "ENTITIES", key: "entities" },
     ];
+
+    // เพิ่มใน M_Dashboard.jsx
+    useEffect(() => {
+        // ดึงข้อมูลจาก store หรือตรงไหนก็ตามที่เก็บ state ไว้
+        const saveData = async () => {
+            // จัดการ logic save ไปยัง 3 ไฟล์
+            console.log("Auto-saving...");
+        };
+
+        const handler = setTimeout(saveData, 1000);
+        return () => clearTimeout(handler);
+    }, [data]); // ถ้า data เปลี่ยน ก็สั่ง save
 
     return (
         <div className="dashboard-wrapper">

@@ -5,6 +5,6 @@
  * @returns
  */
 export const getMetadata = async () => {
-    const response = await fetch("/api/m-data");
+    const response = await fetch(API_CONFIG.M_VALUE_ENDPOINT);
     return await response.json();
 };

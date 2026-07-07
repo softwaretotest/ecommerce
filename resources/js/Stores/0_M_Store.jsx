@@ -20,7 +20,7 @@ export const use_M_Store = create((set) => ({
     // set_DEFAULT_Panel: (arrayValue) => set({ DEFAULT_Panel: arrayValue }),
 
     M_States: {},
-
+    unset_States: () => set({ M_States: {} }),
     /**
      * * Update state for a given fieldname and its metadata values
      * * we must cleanData before nextStates
@@ -66,5 +66,30 @@ export const use_M_Store = create((set) => ({
             return { M_value: new_M_value };
         }),
 
-    unset_States: () => set({ M_States: {} }),
+    /**
+     * * SAVE M_Value to JSON onChange
+     * *
+     */
+    // ใน M_Store.jsx
+    save_All_Data: async (data) => {
+        try {
+            await Promise.all([
+                fetch("/api/save-m-data", {
+                    method: "POST",
+                    body: JSON.stringify(data.m_data),
+                }),
+                fetch("/api/save-app-data", {
+                    method: "POST",
+                    body: JSON.stringify(data.app_data),
+                }),
+                fetch("/api/save-entities", {
+                    method: "POST",
+                    body: JSON.stringify(data.entities),
+                }),
+            ]);
+            console.log("Saved successfully!");
+        } catch (error) {
+            console.error("Save failed:", error);
+        }
+    },
 }));
