@@ -1,6 +1,7 @@
 // resources/js/Stores/0_M_Store.jsx
 
 import { create } from "zustand";
+import JSON_Content from "../Components/0_M_JSON_Content";
 
 /**
  * M_States Registry
@@ -15,8 +16,15 @@ export const use_M_Store = create((set) => ({
     activeTab: "m_data",
     setActiveTab: (tab) => set({ activeTab: tab }),
 
+    activeField: null,
+    setActiveField: (field) => set({ activeField: field }),
+
     activeSubTab: "d",
     setActiveSubTab: (subTab) => set({ activeSubTab: subTab }),
+
+    JSON_Content_State: null,
+    setJSON_Content_State: (JSON_Content) =>
+        set({ JSON_Content_State: { ...JSON_Content } }),
 
     // // e.g ['cd::DEFAULT', 10, 2]
     // DEFAULT_Panel: [],

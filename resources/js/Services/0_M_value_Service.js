@@ -3,7 +3,7 @@ import { use_M_Store } from "@/Stores/0_M_Store.jsx";
 import { API } from "@/Configs/api";
 
 /**
- * UPDATE M_value (M_Store) and JSON_Content
+ * UPDATE M_value (M_Store)
  * @param {*} new_M_value
  * * activeTab  subTab
  * * M-DATA     CD D U CU CUD S

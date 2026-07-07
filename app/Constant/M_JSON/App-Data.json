@@ -9,8 +9,7 @@
         "NAME": [
             "name",
             "d::STRING",
-            "u::TEXT",
-            "cud::REQUIRED"
+            "u::TEXT"
         ],
         "PRICE": [
             "price",

@@ -8,6 +8,7 @@ import { DEFAULT_Panel } from "@/Components/0_M_DEFAULT_Panel";
 import { prepare_new_M_value_for_Update } from "@/Components/0_M_value_Updater";
 import { Focus_CD_Rule_onChange } from "@/Components/0_M_Focus_CD_Rule_onChange";
 
+import JSON_Content from "./0_M_JSON_Content";
 /**
  * Rule Fabric
  * to make UI e.g. checkboxes inputs
@@ -24,6 +25,13 @@ export function CD_Rule({
 }) {
     // console.log("Rule_D_CD.jsx - DB_options = ", DB_options);
     const [checked_CD, setChecked_CD] = useState(DB_options);
+
+    const setJSON_Content_State = use_M_Store(
+        (state) => state.setJSON_Content_State,
+    );
+
+    const activeField = use_M_Store((state) => state.activeField);
+    const setActiveField = use_M_Store((state) => state.setActiveField);
 
     const setFocus = use_M_Store((state) => state.setFocus);
     const activeTab = use_M_Store((state) => state.activeTab);
@@ -62,12 +70,20 @@ export function CD_Rule({
             fieldname,
             checked_CD_States,
         );
-        // console.log(" CD_Rule - new_M_value = ", new_M_value);
+
         //update M_Store
         set_M_value(new_M_value);
-        // console.log("M_value in M_Store = ", use_M_Store.getState().M_value);
+
         // update JSON
         await M_value_Service.update(new_M_value);
+
+        setJSON_Content_State(
+            <JSON_Content
+                M_value={new_M_value}
+                activeField={activeField}
+                setActiveField={setActiveField}
+            />,
+        );
     }
 
     // const M_value_to_Log = use_M_Store((state) => state.M_value);
