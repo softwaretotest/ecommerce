@@ -62,12 +62,12 @@ export function CD_Rule({
             fieldname,
             checked_CD_States,
         );
-
+        // console.log(" CD_Rule - new_M_value = ", new_M_value);
         //update M_Store
         set_M_value(new_M_value);
-
+        // console.log("M_value in M_Store = ", use_M_Store.getState().M_value);
         // update JSON
-        await M_value_Service.update(activeTab, new_M_value[activeTab]);
+        await M_value_Service.update(new_M_value);
     }
 
     // const M_value_to_Log = use_M_Store((state) => state.M_value);

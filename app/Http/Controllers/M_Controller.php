@@ -25,7 +25,7 @@ class M_Controller extends Controller
      */
     public function save(Request $request): JsonResponse
     {
-        // คลายคอมเมนต์ validation ออกเพื่อให้แน่ใจว่าข้อมูลถูกต้อง
+        // validate new_M_value from POST
         $request->validate([
             'tab' => 'required|string',
             'subTab' => 'required|string',
@@ -43,7 +43,7 @@ class M_Controller extends Controller
         $jsonData[$subTab] = $newData;
 
         if (File::put($path, json_encode($jsonData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE))) {
-            // ส่งข้อความกลับไปให้ Frontend รับรู้ว่าสำเร็จ
+            // answer success to Frontend 
             return response()->json(['message' => 'Metadata updated successfully', 'status' => 'success']);
         }
 

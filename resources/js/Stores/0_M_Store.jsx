@@ -68,27 +68,4 @@ export const use_M_Store = create((set) => ({
             }
             return { M_value: new_M_value };
         }),
-
-    /**
-     * * SAVE M_Value to JSON onChange
-     * *
-     */
-    update_And_Save: async (type, newData) => {
-        // update Store suddenly
-        set((state) => ({
-            M_value: { ...state.M_value, [type]: newData },
-        }));
-
-        // send to Backend
-        try {
-            await fetch("/api/save-metadata", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ type, data: newData }),
-            });
-            console.log(`[STORE] Saved ${type} to JSON!`);
-        } catch (error) {
-            console.error("Save failed:", error);
-        }
-    },
 }));

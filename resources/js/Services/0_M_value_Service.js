@@ -12,22 +12,18 @@ import { API } from "@/Configs/api";
  */
 export const M_value_Service = {
     update: async (new_M_value) => {
-        const state = use_M_Store.getState();
-        const { activeTab, activeSubTab } = state;
+        const activeTab = use_M_Store.getState().activeTab;
+        const activeSubTab = use_M_Store.getState().activeSubTab;
 
         try {
-            // update Store suddenly
-            state.set_M_value(new_M_value);
+            const csrfToken = getCookie("XSRF-TOKEN");
 
-            // Save (using activeTab/SubTab data from UI)
             // ตรวจสอบโครงสร้างที่คุณส่งไป
-            await fetch(API.M_VALUE_ENDPOINT, {
+            const response = await fetch(API.M_VALUE_ENDPOINT, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": document.querySelector(
-                        'meta[name="csrf-token"]',
-                    ).content, // สำคัญ!
+                    "X-XSRF-TOKEN": getCookie("XSRF-TOKEN"), // important!
                 },
                 body: JSON.stringify({
                     tab: activeTab, // ตรวจสอบว่ามีค่าจริง (ไม่ใช่ undefined)
@@ -36,6 +32,12 @@ export const M_value_Service = {
                 }),
             });
 
+            // ตรวจสอบสถานะก่อนอ่าน JSON
+            if (!response.ok) throw new Error("Server error");
+
+            const result = await response.json();
+            return result;
+
             console.log(
                 `[SERVICE] Saved ${activeTab}/${activeSubTab} successfully!`,
             );
@@ -43,4 +45,18 @@ export const M_value_Service = {
             console.error("[SERVICE] Error saving:", error);
         }
     },
+};
+
+/**
+ * this to solve problem , content = null
+ * * headers: {
+ * *   "Content-Type": "application/json",
+ * *    "X-CSRF-TOKEN": document.querySelector(
+ * *        'meta[name="csrf-token"]',
+ * *    ).content, // important!
+ */
+const getCookie = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
 };
