@@ -1,3 +1,3 @@
-export const API_CONFIG = {
+export const API = {
     M_VALUE_ENDPOINT: "/api/m-value",
 };

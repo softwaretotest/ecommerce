@@ -9,11 +9,12 @@ use PhpParser\NodeTraverser;
 
 class M_Sync
 {
+    const M_JSON = '/M_JSON';
     public static function syncAll(): void
     {
         // Generate M-Data and App-Data
-        self::runPHPToJSON('0_Constant_M.php', '1_M-Data.json');
-        self::runPHPToJSON('0_Constant_APP.php', '1_App-Data.json');
+        self::runPHPToJSON('0_Constant_M.php', self::M_JSON . '/M-Data.json');
+        self::runPHPToJSON('0_Constant_APP.php', self::M_JSON . '/App-Data.json');
 
         // Generate Entities data
         self::runEntitiesSync();
@@ -21,6 +22,14 @@ class M_Sync
 
     private static function runPHPToJSON($sourceFile, $jsonFile): void
     {
+        // กำหนด Path เต็มสำหรับโฟลเดอร์ M_JSON
+        $directory = __DIR__ . self::M_JSON;
+
+        // เช็คว่ามีโฟลเดอร์ไหม ถ้าไม่มีให้สร้าง
+        if (!file_exists($directory)) {
+            mkdir($directory, 0755, true);
+        }
+
         $parser = (new ParserFactory)->createForNewestSupportedVersion();
         $code = file_get_contents(__DIR__ . '/' . $sourceFile);
         $ast = $parser->parse($code);
@@ -51,7 +60,7 @@ class M_Sync
         }
 
         $finalData = ["_comment" => "1_Entities.json", "entities" => $scanner->entities];
-        file_put_contents(__DIR__ . '/1_Entities.json', json_encode($finalData, JSON_PRETTY_PRINT));
+        file_put_contents(__DIR__ .  self::M_JSON . '/Entities.json', json_encode($finalData, JSON_PRETTY_PRINT));
         echo "--- M_Sync: Created 1_Entities.json ---\n";
     }
 }

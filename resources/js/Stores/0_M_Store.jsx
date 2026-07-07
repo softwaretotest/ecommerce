@@ -70,24 +70,19 @@ export const use_M_Store = create((set) => ({
      * * SAVE M_Value to JSON onChange
      * *
      */
-    // ใน M_Store.jsx
-    save_All_Data: async (data) => {
+    update_And_Save: async (type, newData) => {
+        // 1. อัปเดตใน Store ทันที
+        set((state) => ({
+            M_value: { ...state.M_value, [type]: newData },
+        }));
+
         try {
-            await Promise.all([
-                fetch("/api/save-m-data", {
-                    method: "POST",
-                    body: JSON.stringify(data.m_data),
-                }),
-                fetch("/api/save-app-data", {
-                    method: "POST",
-                    body: JSON.stringify(data.app_data),
-                }),
-                fetch("/api/save-entities", {
-                    method: "POST",
-                    body: JSON.stringify(data.entities),
-                }),
-            ]);
-            console.log("Saved successfully!");
+            await fetch("/api/save-metadata", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ type, data: newData }),
+            });
+            console.log(`[STORE] Saved ${type} to JSON!`);
         } catch (error) {
             console.error("Save failed:", error);
         }

@@ -15,9 +15,9 @@ class M_Controller extends Controller
     public function getMetadata(): JsonResponse
     {
         $files = [
-            'app_data' => base_path('app/Constant/1_App-Data.json'),
-            'm_data'   => base_path('app/Constant/1_M-Data.json'),
-            'entities' => base_path('app/Constant/1_Entities.json'),
+            'app_data' => base_path('app/Constant/M_JSON/App-Data.json'),
+            'm_data'   => base_path('app/Constant/M_JSON/M-Data.json'),
+            'entities' => base_path('app/Constant/M_JSON/Entities.json'),
         ];
 
         $combinedMetadata = [];
