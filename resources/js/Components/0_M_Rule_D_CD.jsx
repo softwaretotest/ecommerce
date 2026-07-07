@@ -29,14 +29,11 @@ export function CD_Rule({
         (state) => state.setJSON_Content_State,
     );
 
-    const {
-        setFocus,
-        update,
-        M_value,
-        activeField,
-        setActiveField,
-        activeSubTab,
-    } = use_M_Store();
+    const { setFocus, M_value, activeField, setActiveField } = use_M_Store();
+
+    const activeTab = use_M_Store.getState().activeTab;
+    const activeSubTab = use_M_Store.getState().activeSubTab;
+    const setActiveSubTab = use_M_Store.getState().setActiveSubTab;
     /**
      * Assuming field_data is an array and the first element is the field name
      */

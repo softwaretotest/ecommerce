@@ -9,11 +9,6 @@ export default function Field({ field_data }) {
     const [fieldname, ...fieldDataList] = field_data;
     const { activeTab, activeSubTab } = use_M_Store();
 
-    // console.log(`[FIELD_DEBUG] Field: ${fieldname} | Tab: ${activeTab}`, {
-    //     fieldDataList,
-    // });
-    // console.log(`[FIELD_DEBUG] Field: field_data`, field_data);
-
     const groups = [
         { label: "D", keys: ["d"] },
         { label: "CD", keys: ["cd", "cud"] },
@@ -46,16 +41,12 @@ export default function Field({ field_data }) {
                                   group.keys,
                                   fieldDataList,
                                   field_data,
-                                  //   M_value,
-                                  activeSubTab,
                               )
                             : renderCheckboxList(
                                   group.keys,
                                   fieldDataList,
                                   group.label,
                                   field_data,
-                                  //   M_value,
-                                  //   activeSubTab,
                               )}
                     </div>
                 ))}

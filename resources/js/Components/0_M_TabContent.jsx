@@ -12,18 +12,13 @@ import EntityField from "@/Components/0_M_EntityField";
 import DB_Tablename from "@/Components/0_M_DB_Tablename";
 
 export default function TabContent({ M_Class_Name }) {
-    const {
-        setFocus,
-        update,
-        M_value,
-        activeField,
-        setActiveField,
-        activeSubTab,
-    } = use_M_Store();
+    const { setFocus, M_value, activeField, setActiveField, activeSubTab } =
+        use_M_Store();
 
     // use path to update, e.g. "APP_DATA.NAME"
     const handleUpdate = (fieldname, newValue) => {
-        update(`APP_DATA.${fieldname}`, newValue);
+        // TODO - update M_Store and JSON, if dirty
+        // update(`APP_DATA.${fieldname}`, newValue);
     };
 
     if (!M_value || typeof M_value !== "object") {

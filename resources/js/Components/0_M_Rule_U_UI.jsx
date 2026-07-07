@@ -1,18 +1,15 @@
 // 0_M_Rule_UI.jsx
 import { useState } from "react";
+import { use_M_Store } from "@/Stores/0_M_Store";
 
 /**
  * make checkboxes for UI rules (READONLY, DISABLED, etc.)
  * @param {*} UI_options e.g. ["READONLY"] (สิ่งที่ถูกเลือกจาก DB)
  * @param {*} ALL_UI_options e.g. ["READONLY", "DISABLED", ...] (ตัวเลือกทั้งหมดของ UI)
  */
-export function UI_Rule({
-    UI_options,
-    ALL_UI_options,
-    field_data,
-    M_value,
-    activeSubTab,
-}) {
+export function UI_Rule({ UI_options, ALL_UI_options, field_data }) {
+    const { M_value, activeSubTab } = use_M_Store();
+
     const [checked_CU, setChecked_CU] = useState(UI_options);
 
     function updateUIRules(currentItems, option, isChecked) {
