@@ -68,11 +68,12 @@ class M_Controller extends Controller
         $combinedMetadata = [];
 
         foreach (self::FILES_PATH as $key => $path) {
-            if (!file_exists($path)) {
+            $fullPath = base_path($path);
+            if (!file_exists($fullPath)) {
                 return response()->json(['error' => "Metadata file not found: {$key}"], 404);
             }
 
-            $content = file_get_contents($path);
+            $content = file_get_contents($fullPath);
             $jsonData = json_decode($content, true);
 
             if (json_last_error() !== JSON_ERROR_NONE) {
