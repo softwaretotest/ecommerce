@@ -7,7 +7,7 @@ import { renderDropdown } from "@/Components/0_M_Dropdown.jsx";
  * DB Table with DB Column in it
  * *
  * * {
- * *     "_comment": "1_Entities.json",
+ * *     "_comment": "\/M_JSON\/Entities.json",
  * *  "entities": {
  * *         "t::orders": [
  * *             "f::ORDER_NR",

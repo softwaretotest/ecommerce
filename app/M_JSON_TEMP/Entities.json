@@ -1,5 +1,5 @@
 {
-    "_comment": "1_Entities.json",
+    "_comment": "Entities.json",
     "entities": {
         "t::orders": [
             "f::ORDER_NR",

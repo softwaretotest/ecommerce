@@ -10,6 +10,7 @@ use PhpParser\NodeTraverser;
 class M_Sync
 {
     const M_JSON = '/M_JSON';
+
     public static function syncAll(): void
     {
         // Generate M-Data and App-Data
@@ -17,7 +18,7 @@ class M_Sync
         self::runPHPToJSON('0_Constant_APP.php', self::M_JSON . '/App-Data.json');
 
         // Generate Entities data
-        self::runEntitiesSync();
+        self::runEntitiesSync(self::M_JSON . '/Entities.json');
     }
 
     private static function runPHPToJSON($sourceFile, $jsonFile): void
@@ -44,7 +45,7 @@ class M_Sync
         echo "--- M_Sync: Created {$jsonFile} ---\n";
     }
 
-    private static function runEntitiesSync(): void
+    private static function runEntitiesSync($jsonFile): void
     {
         $parser = (new ParserFactory)->createForNewestSupportedVersion();
         $scanner = new Entities_to_JSON();
@@ -59,9 +60,9 @@ class M_Sync
             $traverser->traverse($ast);
         }
 
-        $finalData = ["_comment" => "1_Entities.json", "entities" => $scanner->entities];
-        file_put_contents(__DIR__ .  self::M_JSON . '/Entities.json', json_encode($finalData, JSON_PRETTY_PRINT));
-        echo "--- M_Sync: Created 1_Entities.json ---\n";
+        $outputData = ["_comment" => $jsonFile, "entities" => $scanner->entities];
+        file_put_contents(__DIR__ . '/' . $jsonFile, json_encode($outputData, JSON_PRETTY_PRINT));
+        echo "--- M_Sync: Created {$jsonFile} ---\n";
     }
 }
 

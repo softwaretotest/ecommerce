@@ -128,12 +128,3 @@ foreach (glob(__DIR__ . '/*Constant.php') as $file) {
     $traverser->addVisitor($scanner);
     $traverser->traverse($ast);
 }
-
-$finalData = [
-    "_comment" => "1_Entities.json",
-    "entities" => $scanner->entities
-];
-
-file_put_contents(__DIR__ . '/1_Entities.json', json_encode($finalData, JSON_PRETTY_PRINT));
-
-echo "--- M_Sync: Successfully parsed Entities to 1_Entities.json ---\n";

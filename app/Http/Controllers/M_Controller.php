@@ -25,42 +25,36 @@ class M_Controller extends Controller
      */
     public function save(Request $request): JsonResponse
     {
-        // 1. Validate รับค่าที่จำเป็น
+        // คลายคอมเมนต์ validation ออกเพื่อให้แน่ใจว่าข้อมูลถูกต้อง
         $request->validate([
-            'tab' => 'required|string',    // e.g. 'm_data'
-            'subTab' => 'required|string', // e.g. 'd'
-            'data' => 'required|array',    // new M_value
+            'tab' => 'required|string',
+            'subTab' => 'required|string',
+            'data' => 'required|array',
         ]);
 
         $tab = $request->input('tab');
         $subTab = $request->input('subTab');
         $newData = $request->input('data');
 
-        if (!isset(self::FILES_PATH[$tab])) {
-            return response()->json(['error' => 'Invalid tab specified'], 400);
-        }
-
         $path = $this->getPath($tab);
-
-        // 3. อ่านไฟล์เดิมออกมา
         $content = file_get_contents($path);
         $jsonData = json_decode($content, true);
 
-        // 4. อัปเดตข้อมูลเฉพาะส่วน (Selective Update)
-        // เราแทนที่เฉพาะกุญแจของ $subTab ด้วย $newData
         $jsonData[$subTab] = $newData;
 
-        // 5. บันทึกไฟล์กลับลงไป (ใช้ JSON_PRETTY_PRINT เพื่อให้อ่านง่าย)
-        File::put($path, json_encode($jsonData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        if (File::put($path, json_encode($jsonData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE))) {
+            // ส่งข้อความกลับไปให้ Frontend รับรู้ว่าสำเร็จ
+            return response()->json(['message' => 'Metadata updated successfully', 'status' => 'success']);
+        }
 
-        return response()->json(['message' => 'Metadata updated successfully']);
+        return response()->json(['error' => 'Failed to write file'], 500);
     }
 
     /**
      * * DICTIONARY:
-     * * app_data: Content of 1_App-Data.json
-     * * m_data:   Content of 1_M-Data.json
-     * * entities: Content of 1_Entities.json
+     * * app_data: Content of App-Data.json
+     * * m_data:   Content of M-Data.json
+     * * entities: Content of Entities.json
      */
     public function getMetadata(): JsonResponse
     {

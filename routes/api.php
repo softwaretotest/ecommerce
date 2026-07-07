@@ -16,4 +16,4 @@ Route::get('/products', [ProductApiController::class, 'index']);
 Route::get('/m-value', [M_Controller::class, 'getMetadata']);
 
 // Endpoint for the UI to fetch the metadata JSON
-// Route::post('/m-value', [M_Controller::class, 'save']);
+Route::post('/m-value', [M_Controller::class, 'save']);
