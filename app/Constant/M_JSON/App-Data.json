@@ -9,7 +9,8 @@
         "NAME": [
             "name",
             "d::STRING",
-            "u::TEXT"
+            "u::TEXT",
+            "cud::REQUIRED"
         ],
         "PRICE": [
             "price",
@@ -19,11 +20,11 @@
                 2
             ],
             "u::NUMBER",
+            "s::CURRENCY",
             [
                 "cd::DEFAULT",
                 0
-            ],
-            "s::CURRENCY"
+            ]
         ],
         "STOCK": [
             "stock",
@@ -33,10 +34,6 @@
                 10
             ],
             "u::NUMBER",
-            [
-                "cd::DEFAULT",
-                0
-            ],
             "cud::REQUIRED"
         ],
         "IS_ACTIVE": [
@@ -52,11 +49,11 @@
             "quantity",
             "d::DECIMAL",
             "u::NUMBER",
+            "cud::REQUIRED",
             [
                 "cd::DEFAULT",
-                1
-            ],
-            "cud::REQUIRED"
+                0
+            ]
         ],
         "CONFIRM_ORDER": [
             "confirm_order",

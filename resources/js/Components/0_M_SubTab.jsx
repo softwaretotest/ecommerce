@@ -91,8 +91,8 @@ export default function SubTab({ data, tab_label }) {
         setJSON_Content_State(
             <JSON_Content
                 M_value={M_value}
-                activeField={activeField}
-                setActiveField={setActiveField}
+                // activeField={activeField}
+                // setActiveField={setActiveField}
             />,
         );
     }, [activeField, setActiveField, use_M_Store.getState().M_value]);
@@ -154,12 +154,6 @@ export default function SubTab({ data, tab_label }) {
                 {/* right column = JSON */}
                 <div className="column-flex json-preview-column">
                     <h3 className="json-header">JSON Data</h3>
-                    {/* <JSON_Content
-                        // M_value={M_value}
-                        activeField={activeField}
-                        setActiveField={setActiveField}
-                    /> */}
-
                     {JSON_Content_State}
                 </div>
             </div>

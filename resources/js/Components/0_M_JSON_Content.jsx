@@ -4,9 +4,16 @@ import { use_M_Store } from "@/Stores/0_M_Store.jsx";
 
 import { useScrollIntoView } from "@/hooks/useScrollIntoView";
 
-export default function JSON_Content({ M_value, activeField, setActiveField }) {
+export default function JSON_Content({
+    M_value,
+    //  activeField,
+    //  setActiveField
+}) {
     // const M_value = use_M_Store.getState().M_value;
     if (!M_value) return;
+
+    const activeField = use_M_Store((state) => state.activeField);
+    const setActiveField = use_M_Store((state) => state.setActiveField);
 
     const setFocus = use_M_Store((state) => state.setFocus);
 

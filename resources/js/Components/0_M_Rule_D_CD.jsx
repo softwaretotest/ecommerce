@@ -112,6 +112,7 @@ export function CD_Rule({
                              */
                             checked={checked_CD.includes(option)}
                             onChange={(event) => {
+                                setFocus(fieldname, M_value);
                                 set_D_CD_Actions(option, event);
                             }}
                         />
