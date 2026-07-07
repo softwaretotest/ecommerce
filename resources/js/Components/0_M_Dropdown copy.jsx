@@ -40,33 +40,15 @@ export function renderDropdown(
     field_data,
 ) {
     const { M_value, activeTab, activeSubTab } = use_M_Store();
-    const fieldName = field_data ? field_data[0] : "UNKNOWN";
 
-    // [LOG A] เห็นภาพรวมของข้อมูลที่เข้ามา
-    console.log(
-        `[DEBUG: ${fieldName}] Full fieldDataList:`,
-        JSON.parse(JSON.stringify(fieldDataList)),
-    );
-
-    const foundValue = fieldDataList.find((item, index) => {
+    const foundValue = fieldDataList.find((item) => {
         let valueToTest = Array.isArray(item) ? item[0] : item;
-        let isMatch =
+        return (
             typeof valueToTest === "string" &&
-            M_Class_Name_List.some((c) => valueToTest.startsWith(c + "::"));
-
-        // [LOG B] ดูว่าแต่ละ item ที่วิ่งผ่านเงื่อนไข find หน้าตาเป็นยังไง
-        console.log(
-            `[DEBUG: ${fieldName}] Checking index ${index}:`,
-            item,
-            " | Match:",
-            isMatch,
+            M_Class_Name_List.some((c) => valueToTest.startsWith(c + "::"))
         );
-
-        return isMatch;
     });
-
-    // [LOG C] ดูผลลัพธ์ว่าตัวไหนคือผู้โชคดีที่ถูกเลือก
-    console.log(`[DEBUG: ${fieldName}] Selected foundValue:`, foundValue);
+    // console.log("[1] foundValue:", foundValue);
 
     let defaultValue = "";
     let field_params = [];
@@ -76,25 +58,17 @@ export function renderDropdown(
             const [stringValue, ...params] = foundValue;
             defaultValue = stringValue.split("::")[1];
             field_params = params;
-            // [LOG D] ถ้าเป็น Array ต้องเห็น params
-            console.log(`[DEBUG: ${fieldName}] Detected Array params:`, params);
         } else {
             defaultValue = foundValue.split("::")[1];
             field_params = [];
-            // [LOG D] ถ้าเป็น String จะไม่มี params
-            console.log(`[DEBUG: ${fieldName}] Detected String (No params)`);
         }
-    } else {
-        console.warn(`[DEBUG: ${fieldName}] No foundValue detected!`);
     }
+    // console.log("[2] defaultValue :", defaultValue);
+    // console.log("[3] field_params :", field_params);
 
     return (
         <>
-            <select
-                className="M_field-dropdown"
-                defaultValue={defaultValue}
-                key={defaultValue}
-            >
+            <select className="M_field-dropdown" defaultValue={defaultValue}>
                 <option value="">--</option>
                 <M_Option
                     M_Class_Name_List={M_Class_Name_List}

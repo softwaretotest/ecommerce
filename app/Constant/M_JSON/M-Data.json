@@ -33,10 +33,7 @@
             "email",
             "d::STRING",
             "u::TEXT",
-            [
-                "cd::DEFAULT",
-                null
-            ]
+            "cd::UNIQUE"
         ],
         "CURRENCY": [
             "currency",

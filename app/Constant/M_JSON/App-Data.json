@@ -4,16 +4,13 @@
         "IMAGE": [
             "image",
             "d::STRING",
-            "u::FILE",
-            [
-                "cd::DEFAULT",
-                null
-            ]
+            "u::FILE"
         ],
         "NAME": [
             "name",
             "d::STRING",
-            "u::TEXT"
+            "u::TEXT",
+            "cud::REQUIRED"
         ],
         "PRICE": [
             "price",
@@ -23,6 +20,10 @@
                 2
             ],
             "u::NUMBER",
+            [
+                "cd::DEFAULT",
+                0
+            ],
             "s::CURRENCY"
         ],
         "STOCK": [
@@ -32,22 +33,44 @@
                 10,
                 10
             ],
-            "u::NUMBER"
+            "u::NUMBER",
+            [
+                "cd::DEFAULT",
+                0
+            ],
+            "cud::REQUIRED"
         ],
         "IS_ACTIVE": [
             "is_active",
             "d::BOOLEAN",
-            "u::SELECT"
+            "u::SELECT",
+            [
+                "cd::DEFAULT",
+                true
+            ]
         ],
         "QUANTITY": [
             "quantity",
-            "d::DECIMAL",
-            "u::NUMBER"
+            [
+                "d::DECIMAL",
+                10,
+                2
+            ],
+            "u::NUMBER",
+            [
+                "cd::DEFAULT",
+                1
+            ],
+            "cud::REQUIRED"
         ],
         "CONFIRM_ORDER": [
             "confirm_order",
             "d::BOOLEAN",
-            "u::SELECT"
+            "u::SELECT",
+            [
+                "cd::DEFAULT",
+                false
+            ]
         ],
         "ORDER_NR": [
             "order_nr",

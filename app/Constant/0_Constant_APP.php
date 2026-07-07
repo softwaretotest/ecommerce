@@ -13,7 +13,7 @@ class f
     public const PRICE      = ['price',     [d::DECIMAL, 10, 2],  u::NUMBER,  [cd::DEFAULT, 0],   s::CURRENCY];
     public const STOCK      = ['stock',     [d::DECIMAL, 10, 10], u::NUMBER,  [cd::DEFAULT, 0], cud::REQUIRED];
     public const IS_ACTIVE  = ['is_active', d::BOOLEAN,         u::SELECT,    [cd::DEFAULT, true]];
-    public const QUANTITY   = ['quantity',  d::DECIMAL,         u::NUMBER,    [cd::DEFAULT, 1], cud::REQUIRED];
+    public const QUANTITY   = ['quantity',  [d::DECIMAL, 10, 2],         u::NUMBER,    [cd::DEFAULT, 1], cud::REQUIRED];
     public const CONFIRM_ORDER = ['confirm_order', d::BOOLEAN,  u::SELECT,    [cd::DEFAULT, false]];
     public const ORDER_NR   = ['order_nr',  d::STRING,          u::TEXT];
 
