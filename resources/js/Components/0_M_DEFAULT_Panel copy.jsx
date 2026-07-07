@@ -61,35 +61,21 @@ export function DEFAULT_Panel({ field_data }) {
      * * e.g. d::BOOLEAN for IS_ACTIVE
      * * e.g. d::DECIMAL for STOCK
      */
-    // แก้ไขบรรทัดนี้ใน 0_M_DEFAULT_Panel.jsx
-    const d_Class_Item = existing_field_data.find((item) => {
-        // ถ้าเป็น String ก็เช็คปกติ
-        if (typeof item === "string") return item.startsWith("d::");
-        // ถ้าเป็น Array ให้ดูสมาชิกตัวแรก (item[0])
-        if (Array.isArray(item)) return item[0] && item[0].startsWith("d::");
-        return false;
-    });
-
-    // เปลี่ยน Guard Clause ให้เช็ค d_Class_Item แทน
-    if (!d_Class_Item) return null;
-
-    // สกัดชื่อ d_Class_Name ให้รองรับทั้ง 2 แบบ
-    const d_Class_Name = Array.isArray(d_Class_Item)
-        ? d_Class_Item[0].substring(3)
-        : d_Class_Item.substring(3);
-
-    console.log(" [3.1] d_Class_Item = ", d_Class_Item);
-    console.log(" [3.2] d_Class_Name = ", d_Class_Name);
+    const d_Class = existing_field_data.find(
+        (item) => typeof item === "string" && item.startsWith("d::"),
+    );
+    if (!d_Class) return;
+    console.log(" [3.1] d_Class = ", d_Class);
 
     /**
      * * d_Class_Name
      * * e.g. BOOLEAN for IS_ACTIVE
      */
-    // let d_Class_Name = "STRING";
-    // if (d_Class.startsWith("d::")) {
-    //     d_Class_Name = d_Class.substring(3); // cut d:: away
-    // }
-    // console.log(" [3.2] d_Class_Name = ", d_Class_Name);
+    let d_Class_Name = "STRING";
+    if (d_Class.startsWith("d::")) {
+        d_Class_Name = d_Class.substring(3); // cut d:: away
+    }
+    console.log(" [3.2] d_Class_Name = ", d_Class_Name);
 
     const dType = "d::" + d_Class_Name;
     console.log(`[4] dType identified for ${fieldname}:`, dType);

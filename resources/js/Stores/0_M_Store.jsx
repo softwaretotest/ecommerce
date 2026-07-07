@@ -69,11 +69,11 @@ export const use_M_Store = create((set) => ({
     M_value: {},
     set_M_value: (new_M_value) =>
         set((state) => {
-            if (state.debug) {
-                console.log(`[M_STORE_DEBUG] M_value updated!`);
-                console.log(`[M_STORE_DEBUG] New M_value:`, new_M_value);
-                console.log("------------------------------------");
-            }
+            // if (state.debug) {
+            //     console.log(`[M_STORE_DEBUG] M_value updated!`);
+            //     console.log(`[M_STORE_DEBUG] New M_value:`, new_M_value);
+            //     console.log("------------------------------------");
+            // }
             return { M_value: new_M_value };
         }),
 }));

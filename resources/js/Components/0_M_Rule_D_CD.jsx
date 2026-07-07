@@ -16,12 +16,7 @@ import JSON_Content from "./0_M_JSON_Content";
  * @param {*} DB_options e.g. ["REQUIRED"] (สิ่งที่ถูกเลือกจาก DB)
  * @param {*} ALL_DB_options e.g. ["NULLABLE", "PRIMARY", ...] (ตัวเลือกทั้งหมดที่อนุญาต)
  */
-export function CD_Rule({
-    DB_options,
-    ALL_DB_options,
-    field_data,
-    // activeSubTab,
-}) {
+export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
     // console.log("Rule_D_CD.jsx - DB_options = ", DB_options);
     const [checked_CD, setChecked_CD] = useState(DB_options);
 
@@ -29,11 +24,17 @@ export function CD_Rule({
         (state) => state.setJSON_Content_State,
     );
 
-    const { setFocus, M_value, activeField, setActiveField } = use_M_Store();
+    const {
+        setFocus,
+        M_value,
+        set_M_value,
+        activeField,
+        setActiveField,
+        activeTab,
+        activeSubTab,
+        setActiveSubTab,
+    } = use_M_Store();
 
-    const activeTab = use_M_Store.getState().activeTab;
-    const activeSubTab = use_M_Store.getState().activeSubTab;
-    const setActiveSubTab = use_M_Store.getState().setActiveSubTab;
     /**
      * Assuming field_data is an array and the first element is the field name
      */
@@ -87,6 +88,12 @@ export function CD_Rule({
     // useEffect(() => {
     //     console.log("Rule_D_CD.jsx - M_value_to_Log = ", M_value_to_Log);
     // }, [M_value_to_Log]);
+    // console.log("!!!!!!!!! CD_Rule - activeTab =", activeTab);
+    // console.log("!!!!!!!!! CD_Rule - activeSubTab =", activeSubTab);
+    // console.log(
+    //     "!!!!!!!!! CD_Rule - checked_CD.includes(DEFAULT) =",
+    //     checked_CD.includes("DEFAULT"),
+    // );
 
     return (
         <div className="M_checkbox-list">
@@ -116,12 +123,16 @@ export function CD_Rule({
                         {option}
                     </label>
                     {/* show or hide when user click on checkbox */}
-                    {(activeTab === "app_data" ||
+                    {/* {((activeTab === "app_data" && activeSubTab === "f") ||
                         (activeTab === "m_data" && activeSubTab === "s")) &&
                         checked_CD.includes("DEFAULT") &&
                         option === "DEFAULT" && (
                             <DEFAULT_Panel field_data={field_data} />
-                        )}
+                        )} */}
+
+                    {checked_CD.includes("DEFAULT") && option === "DEFAULT" && (
+                        <DEFAULT_Panel field_data={field_data} />
+                    )}
                 </div>
             ))}
         </div>

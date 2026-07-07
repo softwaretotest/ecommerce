@@ -32,7 +32,11 @@
         "EMAIL": [
             "email",
             "d::STRING",
-            "u::TEXT"
+            "u::TEXT",
+            [
+                "cd::DEFAULT",
+                null
+            ]
         ],
         "CURRENCY": [
             "currency",
