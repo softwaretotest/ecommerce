@@ -15,6 +15,9 @@ export const use_M_Store = create((set) => ({
     activeTab: "m_data",
     setActiveTab: (tab) => set({ activeTab: tab }),
 
+    activeSubTab: "d",
+    setActiveSubTab: (subTab) => set({ activeSubTab: subTab }),
+
     // // e.g ['cd::DEFAULT', 10, 2]
     // DEFAULT_Panel: [],
     // set_DEFAULT_Panel: (arrayValue) => set({ DEFAULT_Panel: arrayValue }),
@@ -71,11 +74,12 @@ export const use_M_Store = create((set) => ({
      * *
      */
     update_And_Save: async (type, newData) => {
-        // 1. อัปเดตใน Store ทันที
+        // update Store suddenly
         set((state) => ({
             M_value: { ...state.M_value, [type]: newData },
         }));
 
+        // send to Backend
         try {
             await fetch("/api/save-metadata", {
                 method: "POST",

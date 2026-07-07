@@ -2,8 +2,6 @@
 import { useState, useEffect } from "react";
 
 import { use_M_Store } from "@/Stores/0_M_Store";
-import { M_value_Service } from "../Services/0_M_value_Service";
-
 import { DEFAULT_Panel } from "@/Components/0_M_DEFAULT_Panel";
 import { prepare_new_M_value_for_Update } from "@/Components/0_M_value_Updater";
 import { Focus_CD_Rule_onChange } from "@/Components/0_M_Focus_CD_Rule_onChange";
@@ -42,32 +40,49 @@ export function CD_Rule({
     // );
 
     /**
-     * * setChecked_CD
-     * * prepare_new_M_value_for_Update
-     * * set_M_value
-     * * update JSON
+     * * read from DOM and update M_value
+     * * OLD will be remove soon
+     * @param {*} event
+     * @param {*} field_data
+     * @param {*} M_value
      */
-    async function set_D_CD_Actions(option, event) {
-        // calculate new State
-        const checked_CD_States = event.target.checked
-            ? [...checked_CD, option]
-            : checked_CD.filter((item) => item !== option);
+    function update_M_value(event, field_data, M_value) {
+        const fieldname = field_data[0];
+        const checked_CD_States = Array.from(
+            event.target
+                .closest(".M_checkbox-list")
+                .querySelectorAll("input:checked"),
+        ).map((input) => input.value);
 
-        // update UI
-        setChecked_CD(checked_CD_States);
-
-        // prepare new data
+        //-------------- SAVE M_value --------------
         const new_M_value = prepare_new_M_value_for_Update(
             M_value,
             fieldname,
             checked_CD_States,
         );
-
-        //update M_Store
         set_M_value(new_M_value);
+    }
 
-        // update JSON
-        await M_value_Service.update(activeTab, new_M_value[activeTab]);
+    /**
+     * * Maybe OLD - wll be remove
+     * * setChecked_CD
+     * * prepare_new_M_value_for_Update
+     * * set_M_value
+     */
+    function set_D_CD_Actions(option, event) {
+        const checked_CD_States = event.target.checked
+            ? [...checked_CD, option]
+            : checked_CD.filter((item) => item !== option);
+
+        setChecked_CD(checked_CD_States);
+
+        //-------------- SAVE M_value --------------
+        const new_M_value = prepare_new_M_value_for_Update(
+            M_value,
+            fieldname,
+            checked_CD_States,
+        );
+        set_M_value(new_M_value);
     }
 
     // const M_value_to_Log = use_M_Store((state) => state.M_value);
@@ -94,9 +109,23 @@ export function CD_Rule({
                              * !!!! react state on checked ,
                              * always need onChange to update state !!!
                              */
-                            checked={checked_CD.includes(option)}
+                            // checked={checked_CD.includes(option)}
                             onChange={(event) => {
-                                set_D_CD_Actions(option, event);
+                                // console.log(" checked_CD = ", checked_CD);
+                                // console.log(" option = ", option);
+                                // OLD will be removed
+                                // update_M_value(event, field_data, M_value);
+                                /**
+                                 * we will do this later, when project finish
+                                 * Line CRUD, CRUD form handle 7 cd States simply
+                                 */
+                                // Focus_CD_Rule_onChange({
+                                //     element_DOM: event.target,
+                                //     M_value,
+                                //     field_data,
+                                // });
+                                // OLD will be removed
+                                // set_D_CD_Actions(option, event);
                             }}
                         />
                         {option}

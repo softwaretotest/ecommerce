@@ -5,6 +5,8 @@ import { use_M_Store } from "@/Stores/0_M_Store.jsx";
 import { useScrollIntoView } from "@/hooks/useScrollIntoView";
 
 export default function JSON_Content({ M_value, activeField, setActiveField }) {
+    if (!M_value) return;
+
     const setFocus = use_M_Store((state) => state.setFocus);
 
     const scrollRefs = useRef({});

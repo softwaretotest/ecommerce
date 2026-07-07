@@ -1,5 +1,5 @@
 // resources/js/Components/0_M_SubTab.jsx
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useScrollIntoView } from "@/hooks/useScrollIntoView";
 
 import { use_M_Store } from "@/Stores/0_M_Store.jsx";
@@ -21,6 +21,8 @@ import "../../css/0_M_UI.css";
  * ,e.g. * t:: = Tablename
  */
 export default function SubTab({ data, tab_label }) {
+    if (!data) return;
+
     const setFocus = use_M_Store((state) => state.setFocus);
 
     /**
@@ -30,38 +32,60 @@ export default function SubTab({ data, tab_label }) {
     const scrollRefs = useRef({});
     useScrollIntoView(activeField, scrollRefs);
 
-    const subTabs = Object.keys(data).filter(
+    const default_SubTab = Object.keys(data).filter(
         (M_Class_Name) => typeof data[M_Class_Name] === "object",
     );
 
-    const [activeSubTab, setActiveSubTab] = useState(subTabs[0]);
+    // const [activeSubTab, setActiveSubTab] = useState(default_SubTab[0]);
 
-    const M_value = data[activeSubTab];
+    const activeSubTab = use_M_Store((state) => state.activeSubTab);
+    const setActiveSubTab = use_M_Store((state) => state.setActiveSubTab);
+
+    // const M_value = data[activeSubTab];
+
+    const M_value = useMemo(() => {
+        return data[activeSubTab] || {};
+    }, [data, activeSubTab]);
 
     const set_M_value = use_M_Store.getState().set_M_value(M_value);
 
     const fieldnames = Object.keys(M_value || {});
 
-    /**
-     * refesh M_value, every time user
-     * click to change Tab or SubTab
-     * we add M_value to monitor-dependency
-     * to avoid set same M_value multiple times
-     */
-    // useEffect(() => {
-    //     set_M_value(M_value); //error set_M_value is not a function
-    //     console.log("SubTab.jsx - M_value = ", M_value);
-    //     console.log("SubTab.jsx - M_value updated to: ", activeSubTab);
-    // }, [tab_label, activeSubTab]);
+    useEffect(() => {
+        // get all SubTab from data
+        const currentSubTabs = Object.keys(data).filter(
+            (key) => typeof data[key] === "object",
+        );
+
+        // choose one SubTab if no chosen
+        if (!activeSubTab || !currentSubTabs.includes(activeSubTab)) {
+            const default_SubTab = getDefaultSubTab(currentSubTabs);
+            setActiveSubTab(default_SubTab);
+        }
+    }, [data, activeSubTab, setActiveSubTab]);
+
+    function getDefaultSubTab(default_SubTab) {
+        if (default_SubTab.includes("ENTITIES")) {
+            return "ENTITIES";
+        }
+
+        if (default_SubTab.includes("app_data")) {
+            return "f";
+        }
+
+        // A Tab must have at least 1 SubTab
+        return default_SubTab[0];
+    }
 
     return (
         <>
             {" "}
-            {/* M-DATA   S CD D U CU CUD */}
-            {/* APP-DATA F T */}
-            {/* ENTITIES */}
+            {/* Tab         SubTab */}
+            {/* M-DATA      S CD D U CU CUD */}
+            {/* APP-DATA    F T */}
+            {/* ENTITIES    ENTITIES*/}
             <div className="subtab-container">
-                {subTabs.map((M_Class_Name) => (
+                {default_SubTab.map((M_Class_Name) => (
                     <button
                         key={M_Class_Name}
                         className={`subtab-button ${activeSubTab === M_Class_Name ? "active" : ""}`}
