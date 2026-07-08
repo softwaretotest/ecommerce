@@ -4,8 +4,8 @@ import { use_M_Store } from "@/Stores/0_M_Store";
 
 /**
  * make checkboxes for UI rules (READONLY, DISABLED, etc.)
- * @param {*} UI_options e.g. ["READONLY"] (สิ่งที่ถูกเลือกจาก DB)
- * @param {*} ALL_UI_options e.g. ["READONLY", "DISABLED", ...] (ตัวเลือกทั้งหมดของ UI)
+ * @param {*} UI_options e.g. ["READONLY"]
+ * @param {*} ALL_UI_options e.g. ["READONLY", "DISABLED", ...]
  */
 export function UI_Rule({ UI_options, ALL_UI_options, field_data }) {
     const { M_value, activeSubTab } = use_M_Store();
@@ -17,7 +17,6 @@ export function UI_Rule({ UI_options, ALL_UI_options, field_data }) {
             ? [...currentItems, option]
             : currentItems.filter((item) => item !== option);
 
-        // ใส่กฎของ UI ตรงนี้ (ตัวอย่าง: ถ้า DISABLED แล้วห้าม READONLY)
         if (option === "DISABLED" && isChecked) {
             nextItems = nextItems.filter((i) => i !== "READONLY");
         }

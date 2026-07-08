@@ -1,9 +1,6 @@
 // 0_M_value_Updater.js
 import { GLOBAL_METADATA } from "@/Providers/0_M_DataProvider";
-import {
-    FIELD_PARAMS_MAP,
-    DEFAULT_VALUES_MAP,
-} from "@/Components/0_field_params_map";
+import { FIELD_PARAMS_MAP, DEFAULT_VALUES_MAP } from "@/Components/0_M_MAP";
 
 export function prepare_new_M_value_for_Update(
     old_M_value,

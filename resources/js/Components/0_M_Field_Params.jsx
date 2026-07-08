@@ -1,6 +1,6 @@
 // resources/js/Components/0_M_Field_Params.jsx
 
-import { FIELD_PARAMS_MAP } from "@/Components/0_field_params_map";
+import { FIELD_PARAMS_MAP } from "@/Components/0_M_MAP";
 
 export function Field_Params({ param_name, field_params }) {
     const config = FIELD_PARAMS_MAP[param_name] || [];

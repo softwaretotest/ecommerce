@@ -1,4 +1,4 @@
-// resources/js/Components/0_field_params_map.js
+// resources/js/Components/0_M_MAP.js
 
 export const DEFAULT_VALUES_MAP = {
     STRING: "",

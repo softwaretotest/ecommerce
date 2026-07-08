@@ -9,32 +9,12 @@ export default function Field({ field_data }) {
     const [fieldname, ...fieldDataList] = field_data;
     const { activeTab, activeSubTab } = use_M_Store();
 
-    function make_dropdown(label, names) {
-        return (
-            <>
-                <div className="dropdown-column">
-                    <div className="dropdown-label">D</div>
-                    {renderDropdown(["d"], fieldDataList, field_data)}
-                </div>
-            </>
-        );
-    }
-
-    function make_checkbox(label, names) {
-        return (
-            <>
-                <div className="dropdown-column">
-                    <div className="dropdown-label">{label}</div>
-                    {renderCheckboxList(
-                        names,
-                        fieldDataList,
-                        label,
-                        field_data,
-                    )}
-                </div>
-            </>
-        );
-    }
+    const groups = [
+        { label: "D", keys: ["d"] },
+        { label: "CD", keys: ["cd", "cud"] },
+        { label: "U", keys: ["u"] },
+        { label: "CU", keys: ["cu", "cud"] },
+    ];
 
     return (
         <div className="field-wrapper-box">
@@ -53,10 +33,23 @@ export default function Field({ field_data }) {
             </div>
 
             <div className="field-dropdown-grid">
-                {make_dropdown("D", ["d"])}
-                {make_checkbox("CD", ["cd", "cud"])}
-                {make_dropdown("U", ["u"])}
-                {make_checkbox("CU", ["cu", "cud"])}
+                {groups.map((group) => (
+                    <div key={group.label} className="dropdown-column">
+                        <div className="dropdown-label">{group.label}</div>
+                        {group.label === "D" || group.label === "U"
+                            ? renderDropdown(
+                                  group.keys,
+                                  fieldDataList,
+                                  field_data,
+                              )
+                            : renderCheckboxList(
+                                  group.keys,
+                                  fieldDataList,
+                                  group.label,
+                                  field_data,
+                              )}
+                    </div>
+                ))}
             </div>
         </div>
     );

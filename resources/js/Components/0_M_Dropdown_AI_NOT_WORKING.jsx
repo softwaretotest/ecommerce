@@ -1,41 +1,7 @@
-// resources/js/Components/0_M_Dropdown.jsx
+// 1. นำเข้า MAP กลาง
+import { FIELD_PARAMS_MAP } from "@/Components/0_M_MAP.js";
 
-import { useState, useEffect } from "react";
-
-import { use_M_Option } from "@/Hooks/use_M_Option.js";
-import { use_M_Store } from "@/Stores/0_M_Store.jsx";
-import { Field_Params } from "@/Components/0_M_Field_Params.jsx";
-
-export function M_Option({ M_Class_Name_List, fieldDataList }) {
-    const { getOptions } = use_M_Option(); // ดึงจาก Hook โดยตรง
-
-    if (!M_Class_Name_List) return null;
-    return M_Class_Name_List.flatMap((M_Class_Name) => {
-        const options = getOptions(M_Class_Name); // use getOptions from Hook
-
-        return options.map((item) => (
-            <option key={item} value={item}>
-                {item}
-            </option>
-        ));
-    });
-}
-
-/**
- * Renders a dropdown select element
- * *
- * * Example usage:
- * * M_Class_Name_List: ["f"]
- * * fieldDataList: ["f::ORDER_NR"]
- * *
- * * Result:
- * * <select defaultValue="ORDER_NR"> ... </select>
- * *
- * * Params:
- * * defaultValue = field name , e.g. DECIMAL , STRING
- * * field_params = e.g. for DECIMAL ( total_digit , scale )
- * *
- */
+// 2. ปรับ Logic การเก็บ State ใน renderDropdown
 export function renderDropdown(
     M_Class_Name_List,
     fieldDataList = [],
@@ -174,30 +140,39 @@ export function renderDropdown(
     //     set_Selected_Value(defaultValue);
     // }, [defaultValue]);
 
+    // เก็บ params ไว้ใน State เพื่อให้มันเปลี่ยนค่าได้
+    const [current_params, set_current_params] = useState(field_params);
+
+    useEffect(() => {
+        // [LOG] ตรวจสอบว่าเมื่อเปลี่ยนค่า เราได้ params ใหม่ไหม
+        const newParams = FIELD_PARAMS_MAP[selected_Value] || [];
+        console.log(
+            `[DEBUG: ${fieldName}] Syncing params for:`,
+            selected_Value,
+            "->",
+            newParams,
+        );
+
+        set_current_params(newParams);
+    }, [selected_Value]);
+
     return (
         <>
             <select
-                className="M_field-dropdown"
-                defaultValue={defaultValue}
-                key={defaultValue}
                 onChange={(e) => {
-                    // [LOG 3: ตรวจสอบค่าที่เลือกจาก UI]
-                    // console.log(
-                    //     `[DEBUG: ${fieldName}] onChange triggered, New Value:`,
-                    //     e.target.value,
-                    // );
-                    // console.log("!!!!!!!!!! selected_Value = ", selected_Value);
-
                     set_Selected_Value(e.target.value);
                 }}
             >
-                <option value="">--</option>
-                <M_Option
-                    M_Class_Name_List={M_Class_Name_List}
-                    fieldDataList={fieldDataList}
-                />
+                {/* ... options ... */}
             </select>
-            {field_params.length > 0 && Field_Params_State}
+
+            {/* ตรวจสอบจาก current_params ที่เป็น State แทน */}
+            {current_params.length > 0 && (
+                <Field_Params
+                    param_name={selected_Value}
+                    field_params={current_params}
+                />
+            )}
         </>
     );
 }

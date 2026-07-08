@@ -1,7 +1,7 @@
 // 0_M_DEFAULT_Panel.jsx
 import { useState } from "react";
 import { use_M_Store } from "@/Stores/0_M_Store";
-import { DEFAULT_VALUES_MAP } from "./0_field_params_map";
+import { DEFAULT_VALUES_MAP } from "./0_M_MAP";
 /**
  * Render input field for DEFAULT parameter based on field type
  * *
