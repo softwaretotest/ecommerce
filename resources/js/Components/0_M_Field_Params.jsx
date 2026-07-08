@@ -3,6 +3,7 @@
 import { FIELD_PARAMS_MAP } from "@/Components/0_M_MAP";
 
 export function Field_Params({ param_name, field_params }) {
+    if (!field_params) return;
     const config = FIELD_PARAMS_MAP[param_name] || [];
 
     return (
@@ -13,7 +14,6 @@ export function Field_Params({ param_name, field_params }) {
                     <label className="field_param_label">{item.label}:</label>
                     <input
                         type="text"
-                        // ใช้ค่าจาก field_params (ถ้ามี) ถ้าไม่มีใช้ค่า default
                         defaultValue={field_params[index] ?? item.default}
                         className="field_param_input"
                     />

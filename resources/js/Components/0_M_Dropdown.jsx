@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from "react";
 
-import { use_M_Option } from "@/Hooks/use_M_Option.js";
-import { use_M_Store } from "@/Stores/0_M_Store.jsx";
-import { Field_Params } from "@/Components/0_M_Field_Params.jsx";
+import { use_M_Option } from "@/Hooks/use_M_Option";
+import { use_M_Store } from "@/Stores/0_M_Store";
+import { Field_Params } from "@/Components/0_M_Field_Params";
+import { FIELD_PARAMS_MAP } from "@/Components/0_M_MAP";
 
 export function M_Option({ M_Class_Name_List, fieldDataList }) {
     const { getOptions } = use_M_Option(); // ดึงจาก Hook โดยตรง
@@ -29,6 +30,8 @@ export function M_Option({ M_Class_Name_List, fieldDataList }) {
  * * fieldDataList: e.g.
  * *     ['d::STRING', 'u::FILE']
  * *     [['d::DECIMAL', 10, 2], "u::NUMBER"]
+ * *     ['d::BOOLEAN', 'u::SELECT', ['cd::DEFAULT', true]]
+ * *     ['cd::FOREIGN']
  * * field_data = e.g. ['image', 'd::STRING', 'u::FILE']
  * *
  * * defaultValue = only for refresh e.g.
@@ -36,7 +39,7 @@ export function M_Option({ M_Class_Name_List, fieldDataList }) {
  * *
  * * Params:
  * * defaultValue = field name , e.g. DECIMAL , STRING
- * * field_params = e.g. for DECIMAL ( total_digit , scale )
+ * * field_params = e.g. [ 10, 2 ] for DECIMAL [ total_digit , scale ]
  * *
  */
 export function renderDropdown(
@@ -44,7 +47,8 @@ export function renderDropdown(
     fieldDataList = [],
     field_data,
 ) {
-    const { M_value, activeTab, activeSubTab } = use_M_Store();
+    if (fieldDataList.includes("cd::FOREIGN")) return; // FK need no other setting
+
     const fieldName = field_data ? field_data[0] : "UNKNOWN";
 
     /**
@@ -81,23 +85,8 @@ export function renderDropdown(
             typeof valueToTest === "string" &&
             M_Class_Name_List.some((c) => valueToTest.startsWith(c + "::")); // t:: f:: s:: u:: d::
 
-        // [LOG B] see all items , that pass through .find
-        // console.log(
-        //     `[DEBUG: ${fieldName}] Checking index ${index}:`,
-        //     item,
-        //     " | Match:",
-        //     isMatch,
-        // );
-
         return isMatch;
     });
-    if (fieldName.toUpperCase() === "IMAGE")
-        console.log(
-            `[DEBUG: ${fieldName}] foundValue after change:`,
-            foundValue,
-        );
-    // [LOG C] see foundValue of fieldname
-    console.log(`[DEBUG: ${fieldName}] Selected foundValue:`, foundValue);
 
     let defaultValue = "";
     let field_params = [];
@@ -107,58 +96,40 @@ export function renderDropdown(
             const [stringValue, ...params] = foundValue;
             defaultValue = stringValue.split("::")[1];
             field_params = params;
-            // [LOG D] if Array must see params
-            // console.log(`[DEBUG: ${fieldName}] Detected Array params:`, params);
         } else {
             defaultValue = foundValue.split("::")[1];
             field_params = [];
-            // [LOG D] if String no params
-            // console.log(`[DEBUG: ${fieldName}] Detected String (No params)`);
         }
-    } else {
-        // console.warn(`[DEBUG: ${fieldName}] No foundValue detected!`);
     }
-    // if (fieldName.toUpperCase() === "IMAGE")
-    //     console.log(
-    //         `[DEBUG: ${fieldName}] New defaultValue calculated:`,
-    //         defaultValue,
-    //     );
 
     /**
      * * selected_Value: state from dropdown
      * * handle_Change: update state when option change
      */
     const [selected_Value, set_Selected_Value] = useState(defaultValue);
-    // console.log(`[DEBUG: ${fieldName}] Initial defaultValue:`, defaultValue);
+
     const [Field_Params_State, setField_Params_State] = useState(null);
+
     useEffect(() => {
-        if (fieldName.toUpperCase() === "IMAGE") {
-            // [LOG] เช็คว่าค่า params ที่ส่งไปมันใช่ค่าที่ควรจะเป็นไหมในตอนนี้
-            console.log(`[DEBUG: ${fieldName}] useEffect triggered!`);
-            console.log(
-                `[DEBUG: ${fieldName}] Current selected_Value:`,
-                selected_Value,
-            );
-            console.log(
-                `[DEBUG: ${fieldName}] Current field_params (fixed):`,
-                field_params,
-            );
-        }
+        const field_params = find_NEW_Field_Params_in_M_MAP(selected_Value);
         setField_Params_State(
             <Field_Params
                 param_name={selected_Value}
                 field_params={field_params}
             />,
         );
-    }, [selected_Value, defaultValue]);
+    }, [selected_Value]);
 
-    // useEffect(() => {
-    //     console.log(
-    //         `[DEBUG: ${fieldName}] selected_Value updated to:`,
-    //         selected_Value,
-    //     );
-    //     set_Selected_Value(defaultValue);
-    // }, [defaultValue]);
+    /**
+     * prepare field_params for React.Component <Field_Params />
+     * @param {*} D_Name_UPPERCASE
+     * @returns field_params = e.g. [10 , 2] for [DECIMAL,10,2]
+     */
+    function find_NEW_Field_Params_in_M_MAP(D_Name_UPPERCASE) {
+        const definition = FIELD_PARAMS_MAP[D_Name_UPPERCASE];
+        let field_params = definition?.map((param) => param.default);
+        return field_params;
+    }
 
     return (
         <>
@@ -167,13 +138,6 @@ export function renderDropdown(
                 defaultValue={defaultValue}
                 key={defaultValue}
                 onChange={(e) => {
-                    // [LOG 3: ตรวจสอบค่าที่เลือกจาก UI]
-                    // console.log(
-                    //     `[DEBUG: ${fieldName}] onChange triggered, New Value:`,
-                    //     e.target.value,
-                    // );
-                    // console.log("!!!!!!!!!! selected_Value = ", selected_Value);
-
                     set_Selected_Value(e.target.value);
                 }}
             >
@@ -183,7 +147,7 @@ export function renderDropdown(
                     fieldDataList={fieldDataList}
                 />
             </select>
-            {field_params.length > 0 && Field_Params_State}
+            {Field_Params_State}
         </>
     );
 }
