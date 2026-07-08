@@ -25,10 +25,13 @@ export function M_Option({ M_Class_Name_List, fieldDataList }) {
  * Renders a dropdown select element
  * *
  * * Example usage:
- * * M_Class_Name_List: ["f"]
- * * fieldDataList: ["f::ORDER_NR"]
+ * * M_Class_Name_List: e.g. ['d']
+ * * fieldDataList: e.g.
+ * *     ['d::STRING', 'u::FILE']
+ * *     [['d::DECIMAL', 10, 2], "u::NUMBER"]
+ * * field_data = e.g. ['image', 'd::STRING', 'u::FILE']
  * *
- * * Result:
+ * * defaultValue = only for refresh e.g.
  * * <select defaultValue="ORDER_NR"> ... </select>
  * *
  * * Params:
@@ -44,33 +47,16 @@ export function renderDropdown(
     const { M_value, activeTab, activeSubTab } = use_M_Store();
     const fieldName = field_data ? field_data[0] : "UNKNOWN";
 
-    if (fieldName.toUpperCase() === "IMAGE") {
-        console.log(
-            " !!!!!!!!!!!  renderDropdown - M_Class_Name_List",
-            M_Class_Name_List,
-        );
-        console.log(
-            " !!!!!!!!!!!  renderDropdown - fieldDataList",
-            fieldDataList,
-        );
-        console.log(" !!!!!!!!!!!  renderDropdown - field_data", field_data);
-    }
-
-    // [LOG A] fieldDataList
-    // console.log(
-    //     `[DEBUG: ${fieldName}] Full fieldDataList:`,
-    //     JSON.parse(JSON.stringify(fieldDataList)),
-    // );
-
     /**
-     * * DO NOT CHANGE
+     * * foundValue = e.g. d::STRING
+     * * .--------------------------
+     * * DO NOT CHANGE THIS !!!
      * * M_Class_Name_List.some((c) => valueToTest.startsWith(c + "::"))
      * * TO HARDCODE LIKE THIS
      * * const VALID_PREFIXES = ["t::", "f::", "s::", "u::", "d::"];
      * * const foundValue = fieldDataList.find((item, index) => {
      * *    let valueToTest = Array.isArray(item) ? item[0] : item;
      * *
-     * *    // แก้ไขเงื่อนไขการตรวจสอบให้ครอบคลุมตามรายการที่กำหนด (t, f, s, u, d)
      * *    let isMatch =
      * *        typeof valueToTest === "string" &&
      * *        VALID_PREFIXES.some((prefix) => valueToTest.startsWith(prefix));
@@ -105,13 +91,13 @@ export function renderDropdown(
 
         return isMatch;
     });
-    // if (fieldName.toUpperCase() === "IMAGE")
-    //     console.log(
-    //         `[DEBUG: ${fieldName}] foundValue after change:`,
-    //         foundValue,
-    //     );
+    if (fieldName.toUpperCase() === "IMAGE")
+        console.log(
+            `[DEBUG: ${fieldName}] foundValue after change:`,
+            foundValue,
+        );
     // [LOG C] see foundValue of fieldname
-    // console.log(`[DEBUG: ${fieldName}] Selected foundValue:`, foundValue);
+    console.log(`[DEBUG: ${fieldName}] Selected foundValue:`, foundValue);
 
     let defaultValue = "";
     let field_params = [];

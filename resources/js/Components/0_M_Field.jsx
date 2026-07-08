@@ -13,8 +13,8 @@ export default function Field({ field_data }) {
         return (
             <>
                 <div className="dropdown-column">
-                    <div className="dropdown-label">D</div>
-                    {renderDropdown(["d"], fieldDataList, field_data)}
+                    <div className="dropdown-label">{label}</div>
+                    {renderDropdown(names, fieldDataList, field_data)}
                 </div>
             </>
         );
