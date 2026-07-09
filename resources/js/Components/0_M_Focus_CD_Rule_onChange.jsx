@@ -1,7 +1,7 @@
 // 0_M_Focus_CD_Rule_onChange.jsx
 
 import { use_M_Store } from "@/Stores/0_M_Store";
-import { prepare_new_M_value_for_Update } from "./0_M_value_Updater";
+import { prepare_new_M_value_for_Update_CD } from "./0_M_value_Updater_CD";
 
 /**
  * set onChange Action for D CD checkboxes , dropdowns , inputs
@@ -83,7 +83,7 @@ export function Focus_CD_Rule_onChange({
     // console.log("!!!!!!!!! M_value = ", M_value);
 
     //  สั่งอัปเดต Store ครั้งเดียวจบ
-    // const new_M_value = prepare_new_M_value_for_Update(
+    // const new_M_value = prepare_new_M_value_for_Update_CD(
     //     old_M_value,
     //     fieldname,
     //     checked_CD_States,

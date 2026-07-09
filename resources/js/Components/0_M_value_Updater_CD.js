@@ -1,8 +1,22 @@
-// 0_M_value_Updater.js
+// 0_M_value_Updater_CD.js
 import { GLOBAL_METADATA } from "@/Providers/0_M_DataProvider";
 import { FIELD_PARAMS_MAP, DEFAULT_VALUES_MAP } from "@/Components/0_M_MAP";
 
-export function prepare_new_M_value_for_Update(
+/**
+ * 1. Clone & Isolate
+ * 2. Clean Up (Remove cd::, cud::)
+ * 3. Construct New Metadata (Apply MAP defaults)
+ * 4. Re-assemble
+ *
+ * @example
+ * // Before: ['price', ['d::DECIMAL', 10, 2], 'cd::REQUIRED']
+ * // Input : checked_CD_States = ['DEFAULT']
+ * // After : ['price', ['d::DECIMAL', 10, 2], ['cd::DEFAULT', 0]]
+ *
+ * @param fieldname e.g. image , stock , price , name
+ * @param checked_CD_States e.g. ['REQUIRED', 'DEFAULT']
+ */
+export function prepare_new_M_value_for_Update_CD(
     old_M_value,
     fieldname,
     checked_CD_States,
@@ -81,9 +95,9 @@ export function prepare_new_M_value_for_Update(
 
         if (item.toUpperCase() === "DEFAULT") {
             // ใช้ fieldname_UPPERCASE แทน fieldname เพื่อความชัวร์ในการเข้าถึง metadata
-            const D_name = DEFAULT_VALUES_for_D_CD(fieldname_UPPERCASE);
+            const D_name = DEFAULT_VALUES_for_CD(fieldname_UPPERCASE);
             // console.log(
-            //     "   0_M_value_Updater - prepare_new_M_value_for_Update - D_name = ",
+            //     "   0_M_value_Updater_CD - prepare_new_M_value_for_Update_CD - D_name = ",
             //     D_name,
             // );
             const prefix = isCud ? "cud" : "cd";
@@ -135,7 +149,7 @@ export function prepare_new_M_value_for_Update(
  * @param {*} keyName
  * @returns
  */
-export function DEFAULT_VALUES_for_D_CD(keyName) {
+export function DEFAULT_VALUES_for_CD(keyName) {
     const field_data = GLOBAL_METADATA.app_data.f[keyName];
 
     // default for d::FIELDNAME = ''
@@ -151,7 +165,7 @@ export function DEFAULT_VALUES_for_D_CD(keyName) {
         ? field_data[1][0]
         : field_data[1];
     // console.log(
-    //     "0_M_value_Updateer - DEFAULT_VALUES_for_D_CD - d_Class_UPPERCASE = ",
+    //     "0_M_value_Updateer - DEFAULT_VALUES_for_CD - d_Class_UPPERCASE = ",
     //     d_Class_UPPERCASE,
     // );
 
@@ -160,7 +174,7 @@ export function DEFAULT_VALUES_for_D_CD(keyName) {
      */
     const d_Name_UPPERCASE = d_Class_UPPERCASE.split("::")[1].toUpperCase();
     // console.log(
-    //     "0_M_value_Updateer - DEFAULT_VALUES_for_D_CD - d_Name_UPPERCASE = ",
+    //     "0_M_value_Updateer - DEFAULT_VALUES_for_CD - d_Name_UPPERCASE = ",
     //     d_Name_UPPERCASE,
     // );
 

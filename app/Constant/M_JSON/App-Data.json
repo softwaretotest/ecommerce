@@ -3,8 +3,11 @@
     "f": {
         "IMAGE": [
             "image",
-            "d::STRING",
-            "u::FILE"
+            "u::FILE",
+            [
+                "d::STRING",
+                255
+            ]
         ],
         "NAME": [
             "name",
@@ -20,11 +23,12 @@
                 2
             ],
             "u::NUMBER",
+            "s::CURRENCY",
             [
-                "cd::DEFAULT",
-                0
-            ],
-            "s::CURRENCY"
+                "d::DECIMAL",
+                10,
+                2
+            ]
         ],
         "STOCK": [
             "stock",
@@ -43,11 +47,7 @@
         "IS_ACTIVE": [
             "is_active",
             "d::BOOLEAN",
-            "u::SELECT",
-            [
-                "cd::DEFAULT",
-                true
-            ]
+            "u::SELECT"
         ],
         "QUANTITY": [
             "quantity",
@@ -74,8 +74,8 @@
         ],
         "ORDER_NR": [
             "order_nr",
-            "d::STRING",
-            "u::TEXT"
+            "u::TEXT",
+            "d::TEXT"
         ],
         "ORDER_ID": [
             "order_id",

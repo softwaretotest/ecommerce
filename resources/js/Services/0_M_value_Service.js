@@ -16,23 +16,20 @@ export const M_value_Service = {
         const activeSubTab = use_M_Store.getState().activeSubTab;
 
         try {
-            const csrfToken = getCookie("XSRF-TOKEN");
-
-            // ตรวจสอบโครงสร้างที่คุณส่งไป
+            // check sent POST
             const response = await fetch(API.M_VALUE_ENDPOINT, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "X-XSRF-TOKEN": getCookie("XSRF-TOKEN"), // important!
+                    "X-XSRF-TOKEN": getCookie("XSRF-TOKEN"),
                 },
                 body: JSON.stringify({
-                    tab: activeTab, // ตรวจสอบว่ามีค่าจริง (ไม่ใช่ undefined)
-                    subTab: activeSubTab, // ตรวจสอบว่ามีค่าจริง
-                    data: new_M_value, // ตรวจสอบว่าเป็น Object/Array
+                    tab: activeTab,
+                    subTab: activeSubTab,
+                    data: new_M_value,
                 }),
             });
 
-            // ตรวจสอบสถานะก่อนอ่าน JSON
             if (!response.ok) throw new Error("Server error");
 
             const result = await response.json();
