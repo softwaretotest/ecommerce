@@ -54,7 +54,6 @@ export function use_M_Option() {
             throw new Error(`Unknown activeTab: ${activeTab}`);
         }
 
-        // ตรงนี้คือจุดที่ทำให้ dropdown หาย!
         if (!rawData) {
             console.error(
                 `[DEBUG ERROR] Data not found for M_Class_Name: "${M_Class_Name}" in activeTab: "${activeTab}"`,

@@ -1,16 +1,8 @@
 // resources/js/Stores/0_M_Store.jsx
 
 import { create } from "zustand";
-import JSON_Content from "../Components/0_M_JSON_Content";
+import JSON_Content from "@/Components/0_M_JSON_Content";
 
-/**
- * M_States Registry
- * * Stores all class data dynamically per fieldname
- * * M_States: {
- * * "f::NAME":  ['name', d::STRING , u::TEXT , cud::REQUIRED],
- * * "f::PRICE": ['price', [d::DECIMAL, 10, 2], u::NUMBER, [cd::DEFAULT, 0], s::CURRENCY]
- * * }
- */
 export const use_M_Store = create((set) => ({
     debug: true,
     activeTab: "m_data",

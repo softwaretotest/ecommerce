@@ -54,7 +54,6 @@ export default function JSON_Content({ M_value, index = crypto.randomUUID() }) {
                         }
                         className={`json-line ${activeField === fieldname ? "json-highlight" : ""}`}
                         onClick={() => {
-                            // setFocus(fieldname, M_value);
                             setActiveField(fieldname);
                         }}
                     >

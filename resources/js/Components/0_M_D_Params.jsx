@@ -22,7 +22,8 @@ export function D_Params({ D_NAME, D_params }) {
             {config?.map((item, index) => (
                 /**
                  * * we must set key={index + D_NAME} to make uiniq DOM
-                 * * otherwise we have problem when user switch Dropdown D like this e.g.
+                 * * otherwise we have problem
+                 * * when user switch Dropdown D like this e.g.
                  * * between [DECIMAL,10,2] and [STRING,255]
                  * *  switch the 10 <----> 255   ,
                  * *DECIMAL item[0] <----> item[0] STRING
@@ -97,9 +98,7 @@ function prepare_new_M_value_for_Update_D(
     activeField,
     old_M_value,
 ) {
-    console.log("&&&&&&&&&&&&&&&&& activeField = ", activeField);
     const D_Array = get_D_Array(event, activeField, old_M_value);
-    console.log(" 0. D_Array = ", D_Array);
 
     const new_M_value = { ...old_M_value };
 
@@ -107,10 +106,10 @@ function prepare_new_M_value_for_Update_D(
     const fieldname_UPPERCASE = Object.keys(new_M_value).find(
         (key) => key.toLowerCase() === activeField.toLowerCase(),
     );
-    console.log(" 1. fieldname_UPPERCASE = ", fieldname_UPPERCASE);
+    // console.log(" 1. fieldname_UPPERCASE = ", fieldname_UPPERCASE);
 
     const d_Class_UPPERCASE = `d::${D_NAME}`;
-    console.log(" 2. d_Class_UPPERCASE = ", d_Class_UPPERCASE);
+    // console.log(" 2. d_Class_UPPERCASE = ", d_Class_UPPERCASE);
 
     /**
      * * field_data = we use this name exactly case-sensitive in whole app
@@ -118,7 +117,7 @@ function prepare_new_M_value_for_Update_D(
      * * ['image', 'u::FILE', ['d::DECIMAL', 10, 2]]
      */
     const field_data = [...new_M_value[fieldname_UPPERCASE]];
-    console.log(" 3. Extracted field_data (before clean):", field_data);
+    // console.log(" 3. Extracted field_data (before clean):", field_data);
 
     /**
      * * Filter out all existing d:: , cd:: , cud::
@@ -141,10 +140,10 @@ function prepare_new_M_value_for_Update_D(
     const field_data_without_d = field_data_without_d_with_null.filter(
         (item) => item != null,
     );
-    console.log(" 4. field_data_without_d :", field_data_without_d);
+    // console.log(" 4. field_data_without_d :", field_data_without_d);
 
     new_M_value[fieldname_UPPERCASE] = [...field_data_without_d, D_Array];
-    console.log(" 5. new_M_value :", new_M_value);
+    // console.log(" 5. new_M_value :", new_M_value);
 
     /**
      * * new_field_data = data in the focused field after update cd and cud
@@ -152,9 +151,9 @@ function prepare_new_M_value_for_Update_D(
      * * ['price', ['d::DECIMAL',10,2], 'u::NUMBER', 's::CURRENCY', ['cd::DEFAULT',0]]
      */
     const new_field_data = new_M_value[fieldname_UPPERCASE];
-    console.log(" 6. Final new_field_data:", new_field_data);
-    console.log(" 7. Full final new_M_value:", new_M_value);
-    console.log("--- [DEBUG: END] ---");
+    // console.log(" 6. Final new_field_data:", new_field_data);
+    // console.log(" 7. Full final new_M_value:", new_M_value);
+    // console.log("--- [DEBUG: END] ---");
 
     return new_M_value;
 }
@@ -170,22 +169,19 @@ function prepare_new_M_value_for_Update_D(
  * @returns D_Array e.g. ['d::DECIMAL', 10, 2] or ['d::STRING', 255]
  */
 function get_D_Array(event, activeField, M_value) {
-    console.log("get_D_Array ???????????? fieldname event = ", event);
-    console.log(
-        "get_D_Array ???????????? fieldname activeField = ",
-        activeField,
-    );
-    console.log("get_D_Array ???????????? fieldname M_value = ", M_value);
+    // console.log("get_D_Array 1. fieldname event = ", event);
+    // console.log("get_D_Array 1. fieldname activeField = ", activeField);
+    // console.log("get_D_Array 1. fieldname M_value = ", M_value);
 
     // 1. get fieldname from M_value
     const fieldname = Object.keys(M_value).find(
         (key) => key.toLowerCase() === activeField.toLowerCase(),
     );
-    console.log("???????????? fieldname = ", fieldname);
+    // console.log("get_D_Array 2. fieldname = ", fieldname);
 
     const field_data = M_value[fieldname];
     if (!field_data) return;
-    console.log("get_D_Array ???????????? field_data = ", field_data);
+    // console.log("get_D_Array 3. field_data = ", field_data);
 
     /**
      * 2. find d_Class e.g. ['d::DECIMAL',10,2]
@@ -216,14 +212,14 @@ function get_D_Array(event, activeField, M_value) {
         return d_Class;
     })();
 
-    console.log(
-        "get_D_Array ???????????? d_Class_UPPERCASE_Array = ",
-        d_Class_UPPERCASE_Array,
-    );
-    console.log(
-        "get_D_Array ???????????? d_Class_UPPERCASE_Array[0] = ",
-        d_Class_UPPERCASE_Array[0],
-    );
+    // console.log(
+    //     "get_D_Array 4. d_Class_UPPERCASE_Array = ",
+    //     d_Class_UPPERCASE_Array,
+    // );
+    // console.log(
+    //     "get_D_Array 5. d_Class_UPPERCASE_Array[0] = ",
+    //     d_Class_UPPERCASE_Array[0],
+    // );
 
     if (!d_Class_UPPERCASE_Array) return;
 
@@ -234,7 +230,7 @@ function get_D_Array(event, activeField, M_value) {
         console.error(`NOT FOUND container of field : ${activeField}`);
         return;
     }
-    console.log("get_D_Array ???????????? container = ", container);
+    console.log("get_D_Array 6. container = ", container);
     const inputs = container.querySelectorAll(".d_param_input");
     const params_values = Array.from(inputs).map((input) =>
         Number(input.value),
@@ -243,6 +239,8 @@ function get_D_Array(event, activeField, M_value) {
     // 4. get D_Array e.g. ['d::DECIMAL', 10, 2]
     // d_Class_UPPERCASE_Array[0], because only 1 d:: per field (M_Convention)
     const D_Array = [`${d_Class_UPPERCASE_Array[0]}`, ...params_values];
+    // console.log("get_D_Array 7. D_Array = ", D_Array);
+    // console.log("get_D_Array --- [DEBUG: END] ---");
 
     return D_Array;
 }

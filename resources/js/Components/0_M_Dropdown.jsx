@@ -9,6 +9,7 @@ import { M_value_Service } from "../Services/0_M_value_Service";
 import { D_Params } from "@/Components/0_M_D_Params";
 import { D_PARAMS_MAP } from "@/Components/0_M_MAP";
 import { prepare_new_M_value_for_Update_D } from "@/Components/0_M_value_Updater_D";
+import { GLOBAL_METADATA } from "@/Providers/0_M_DataProvider";
 
 import JSON_Content from "./0_M_JSON_Content";
 
@@ -72,7 +73,7 @@ export function renderDropdown(
      * *
      * * BECAUSE, IT WILL REMOVE t:: Dropdown its selected values
      */
-    const foundValue = fieldDataList.find((item, index) => {
+    const foundValue = fieldDataList.find((item) => {
         let valueToTest = Array.isArray(item) ? item[0] : item;
 
         /**
@@ -87,18 +88,33 @@ export function renderDropdown(
 
     let defaultValue = "";
     let D_params = [];
-
+    /**
+     * * foundValue = e.g. d::INTEGER , u::TEXT , [d:DECIMAL,10,2]
+     * */
     if (foundValue) {
         if (Array.isArray(foundValue)) {
             const [stringValue, ...params] = foundValue;
             defaultValue = stringValue.split("::")[1];
             D_params = params;
-        } else {
+        }
+        //case string e.g. u:: and  d::
+        if (
+            typeof foundValue === "string" ||
+            foundValue.includes("u::") ||
+            foundValue.includes("d::")
+        ) {
             defaultValue = foundValue.split("::")[1];
             D_params = [];
         }
     }
-
+    // console.log(
+    //     ")=)=)=)=)=)=) Dropdown fieldname =",
+    //     fieldname.padEnd(13),
+    //     "\t D_params =",
+    //     D_params,
+    //     "\t\t foundValue =",
+    //     foundValue,
+    // );
     /**
      * * selected_D: state from dropdown e.g. STRING , DECIMAL , INTEGER
      * * handle_Change: update state when option change
@@ -118,11 +134,35 @@ export function renderDropdown(
         return D_params;
     }
 
+    function find_D_Params_in_GLOBAL_METADATA(D_Name_UPPERCASE) {
+        const field_data = GLOBAL_METADATA.app_data.f[fieldname.toUpperCase()];
+
+        /**
+         * @return  e.g. ['d::DECIMAL', 10, 10] or 'd::BOOLEAN'
+         */
+        const d_Class_Item = field_data.find((item) => {
+            const target = Array.isArray(item) ? item[0] : item;
+            return typeof target === "string" && target.startsWith("d::");
+        });
+
+        if (!Array.isArray(d_Class_Item)) return; // if wrong config e.g. d::STRING
+
+        const d_Name = d_Class_Item[0].replace("d::", "");
+
+        /**
+         * * cut out d:: to send only params , e.g.
+         * * before [ 'd::DECIMAL', 10 , 2 ]
+         * * after  [ 10 , 2 ]
+         */
+        if (d_Name === D_Name_UPPERCASE) return d_Class_Item.slice(1);
+        else return null;
+    }
+
     useEffect(() => {
         if (!selected_D) return;
-        const D_params = find_NEW_D_Params_in_M_MAP(selected_D);
+        let D_params = find_D_Params_in_GLOBAL_METADATA(selected_D);
+        if (!D_params) D_params = find_NEW_D_Params_in_M_MAP(selected_D);
         setD_Params_State(<D_Params D_NAME={selected_D} D_params={D_params} />);
-        // }
     }, [selected_D]);
 
     /**
@@ -147,10 +187,7 @@ export function renderDropdown(
 
         // update M_Store
         set_M_value(new_M_value);
-        console.log(
-            " !!!!!!!!!!! Called from M_Dropdown.jsx - set_D_Action - M_value ",
-            use_M_Store.getState().M_value,
-        );
+
         // update JSON files on Backend
         await M_value_Service.update(new_M_value);
 
