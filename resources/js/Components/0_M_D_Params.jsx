@@ -88,7 +88,7 @@ async function save_M_value_Data(
  * // Input : Total digits = 5
  * // After : ['d::DECIMAL', 5 , 2 ]
  *
- * @param activeField = fieldname_UPPERCASE from setFocus() e.g. STOCK , PRICE , NAME
+ * @param activeField = fieldname_UPPERCASE from activeField e.g. STOCK , PRICE , NAME
  * @param D_NAME = e.g. STRING , DECIMAL
  */
 function prepare_new_M_value_for_Update_D(

@@ -26,40 +26,9 @@ export const use_M_Store = create((set) => ({
     setJSON_Content_State: (JSON_Content) =>
         set({ JSON_Content_State: JSON_Content }),
 
-    // // e.g ['cd::DEFAULT', 10, 2]
-    // DEFAULT_Panel: [],
-    // set_DEFAULT_Panel: (arrayValue) => set({ DEFAULT_Panel: arrayValue }),
-
-    // M_States: {},
-    // unset_States: () => set({ M_States: {} }),
-    // /**
-    //  * * Update state for a given fieldname and its metadata values
-    //  * * we must cleanData before nextStates
-    //  * * to show actuel data in M_States
-    //  * * PARAMS:
-    //  * * fieldname: "f::PRICE"
-    //  * * M_value: all existing f:: in App_data.json { NAME[], PRICE[], ...}
-    //  */
-    // setFocus: (fieldname, M_value) =>
-    //     set((state) => {
-    //         const cleanData = M_value[fieldname]
-    //             ? { [fieldname]: M_value[fieldname] }
-    //             : M_value;
-
-    //         const nextStates = {
-    //             [fieldname]: {
-    //                 ...cleanData,
-    //             },
-    //         };
-
-    //         if (state.debug) {
-    //             console.log(`[M_STORE_DEBUG] Focused on: ${fieldname}`);
-    //             console.log(`[M_STORE_DEBUG] Current M_States:`, nextStates);
-    //             console.log("------------------------------------");
-    //         }
-
-    //         return { M_States: nextStates };
-    //     }),
+    // e.g ['cd::DEFAULT', 10, 2]
+    DEFAULT_Panel: [],
+    set_DEFAULT_Panel: (arrayValue) => set({ DEFAULT_Panel: arrayValue }),
 
     /**
      * * M_value = all Data from each json file

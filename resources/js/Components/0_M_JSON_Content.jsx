@@ -10,8 +10,6 @@ export default function JSON_Content({ M_value, index = crypto.randomUUID() }) {
     const activeField = use_M_Store((state) => state.activeField);
     const setActiveField = use_M_Store((state) => state.setActiveField);
 
-    // const setFocus = use_M_Store((state) => state.setFocus);
-
     const scrollRefs = useRef({});
     useScrollIntoView(activeField, scrollRefs);
 

@@ -25,7 +25,6 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
     );
 
     const {
-        // setFocus,
         M_value,
         set_M_value,
         activeField,
@@ -98,7 +97,6 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
                              */
                             checked={checked_CD.includes(option)}
                             onChange={(event) => {
-                                // setFocus(fieldname, M_value);
                                 set_CD_Actions(option, event);
                             }}
                         />
