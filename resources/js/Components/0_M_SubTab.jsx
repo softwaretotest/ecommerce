@@ -23,7 +23,7 @@ import "../../css/0_M_UI.css";
 export default function SubTab({ data, tab_label }) {
     if (!data) return;
 
-    const setFocus = use_M_Store((state) => state.setFocus);
+    // const setFocus = use_M_Store((state) => state.setFocus);
 
     /**
      * ONLY 1 state to focus 3 Components with same click
@@ -93,7 +93,9 @@ export default function SubTab({ data, tab_label }) {
         (state) => state.setJSON_Content_State,
     );
     useEffect(() => {
-        setJSON_Content_State(<JSON_Content M_value={M_value} />);
+        setJSON_Content_State(
+            <JSON_Content M_value={M_value} index={crypto.randomUUID()} />,
+        );
     }, [activeField, setActiveField, use_M_Store.getState().M_value]);
 
     return (
@@ -129,7 +131,7 @@ export default function SubTab({ data, tab_label }) {
                             className={`field-nav-link ${activeField === fieldname ? "active" : ""}`}
                             onClick={() => {
                                 setActiveField(fieldname);
-                                setFocus(fieldname, M_value);
+                                // setFocus(fieldname, M_value);
                             }}
                         >
                             {/* if Class t (DB_Tablename) remove T:: */}

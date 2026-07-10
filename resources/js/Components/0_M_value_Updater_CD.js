@@ -1,6 +1,6 @@
 // 0_M_value_Updater_CD.js
 import { GLOBAL_METADATA } from "@/Providers/0_M_DataProvider";
-import { FIELD_PARAMS_MAP, DEFAULT_VALUES_MAP } from "@/Components/0_M_MAP";
+import { D_PARAMS_MAP, DEFAULT_VALUES_MAP } from "@/Components/0_M_MAP";
 
 /**
  * 1. Clone & Isolate
@@ -106,11 +106,11 @@ export function prepare_new_M_value_for_Update_CD(
 
         // กรณีปกติ: จัดการ Parameter อื่นๆ
         /**
-         * * allways
+         * * always
          * * config = undefined
          * * I want to know , why AI Gemini add this variable config for what ???
          */
-        const config = FIELD_PARAMS_MAP[item.toUpperCase()];
+        const config = D_PARAMS_MAP[item.toUpperCase()];
         // console.log("6.2 config = ", config);
 
         if (config) {

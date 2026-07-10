@@ -7,7 +7,7 @@ export const DEFAULT_VALUES_MAP = {
     BOOLEAN: false,
 };
 
-export const FIELD_PARAMS_MAP = {
+export const D_PARAMS_MAP = {
     DECIMAL: [
         { label: "Total digits", default: 10 },
         { label: "Scale", default: 2 },

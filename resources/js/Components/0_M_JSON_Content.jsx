@@ -4,13 +4,13 @@ import { use_M_Store } from "@/Stores/0_M_Store.jsx";
 
 import { useScrollIntoView } from "@/hooks/useScrollIntoView";
 
-export default function JSON_Content({ M_value }) {
+export default function JSON_Content({ M_value, index = crypto.randomUUID() }) {
     if (!M_value) return;
 
     const activeField = use_M_Store((state) => state.activeField);
     const setActiveField = use_M_Store((state) => state.setActiveField);
 
-    const setFocus = use_M_Store((state) => state.setFocus);
+    // const setFocus = use_M_Store((state) => state.setFocus);
 
     const scrollRefs = useRef({});
     useScrollIntoView(activeField, scrollRefs);
@@ -50,13 +50,13 @@ export default function JSON_Content({ M_value }) {
             <div className="json-list">
                 {Object.entries(M_value).map(([fieldname, value]) => (
                     <div
-                        key={fieldname} //fieldname = e.g. PRICE , STOCK etc.
+                        key={index + fieldname} //fieldname = e.g. PRICE , STOCK etc.
                         ref={(DOM_Node) =>
                             (scrollRefs.current[fieldname] = DOM_Node)
                         }
                         className={`json-line ${activeField === fieldname ? "json-highlight" : ""}`}
                         onClick={() => {
-                            setFocus(fieldname, M_value);
+                            // setFocus(fieldname, M_value);
                             setActiveField(fieldname);
                         }}
                     >

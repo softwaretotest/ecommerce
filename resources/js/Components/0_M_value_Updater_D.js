@@ -1,6 +1,6 @@
 // 0_M_value_Updater_CD.js
 import { GLOBAL_METADATA } from "@/Providers/0_M_DataProvider";
-import { FIELD_PARAMS_MAP, DEFAULT_VALUES_MAP } from "@/Components/0_M_MAP";
+import { D_PARAMS_MAP, DEFAULT_VALUES_MAP } from "@/Components/0_M_MAP";
 
 /**
  * 1. Clone & Isolate
@@ -58,26 +58,27 @@ export function prepare_new_M_value_for_Update_D(
      * * Filter out all existing d:: , cd:: , cud::
      * * ['image', 'd::STRING', 'u::FILE', null, null]
      */
-    const field_data_without_cd_cud_with_null = field_data.filter((item) => {
+    const field_data_without_d_cd_cud_with_null = field_data.filter((item) => {
         // if Array the first item[0] is always String (App Convention)
         const targetString = Array.isArray(item) ? item[0] : item;
 
-        const isCD =
-            typeof targetString === "string" && targetString.startsWith("cd::");
-        const isCUD =
-            typeof targetString === "string" &&
-            targetString.startsWith("cud::");
-        const isD =
-            typeof targetString === "string" && targetString.startsWith("d::");
+        const isD = targetString.startsWith("d::");
+        const isCD = targetString.startsWith("cd::");
+        const isCUD = targetString.startsWith("cud::");
 
-        // ถ้าเป็น cd หรือ cud หรือ d ให้เอาออก (return false)
-        return !isCD && !isCUD && !isD;
+        // remove d cd cud (return false)
+        return !isD && !isCD && !isCUD;
     });
-    const field_data_without_cd_cud =
-        field_data_without_cd_cud_with_null.filter((item) => item != null);
+
+    /**
+     * * Filter out null items
+     * * ['image', 'd::STRING', 'u::FILE']
+     */
+    const field_data_without_d_cd_cud =
+        field_data_without_d_cd_cud_with_null.filter((item) => item != null);
     console.log(
-        "6. field_data_without_cd_cud (after filtering cd::):",
-        field_data_without_cd_cud,
+        "6. field_data_without_d_cd_cud :",
+        field_data_without_d_cd_cud,
     );
 
     /**
@@ -87,19 +88,18 @@ export function prepare_new_M_value_for_Update_D(
     console.log("6.1. d_names = ", d_names);
 
     /**
+     * * with default values from D_PARAMS_MAP
      * * make new d to add to new_M_value , e.g.
      * * ['d::STRING', 255]
      * * ['d::DECIMAL',10,2]
      * *  'd::BOOLEAN'
      */
     function get_D_Array_or_String() {
-        const params = FIELD_PARAMS_MAP[selected_D];
+        const params = D_PARAMS_MAP[selected_D];
         console.log("6.2. params = ", params);
 
         const d_Class_UPPERCASE = `d::${selected_D}`;
 
-        // Tempolary get defaultValue,
-        // later we will get the real value from UI Inputs <Field_Params />
         if (params) {
             const values = params.map((p) => p.default);
             return [d_Class_UPPERCASE, ...values]; //d_Array
@@ -111,7 +111,7 @@ export function prepare_new_M_value_for_Update_D(
     console.log("7. D_Array_or_String() (new items):", D_Array_or_String);
 
     new_M_value[fieldname_UPPERCASE] = [
-        ...field_data_without_cd_cud,
+        ...field_data_without_d_cd_cud,
         D_Array_or_String,
     ];
     /**
@@ -125,6 +125,19 @@ export function prepare_new_M_value_for_Update_D(
     console.log("--- [DEBUG: END] ---");
 
     return new_M_value;
+}
+
+function save_M_value_Data() {
+    // ดึง container ของ params ทั้งหมด
+    const container = document.querySelector(".field_params_container");
+    if (!container) return;
+
+    // ดึงค่า input ทุกตัวที่อยู่ในนั้น
+    const inputs = container.querySelectorAll(".field_param_input");
+    const new_params_values = Array.from(inputs).map((input) => input.value);
+
+    // เอา new_params_values ไปใช้ประกอบร่างเป็น Array ใหม่
+    console.log("!!!!!!!!!!!!! ค่าที่ดึงได้จาก UI:", new_params_values);
 }
 
 /**

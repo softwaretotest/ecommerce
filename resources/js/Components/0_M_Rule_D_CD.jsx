@@ -25,7 +25,7 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
     );
 
     const {
-        setFocus,
+        // setFocus,
         M_value,
         set_M_value,
         activeField,
@@ -73,11 +73,7 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
 
         // update JSON View
         setJSON_Content_State(
-            <JSON_Content
-                M_value={new_M_value}
-                activeField={activeField}
-                setActiveField={setActiveField}
-            />,
+            <JSON_Content M_value={new_M_value} index={crypto.randomUUID()} />,
         );
     }
 
@@ -102,7 +98,7 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
                              */
                             checked={checked_CD.includes(option)}
                             onChange={(event) => {
-                                setFocus(fieldname, M_value);
+                                // setFocus(fieldname, M_value);
                                 set_CD_Actions(option, event);
                             }}
                         />

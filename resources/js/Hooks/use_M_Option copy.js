@@ -30,14 +30,6 @@ export function use_M_Option() {
     const getOptions = (M_Class_Name) => {
         let rawData;
 
-        // เช็คว่า metadata มีตัวตนหรือไม่ก่อนทำอะไรต่อ
-        if (!metadata) {
-            console.error(
-                `[DEBUG ERROR] Metadata is missing/null in use_M_Option for class: ${M_Class_Name}`,
-            );
-            throw new Error(`Metadata is missing!`);
-        }
-
         if (activeTab === "app_data") {
             rawData =
                 metadata?.m_data?.[M_Class_Name] ||
@@ -49,21 +41,9 @@ export function use_M_Option() {
                     : metadata?.app_data?.[M_Class_Name];
         } else if (activeTab === "m_data") {
             rawData = metadata?.m_data?.[M_Class_Name];
-        } else {
-            console.error(`[DEBUG ERROR] Unknown activeTab: ${activeTab}`);
-            throw new Error(`Unknown activeTab: ${activeTab}`);
         }
 
-        // ตรงนี้คือจุดที่ทำให้ dropdown หาย!
-        if (!rawData) {
-            console.error(
-                `[DEBUG ERROR] Data not found for M_Class_Name: "${M_Class_Name}" in activeTab: "${activeTab}"`,
-            );
-            console.log("Current metadata state:", metadata);
-            throw new Error(`No data found for class: ${M_Class_Name}`);
-        }
-
-        return formatData(rawData);
+        return rawData ? formatData(rawData) : [];
     };
 
     return { getOptions };

@@ -6,8 +6,8 @@ import { use_M_Store } from "@/Stores/0_M_Store";
 import { use_M_Option } from "@/Hooks/use_M_Option";
 import { M_value_Service } from "../Services/0_M_value_Service";
 
-import { Field_Params } from "@/Components/0_M_Field_Params";
-import { FIELD_PARAMS_MAP } from "@/Components/0_M_MAP";
+import { D_Params } from "@/Components/0_M_D_Params";
+import { D_PARAMS_MAP } from "@/Components/0_M_MAP";
 import { prepare_new_M_value_for_Update_D } from "@/Components/0_M_value_Updater_D";
 
 import JSON_Content from "./0_M_JSON_Content";
@@ -29,7 +29,7 @@ import JSON_Content from "./0_M_JSON_Content";
  * *
  * * Params:
  * * defaultValue = field name , e.g. DECIMAL , STRING
- * * field_params = e.g. [ 10, 2 ] for DECIMAL [ total_digit , scale ]
+ * * D_params = e.g. [ 10, 2 ] for DECIMAL [ total_digit , scale ]
  * *
  */
 export function renderDropdown(
@@ -86,16 +86,16 @@ export function renderDropdown(
     });
 
     let defaultValue = "";
-    let field_params = [];
+    let D_params = [];
 
     if (foundValue) {
         if (Array.isArray(foundValue)) {
             const [stringValue, ...params] = foundValue;
             defaultValue = stringValue.split("::")[1];
-            field_params = params;
+            D_params = params;
         } else {
             defaultValue = foundValue.split("::")[1];
-            field_params = [];
+            D_params = [];
         }
     }
 
@@ -105,28 +105,23 @@ export function renderDropdown(
      */
     const [selected_D, set_Selected_D] = useState(defaultValue);
 
-    const [Field_Params_State, setField_Params_State] = useState(null);
+    const [D_Params_State, setD_Params_State] = useState(null);
 
     /**
-     * prepare field_params for React.Component <Field_Params />
+     * prepare D_params for React.Component <D_Params />
      * @param {*} D_Name_UPPERCASE
-     * @returns field_params = e.g. [10 , 2] for [DECIMAL,10,2]
+     * @returns D_params = e.g. [10 , 2] for [DECIMAL,10,2]
      */
-    function find_NEW_Field_Params_in_M_MAP(D_Name_UPPERCASE) {
-        const definition = FIELD_PARAMS_MAP[D_Name_UPPERCASE];
-        let field_params = definition?.map((param) => param.default);
-        return field_params;
+    function find_NEW_D_Params_in_M_MAP(D_Name_UPPERCASE) {
+        const definition = D_PARAMS_MAP[D_Name_UPPERCASE];
+        let D_params = definition?.map((param) => param.default);
+        return D_params;
     }
 
     useEffect(() => {
         if (!selected_D) return;
-        const field_params = find_NEW_Field_Params_in_M_MAP(selected_D);
-        setField_Params_State(
-            <Field_Params
-                param_name={selected_D}
-                field_params={field_params}
-            />,
-        );
+        const D_params = find_NEW_D_Params_in_M_MAP(selected_D);
+        setD_Params_State(<D_Params D_NAME={selected_D} D_params={D_params} />);
         // }
     }, [selected_D]);
 
@@ -152,17 +147,16 @@ export function renderDropdown(
 
         // update M_Store
         set_M_value(new_M_value);
-
+        console.log(
+            " !!!!!!!!!!! Called from M_Dropdown.jsx - set_D_Action - M_value ",
+            use_M_Store.getState().M_value,
+        );
         // update JSON files on Backend
         await M_value_Service.update(new_M_value);
 
         // update JSON View
         setJSON_Content_State(
-            <JSON_Content
-                M_value={new_M_value}
-                activeField={activeField}
-                setActiveField={setActiveField}
-            />,
+            <JSON_Content M_value={new_M_value} index={crypto.randomUUID()} />,
         );
     }
 
@@ -182,7 +176,7 @@ export function renderDropdown(
                     fieldDataList={fieldDataList}
                 />
             </select>
-            {Field_Params_State}
+            {D_Params_State}
         </>
     );
 }

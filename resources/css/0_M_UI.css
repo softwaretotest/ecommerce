@@ -310,7 +310,7 @@ body {
     font-weight: bold;
 }
 
-.field_params_container {
+.d_params_container {
     display: flex;
     flex-direction: column;
     flex: 0 0 auto;
@@ -332,18 +332,18 @@ body {
     white-space: nowrap;
 }
 
-.fied_param_body {
+.d_param_body {
     display: grid;
-    grid-template-columns: 1fr 40px;
-    grid-template-areas: "field_param_label field_param_input";
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: "d_param_label d_param_input";
     gap: 3px;
     align-items: center;
     justify-content: center;
     margin-bottom: 3px;
 }
 
-.field_param_label {
-    grid-area: field_param_label;
+.d_param_label {
+    grid-area: d_param_label;
     font-size: 11px;
     color: #666;
     text-align: right;
@@ -351,8 +351,8 @@ body {
     white-space: nowrap;
 }
 
-.field_param_input {
-    grid-area: field_param_input;
+.d_param_input {
+    grid-area: d_param_input;
     width: 100%;
     padding: 2px 4px;
     border: 1px solid #bbb;

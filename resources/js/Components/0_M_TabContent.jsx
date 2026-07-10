@@ -12,16 +12,16 @@ import EntityField from "@/Components/0_M_EntityField";
 import DB_Tablename from "@/Components/0_M_DB_Tablename";
 
 export default function TabContent({ M_Class_Name }) {
-    const { setFocus, M_value, activeField, setActiveField, activeSubTab } =
-        use_M_Store();
+    // const { setFocus, M_value, activeField, setActiveField, activeSubTab } =
+    //     use_M_Store();
+    const M_value = use_M_Store((state) => state.M_value);
+    const activeSubTab = use_M_Store((state) => state.activeSubTab);
+    const activeField = use_M_Store((state) => state.activeField);
+    const setActiveField = use_M_Store((state) => state.setActiveField);
 
-    // use path to update, e.g. "APP_DATA.NAME"
-    const handleUpdate = (fieldname, newValue) => {
-        // TODO - update M_Store and JSON, if dirty
-        // update(`APP_DATA.${fieldname}`, newValue);
-    };
+    // const setFocus = use_M_Store((state) => state.setFocus);
 
-    if (!M_value || typeof M_value !== "object") {
+    if (!M_value) {
         return <div className="ui-placeholder">No UI for {M_Class_Name}</div>;
     }
 
@@ -44,7 +44,7 @@ export default function TabContent({ M_Class_Name }) {
                         }
                         className={`form-subtab-content-row ${activeField === fieldname ? "is-focused" : ""}`}
                         onClick={() => {
-                            setFocus(fieldname, M_value);
+                            // setFocus(fieldname, M_value);
                             setActiveField(fieldname);
                         }}
                     >
@@ -68,9 +68,6 @@ export default function TabContent({ M_Class_Name }) {
                                     type="text"
                                     className="M_Data_VALUE"
                                     defaultValue={field_data}
-                                    onBlur={(e) =>
-                                        handleUpdate(fieldname, e.target.value)
-                                    }
                                 />
                             </>
                         )}
