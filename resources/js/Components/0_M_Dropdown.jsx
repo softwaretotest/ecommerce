@@ -38,14 +38,20 @@ export function renderDropdown(
     fieldDataList = [],
     field_data,
 ) {
-    if (!field_data) {
-        const M_value = use_M_Store.getState().M_value;
-        console.log("RDERDRDRDRDRDRDRDRD renderDropdown - M_value = ", M_value);
+    const { M_value, set_M_value, activeField, setActiveField, activeTab } =
+        use_M_Store();
+
+    if (!field_data && activeTab != "entities") {
         return;
     }
 
+    if (!field_data && activeTab === "entities") {
+        console.log(
+            " +-+-+-+-+--+- renderDropdown - !field_data && activeTab === entities ",
+        );
+    }
+
     if (fieldDataList.includes("cd::FOREIGN")) return; // FK need no other setting
-    const { M_value, set_M_value, activeField, setActiveField } = use_M_Store();
     const setJSON_Content_State = use_M_Store(
         (state) => state.setJSON_Content_State,
     );
@@ -150,8 +156,11 @@ export function renderDropdown(
             const target = Array.isArray(item) ? item[0] : item;
             return typeof target === "string" && target.startsWith("d::");
         });
-
-        if (!Array.isArray(d_Class_Item)) return; // if wrong config e.g. d::STRING
+        console.log(
+            " ======00000=====00000===== Dropdown - activeTab = ",
+            activeTab,
+        );
+        if (!Array.isArray(d_Class_Item) || activeTab != "entities") return; // if wrong config e.g. d::STRING
 
         const d_Name = d_Class_Item[0].replace("d::", "");
 

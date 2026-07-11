@@ -25,17 +25,15 @@ export default function M_Dashboard() {
         { id: "entities", label: "ENTITIES", key: "entities" },
     ];
 
-    // เพิ่มใน M_Dashboard.jsx
     useEffect(() => {
-        // ดึงข้อมูลจาก store หรือตรงไหนก็ตามที่เก็บ state ไว้
+        // show that data is saving
         const saveData = async () => {
-            // จัดการ logic save ไปยัง 3 ไฟล์
             console.log("Auto-saving...");
         };
 
         const handler = setTimeout(saveData, 1000);
         return () => clearTimeout(handler);
-    }, [data]); // ถ้า data เปลี่ยน ก็สั่ง save
+    }, [data]); // if data is changed, it 's been saving from somewhere
 
     return (
         <div className="dashboard-wrapper">

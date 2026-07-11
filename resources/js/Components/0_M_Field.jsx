@@ -14,6 +14,8 @@ export default function Field({ field_data }) {
             <>
                 <div className="dropdown-column">
                     <div className="dropdown-label">{label}</div>
+                    <p>Field - make_dropdown - field_data = {field_data}</p>
+
                     {renderDropdown(names, fieldDataList, field_data)}
                 </div>
             </>
