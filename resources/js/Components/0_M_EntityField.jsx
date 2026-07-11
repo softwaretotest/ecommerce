@@ -1,7 +1,7 @@
 // resources/js/Components/0_M_EntityField.jsx
 
 import Field from "@/Components/0_M_Field.jsx";
-import { renderDropdown } from "@/Components/0_M_Dropdown.jsx";
+import { renderDropdown_for_entities } from "@/Components/0_M_Dropdown_for_Entities";
 
 /**
  * DB Table with DB Column in it
@@ -36,7 +36,7 @@ export default function EntityField({ field_data, table_name }) {
 
                 {field_data.map((fieldItem, index) => (
                     <div key={index} className="field-row">
-                        {renderDropdown(
+                        {renderDropdown_for_entities(
                             ["f", "s"], // e.g. f::NAME, f::PRICE, f::STOCK, s::EMAIL
                             [fieldItem],
                         )}

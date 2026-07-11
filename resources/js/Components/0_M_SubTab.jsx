@@ -23,8 +23,6 @@ import "../../css/0_M_UI.css";
 export default function SubTab({ data }) {
     if (!data) return;
 
-    // const M_value = use_M_Store((state) => state.M_value);
-
     /**
      * ONLY 1 state to focus 3 Components with same click
      */
@@ -54,7 +52,7 @@ export default function SubTab({ data }) {
     use_M_Store.getState().set_M_value(M_value);
 
     const fieldnames = Object.keys(M_value || {});
-    console.log(" ?P?P?P?P?P?P?P? SubTab - M_value", M_value);
+
     /**
      * SET default Subtab
      */

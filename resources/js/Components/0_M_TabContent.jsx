@@ -28,7 +28,6 @@ export default function TabContent({ M_Class_Name }) {
         <>
             <div>
                 <label>M_Class_Name = {M_Class_Name}</label>
-                <label>activeSubTab = {activeSubTab}</label>
             </div>
             <div className="input-engine-container">
                 {/* LOOP OF FIELDS e.g. 
@@ -44,8 +43,6 @@ export default function TabContent({ M_Class_Name }) {
                             setActiveField(fieldname);
                         }}
                     >
-                        <label>TabContent - field_data = {field_data}</label>
-
                         {["d", "u", "cd", "cu", "cud"].includes(
                             M_Class_Name,
                         ) && (
@@ -78,6 +75,7 @@ export default function TabContent({ M_Class_Name }) {
                         {M_Class_Name === "f" && Array.isArray(field_data) && (
                             <Field
                                 field_data={field_data}
+                                M_value={M_value}
                                 // activeSubTab={activeSubTab}
                             />
                         )}
