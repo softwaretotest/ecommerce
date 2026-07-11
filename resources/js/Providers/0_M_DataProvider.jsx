@@ -2,6 +2,8 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { API } from "@/Configs/api";
+import { use_M_Store } from "@/Stores/0_M_Store";
+
 export let GLOBAL_METADATA = null;
 
 const MetadataContext = createContext();
@@ -9,6 +11,7 @@ const MetadataContext = createContext();
 export const M_DataProvider = ({ children }) => {
     const [metadata, setMetadata] = useState(null);
     const [loading, setLoading] = useState(true);
+    const M_value = use_M_Store.getState().M_value;
 
     useEffect(() => {
         // get M-Data from API
@@ -23,7 +26,7 @@ export const M_DataProvider = ({ children }) => {
                 console.error("Metadata load error:", err);
                 setLoading(false);
             });
-    }, []);
+    }, [M_value]);
 
     if (loading) return <div>Loading Metadata...</div>;
 

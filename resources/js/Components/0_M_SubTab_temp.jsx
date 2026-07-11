@@ -20,14 +20,13 @@ import "../../css/0_M_UI.css";
  * if SubTab = ENTITIES , then data = content of 1_Entities.json
  * ,e.g. * t:: = Tablename
  */
-export default function SubTab({ data }) {
+export default function SubTab({ data, tab_label }) {
     if (!data) return;
-
-    // const M_value = use_M_Store((state) => state.M_value);
 
     /**
      * ONLY 1 state to focus 3 Components with same click
      */
+    // const M_value = use_M_Store((state) => state.M_value);
     const activeField = use_M_Store((state) => state.activeField);
     const setActiveField = use_M_Store((state) => state.setActiveField);
 
@@ -53,8 +52,14 @@ export default function SubTab({ data }) {
 
     use_M_Store.getState().set_M_value(M_value);
 
+    /**
+     * tab:
+     * * M_DATA   ['BOOLEAN', 'INTEGER', 'DECIMAL', 'STRING', 'UNSIGNED_BINT']
+     * * APP_DATA ['IMAGE', 'NAME', 'PRICE', 'STOCK', 'IS_ACTIVE', 'QUANTITY', 'CONFIRM_ORDER', 'ORDER_NR', 'ORDER_ID', 'PRODUCT_ID', 'SHOP_ID', 'USER_ID']
+     * * ENTITIES
+     */
     const fieldnames = Object.keys(M_value || {});
-    console.log(" ?P?P?P?P?P?P?P? SubTab - M_value", M_value);
+    console.log(" ?P?P?P?P?P?P?P? SubTab - fieldnames", fieldnames);
     /**
      * SET default Subtab
      */

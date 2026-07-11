@@ -38,6 +38,12 @@ export function renderDropdown(
     fieldDataList = [],
     field_data,
 ) {
+    if (!field_data) {
+        const M_value = use_M_Store.getState().M_value;
+        console.log("RDERDRDRDRDRDRDRDRD renderDropdown - M_value = ", M_value);
+        return;
+    }
+
     if (fieldDataList.includes("cd::FOREIGN")) return; // FK need no other setting
     const { M_value, set_M_value, activeField, setActiveField } = use_M_Store();
     const setJSON_Content_State = use_M_Store(

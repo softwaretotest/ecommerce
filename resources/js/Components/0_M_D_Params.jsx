@@ -5,7 +5,7 @@ import { M_value_Service } from "../Services/0_M_value_Service";
 
 import { D_PARAMS_MAP } from "@/Components/0_M_MAP";
 
-import JSON_Content from "./0_M_JSON_Content";
+import JSON_Content from "@/Components/0_M_JSON_Content";
 
 export function D_Params({ D_NAME, D_params }) {
     if (!D_params) return;
@@ -130,7 +130,7 @@ function prepare_new_M_value_for_Update_D(
         const isD = targetString.startsWith("d::");
 
         // remove d cd cud (return false)
-        return !isD && !isCD && !isCUD;
+        return !isD;
     });
 
     /**

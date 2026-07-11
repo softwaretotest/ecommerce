@@ -91,7 +91,9 @@ body {
     white-space: pre-wrap;
     font-size: 14px;
 }
-
+.json-item {
+    margin-left: 20px;
+}
 /* --- Dashboard Main Layout --- */
 .dashboard-wrapper {
     padding: 5px;

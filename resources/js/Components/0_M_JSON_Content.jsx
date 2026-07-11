@@ -27,11 +27,7 @@ export default function JSON_Content({ M_value, index = crypto.randomUUID() }) {
                 <div className="json-array">
                     [
                     {value.map((item, i) => (
-                        <div
-                            key={i}
-                            className="json-item"
-                            style={{ marginLeft: "20px" }}
-                        >
+                        <div key={i} className="json-item">
                             {renderArrayItem(item, depth + 1)}
                             {i < value.length - 1 ? "," : ""}
                         </div>
@@ -42,6 +38,10 @@ export default function JSON_Content({ M_value, index = crypto.randomUUID() }) {
         }
         return <span className="json-primitive">{JSON.stringify(value)}</span>;
     };
+
+    useEffect(() => {
+        console.log(" =)=)=)=)=)=)=) JSON_Content.jsx - M_value = ", M_value);
+    }, [M_value]);
 
     return (
         <div className="json-preview-container">

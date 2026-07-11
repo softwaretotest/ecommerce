@@ -8,7 +8,7 @@ import { DEFAULT_Panel } from "@/Components/0_M_DEFAULT_Panel";
 import { prepare_new_M_value_for_Update_CD } from "@/Components/0_M_value_Updater_CD";
 import { Focus_CD_Rule_onChange } from "@/Components/0_M_Focus_CD_Rule_onChange";
 
-import JSON_Content from "./0_M_JSON_Content";
+import JSON_Content from "@/Components/0_M_JSON_Content";
 /**
  * Rule Fabric for onChange of CD Checkboxes (not done yet)
  * to make UI e.g. checkboxes inputs
@@ -85,12 +85,6 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
                         <input
                             type="checkbox"
                             value={option}
-                            ////------- this does not work
-                            // If 'option' is in 'checked_CD' array, the box is checked.
-                            // checked={M_value[fieldname_UPPERCASE].includes(
-                            //     option,
-                            // )}
-
                             /**
                              * !!!! react state on checked ,
                              * always need onChange to update state !!!
