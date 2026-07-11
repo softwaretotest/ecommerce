@@ -1,4 +1,4 @@
-// resources/js/Components/0_M_Dropdown.jsx
+// resources/js/Components/0_M_Dropdown_D.jsx
 
 import { useState, useEffect } from "react";
 
@@ -9,6 +9,7 @@ import { M_value_Service } from "../Services/0_M_value_Service";
 import { D_Params } from "@/Components/0_M_D_Params";
 import { D_PARAMS_MAP } from "@/Components/0_M_MAP";
 import { prepare_new_M_value_for_Update_D } from "@/Components/0_M_value_Updater_D";
+import { prepare_new_M_value_for_Update_D_self_heal } from "@/Components/0_M_Dropdown_D_params_self_heal";
 import { GLOBAL_METADATA } from "@/Providers/0_M_DataProvider";
 
 import JSON_Content from "./0_M_JSON_Content";
@@ -33,13 +34,22 @@ import JSON_Content from "./0_M_JSON_Content";
  * * D_params = e.g. [ 10, 2 ] for DECIMAL [ total_digit , scale ]
  * *
  */
-export function renderDropdown(
+export function renderDropdown_D(
     M_Class_Name_List,
     fieldDataList = [],
     field_data,
 ) {
     if (fieldDataList.includes("cd::FOREIGN")) return; // FK need no other setting
-    const { M_value, set_M_value, activeField, setActiveField } = use_M_Store();
+    const {
+        M_value,
+        set_M_value,
+        activeField,
+        setActiveField,
+        d_Arrays_healed,
+        set_d_Arrays_healed,
+        isLastField,
+        set_isLastField,
+    } = use_M_Store();
     const setJSON_Content_State = use_M_Store(
         (state) => state.setJSON_Content_State,
     );
@@ -161,9 +171,166 @@ export function renderDropdown(
     useEffect(() => {
         if (!selected_D) return;
         let D_params = find_D_Params_in_GLOBAL_METADATA(selected_D);
-        if (!D_params) D_params = find_NEW_D_Params_in_M_MAP(selected_D);
+        let is_wrong_D_params_in_backend = false;
+        if (!D_params) {
+            is_wrong_D_params_in_backend = true;
+            D_params = find_NEW_D_Params_in_M_MAP(selected_D);
+        }
+
         setD_Params_State(<D_Params D_NAME={selected_D} D_params={D_params} />);
+        if (is_wrong_D_params_in_backend) {
+            /**
+             * * logic for self healing on refresh
+             * 1. save D_params to Backend App_Data.json use M_value_Service.update
+             * 2. update JSON_Content - or maybe if GLOBAL_METADATA correct, it maybe solve itself
+             */
+
+            console.log(
+                " 0. JKJKJKJKJKJKJK - Dropdown - useEffect - fieldname ",
+                fieldname,
+                "-------------------------------",
+            );
+            console.log(
+                " 1. JKJKJKJKJKJKJK - Dropdown - useEffect - Self-Healing on Refresh Logic ",
+            );
+
+            console.log(
+                " 2. JKJKJKJKJKJKJK - Dropdown - useEffect - selected_D = ",
+                selected_D,
+            );
+            console.log(
+                " 3. JKJKJKJKJKJKJK - Dropdown - useEffect - D_params = ",
+                D_params,
+            );
+
+            const config = D_PARAMS_MAP[selected_D];
+            console.log(
+                " 4. JKJKJKJKJKJKJK - Dropdown - useEffect - config = ",
+                config,
+            );
+
+            if (!config) return;
+
+            const d_Array = [
+                // if 'd::STRING' = wrong , must be Array made by D_PARAMS_MAP
+                `d::${selected_D}`,
+                ...D_PARAMS_MAP[selected_D].map((p) => p.default),
+            ]; // return e.g. ['d::STRING',255]
+            console.log(
+                " 5. JKJKJKJKJKJKJK - Dropdown - useEffect - d_Array = ",
+                d_Array,
+            );
+
+            /**
+             * keep d_Arrays_healed for update JSON_Content all at once
+             */
+            window.M_HEALING.collected[fieldname] = d_Array;
+
+            // 1. เตรียม M_value ชุดใหม่ที่ถูกซ่อมแล้ว
+            const new_M_value = prepare_new_M_value_for_Update_D_self_heal(
+                selected_D,
+                d_Array,
+                M_value,
+                set_M_value,
+                fieldname.toUpperCase(),
+            );
+
+            // console.log(
+            //     " 6. JKJKJKJKJKJKJK - Dropdown - useEffect - new_M_value = ",
+            //     new_M_value,
+            // );
+
+            // 2. อัปเดต Store ทันทีเพื่อให้ UI ทุกจุดอัปเดต
+            set_M_value(new_M_value);
+
+            // 3. บันทึก Backend (ให้ถาวร)
+            M_value_Service.update(new_M_value).then(() => {
+                console.log(
+                    "[Self-Healing] Data saved to Backend successfully.",
+                );
+                // 4. อัปเดต JSON View
+                if (window.M_HEALING.isLastField) {
+                    console.log(
+                        " 7. JKJKJKJKJKJKJK - Dropdown - useEffect - window.M_HEALING.collected = ",
+                        window.M_HEALING.collected,
+                    );
+                }
+                // setJSON_Content_State(<JSON_Content M_value={new_M_value} />);}
+            });
+        }
     }, [selected_D]);
+
+    function prepare_new_M_value_for_Update_D(
+        event,
+        D_NAME,
+        activeField,
+        old_M_value,
+        set_M_value,
+    ) {
+        const D_Array = get_D_Array(
+            event,
+            activeField,
+            old_M_value,
+            set_M_value,
+        );
+
+        const new_M_value = { ...old_M_value };
+
+        // logic to find d:: in old_M_value and replace by D_Array
+        const fieldname_UPPERCASE = Object.keys(new_M_value).find(
+            (key) => key.toLowerCase() === activeField.toLowerCase(),
+        );
+        // console.log(" 1. fieldname_UPPERCASE = ", fieldname_UPPERCASE);
+
+        const d_Class_UPPERCASE = `d::${D_NAME}`;
+        // console.log(" 2. d_Class_UPPERCASE = ", d_Class_UPPERCASE);
+
+        /**
+         * * field_data = we use this name exactly case-sensitive in whole app
+         * * e.g.
+         * * ['image', 'u::FILE', ['d::DECIMAL', 10, 2]]
+         */
+        const field_data = [...new_M_value[fieldname_UPPERCASE]];
+        // console.log(" 3. Extracted field_data (before clean):", field_data);
+
+        /**
+         * * Filter out all existing d:: , cd:: , cud::
+         * * ['image', 'd::STRING', 'u::FILE', null, null]
+         */
+        const field_data_without_d_with_null = field_data.filter((item) => {
+            // if Array the first item[0] is always String (App Convention)
+            const targetString = Array.isArray(item) ? item[0] : item;
+
+            const isD = targetString.startsWith("d::");
+
+            // remove d cd cud (return false)
+            return !isD;
+        });
+
+        /**
+         * * Filter out null items
+         * * ['image', 'd::STRING', 'u::FILE']
+         */
+        const field_data_without_d = field_data_without_d_with_null.filter(
+            (item) => item != null,
+        );
+        // console.log(" 4. field_data_without_d :", field_data_without_d);
+
+        new_M_value[fieldname_UPPERCASE] = [...field_data_without_d, D_Array];
+        // console.log(" 5. new_M_value :", new_M_value);
+
+        /**
+         * * new_field_data = data in the focused field after update cd and cud
+         * * e.g.
+         * * ['price', ['d::DECIMAL',10,2], 'u::NUMBER', 's::CURRENCY', ['cd::DEFAULT',0]]
+         */
+        const new_field_data = new_M_value[fieldname_UPPERCASE];
+        // console.log(" 6. Final new_field_data:", new_field_data);
+        // console.log(" 7. Full final new_M_value:", new_M_value);
+        // console.log("--- [DEBUG: END] ---");
+
+        return new_M_value;
+    }
 
     /**
      * * set_Selected_D

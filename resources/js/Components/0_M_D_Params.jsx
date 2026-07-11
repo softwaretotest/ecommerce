@@ -1,7 +1,7 @@
 // resources/js/Components/0_M_D_Params.jsx
 
 import { use_M_Store } from "@/Stores/0_M_Store";
-import { M_value_Service } from "../Services/0_M_value_Service";
+import { M_value_Service } from "@/Services/0_M_value_Service";
 
 import { D_PARAMS_MAP } from "@/Components/0_M_MAP";
 
@@ -41,7 +41,6 @@ export function D_Params({ D_NAME, D_params }) {
                                 M_value,
                                 set_M_value,
                                 activeField,
-                                setActiveField,
                                 setJSON_Content_State,
                             );
                         }}
@@ -58,7 +57,6 @@ async function save_M_value_Data(
     M_value,
     set_M_value,
     activeField,
-    setActiveField,
     setJSON_Content_State,
 ) {
     // prepare new data
@@ -97,8 +95,9 @@ function prepare_new_M_value_for_Update_D(
     D_NAME,
     activeField,
     old_M_value,
+    set_M_value,
 ) {
-    const D_Array = get_D_Array(event, activeField, old_M_value);
+    const D_Array = get_D_Array(event, activeField, old_M_value, set_M_value);
 
     const new_M_value = { ...old_M_value };
 
@@ -168,7 +167,7 @@ function prepare_new_M_value_for_Update_D(
  * @param {*} M_value
  * @returns D_Array e.g. ['d::DECIMAL', 10, 2] or ['d::STRING', 255]
  */
-function get_D_Array(event, activeField, M_value) {
+function get_D_Array(event, activeField, M_value, set_M_value) {
     // console.log("get_D_Array 1. fieldname event = ", event);
     // console.log("get_D_Array 1. fieldname activeField = ", activeField);
     // console.log("get_D_Array 1. fieldname M_value = ", M_value);
@@ -184,9 +183,12 @@ function get_D_Array(event, activeField, M_value) {
     // console.log("get_D_Array 3. field_data = ", field_data);
 
     /**
+     * *  find d_Class_UPPERCASE_Array
+     * *  self healing of wrong d_Class_UPPERCASE_Array
      * 2. find d_Class e.g. ['d::DECIMAL',10,2]
      * * if wrong 'd::DECIMAL'
      * * then make it right ['d::DECIMAL',10,2]
+     * * save_M_value_Data_for_self_healing_d_Class
      */
     const d_Class_UPPERCASE_Array = (() => {
         /**
@@ -203,13 +205,13 @@ function get_D_Array(event, activeField, M_value) {
         // if not in config, then d_Class_Item meant to be string
         if (!config) return d_Class_Item; //e.g. 'd::BOOLEAN' , 'd::INTEGER'
 
-        const d_Class = [
+        const d_Array = [
             // if 'd::STRING' = wrong , must be Array made by D_PARAMS_MAP
             `d::${d_Name_UPPERCASE}`,
             ...D_PARAMS_MAP[d_Name_UPPERCASE].map((p) => p.default),
         ]; // return e.g. ['d::STRING',255]
 
-        return d_Class;
+        return d_Array;
     })();
 
     // console.log(

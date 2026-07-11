@@ -1,4 +1,4 @@
-// resources/js/Components/0_M_Dropdown_for_Entities.jsx
+// resources/js/Components/0_M_Dropdown_Entities.jsx
 
 import { use_M_Option } from "@/Hooks/use_M_Option.js";
 import { use_M_Store } from "@/Stores/0_M_Store.jsx";

@@ -5,6 +5,8 @@ import { use_M_Store } from "@/Stores/0_M_Store.jsx";
 import { useScrollIntoView } from "@/hooks/useScrollIntoView";
 
 export default function JSON_Content({ M_value, index = crypto.randomUUID() }) {
+    const M_value_direct = use_M_Store((state) => state.M_value);
+
     if (!M_value) return;
 
     const activeField = use_M_Store((state) => state.activeField);
@@ -38,10 +40,6 @@ export default function JSON_Content({ M_value, index = crypto.randomUUID() }) {
         }
         return <span className="json-primitive">{JSON.stringify(value)}</span>;
     };
-
-    useEffect(() => {
-        console.log(" =)=)=)=)=)=)=) JSON_Content.jsx - M_value = ", M_value);
-    }, [M_value]);
 
     return (
         <div className="json-preview-container">

@@ -78,20 +78,6 @@ export function Focus_CD_Rule_onChange({
     console.log("NULLABLE = ", NULLABLE);
     console.log("UNIQUE = ", UNIQUE);
     console.log("REQUIRED = ", REQUIRED);
-
-    // console.log("------- M_value -------");
-    // console.log("!!!!!!!!! M_value = ", M_value);
-
-    //  สั่งอัปเดต Store ครั้งเดียวจบ
-    // const new_M_value = prepare_new_M_value_for_Update_CD(
-    //     old_M_value,
-    //     fieldname,
-    //     checked_CD_States,
-    // );
-
-    // set_M_value(new_M_value);
-    // console.log("Store Updated Successfully");
-    // console.groupEnd();
 }
 
 /**

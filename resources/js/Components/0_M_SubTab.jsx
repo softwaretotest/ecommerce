@@ -4,9 +4,10 @@ import { useScrollIntoView } from "@/hooks/useScrollIntoView";
 
 import { use_M_Store } from "@/Stores/0_M_Store.jsx";
 import { set_Focus_D_CD_States } from "@/Components/0_M_Focus_D_CD_States";
-import JSON_Content from "./0_M_JSON_Content";
 
+import JSON_Content from "@/Components/0_M_JSON_Content";
 import TabContent from "@/Components/0_M_TabContent";
+
 import "../../css/0_M_UI.css";
 
 /**
@@ -94,7 +95,7 @@ export default function SubTab({ data }) {
         setJSON_Content_State(
             <JSON_Content M_value={M_value} index={crypto.randomUUID()} />,
         );
-    }, [activeField, setActiveField, use_M_Store.getState().M_value]);
+    }, [use_M_Store.getState().M_value]);
 
     return (
         <>

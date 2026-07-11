@@ -21,12 +21,12 @@ export function prepare_new_M_value_for_Update_D(
     fieldname,
     selected_D,
 ) {
-    console.log("---------------------------------");
+    // console.log("---------------------------------");
 
-    console.log("--- [DEBUG: prepare_new_M_value] ---");
-    console.log("1. Incoming fieldname:", fieldname);
-    console.log("2. Incoming selected_D:", selected_D);
-    console.log("3. Incoming old_M_value:", old_M_value);
+    // console.log("--- [DEBUG: prepare_new_M_value] ---");
+    // console.log("1. Incoming fieldname:", fieldname);
+    // console.log("2. Incoming selected_D:", selected_D);
+    // console.log("3. Incoming old_M_value:", old_M_value);
 
     /**
      * * clone of M_value
@@ -34,7 +34,7 @@ export function prepare_new_M_value_for_Update_D(
      * * , when clicked on Main Tab APP_DATA, M_DATA, ENTITIES
      */
     const new_M_value = { ...old_M_value };
-    console.log("4. Cloned new_M_value:", new_M_value);
+    // console.log("4. Cloned new_M_value:", new_M_value);
 
     /**
      * fieldname_UPPERCASE = IMAGE, PRICE , STOCK
@@ -42,7 +42,7 @@ export function prepare_new_M_value_for_Update_D(
     const fieldname_UPPERCASE = Object.keys(new_M_value).find(
         (key) => key.toLowerCase() === fieldname.toLowerCase(),
     );
-    console.log("4.1 fieldname_UPPERCASE = ", fieldname_UPPERCASE);
+    // console.log("4.1 fieldname_UPPERCASE = ", fieldname_UPPERCASE);
 
     /**
      * * field_data = we use this name exactly case-sensitive in whole app
@@ -52,7 +52,7 @@ export function prepare_new_M_value_for_Update_D(
     const field_data = Array.isArray(new_M_value[fieldname_UPPERCASE])
         ? [...new_M_value[fieldname_UPPERCASE]]
         : [];
-    console.log("5. Extracted field_data (before clean):", field_data);
+    // console.log("5. Extracted field_data (before clean):", field_data);
 
     /**
      * * Filter out all existing d:: , cd:: , cud::
@@ -76,16 +76,16 @@ export function prepare_new_M_value_for_Update_D(
      */
     const field_data_without_d_cd_cud =
         field_data_without_d_cd_cud_with_null.filter((item) => item != null);
-    console.log(
-        "6. field_data_without_d_cd_cud :",
-        field_data_without_d_cd_cud,
-    );
+    // console.log(
+    //     "6. field_data_without_d_cd_cud :",
+    //     field_data_without_d_cd_cud,
+    // );
 
     /**
      * d_names = ['BOOLEAN', 'INTEGER', 'DECIMAL', 'STRING', 'UNSIGNED_BINT']
      */
     const d_names = Object.keys(GLOBAL_METADATA.m_data.d);
-    console.log("6.1. d_names = ", d_names);
+    // console.log("6.1. d_names = ", d_names);
 
     /**
      * * with default values from D_PARAMS_MAP
@@ -96,7 +96,7 @@ export function prepare_new_M_value_for_Update_D(
      */
     function get_D_Array_or_String() {
         const params = D_PARAMS_MAP[selected_D];
-        console.log("6.2. params = ", params);
+        // console.log("6.2. params = ", params);
 
         const d_Class_UPPERCASE = `d::${selected_D}`;
 
@@ -108,7 +108,7 @@ export function prepare_new_M_value_for_Update_D(
         return d_Class_UPPERCASE; // d_String
     }
     const D_Array_or_String = get_D_Array_or_String();
-    console.log("7. D_Array_or_String() (new items):", D_Array_or_String);
+    // console.log("7. D_Array_or_String() (new items):", D_Array_or_String);
 
     new_M_value[fieldname_UPPERCASE] = [
         ...field_data_without_d_cd_cud,
@@ -120,24 +120,11 @@ export function prepare_new_M_value_for_Update_D(
      * * ['price', ['d::DECIMAL',10,2], 'u::NUMBER', 's::CURRENCY', ['cd::DEFAULT',0]]
      */
     const new_field_data = new_M_value[fieldname_UPPERCASE];
-    console.log("8. Final new_field_data:", new_field_data);
-    console.log("9. Full final new_M_value:", new_M_value);
-    console.log("--- [DEBUG: END] ---");
+    // console.log("8. Final new_field_data:", new_field_data);
+    // console.log("9. Full final new_M_value:", new_M_value);
+    // console.log("--- [DEBUG: END] ---");
 
     return new_M_value;
-}
-
-function save_M_value_Data() {
-    // ดึง container ของ params ทั้งหมด
-    const container = document.querySelector(".field_params_container");
-    if (!container) return;
-
-    // ดึงค่า input ทุกตัวที่อยู่ในนั้น
-    const inputs = container.querySelectorAll(".field_param_input");
-    const new_params_values = Array.from(inputs).map((input) => input.value);
-
-    // เอา new_params_values ไปใช้ประกอบร่างเป็น Array ใหม่
-    console.log("!!!!!!!!!!!!! ค่าที่ดึงได้จาก UI:", new_params_values);
 }
 
 /**

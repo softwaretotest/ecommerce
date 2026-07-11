@@ -9,6 +9,14 @@ export let GLOBAL_METADATA = null;
 const MetadataContext = createContext();
 
 export const M_DataProvider = ({ children }) => {
+    useEffect(() => {
+        // เมื่อ Provider ทำงาน และ Metadata พร้อม
+        if (GLOBAL_METADATA) {
+            use_M_Store.getState().set_M_value(GLOBAL_METADATA.m_data);
+            use_M_Store.getState().initJSON_Content();
+        }
+    }, []); // รันครั้งเดียวตอน App เริ่ม
+
     const [metadata, setMetadata] = useState(null);
     const [loading, setLoading] = useState(true);
     const M_value = use_M_Store.getState().M_value;

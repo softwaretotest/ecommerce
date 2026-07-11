@@ -1,7 +1,7 @@
 // resources/js/Components/0_M_EntityField.jsx
 
 import Field from "@/Components/0_M_Field.jsx";
-import { renderDropdown_for_entities } from "@/Components/0_M_Dropdown_for_Entities";
+import { renderDropdown_for_entities } from "@/Components/0_M_Dropdown_Entities";
 
 /**
  * DB Table with DB Column in it
