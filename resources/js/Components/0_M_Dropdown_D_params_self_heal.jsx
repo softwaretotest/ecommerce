@@ -13,7 +13,9 @@ export function prepare_new_M_value_for_Update_D_self_heal(
     set_M_value,
     activeField,
 ) {
-    console.log("!!! เข้ามาในฟังก์ชัน Self-Heal แล้ว !!!");
+    console.log(
+        "!!! [ DEBUG - prepare_new_M_value_for_Update_D_self_heal ]  !!!",
+    );
     console.log("Params:", { D_NAME, d_Array, activeField });
     const new_M_value = { ...old_M_value };
 
@@ -68,7 +70,7 @@ export function prepare_new_M_value_for_Update_D_self_heal(
     const new_field_data = new_M_value[fieldname_UPPERCASE];
     // console.log(" 6. Final new_field_data:", new_field_data);
     // console.log(" 7. Full final new_M_value:", new_M_value);
-    // console.log("--- [DEBUG: END] ---");
+    // console.log("--- [DEBUG: END prepare_new_M_value_for_Update_D_self_heal ] ---");
 
     return new_M_value;
 }

@@ -74,11 +74,8 @@
         ],
         "ORDER_NR": [
             "order_nr",
-            "u::TEXT",
-            [
-                "d::STRING",
-                255
-            ]
+            "d::STRING",
+            "u::TEXT"
         ],
         "ORDER_ID": [
             "order_id",

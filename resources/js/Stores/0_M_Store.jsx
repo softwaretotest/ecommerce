@@ -6,6 +6,10 @@ import JSON_Content from "@/Components/0_M_JSON_Content";
 export const use_M_Store = create((set) => ({
     debug: true,
 
+    hasJSON_Change: {},
+    set_hasJSON_Change: (hasJSON_Change) =>
+        set({ hasJSON_Change: hasJSON_Change }),
+
     d_Arrays_healed: {},
     set_d_Arrays_healed: (d_Arrays) => set({ d_Arrays_healed: d_Arrays }),
 

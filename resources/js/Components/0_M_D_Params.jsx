@@ -7,8 +7,8 @@ import { D_PARAMS_MAP } from "@/Components/0_M_MAP";
 
 import JSON_Content from "@/Components/0_M_JSON_Content";
 
-export function D_Params({ D_NAME, D_params }) {
-    if (!D_params) return;
+export function D_Params({ D_NAME, d_params }) {
+    if (!d_params) return;
 
     const { set_M_value, activeField, setActiveField, setJSON_Content_State } =
         use_M_Store();
@@ -32,7 +32,7 @@ export function D_Params({ D_NAME, D_params }) {
                     <label className="d_param_label">{item.label}:</label>
                     <input
                         type="number"
-                        defaultValue={D_params[index]}
+                        defaultValue={d_params[index]}
                         className="d_param_input"
                         onChange={(event) => {
                             save_M_value_Data(
@@ -79,7 +79,7 @@ async function save_M_value_Data(
 /**
  * 1. Clone & Isolate
  * 2. Clean Up (Remove d:: , cd:: , cud::)
- * 3. Construct New Metadata ( Apply d:: new D_params )
+ * 3. Construct New Metadata ( Apply d:: new d_params )
  * 4. Re-assemble
  *
  * @example in M_value
@@ -160,7 +160,7 @@ function prepare_new_M_value_for_Update_D(
 /**
  * 1. get fieldname from M_value
  * 2. find d_Class e.g. d::DECIMAL
- * 3. get D_params from UI Input
+ * 3. get d_params from UI Input
  * 4. get D_Array e.g. ['d::DECIMAL', 10, 2]
  *
  * @param {*} activeField = e.g. IMAGE , NAME , PRICE , STOCK
@@ -225,7 +225,7 @@ function get_D_Array(event, activeField, M_value, set_M_value) {
 
     if (!d_Class_UPPERCASE_Array) return;
 
-    // 3. get D_params from UI Input
+    // 3. get d_params from UI Input
     const container = event.target.closest(".d_params_container");
 
     if (!container) {

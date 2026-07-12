@@ -21,14 +21,14 @@ export default function TabContent({ M_Class_Name }) {
 
     const scrollRefs = useRef({});
 
-    // defind Javascript GLOBAL Variable window.D_HEALING if not exist
-    if (typeof window !== "undefined" && !window.D_HEALING) {
-        window.D_HEALING = { isLastField: false, total: 0, collected: {} };
+    // defind Javascript GLOBAL Variable window.D_HEAL if not exist
+    if (typeof window !== "undefined" && !window.D_HEAL) {
+        window.D_HEAL = { isLastField: false, total: 0, collected: {} };
     }
 
     useEffect(() => {
         const entries = Object.entries(M_value);
-        window.D_HEALING.total = entries.length;
+        window.D_HEAL.total = entries.length;
     }, [M_value]);
 
     function render_TabContent_DOM(fieldname, field_data) {
@@ -87,10 +87,10 @@ export default function TabContent({ M_Class_Name }) {
                         // SAVE TO Javascript GLOBAL Variable
                         const isLastField =
                             index === Object.entries(M_value).length - 1;
-                        window.D_HEALING.isLastField = isLastField;
+                        window.D_HEAL.isLastField = isLastField;
                         console.log(
-                            " TabContent - window.D_HEALING.isLastField = ",
-                            window.D_HEALING.isLastField,
+                            " TabContent - window.D_HEAL.isLastField = ",
+                            window.D_HEAL.isLastField,
                         );
                         // !!! MUST HAVE return to show DOM !!!
                         return render_TabContent_DOM(fieldname, field_data);

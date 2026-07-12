@@ -9,10 +9,10 @@ import { M_value_Service } from "../Services/0_M_value_Service";
 import { D_Params } from "@/Components/0_M_D_Params";
 import { D_PARAMS_MAP } from "@/Components/0_M_MAP";
 import { prepare_new_M_value_for_Update_D } from "@/Components/0_M_value_Updater_D";
-import { prepare_new_M_value_for_Update_D_self_heal } from "@/Components/0_M_Dropdown_D_params_self_heal";
+import { D_HEAL } from "@/Components/0_M_Dropdown_D_HEAL";
 import { GLOBAL_METADATA } from "@/Providers/0_M_DataProvider";
 
-import JSON_Content from "./0_M_JSON_Content";
+import JSON_Content from "@/Components/0_M_JSON_Content";
 
 /**
  * Renders a dropdown select element
@@ -31,7 +31,7 @@ import JSON_Content from "./0_M_JSON_Content";
  * *
  * * Params:
  * * defaultValue = field name , e.g. DECIMAL , STRING
- * * D_params = e.g. [ 10, 2 ] for DECIMAL [ total_digit , scale ]
+ * * d_params = e.g. [ 10, 2 ] for DECIMAL [ total_digit , scale ]
  * *
  */
 export function renderDropdown_D(
@@ -97,7 +97,7 @@ export function renderDropdown_D(
     });
 
     let defaultValue = "";
-    let D_params = [];
+    let d_params = [];
     /**
      * * foundValue = e.g. d::INTEGER , u::TEXT , [d:DECIMAL,10,2]
      * */
@@ -105,7 +105,7 @@ export function renderDropdown_D(
         if (Array.isArray(foundValue)) {
             const [stringValue, ...params] = foundValue;
             defaultValue = stringValue.split("::")[1];
-            D_params = params;
+            d_params = params;
         }
         //case string e.g. u:: and  d::
         if (
@@ -114,14 +114,14 @@ export function renderDropdown_D(
             foundValue.includes("d::")
         ) {
             defaultValue = foundValue.split("::")[1];
-            D_params = [];
+            d_params = [];
         }
     }
     // console.log(
     //     ")=)=)=)=)=)=) Dropdown fieldname =",
     //     fieldname.padEnd(13),
-    //     "\t D_params =",
-    //     D_params,
+    //     "\t d_params =",
+    //     d_params,
     //     "\t\t foundValue =",
     //     foundValue,
     // );
@@ -134,14 +134,14 @@ export function renderDropdown_D(
     const [D_Params_State, setD_Params_State] = useState(null);
 
     /**
-     * prepare D_params for React.Component <D_Params />
+     * prepare d_params for React.Component <D_Params />
      * @param {*} D_Name_UPPERCASE
-     * @returns D_params = e.g. [10 , 2] for [DECIMAL,10,2]
+     * @returns d_params = e.g. [10 , 2] for [DECIMAL,10,2]
      */
     function find_NEW_D_Params_in_M_MAP(D_Name_UPPERCASE) {
         const definition = D_PARAMS_MAP[D_Name_UPPERCASE];
-        let D_params = definition?.map((param) => param.default);
-        return D_params;
+        let d_params = definition?.map((param) => param.default);
+        return d_params;
     }
 
     function find_D_Params_in_GLOBAL_METADATA(D_Name_UPPERCASE) {
@@ -170,93 +170,16 @@ export function renderDropdown_D(
 
     useEffect(() => {
         if (!selected_D) return;
-        let D_params = find_D_Params_in_GLOBAL_METADATA(selected_D);
-        let is_wrong_D_params_in_backend = false;
-        if (!D_params) {
-            is_wrong_D_params_in_backend = true;
-            D_params = find_NEW_D_Params_in_M_MAP(selected_D);
+        let d_params = find_D_Params_in_GLOBAL_METADATA(selected_D);
+        let is_wrong_d_params_in_backend = false;
+        if (!d_params) {
+            is_wrong_d_params_in_backend = true;
+            d_params = find_NEW_D_Params_in_M_MAP(selected_D);
         }
 
-        setD_Params_State(<D_Params D_NAME={selected_D} D_params={D_params} />);
-        if (is_wrong_D_params_in_backend) {
-            /**
-             * * logic for self healing on refresh
-             * 1. save D_params to Backend App_Data.json use M_value_Service.update
-             * 2. update JSON_Content - or maybe if GLOBAL_METADATA correct, it maybe solve itself
-             */
-
-            console.log(
-                " 0. JKJKJKJKJKJKJK - Dropdown - useEffect - fieldname ",
-                fieldname,
-                "-------------------------------",
-            );
-            console.log(
-                " 1. JKJKJKJKJKJKJK - Dropdown - useEffect - Self-Healing on Refresh Logic ",
-            );
-
-            console.log(
-                " 2. JKJKJKJKJKJKJK - Dropdown - useEffect - selected_D = ",
-                selected_D,
-            );
-            console.log(
-                " 3. JKJKJKJKJKJKJK - Dropdown - useEffect - D_params = ",
-                D_params,
-            );
-
-            const config = D_PARAMS_MAP[selected_D];
-            console.log(
-                " 4. JKJKJKJKJKJKJK - Dropdown - useEffect - config = ",
-                config,
-            );
-
-            if (!config) return;
-
-            const d_Array = [
-                // if 'd::STRING' = wrong , must be Array made by D_PARAMS_MAP
-                `d::${selected_D}`,
-                ...D_PARAMS_MAP[selected_D].map((p) => p.default),
-            ]; // return e.g. ['d::STRING',255]
-            console.log(
-                " 5. JKJKJKJKJKJKJK - Dropdown - useEffect - d_Array = ",
-                d_Array,
-            );
-
-            /**
-             * keep d_Arrays_healed for update JSON_Content all at once
-             */
-            window.D_HEALING.collected[fieldname] = d_Array;
-
-            // 1. เตรียม M_value ชุดใหม่ที่ถูกซ่อมแล้ว
-            const new_M_value = prepare_new_M_value_for_Update_D_self_heal(
-                selected_D,
-                d_Array,
-                M_value,
-                set_M_value,
-                fieldname.toUpperCase(),
-            );
-
-            // console.log(
-            //     " 6. JKJKJKJKJKJKJK - Dropdown - useEffect - new_M_value = ",
-            //     new_M_value,
-            // );
-
-            // 2. อัปเดต Store ทันทีเพื่อให้ UI ทุกจุดอัปเดต
-            set_M_value(new_M_value);
-
-            // 3. บันทึก Backend (ให้ถาวร)
-            M_value_Service.update(new_M_value).then(() => {
-                console.log(
-                    "[Self-Healing] Data saved to Backend successfully.",
-                );
-                // 4. อัปเดต JSON View
-                if (window.D_HEALING.isLastField) {
-                    console.log(
-                        " 7. JKJKJKJKJKJKJK - Dropdown - useEffect - window.D_HEALING.collected = ",
-                        window.D_HEALING.collected,
-                    );
-                }
-                // setJSON_Content_State(<JSON_Content M_value={new_M_value} />);}
-            });
+        setD_Params_State(<D_Params D_NAME={selected_D} d_params={d_params} />);
+        if (is_wrong_d_params_in_backend) {
+            D_HEAL(fieldname, selected_D, M_value, set_M_value, d_params);
         }
     }, [selected_D]);
 
