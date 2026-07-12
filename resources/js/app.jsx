@@ -16,6 +16,7 @@ createInertiaApp({
             import.meta.glob("./Pages/**/*.jsx"),
         ),
     setup({ el, App, props }) {
+        // console.count("[ROOT] App Initializing");
         const root = createRoot(el);
 
         root.render(

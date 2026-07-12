@@ -6,7 +6,11 @@ import JSON_Content from "@/Components/0_M_JSON_Content";
 export const use_M_Store = create((set) => ({
     debug: true,
 
-    hasJSON_Change: {},
+    has_M_value_Change: false,
+    set_has_M_value_Change: (has_M_value_Change) =>
+        set({ has_M_value_Change: has_M_value_Change }),
+
+    hasJSON_Change: false,
     set_hasJSON_Change: (hasJSON_Change) =>
         set({ hasJSON_Change: hasJSON_Change }),
 
@@ -16,14 +20,29 @@ export const use_M_Store = create((set) => ({
     isLastField: false,
 
     activeTab: "m_data",
-    setActiveTab: (tab) => set({ activeTab: tab }),
-
-    activeField: null,
-    setActiveField: (field) => set({ activeField: field }),
+    setActiveTab: (tab) =>
+        set((state) => {
+            if (state.debug) {
+                console.log(`[M_STORE_DEBUG] setActiveTab updated!`);
+                console.log(`[M_STORE_DEBUG] New setActiveTab :`, tab);
+                console.log("------------------------------------");
+            }
+            return { activeTab: tab };
+        }),
 
     activeSubTab: "d",
     setActiveSubTab: (subTab) => set({ activeSubTab: subTab }),
 
+    activeField: null,
+    setActiveField: (field) =>
+        set((state) => {
+            if (state.debug) {
+                console.log(`[M_STORE_DEBUG] activeField updated!`);
+                console.log(`[M_STORE_DEBUG] New activeField :`, field);
+                console.log("------------------------------------");
+            }
+            return { activeField: field };
+        }),
     JSON_Content_State: null,
     setJSON_Content_State: (JSON_Content) =>
         set({ JSON_Content_State: JSON_Content }),
@@ -40,11 +59,11 @@ export const use_M_Store = create((set) => ({
     M_value: {},
     set_M_value: (new_M_value) =>
         set((state) => {
-            // if (state.debug) {
-            //     console.log(`[M_STORE_DEBUG] M_value updated!`);
-            //     console.log(`[M_STORE_DEBUG] New M_value:`, new_M_value);
-            //     console.log("------------------------------------");
-            // }
+            if (state.debug) {
+                console.log(`[M_STORE_DEBUG] M_value updated!`);
+                console.log(`[M_STORE_DEBUG] New M_value:`, new_M_value);
+                console.log("------------------------------------");
+            }
             return { M_value: new_M_value };
         }),
 }));

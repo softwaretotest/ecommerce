@@ -192,9 +192,9 @@ export function renderDropdown_U(
         await M_value_Service.update(new_M_value);
 
         // update JSON View
-        setJSON_Content_State(
-            <JSON_Content M_value={new_M_value} index={crypto.randomUUID()} />,
-        );
+        // setJSON_Content_State(
+        //     <JSON_Content M_value={new_M_value} index={crypto.randomUUID()} />,
+        // );
     }
 
     return (

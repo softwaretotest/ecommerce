@@ -10,6 +10,7 @@ import SubTab from "@/Components/0_M_SubTab.jsx";
 import "@/../css/0_M_UI.css";
 
 export default function M_Dashboard() {
+    // console.count("[DEBUG] M_Dashboard Rendered");
     const data = use_M_Data();
     const M_value = use_M_Store((state) => state.M_value);
     const save_All_Data = use_M_Store((state) => state.save_All_Data);
@@ -25,15 +26,15 @@ export default function M_Dashboard() {
         { id: "entities", label: "ENTITIES", key: "entities" },
     ];
 
-    useEffect(() => {
-        // show that data is saving
-        const saveData = async () => {
-            console.log("Auto-saving...");
-        };
+    // useEffect(() => {
+    //     // show that data is saving
+    //     const saveData = async () => {
+    //         console.log("Auto-saving...");
+    //     };
 
-        const handler = setTimeout(saveData, 1000);
-        return () => clearTimeout(handler);
-    }, [data]); // if data is changed, it 's been saving from somewhere
+    //     const handler = setTimeout(saveData, 1000);
+    //     return () => clearTimeout(handler);
+    // }, [data]); // if data is changed, it 's been saving from somewhere
 
     return (
         <div className="dashboard-wrapper">

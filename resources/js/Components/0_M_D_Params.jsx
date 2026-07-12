@@ -12,6 +12,9 @@ export function D_Params({ D_NAME, d_params }) {
 
     const { set_M_value, activeField, setActiveField, setJSON_Content_State } =
         use_M_Store();
+    const set_has_M_value_Change = use_M_Store(
+        (state) => state.set_has_M_value_Change,
+    );
 
     const M_value = use_M_Store.getState().M_value;
     const config = D_PARAMS_MAP[D_NAME];
@@ -33,6 +36,13 @@ export function D_Params({ D_NAME, d_params }) {
                     <input
                         type="number"
                         defaultValue={d_params[index]}
+                        /**
+                         * * readOnly={!activeField}
+                         * * prevent activeField = null ,
+                         * * user must setActiveField first
+                         * * before making any change in UI
+                         */
+                        readOnly={!activeField}
                         className="d_param_input"
                         onChange={(event) => {
                             save_M_value_Data(
@@ -42,6 +52,7 @@ export function D_Params({ D_NAME, d_params }) {
                                 set_M_value,
                                 activeField,
                                 setJSON_Content_State,
+                                set_has_M_value_Change,
                             );
                         }}
                     />
@@ -58,7 +69,26 @@ async function save_M_value_Data(
     set_M_value,
     activeField,
     setJSON_Content_State,
+    set_has_M_value_Change,
 ) {
+    if (!activeField) {
+        console.log(
+            "[DEBUG - save_M_value_Data] !!!!!!?????? - WHY activeField is undefined ",
+        );
+        console.log("[DEBUG - save_M_value_Data] !!!!!!?????? - event ", event);
+        console.log(
+            "[DEBUG - save_M_value_Data] !!!!!!?????? - D_NAME ",
+            D_NAME,
+        );
+        console.log(
+            "[DEBUG - save_M_value_Data] !!!!!!?????? - M_value ",
+            M_value,
+        );
+        console.log(
+            "[DEBUG - save_M_value_Data] !!!!!!?????? - activeField ",
+            activeField,
+        );
+    }
     // prepare new data
     const new_M_value = prepare_new_M_value_for_Update_D(
         event,
@@ -67,13 +97,21 @@ async function save_M_value_Data(
         M_value,
     );
     // update M_Store
-    set_M_value(new_M_value);
+    await set_M_value(new_M_value);
+    console.log(" OPOPOPOPOPOOPOP D_Params - old M_value = ", M_value);
+
+    console.log(
+        " OPOPOPOPOPOOPOP D_Params - set_M_value(new_M_value) = ",
+        use_M_Store.getState().M_value,
+    );
 
     // update JSON files on Backend
     await M_value_Service.update(new_M_value);
+    set_has_M_value_Change(true);
 
+    // COMMENT OUT TO TEST JSON_Content update itself
     // update JSON View
-    setJSON_Content_State(<JSON_Content M_value={new_M_value} />);
+    // setJSON_Content_State(<JSON_Content M_value={new_M_value} />);
 }
 
 /**
@@ -194,7 +232,10 @@ function get_D_Array(event, activeField, M_value, set_M_value) {
         /**
          * e.g. ['d::STRING',255]
          */
-        const d_Class_Item = field_data[1];
+        const d_Class_Item = field_data.find((item) => {
+            const target = Array.isArray(item) ? item[0] : item;
+            return typeof target === "string" && target.startsWith("d::");
+        });
         if (Array.isArray(d_Class_Item)) return d_Class_Item;
 
         // d_Class_Item is a string
@@ -232,7 +273,7 @@ function get_D_Array(event, activeField, M_value, set_M_value) {
         console.error(`NOT FOUND container of field : ${activeField}`);
         return;
     }
-    console.log("get_D_Array 6. container = ", container);
+    // console.log("get_D_Array 6. container = ", container);
     const inputs = container.querySelectorAll(".d_param_input");
     const params_values = Array.from(inputs).map((input) =>
         Number(input.value),

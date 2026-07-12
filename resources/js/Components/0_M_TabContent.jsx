@@ -13,8 +13,11 @@ import DB_Tablename from "@/Components/0_M_DB_Tablename";
 
 export default function TabContent({ M_Class_Name }) {
     const M_value = use_M_Store((state) => state.M_value);
+    const activeTab = use_M_Store((state) => state.activeTab);
     const activeField = use_M_Store((state) => state.activeField);
     const setActiveField = use_M_Store((state) => state.setActiveField);
+
+    // const has_D_healed_on_Refresh = useRef(false);
 
     if (!M_value)
         return <div className="ui-placeholder">No UI for {M_Class_Name}</div>;
@@ -26,10 +29,17 @@ export default function TabContent({ M_Class_Name }) {
         window.D_HEAL = { isLastField: false, total: 0, collected: {} };
     }
 
-    useEffect(() => {
-        const entries = Object.entries(M_value);
-        window.D_HEAL.total = entries.length;
-    }, [M_value]);
+    // useEffect(() => {
+    //     if (has_D_healed_on_Refresh.current) return;
+
+    //     const entries = Object.entries(M_value);
+    //     entries.forEach(([fieldname, field_data], index) => {
+    //         window.D_HEAL.isLastField = index === entries.length - 1;
+    //         // logic D_HEAL ...
+    //     });
+
+    //     has_D_healed_on_Refresh.current = true;
+    // }, [M_value]);
 
     function render_TabContent_DOM(fieldname, field_data) {
         return (
@@ -85,13 +95,19 @@ export default function TabContent({ M_Class_Name }) {
                 {Object.entries(M_value).map(
                     ([fieldname, field_data], index) => {
                         // SAVE TO Javascript GLOBAL Variable
-                        const isLastField =
-                            index === Object.entries(M_value).length - 1;
-                        window.D_HEAL.isLastField = isLastField;
-                        console.log(
-                            " TabContent - window.D_HEAL.isLastField = ",
-                            window.D_HEAL.isLastField,
-                        );
+                        // D_HEAL only after refresh and activeTab = app_data
+                        if (
+                            !window.D_HEAL.isLastField &&
+                            activeTab === "app_data"
+                        ) {
+                            let isLastField =
+                                index === Object.entries(M_value).length - 1;
+                            window.D_HEAL.isLastField = isLastField;
+                            console.log(
+                                " TabContent - window.D_HEAL.isLastField = ",
+                                window.D_HEAL.isLastField,
+                            );
+                        }
                         // !!! MUST HAVE return to show DOM !!!
                         return render_TabContent_DOM(fieldname, field_data);
                     },

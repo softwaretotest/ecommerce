@@ -22,6 +22,7 @@ import "../../css/0_M_UI.css";
  * ,e.g. * t:: = Tablename
  */
 export default function SubTab({ data }) {
+    // console.count("[DEBUG] SubTab Rendered");
     if (!data) return;
 
     /**
@@ -50,7 +51,9 @@ export default function SubTab({ data }) {
         return data[activeSubTab] || {};
     }, [data, activeSubTab]);
 
-    use_M_Store.getState().set_M_value(M_value);
+    useEffect(() => {
+        use_M_Store.getState().set_M_value(M_value);
+    }, [activeSubTab]);
 
     const fieldnames = Object.keys(M_value || {});
 
@@ -68,7 +71,7 @@ export default function SubTab({ data }) {
             const default_SubTab = getDefaultSubTab(currentSubTabs);
             setActiveSubTab(default_SubTab);
         }
-    }, [data, activeSubTab, setActiveSubTab]);
+    }, [data, activeSubTab]);
 
     function getDefaultSubTab(default_SubTab) {
         if (default_SubTab.includes("ENTITIES")) {
@@ -91,11 +94,11 @@ export default function SubTab({ data }) {
     const setJSON_Content_State = use_M_Store(
         (state) => state.setJSON_Content_State,
     );
-    useEffect(() => {
-        setJSON_Content_State(
-            <JSON_Content M_value={M_value} index={crypto.randomUUID()} />,
-        );
-    }, [use_M_Store.getState().M_value]);
+    // useEffect(() => {
+    //     setJSON_Content_State(
+    //         <JSON_Content M_value={M_value} index={crypto.randomUUID()} />,
+    //     );
+    // }, [use_M_Store.getState().M_value]);
 
     return (
         <>
@@ -146,7 +149,11 @@ export default function SubTab({ data }) {
                 {/* right column = JSON */}
                 <div className="column-flex json-preview-column">
                     <h3 className="json-header">JSON Data</h3>
-                    {JSON_Content_State}
+                    {/* {JSON_Content_State}*/}
+                    <JSON_Content
+                    // M_value={M_value}
+                    // index={crypto.randomUUID()}
+                    />
                 </div>
             </div>
         </>

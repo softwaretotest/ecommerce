@@ -1,4 +1,4 @@
-// /Resources/Services/0_M_value_Service.js
+// /Resources/Services/0_M_value_Service.jsx
 import { use_M_Store } from "@/Stores/0_M_Store.jsx";
 import { API } from "@/Configs/api";
 
@@ -33,11 +33,12 @@ export const M_value_Service = {
             if (!response.ok) throw new Error("Server error");
 
             const result = await response.json();
-            return result;
 
             console.log(
                 `[SERVICE] Saved ${activeTab}/${activeSubTab} successfully!`,
             );
+
+            return result;
         } catch (error) {
             console.error("[SERVICE] Error saving:", error);
         }
