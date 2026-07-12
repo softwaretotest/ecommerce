@@ -224,7 +224,7 @@ export function renderDropdown_D(
             /**
              * keep d_Arrays_healed for update JSON_Content all at once
              */
-            window.M_HEALING.collected[fieldname] = d_Array;
+            window.D_HEALING.collected[fieldname] = d_Array;
 
             // 1. เตรียม M_value ชุดใหม่ที่ถูกซ่อมแล้ว
             const new_M_value = prepare_new_M_value_for_Update_D_self_heal(
@@ -249,10 +249,10 @@ export function renderDropdown_D(
                     "[Self-Healing] Data saved to Backend successfully.",
                 );
                 // 4. อัปเดต JSON View
-                if (window.M_HEALING.isLastField) {
+                if (window.D_HEALING.isLastField) {
                     console.log(
-                        " 7. JKJKJKJKJKJKJK - Dropdown - useEffect - window.M_HEALING.collected = ",
-                        window.M_HEALING.collected,
+                        " 7. JKJKJKJKJKJKJK - Dropdown - useEffect - window.D_HEALING.collected = ",
+                        window.D_HEALING.collected,
                     );
                 }
                 // setJSON_Content_State(<JSON_Content M_value={new_M_value} />);}

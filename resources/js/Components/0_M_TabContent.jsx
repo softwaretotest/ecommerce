@@ -21,16 +21,61 @@ export default function TabContent({ M_Class_Name }) {
 
     const scrollRefs = useRef({});
 
-    // กำหนดค่าเริ่มต้นถ้า window.M_HEALING ยังไม่มี
-    if (typeof window !== "undefined" && !window.M_HEALING) {
-        window.M_HEALING = { isLastField: false, total: 0, collected: {} };
+    // defind Javascript GLOBAL Variable window.D_HEALING if not exist
+    if (typeof window !== "undefined" && !window.D_HEALING) {
+        window.D_HEALING = { isLastField: false, total: 0, collected: {} };
     }
 
     useEffect(() => {
         const entries = Object.entries(M_value);
-        window.M_HEALING.total = entries.length;
+        window.D_HEALING.total = entries.length;
     }, [M_value]);
 
+    function render_TabContent_DOM(fieldname, field_data) {
+        return (
+            <div
+                key={fieldname}
+                ref={(DOM_Node) => (scrollRefs.current[fieldname] = DOM_Node)}
+                className={`form-subtab-content-row ${activeField === fieldname ? "is-focused" : ""}`}
+                onClick={() => setActiveField(fieldname)}
+            >
+                {["d", "u", "cd", "cu", "cud"].includes(M_Class_Name) && (
+                    <>
+                        <input
+                            className="M_Data_KEY"
+                            defaultValue={
+                                M_Class_Name === "t"
+                                    ? fieldname
+                                    : fieldname.toUpperCase()
+                            }
+                        />
+                        <span className="field-separator-colon">:</span>
+                        <input
+                            type="text"
+                            className="M_Data_VALUE"
+                            defaultValue={field_data}
+                        />
+                    </>
+                )}
+
+                {M_Class_Name === "s" && Array.isArray(field_data) && (
+                    <SpecialField field_data={field_data} />
+                )}
+                {M_Class_Name === "f" && Array.isArray(field_data) && (
+                    <Field field_data={field_data} M_value={M_value} />
+                )}
+                {M_Class_Name === "t" && (
+                    <DB_Tablename field_data={field_data} />
+                )}
+                {M_Class_Name === "entities" && (
+                    <EntityField
+                        field_data={field_data}
+                        table_name={fieldname}
+                    />
+                )}
+            </div>
+        );
+    }
     return (
         <>
             <div>
@@ -39,77 +84,16 @@ export default function TabContent({ M_Class_Name }) {
             <div className="input-engine-container">
                 {Object.entries(M_value).map(
                     ([fieldname, field_data], index) => {
-                        // 1. คำนวณสถานะ (อันนี้แค่เช็ค ไม่ต้อง Render)
+                        // SAVE TO Javascript GLOBAL Variable
                         const isLastField =
                             index === Object.entries(M_value).length - 1;
-                        window.M_HEALING.isLastField = isLastField;
+                        window.D_HEALING.isLastField = isLastField;
                         console.log(
-                            " TabContent - window.M_HEALING.isLastField = ",
-                            window.M_HEALING.isLastField,
+                            " TabContent - window.D_HEALING.isLastField = ",
+                            window.D_HEALING.isLastField,
                         );
-                        // 2. !!! สำคัญมาก ต้องมี return !!!
-                        return (
-                            <div
-                                key={fieldname}
-                                ref={(DOM_Node) =>
-                                    (scrollRefs.current[fieldname] = DOM_Node)
-                                }
-                                className={`form-subtab-content-row ${activeField === fieldname ? "is-focused" : ""}`}
-                                onClick={() => setActiveField(fieldname)}
-                            >
-                                {/* ใส่ Logic ของคุณที่นี่ เช่น */}
-                                {isLastField && (
-                                    <div style={{ display: "none" }}>
-                                        {/* Logic จบงาน */}
-                                    </div>
-                                )}
-
-                                {["d", "u", "cd", "cu", "cud"].includes(
-                                    M_Class_Name,
-                                ) && (
-                                    <>
-                                        <input
-                                            className="M_Data_KEY"
-                                            defaultValue={
-                                                M_Class_Name === "t"
-                                                    ? fieldname
-                                                    : fieldname.toUpperCase()
-                                            }
-                                        />
-                                        <span className="field-separator-colon">
-                                            :
-                                        </span>
-                                        <input
-                                            type="text"
-                                            className="M_Data_VALUE"
-                                            defaultValue={field_data}
-                                        />
-                                    </>
-                                )}
-
-                                {/* ส่วนประกอบอื่นๆ เหมือนเดิม */}
-                                {M_Class_Name === "s" &&
-                                    Array.isArray(field_data) && (
-                                        <SpecialField field_data={field_data} />
-                                    )}
-                                {M_Class_Name === "f" &&
-                                    Array.isArray(field_data) && (
-                                        <Field
-                                            field_data={field_data}
-                                            M_value={M_value}
-                                        />
-                                    )}
-                                {M_Class_Name === "t" && (
-                                    <DB_Tablename field_data={field_data} />
-                                )}
-                                {M_Class_Name === "entities" && (
-                                    <EntityField
-                                        field_data={field_data}
-                                        table_name={fieldname}
-                                    />
-                                )}
-                            </div>
-                        );
+                        // !!! MUST HAVE return to show DOM !!!
+                        return render_TabContent_DOM(fieldname, field_data);
                     },
                 )}
             </div>
