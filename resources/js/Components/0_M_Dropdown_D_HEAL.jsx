@@ -1,8 +1,6 @@
 // \resources\js\Components\0_M_Dropdown_D_HEAL.jsx
 
-// import { prepare_new_M_value_for_Update_D_self_heal } from "@/Components/0_M_Dropdown_D_params_self_heal";
-
-// import { prepare_new_M_value_for_Update_D } from "@/Components/0_M_value_Updater_D";
+import { prepare_new_M_value_for_Update_D_All_Fields } from "@/Components/0_M_value_Updater_D_All_Fields";
 
 import { D_PARAMS_MAP } from "@/Components/0_M_MAP";
 
@@ -21,7 +19,7 @@ export function D_HEAL(
     D_params,
     M_value_Service,
 ) {
-    const debug = true;
+    const debug = false;
     if (debug)
         console.log(
             " 0. JKJKJKJKJKJKJK - Dropdown - useEffect - fieldname ",
@@ -71,38 +69,34 @@ export function D_HEAL(
 
     let new_M_value = null;
     if (window.D_HEAL.isLastField) {
+        if (debug)
+            console.log(
+                " 6. JKJKJKJKJKJKJK - Dropdown - useEffect - window.D_HEAL.collected = ",
+                window.D_HEAL.collected,
+            );
+
         /**
          * * TODO :
          * * renew this function to update M_value
          * * by window.D_HEAL.collected all at once
          */
-        // //this does not work because , when in loop old wrong M_value overwrite new_M_value
-        // new_M_value = prepare_new_M_value_for_Update_D(
-        //     selected_D,
-        //     fieldname,
-        //     M_value,
-        // );
-    }
-    // if (!new_M_value) return;  //turn off only on debug
-
-    if (debug)
-        console.log(
-            " 6. JKJKJKJKJKJKJK - Dropdown - useEffect - new_M_value = ",
-            new_M_value,
+        new_M_value = prepare_new_M_value_for_Update_D_All_Fields(
+            window.D_HEAL.collected,
+            M_value,
         );
 
-    // M_value_Service.update(new_M_value).then(() => {
-    if (debug)
-        console.log(
-            " 5.1 JKJKJKJKJKJKJK [Self-Healing] Data saved to Backend successfully.",
-        );
-
-    if (window.D_HEAL.isLastField) {
         if (debug)
             console.log(
-                " 7. JKJKJKJKJKJKJK - Dropdown - useEffect - window.D_HEAL.collected = ",
-                window.D_HEAL.collected,
+                " 7. JKJKJKJKJKJKJK - Dropdown - useEffect - new_M_value = ",
+                new_M_value,
             );
     }
-    // });
+    if (!new_M_value) return; //turn off only on debug
+
+    M_value_Service.update(new_M_value).then(() => {
+        if (debug)
+            console.log(
+                " 8 JKJKJKJKJKJKJK [ SUCCESS - Self-Healing ] Data saved to Backend SUCCESSFULLY.",
+            );
+    });
 }

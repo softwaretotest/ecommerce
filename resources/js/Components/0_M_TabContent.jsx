@@ -23,6 +23,7 @@ export default function TabContent({ M_Class_Name }) {
         return <div className="ui-placeholder">No UI for {M_Class_Name}</div>;
 
     const scrollRefs = useRef({});
+    useScrollIntoView(activeField, scrollRefs);
 
     // defind Javascript GLOBAL Variable window.D_HEAL if not exist
     if (typeof window !== "undefined" && !window.D_HEAL) {

@@ -1,4 +1,4 @@
-// 0_M_value_Updater_CD.js
+// resources/js/Components/0_M_value_Updater_CD.js
 import { GLOBAL_METADATA } from "@/Providers/0_M_DataProvider";
 import { D_PARAMS_MAP, DEFAULT_VALUES_MAP } from "@/Components/0_M_MAP";
 
@@ -21,15 +21,22 @@ export function prepare_new_M_value_for_Update_D(
     activeField,
     old_M_value,
 ) {
-    console.log(" 0. - prepare_new_M_value_for_Update_D - D_NAME = ", D_NAME);
-    console.log(
-        " 0. - prepare_new_M_value_for_Update_D - activeField = ",
-        activeField,
-    );
-    console.log(
-        " 0. - prepare_new_M_value_for_Update_D - old_M_value = ",
-        old_M_value,
-    );
+    const debug = false;
+    if (debug)
+        console.log(
+            " 0. - prepare_new_M_value_for_Update_D - D_NAME = ",
+            D_NAME,
+        );
+    if (debug)
+        console.log(
+            " 0. - prepare_new_M_value_for_Update_D - activeField = ",
+            activeField,
+        );
+    if (debug)
+        console.log(
+            " 0. - prepare_new_M_value_for_Update_D - old_M_value = ",
+            old_M_value,
+        );
 
     const new_M_value = { ...old_M_value };
 
@@ -37,10 +44,10 @@ export function prepare_new_M_value_for_Update_D(
     const fieldname_UPPERCASE = Object.keys(new_M_value).find(
         (key) => key.toLowerCase() === activeField.toLowerCase(),
     );
-    console.log(" 1. fieldname_UPPERCASE = ", fieldname_UPPERCASE);
+    if (debug) console.log(" 1. fieldname_UPPERCASE = ", fieldname_UPPERCASE);
 
     const d_Class_UPPERCASE = `d::${D_NAME}`;
-    console.log(" 2. d_Class_UPPERCASE = ", d_Class_UPPERCASE);
+    if (debug) console.log(" 2. d_Class_UPPERCASE = ", d_Class_UPPERCASE);
 
     /**
      * * field_data = we use this name exactly case-sensitive in whole app
@@ -48,7 +55,8 @@ export function prepare_new_M_value_for_Update_D(
      * * ['image', 'u::FILE', ['d::DECIMAL', 10, 2]]
      */
     const field_data = [...new_M_value[fieldname_UPPERCASE]];
-    console.log(" 3. Extracted field_data (before clean):", field_data);
+    if (debug)
+        console.log(" 3. Extracted field_data (before clean):", field_data);
 
     /**
      * * Filter out all existing d:: , cd:: , cud::
@@ -73,7 +81,7 @@ export function prepare_new_M_value_for_Update_D(
      */
     function get_D_Array_or_String() {
         const params = D_PARAMS_MAP[D_NAME];
-        // console.log("6.2. params = ", params);
+        // if(debug)console.log("6.2. params = ", params);
 
         const d_Class_UPPERCASE = `d::${D_NAME}`;
 
@@ -86,7 +94,7 @@ export function prepare_new_M_value_for_Update_D(
     }
 
     const D_Array_or_String = get_D_Array_or_String();
-    // console.log("4.0 D_Array_or_String() (new items):", D_Array_or_String);
+    // if(debug)console.log("4.0 D_Array_or_String() (new items):", D_Array_or_String);
 
     /**
      * * Filter out null items
@@ -95,13 +103,13 @@ export function prepare_new_M_value_for_Update_D(
     const field_data_without_d = field_data_without_d_with_null.filter(
         (item) => item != null,
     );
-    console.log(" 4.1 field_data_without_d :", field_data_without_d);
+    if (debug) console.log(" 4.1 field_data_without_d :", field_data_without_d);
 
     new_M_value[fieldname_UPPERCASE] = [
         ...field_data_without_d,
         D_Array_or_String,
     ];
-    console.log(" 5. new_M_value :", new_M_value);
+    if (debug) console.log(" 5. new_M_value :", new_M_value);
 
     /**
      * * new_field_data = data in the focused field after update cd and cud
@@ -109,9 +117,9 @@ export function prepare_new_M_value_for_Update_D(
      * * ['price', ['d::DECIMAL',10,2], 'u::NUMBER', 's::CURRENCY', ['cd::DEFAULT',0]]
      */
     const new_field_data = new_M_value[fieldname_UPPERCASE];
-    console.log(" 6. Final new_field_data:", new_field_data);
-    console.log(" 7. Full final new_M_value:", new_M_value);
-    console.log("--- [DEBUG: END] ---");
+    if (debug) console.log(" 6. Final new_field_data:", new_field_data);
+    if (debug) console.log(" 7. Full final new_M_value:", new_M_value);
+    if (debug) console.log("--- [DEBUG: END] ---");
 
     return new_M_value;
 }

@@ -1,4 +1,4 @@
-// 0_M_DEFAULT_Panel.jsx
+// resources/js/Components/0_M_DEFAULT_Panel.jsx
 import { useState } from "react";
 import { use_M_Store } from "@/Stores/0_M_Store";
 import { DEFAULT_VALUES_MAP } from "./0_M_MAP";

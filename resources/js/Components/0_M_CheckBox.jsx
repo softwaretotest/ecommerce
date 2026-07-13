@@ -1,4 +1,4 @@
-// 0_M_CheckBox.jsx
+// resources/js/Components/0_M_CheckBox.jsx
 import { useEffect } from "react";
 
 import { use_M_Option } from "@/Hooks/use_M_Option.js";

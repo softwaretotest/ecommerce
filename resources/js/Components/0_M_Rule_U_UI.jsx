@@ -1,4 +1,4 @@
-// 0_M_Rule_UI.jsx
+// resources/js/Components/0_M_Rule_UI.jsx
 import { useState } from "react";
 import { use_M_Store } from "@/Stores/0_M_Store";
 

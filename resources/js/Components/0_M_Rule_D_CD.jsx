@@ -1,4 +1,4 @@
-// 0_M_Rule_D_CD.jsx
+// resources/js/Components/0_M_Rule_D_CD.jsx
 import { useState, useEffect } from "react";
 
 import { use_M_Store } from "@/Stores/0_M_Store";
