@@ -95,8 +95,5 @@ export function D_HEAL(
             //     window.D_HEAL.collected,
             // );
         }
-
-        // in near future JSON_Content will update itself, this will be removed
-        // setJSON_Content_State(<JSON_Content M_value={new_M_value} />);}
     });
 }

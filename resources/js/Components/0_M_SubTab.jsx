@@ -86,20 +86,6 @@ export default function SubTab({ data }) {
         return default_SubTab[0];
     }
 
-    /**
-     * Add <JSON_Content /> to global M_Store
-     */
-    // const [JSON_Content_State, setJSON_Content_State] = useState(null);
-    const JSON_Content_State = use_M_Store((state) => state.JSON_Content_State);
-    const setJSON_Content_State = use_M_Store(
-        (state) => state.setJSON_Content_State,
-    );
-    // useEffect(() => {
-    //     setJSON_Content_State(
-    //         <JSON_Content M_value={M_value} index={crypto.randomUUID()} />,
-    //     );
-    // }, [use_M_Store.getState().M_value]);
-
     return (
         <>
             {" "}
@@ -148,12 +134,7 @@ export default function SubTab({ data }) {
 
                 {/* right column = JSON */}
                 <div className="column-flex json-preview-column">
-                    <h3 className="json-header">JSON Data</h3>
-                    {/* {JSON_Content_State}*/}
-                    <JSON_Content
-                    // M_value={M_value}
-                    // index={crypto.randomUUID()}
-                    />
+                    <JSON_Content />
                 </div>
             </div>
         </>

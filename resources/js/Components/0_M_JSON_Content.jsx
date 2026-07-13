@@ -73,31 +73,39 @@ export default function JSON_Content() {
         return <div>loading data...</div>;
     }
 
-    // this component will render if react state  has data in it
+    /**
+     * * to prevent null
+     * * this component will render
+     * * if the state displayData has data in it
+     */
     return (
-        <div className="json-preview-container">
-            <div className="json-list">
-                {Object.entries(data[activeTab][activeSubTab]).map(
-                    //M_value = data[activeTab][activeSubTab]
-                    ([fieldname, value]) => (
-                        <div
-                            key={crypto.randomUUID() + fieldname} //fieldname = e.g. PRICE , STOCK etc.
-                            ref={(DOM_Node) =>
-                                (scrollRefs.current[fieldname] = DOM_Node)
-                            }
-                            className={`json-line ${activeField === fieldname ? "json-highlight" : ""}`}
-                            onClick={() => {
-                                setActiveField(fieldname);
-                            }}
-                        >
-                            <span className="json-fieldname">
-                                "{fieldname}"
-                            </span>
-                            : {renderArrayItem(value, 1)}
-                        </div>
-                    ),
-                )}
+        <>
+            {" "}
+            <h3 className="json-header">JSON Data</h3>
+            <div className="json-preview-container">
+                <div className="json-list">
+                    {Object.entries(data[activeTab][activeSubTab]).map(
+                        //M_value = data[activeTab][activeSubTab]
+                        ([fieldname, value]) => (
+                            <div
+                                key={crypto.randomUUID() + fieldname} //fieldname = e.g. PRICE , STOCK etc.
+                                ref={(DOM_Node) =>
+                                    (scrollRefs.current[fieldname] = DOM_Node)
+                                }
+                                className={`json-line ${activeField === fieldname ? "json-highlight" : ""}`}
+                                onClick={() => {
+                                    setActiveField(fieldname);
+                                }}
+                            >
+                                <span className="json-fieldname">
+                                    "{fieldname}"
+                                </span>
+                                : {renderArrayItem(value, 1)}
+                            </div>
+                        ),
+                    )}
+                </div>
             </div>
-        </div>
+        </>
     );
 }

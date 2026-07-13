@@ -3,7 +3,10 @@ import { use_M_Store } from "@/Stores/0_M_Store.jsx";
 import { API } from "@/Configs/api";
 
 /**
- * UPDATE M_value (M_Store)
+ * 0. save M_value to Global States M_Store
+ * 1. POST to Backend
+ * 2. notify use_M_Data to notify JSON_Content to update it self with Backend
+ *
  * @param {*} new_M_value
  * * activeTab  subTab
  * * M-DATA     CD D U CU CUD S
@@ -12,31 +15,19 @@ import { API } from "@/Configs/api";
  */
 export const M_value_Service = {
     update: async (new_M_value) => {
-        const activeTab = use_M_Store.getState().activeTab;
-        const activeSubTab = use_M_Store.getState().activeSubTab;
+        const set_M_value = use_M_Store.getState().set_M_value;
+        const set_has_M_value_Change =
+            use_M_Store.getState().set_has_M_value_Change;
+
+        // 0. save M_value to Global States M_Store
+        const result = await set_M_value(new_M_value);
 
         try {
-            // check sent POST
-            const response = await fetch(API.M_VALUE_ENDPOINT, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-XSRF-TOKEN": getCookie("XSRF-TOKEN"),
-                },
-                body: JSON.stringify({
-                    tab: activeTab,
-                    subTab: activeSubTab,
-                    data: new_M_value,
-                }),
-            });
+            // 1. POST to Backend
+            await send_POST(new_M_value);
 
-            if (!response.ok) throw new Error("Server error");
-
-            const result = await response.json();
-
-            console.log(
-                `[SERVICE] Saved ${activeTab}/${activeSubTab} successfully!`,
-            );
+            // 2. notify use_M_Data to notify JSON_Content to update it self with Backend
+            await set_has_M_value_Change(true);
 
             return result;
         } catch (error) {
@@ -44,6 +35,29 @@ export const M_value_Service = {
         }
     },
 };
+
+async function send_POST(new_M_value) {
+    const activeTab = use_M_Store.getState().activeTab;
+    const activeSubTab = use_M_Store.getState().activeSubTab;
+    const response = await fetch(API.M_VALUE_ENDPOINT, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-XSRF-TOKEN": getCookie("XSRF-TOKEN"),
+        },
+        body: JSON.stringify({
+            tab: activeTab,
+            subTab: activeSubTab,
+            data: new_M_value,
+        }),
+    });
+
+    if (!response.ok) throw new Error("Server error");
+
+    const result = await response.json();
+
+    console.log(`[SERVICE] Saved ${activeTab}/${activeSubTab} successfully!`);
+}
 
 /**
  * this to solve problem , content = null
