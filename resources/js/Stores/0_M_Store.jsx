@@ -3,7 +3,7 @@
 import { create } from "zustand";
 
 export const use_M_Store = create((set) => ({
-    debug: true,
+    debug: false,
 
     has_M_value_Change: false,
     set_has_M_value_Change: (has_M_value_Change) =>
