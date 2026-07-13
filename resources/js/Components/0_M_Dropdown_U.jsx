@@ -1,17 +1,47 @@
 // resources/js/Components/0_M_Dropdown_U.jsx
 
-import { useState, useEffect } from "react";
-
-import { use_M_Store } from "@/Stores/0_M_Store";
 import { use_M_Option } from "@/Hooks/use_M_Option";
+
+/**
+ * Prepare options for Dropdown D , U
+ * @param {*} M_Class_Name_List
+ * * M_Class_Name_List: e.g. ['d']
+ * @param {*} fieldDataList
+ * * fieldDataList: e.g.
+ * *     ['d::STRING', 'u::FILE']
+ * *     [['d::DECIMAL', 10, 2], "u::NUMBER"]
+ * *     ['d::BOOLEAN', 'u::SELECT', ['cd::DEFAULT', true]]
+ * *     ['cd::FOREIGN']
+ * @returns options for <select>
+ */
+function M_Option_U({ M_Class_Name_List, fieldDataList = [] }) {
+    console.log(
+        "APP_DATA tab - Dropdown_U  option UUUUU  M_Class_Name_List = ",
+        M_Class_Name_List,
+    );
+    const { getOptions } = use_M_Option();
+    if (!M_Class_Name_List) return null;
+    return M_Class_Name_List.flatMap((M_Class_Name) => {
+        const options = getOptions(M_Class_Name);
+
+        return options.map((item) => (
+            <option key={item} value={item}>
+                {item}
+            </option>
+        ));
+    });
+}
+
+import { useState, useEffect } from "react";
 import { M_value_Service } from "../Services/0_M_value_Service";
+import { use_M_Store } from "@/Stores/0_M_Store";
 
 import { D_Params } from "@/Components/0_M_D_Params";
 import { D_PARAMS_MAP } from "@/Components/0_M_MAP";
 import { prepare_new_M_value_for_Update_D } from "@/Components/0_M_value_Updater_D";
 import { GLOBAL_METADATA } from "@/Providers/0_M_DataProvider";
 
-import JSON_Content from "./0_M_JSON_Content";
+import JSON_Content from "@/Components/0_M_JSON_Content";
 
 /**
  * Renders a dropdown select element
@@ -135,8 +165,17 @@ export function renderDropdown_U(
     }
 
     function find_D_Params_in_GLOBAL_METADATA(D_Name_UPPERCASE) {
-        const field_data = GLOBAL_METADATA.app_data.f[fieldname.toUpperCase()];
+        const key = fieldname.toUpperCase();
+        // find in both classes app_data.f and m_data.s
+        const field_data =
+            GLOBAL_METADATA?.app_data?.f?.[key] ||
+            GLOBAL_METADATA?.m_data?.s?.[key];
 
+        // field_data if not found return null (avoid error)
+        if (!field_data || !Array.isArray(field_data)) {
+            console.warn(`[DEBUG] No field_data found for key: ${key}`);
+            return null;
+        }
         /**
          * @return  e.g. ['d::DECIMAL', 10, 10] or 'd::BOOLEAN'
          */
@@ -199,7 +238,7 @@ export function renderDropdown_U(
                 }}
             >
                 <option value="">--</option>
-                <M_Option
+                <M_Option_U
                     M_Class_Name_List={M_Class_Name_List}
                     fieldDataList={fieldDataList}
                 />
@@ -207,31 +246,4 @@ export function renderDropdown_U(
             {D_Params_State}
         </>
     );
-}
-
-/**
- * Prepare options for Dropdown D , U
- * @param {*} M_Class_Name_List
- * * M_Class_Name_List: e.g. ['d']
- * @param {*} fieldDataList
- * * fieldDataList: e.g.
- * *     ['d::STRING', 'u::FILE']
- * *     [['d::DECIMAL', 10, 2], "u::NUMBER"]
- * *     ['d::BOOLEAN', 'u::SELECT', ['cd::DEFAULT', true]]
- * *     ['cd::FOREIGN']
- * @returns options for <select>
- */
-export function M_Option({ M_Class_Name_List, fieldDataList = [] }) {
-    const { getOptions } = use_M_Option(); // ดึงจาก Hook โดยตรง
-
-    if (!M_Class_Name_List) return null;
-    return M_Class_Name_List.flatMap((M_Class_Name) => {
-        const options = getOptions(M_Class_Name); // use getOptions from Hook
-
-        return options.map((item) => (
-            <option key={item} value={item}>
-                {item}
-            </option>
-        ));
-    });
 }

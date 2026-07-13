@@ -28,9 +28,6 @@ export function use_M_Option() {
     const activeTab = use_M_Store((state) => state.activeTab);
 
     const getOptions = (M_Class_Name) => {
-        let rawData;
-
-        // เช็คว่า metadata มีตัวตนหรือไม่ก่อนทำอะไรต่อ
         if (!metadata) {
             console.error(
                 `[DEBUG ERROR] Metadata is missing/null in use_M_Option for class: ${M_Class_Name}`,
@@ -38,20 +35,28 @@ export function use_M_Option() {
             throw new Error(`Metadata is missing!`);
         }
 
+        let rawData;
+
         if (activeTab === "app_data") {
             rawData =
                 metadata?.m_data?.[M_Class_Name] ||
                 metadata?.app_data?.[M_Class_Name];
         } else if (activeTab === "entities") {
-            rawData =
-                M_Class_Name === "s"
-                    ? metadata?.m_data?.[M_Class_Name]
-                    : metadata?.app_data?.[M_Class_Name];
+            if (M_Class_Name === "s")
+                return formatData(metadata?.m_data?.["s"] || []);
+            if (M_Class_Name === "f")
+                return formatData(metadata?.app_data?.["f"] || []);
+            return [];
         } else if (activeTab === "m_data") {
-            rawData = metadata?.m_data?.[M_Class_Name];
+            // [จุดที่ 2] แก้ไขการหาค่าให้ครอบคลุมแหล่งที่มา (ถ้าอยู่ใน M_DATA แต่ต้องการ f ให้ไปหาใน app_data)
+            if (M_Class_Name === "s")
+                return formatData(metadata?.m_data?.["s"] || []);
+            if (M_Class_Name === "f")
+                return formatData(metadata?.app_data?.["f"] || []);
+
+            rawData = metadata?.m_data?.[M_Class_Name]; // d u cd cu cud
         } else {
-            console.error(`[DEBUG ERROR] Unknown activeTab: ${activeTab}`);
-            throw new Error(`Unknown activeTab: ${activeTab}`);
+            return [];
         }
 
         if (!rawData) {

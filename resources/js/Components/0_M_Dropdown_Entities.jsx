@@ -1,14 +1,16 @@
 // resources/js/Components/0_M_Dropdown_Entities.jsx
 
 import { use_M_Option } from "@/Hooks/use_M_Option.js";
-import { use_M_Store } from "@/Stores/0_M_Store.jsx";
 
-export function M_Option({ M_Class_Name_List, fieldDataList }) {
-    const { getOptions } = use_M_Option(); // ดึงจาก Hook โดยตรง
-
+function M_Option_T({ M_Class_Name_List, fieldDataList }) {
+    console.log(
+        "ENTITIES tab - Dropdown_T  option TTTTT  M_Class_Name_List = ",
+        M_Class_Name_List,
+    );
+    const { getOptions } = use_M_Option();
     if (!M_Class_Name_List) return null;
     return M_Class_Name_List.flatMap((M_Class_Name) => {
-        const options = getOptions(M_Class_Name); // use getOptions from Hook
+        const options = getOptions(M_Class_Name);
 
         return options.map((item) => (
             <option key={item} value={item}>
@@ -18,6 +20,7 @@ export function M_Option({ M_Class_Name_List, fieldDataList }) {
     });
 }
 
+import { use_M_Store } from "@/Stores/0_M_Store.jsx";
 /**
  * Renders a dropdown select element
  * *
@@ -71,17 +74,11 @@ export function renderDropdown_for_entities(
         <>
             <select className="M_field-dropdown" defaultValue={defaultValue}>
                 <option value="">--</option>
-                <M_Option
+                <M_Option_T
                     M_Class_Name_List={M_Class_Name_List}
                     fieldDataList={fieldDataList}
                 />
             </select>
-            {/* {field_params.length > 0 && (
-                <Field_Params
-                    param_name={defaultValue}
-                    field_params={field_params}
-                />
-            )} */}
         </>
     );
 }

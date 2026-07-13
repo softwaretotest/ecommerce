@@ -30,18 +30,6 @@ export default function TabContent({ M_Class_Name }) {
         window.D_HEAL = { isLastField: false, total: 0, collected: {} };
     }
 
-    // useEffect(() => {
-    //     if (has_D_healed_on_Refresh.current) return;
-
-    //     const entries = Object.entries(M_value);
-    //     entries.forEach(([fieldname, field_data], index) => {
-    //         window.D_HEAL.isLastField = index === entries.length - 1;
-    //         // logic D_HEAL ...
-    //     });
-
-    //     has_D_healed_on_Refresh.current = true;
-    // }, [M_value]);
-
     function render_TabContent_DOM(fieldname, field_data) {
         return (
             <div
@@ -96,7 +84,7 @@ export default function TabContent({ M_Class_Name }) {
                 {Object.entries(M_value).map(
                     ([fieldname, field_data], index) => {
                         // SAVE TO Javascript GLOBAL Variable
-                        // D_HEAL only after refresh and activeTab = app_data
+                        // Dropdown_D run D_HEAL only after refresh and activeTab = app_data
                         if (
                             !window.D_HEAL.isLastField &&
                             activeTab === "app_data"

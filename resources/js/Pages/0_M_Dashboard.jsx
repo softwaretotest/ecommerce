@@ -26,16 +26,6 @@ export default function M_Dashboard() {
         { id: "entities", label: "ENTITIES", key: "entities" },
     ];
 
-    // useEffect(() => {
-    //     // show that data is saving
-    //     const saveData = async () => {
-    //         console.log("Auto-saving...");
-    //     };
-
-    //     const handler = setTimeout(saveData, 1000);
-    //     return () => clearTimeout(handler);
-    // }, [data]); // if data is changed, it 's been saving from somewhere
-
     return (
         <div className="dashboard-wrapper">
             <h1 className="dashboard-header">Project M Dashboard</h1>

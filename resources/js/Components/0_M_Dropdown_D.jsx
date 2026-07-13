@@ -1,10 +1,40 @@
 // resources/js/Components/0_M_Dropdown_D.jsx
 
-import { useState, useEffect } from "react";
-
-import { use_M_Store } from "@/Stores/0_M_Store";
 import { use_M_Option } from "@/Hooks/use_M_Option";
+
+/**
+ * Prepare options for Dropdown D , U
+ * @param {*} M_Class_Name_List
+ * * M_Class_Name_List: e.g. ['d']
+ * @param {*} fieldDataList
+ * * fieldDataList: e.g.
+ * *     ['d::STRING', 'u::FILE']
+ * *     [['d::DECIMAL', 10, 2], "u::NUMBER"]
+ * *     ['d::BOOLEAN', 'u::SELECT', ['cd::DEFAULT', true]]
+ * *     ['cd::FOREIGN']
+ * @returns options for <select>
+ */
+function M_Option_D({ M_Class_Name_List, fieldDataList = [] }) {
+    console.log(
+        "APP_DATA tab - Dropdown_D  option DDDDD  M_Class_Name_List = ",
+        M_Class_Name_List,
+    );
+    const { getOptions } = use_M_Option();
+    if (!M_Class_Name_List) return null;
+    return M_Class_Name_List.flatMap((M_Class_Name) => {
+        const options = getOptions(M_Class_Name);
+
+        return options.map((item) => (
+            <option key={item} value={item}>
+                {item}
+            </option>
+        ));
+    });
+}
+
+import { useState, useEffect } from "react";
 import { M_value_Service } from "../Services/0_M_value_Service";
+import { use_M_Store } from "@/Stores/0_M_Store";
 
 import { D_Params } from "@/Components/0_M_D_Params";
 import { D_HEAL } from "@/Components/0_M_Dropdown_D_HEAL";
@@ -186,7 +216,7 @@ export function renderDropdown_D(
                 }}
             >
                 <option value="">--</option>
-                <M_Option
+                <M_Option_D
                     M_Class_Name_List={M_Class_Name_List}
                     fieldDataList={fieldDataList}
                 />
@@ -194,31 +224,4 @@ export function renderDropdown_D(
             {D_Params_State}
         </>
     );
-}
-
-/**
- * Prepare options for Dropdown D , U
- * @param {*} M_Class_Name_List
- * * M_Class_Name_List: e.g. ['d']
- * @param {*} fieldDataList
- * * fieldDataList: e.g.
- * *     ['d::STRING', 'u::FILE']
- * *     [['d::DECIMAL', 10, 2], "u::NUMBER"]
- * *     ['d::BOOLEAN', 'u::SELECT', ['cd::DEFAULT', true]]
- * *     ['cd::FOREIGN']
- * @returns options for <select>
- */
-export function M_Option({ M_Class_Name_List, fieldDataList = [] }) {
-    const { getOptions } = use_M_Option(); // ดึงจาก Hook โดยตรง
-
-    if (!M_Class_Name_List) return null;
-    return M_Class_Name_List.flatMap((M_Class_Name) => {
-        const options = getOptions(M_Class_Name); // use getOptions from Hook
-
-        return options.map((item) => (
-            <option key={item} value={item}>
-                {item}
-            </option>
-        ));
-    });
 }

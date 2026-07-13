@@ -53,7 +53,14 @@ export default function SubTab({ data }) {
 
     useEffect(() => {
         use_M_Store.getState().set_M_value(M_value);
-    }, [activeSubTab]);
+    }, []);
+
+    useEffect(() => {
+        // เพิ่มการเช็คว่า M_value มีข้อมูลจริงก่อนสั่ง set
+        if (!M_value || Object.keys(M_value).length === 0) return;
+
+        use_M_Store.getState().set_M_value(M_value);
+    }, [activeSubTab, M_value]);
 
     const fieldnames = Object.keys(M_value || {});
 

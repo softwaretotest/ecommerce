@@ -14,8 +14,30 @@ export function find_NEW_D_Params_in_M_MAP(D_Name_UPPERCASE) {
 }
 
 export function find_D_Params_in_GLOBAL_METADATA(D_Name_UPPERCASE, fieldname) {
-    const field_data = GLOBAL_METADATA.app_data.f[fieldname.toUpperCase()];
+    const key = fieldname.toUpperCase();
+    // find in both classes app_data.f and m_data.s
+    const field_data =
+        GLOBAL_METADATA?.app_data?.f?.[key] ||
+        GLOBAL_METADATA?.m_data?.s?.[key];
 
+    // field_data if not found return null (avoid error)
+    if (!field_data || !Array.isArray(field_data)) {
+        console.warn(`[DEBUG] No field_data found for key: ${key}`);
+        return null;
+    }
+
+    console.log(
+        "OPOPOPOPOPOOPO -- find_D_Params_in_GLOBAL_METADATA -- D_Name_UPPERCASE = ",
+        D_Name_UPPERCASE,
+    );
+    console.log(
+        "OPOPOPOPOPOOPO -- find_D_Params_in_GLOBAL_METADATA -- fieldname = ",
+        fieldname,
+    );
+    console.log(
+        "OPOPOPOPOPOOPO -- find_D_Params_in_GLOBAL_METADATA -- field_data = ",
+        field_data,
+    );
     /**
      * @return  e.g. ['d::DECIMAL', 10, 10] or 'd::BOOLEAN'
      */
