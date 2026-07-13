@@ -63,10 +63,6 @@ export default function JSON_Content() {
         if (hasJSON_Change) {
             set_hasJSON_Change(false);
         }
-        console.log(
-            " KLKLKLKLKLKLKLKLKKL - JSON_Content - hasJSON_Change = ",
-            hasJSON_Change,
-        );
     }, [hasJSON_Change, data, activeSubTab]);
 
     if (!displayData) {

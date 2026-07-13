@@ -1,7 +1,6 @@
 // resources/js/Stores/0_M_Store.jsx
 
 import { create } from "zustand";
-import JSON_Content from "@/Components/0_M_JSON_Content";
 
 export const use_M_Store = create((set) => ({
     debug: true,
@@ -16,8 +15,6 @@ export const use_M_Store = create((set) => ({
 
     d_Arrays_healed: {},
     set_d_Arrays_healed: (d_Arrays) => set({ d_Arrays_healed: d_Arrays }),
-
-    isLastField: false,
 
     activeTab: "m_data",
     setActiveTab: (tab) =>

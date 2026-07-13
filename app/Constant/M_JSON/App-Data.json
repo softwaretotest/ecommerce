@@ -3,20 +3,14 @@
     "f": {
         "IMAGE": [
             "image",
-            "u::FILE",
-            [
-                "d::STRING",
-                25
-            ]
+            "d::STRING",
+            "u::FILE"
         ],
         "NAME": [
             "name",
+            "d::STRING",
             "u::TEXT",
-            "cud::REQUIRED",
-            [
-                "d::STRING",
-                252
-            ]
+            "cud::REQUIRED"
         ],
         "PRICE": [
             "price",
