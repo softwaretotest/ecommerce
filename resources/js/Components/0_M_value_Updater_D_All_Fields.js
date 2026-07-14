@@ -27,19 +27,20 @@ export function prepare_new_M_value_for_Update_D_All_Fields(
     const debug = true;
     if (debug)
         console.log(
-            " DDDD-Class 0. - prepare_new_M_value_for_Update_D_All_Fields - D_HEAL_collected = ",
+            "DDDD-Class 0. - prepare_new_M_value_for_Update_D_All_Fields - D_HEAL_collected = ",
             D_HEAL_collected,
         );
     if (debug)
         console.log(
-            " DDDD-Class 0. - prepare_new_M_value_for_Update_D_All_Fields - old_M_value = ",
+            "DDDD-Class 0. - prepare_new_M_value_for_Update_D_All_Fields - old_M_value = ",
             old_M_value,
         );
 
     const new_M_value = { ...old_M_value };
+
     if (debug)
         console.log(
-            " DDDD-Class 0. - prepare_new_M_value_for_Update_D_All_Fields - new_M_value = ",
+            "DDDD-Class 0. - prepare_new_M_value_for_Update_D_All_Fields - new_M_value = ",
             new_M_value,
         );
 

@@ -5,12 +5,12 @@
             "image",
             "u::FILE",
             [
-                "d::STRING",
-                255
-            ],
-            [
                 "cd::DEFAULT",
                 null
+            ],
+            [
+                "d::STRING",
+                255
             ]
         ],
         "NAME": [

@@ -1,10 +1,11 @@
 // resources/js/Components/0_M_MAP.js
 
 export const DEFAULT_VALUES_MAP = {
-    STRING: "",
-    INTEGER: 0,
-    DECIMAL: 0,
     BOOLEAN: false,
+    DECIMAL: 0,
+    INTEGER: 0,
+    STRING: "",
+    UNSIGNED_BINT: 0,
 };
 
 export const D_PARAMS_MAP = {

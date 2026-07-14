@@ -61,7 +61,7 @@ export default function Field({ field_data }) {
             <div className="field-dropdown-grid">
                 {make_dropdown_D("D", ["d"])}
                 {make_checkbox("CD", ["cd", "cud"])}
-                {/* {make_dropdown_U("U", ["u"])} */}
+                {make_dropdown_U("U", ["u"])}
                 {make_checkbox("CU", ["cu", "cud"])}
             </div>
         </div>

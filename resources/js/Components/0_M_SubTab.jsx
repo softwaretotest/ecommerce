@@ -34,6 +34,7 @@ export default function SubTab({ data }) {
     /**
      * SET SubTab
      */
+    const activeTab = use_M_Store((state) => state.activeTab);
     const activeSubTab = use_M_Store((state) => state.activeSubTab);
     const setActiveSubTab = use_M_Store((state) => state.setActiveSubTab);
 
@@ -52,15 +53,11 @@ export default function SubTab({ data }) {
     }, [data, activeSubTab]);
 
     useEffect(() => {
-        use_M_Store.getState().set_M_value(M_value);
-    }, []);
-
-    useEffect(() => {
         // เพิ่มการเช็คว่า M_value มีข้อมูลจริงก่อนสั่ง set
         if (!M_value || Object.keys(M_value).length === 0) return;
 
         use_M_Store.getState().set_M_value(M_value);
-    }, [activeSubTab, M_value]);
+    }, [activeSubTab]);
 
     const fieldnames = Object.keys(M_value || {});
 

@@ -1,7 +1,6 @@
 // resources/js/Components/0_M_Focus_CD_Rule_onChange.jsx
 
 import { use_M_Store } from "@/Stores/0_M_Store";
-import { prepare_new_M_value_for_Update_CD } from "./0_M_value_Updater_CD";
 
 /**
  * set onChange Action for D CD checkboxes , dropdowns , inputs
@@ -122,8 +121,8 @@ function remove_from_M_value(cd_Name, fieldname, element_DOM) {
         //     " field_data_from_M_value after splice = ",
         //     field_data_from_M_value,
         // );
-        set_M_value({ ...M_value });
-        console.log(" ...M_value = ", M_value);
+        // set_M_value({ ...M_value });
+        // console.log(" ...M_value = ", M_value);
 
         //------- update UI Does not work auto. because React checked_CD this State lock checkboxes
         // we must drill checked_CD to here
@@ -176,5 +175,5 @@ function save_to_M_value(is_CD_Checked, cd_Class, fieldname) {
         [fieldname]: field_data_from_M_value,
     };
 
-    set_M_value(new_M_value);
+    // set_M_value(new_M_value);
 }
