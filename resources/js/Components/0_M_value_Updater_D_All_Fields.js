@@ -24,36 +24,39 @@ export function prepare_new_M_value_for_Update_D_All_Fields(
     D_HEAL_collected,
     old_M_value,
 ) {
-    const debug = false;
+    const debug = true;
     if (debug)
         console.log(
-            " 0. - prepare_new_M_value_for_Update_D_All_Fields - D_HEAL_collected = ",
+            " DDDD-Class 0. - prepare_new_M_value_for_Update_D_All_Fields - D_HEAL_collected = ",
             D_HEAL_collected,
         );
     if (debug)
         console.log(
-            " 0. - prepare_new_M_value_for_Update_D_All_Fields - old_M_value = ",
+            " DDDD-Class 0. - prepare_new_M_value_for_Update_D_All_Fields - old_M_value = ",
             old_M_value,
         );
 
     const new_M_value = { ...old_M_value };
     if (debug)
         console.log(
-            " 0. - prepare_new_M_value_for_Update_D_All_Fields - new_M_value = ",
+            " DDDD-Class 0. - prepare_new_M_value_for_Update_D_All_Fields - new_M_value = ",
             new_M_value,
         );
 
     for (const [key, value] of Object.entries(D_HEAL_collected)) {
         if (debug)
             console.log(
-                " 1. - prepare_new_M_value_for_Update_D_All_Fields - D_HEAL_collected : key = ",
+                "DDDD-Class 1. - prepare_new_M_value_for_Update_D_All_Fields - D_HEAL_collected : key = ",
                 key.padEnd(8),
                 "value = ",
                 value,
             );
         const fieldname_UPPERCASE = key.toUpperCase();
         if (debug)
-            console.log(" 2. - fieldname_UPPERCASE = ", fieldname_UPPERCASE);
+            console.log(
+                "DDDD-Class 2. - fieldname_UPPERCASE = ",
+                fieldname_UPPERCASE,
+            );
 
         /**
          * * field_data = we use this name exactly case-sensitive in whole app
@@ -63,12 +66,12 @@ export function prepare_new_M_value_for_Update_D_All_Fields(
         const field_data = [...new_M_value[fieldname_UPPERCASE]];
         if (debug)
             console.log(
-                " 3. - Extracted field_data (before clean):",
+                "DDDD-Class 3. - Extracted field_data (before clean):",
                 field_data,
             );
 
         /**
-         * * Filter out all existing d:: , cd:: , cud::
+         * * Filter out all existing d::
          * * ['image', 'd::STRING', 'u::FILE', null, null]
          */
         const field_data_without_d_with_null = field_data.filter((item) => {
@@ -82,7 +85,7 @@ export function prepare_new_M_value_for_Update_D_All_Fields(
         });
 
         const D_Array = value;
-        if (debug) console.log(" 4. - D_Array = ", D_Array);
+        if (debug) console.log("DDDD-Class 4. - D_Array = ", D_Array);
 
         /**
          * * Filter out null items
@@ -92,7 +95,10 @@ export function prepare_new_M_value_for_Update_D_All_Fields(
             (item) => item != null,
         );
         if (debug)
-            console.log(" 5. - field_data_without_d :", field_data_without_d);
+            console.log(
+                "DDDD-Class 5. - field_data_without_d :",
+                field_data_without_d,
+            );
 
         new_M_value[fieldname_UPPERCASE] = [...field_data_without_d, D_Array];
 
@@ -103,13 +109,14 @@ export function prepare_new_M_value_for_Update_D_All_Fields(
          */
         if (debug)
             console.log(
-                " 6. new_M_value[fieldname_UPPERCASE]:",
+                "DDDD-Class 6. new_M_value[fieldname_UPPERCASE]:",
                 new_M_value[fieldname_UPPERCASE],
             );
     }
 
-    if (debug) console.log(" 8. - Full final new_M_value:", new_M_value);
-    if (debug) console.log("--- [DEBUG: END] ---");
+    if (debug)
+        console.log("DDDD-Class 8. - Full final new_M_value:", new_M_value);
+    if (debug) console.log("DDDD-Class --- [DEBUG: END] ---");
 
     return new_M_value;
 }

@@ -6,16 +6,15 @@ import { use_M_Option } from "@/Hooks/use_M_Option.js"; // Import new hook
 import { use_M_Store } from "@/Stores/0_M_Store.jsx";
 
 export default function Field({ field_data }) {
-    const { getOptions } = use_M_Option(); // Use the hook directly
-    const [fieldname, ...fieldDataList] = field_data;
     const { activeTab, activeSubTab } = use_M_Store();
+    const fieldname = field_data[0];
 
     function make_dropdown_D(label, names) {
         return (
             <>
                 <div className="dropdown-column">
                     <div className="dropdown-label">{label}</div>
-                    {renderDropdown_D(names, fieldDataList, field_data)}
+                    {renderDropdown_D(names, field_data)}
                 </div>
             </>
         );
@@ -26,7 +25,7 @@ export default function Field({ field_data }) {
             <>
                 <div className="dropdown-column">
                     <div className="dropdown-label">{label}</div>
-                    {renderDropdown_U(names, fieldDataList, field_data)}
+                    {renderDropdown_U(names, field_data)}
                 </div>
             </>
         );
@@ -37,12 +36,7 @@ export default function Field({ field_data }) {
             <>
                 <div className="dropdown-column">
                     <div className="dropdown-label">{label}</div>
-                    {renderCheckboxList(
-                        names,
-                        fieldDataList,
-                        label,
-                        field_data,
-                    )}
+                    {renderCheckboxList(names, label, field_data)}
                 </div>
             </>
         );
@@ -67,7 +61,7 @@ export default function Field({ field_data }) {
             <div className="field-dropdown-grid">
                 {make_dropdown_D("D", ["d"])}
                 {make_checkbox("CD", ["cd", "cud"])}
-                {make_dropdown_U("U", ["u"])}
+                {/* {make_dropdown_U("U", ["u"])} */}
                 {make_checkbox("CU", ["cu", "cud"])}
             </div>
         </div>

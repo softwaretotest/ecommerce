@@ -1,82 +1,27 @@
 // resources/js/Components/0_M_Dropdown_Entities.jsx
 
-import { use_M_Option } from "@/Hooks/use_M_Option.js";
+import { use_M_Store } from "@/Stores/0_M_Store";
+import { M_Option } from "@/Components/0_M_Option";
 
-function M_Option_T({ M_Class_Name_List, fieldDataList }) {
-    console.log(
-        "ENTITIES tab - Dropdown_T  option TTTTT  M_Class_Name_List = ",
-        M_Class_Name_List,
-    );
-    const { getOptions } = use_M_Option();
-    if (!M_Class_Name_List) return null;
-    return M_Class_Name_List.flatMap((M_Class_Name) => {
-        const options = getOptions(M_Class_Name);
-
-        return options.map((item) => (
-            <option key={item} value={item}>
-                {item}
-            </option>
-        ));
-    });
-}
-
-import { use_M_Store } from "@/Stores/0_M_Store.jsx";
 /**
- * Renders a dropdown select element
- * *
- * * Example usage:
- * * M_Class_Name_List: ["f"]
- * * fieldDataList: ["f::ORDER_NR"]
- * *
- * * Result:
- * * <select defaultValue="ORDER_NR"> ... </select>
- * *
- * * Params:
- * * defaultValue = field name , e.g. DECIMAL , STRING
- * * field_params = e.g. for DECIMAL ( total_digit , scale )
- * *
+ * *Renders a dropdown select element
+ * @param f_s_Class_Array = all f_s_Class_Array of table t::orders
+ * * e.g. ['f::ORDER_NR', 'f::PRODUCT_ID', 'f::USER_ID', 'f::QUANTITY', 'f::CONFIRM_ORDER']
+ * @param f_s_Class_Name = e.g. 's::EMAIL' , 'f::NAME' , 'f::USER_ID' etc.
+ * @returns  A select-input with defaultValue and option for Entities
  */
-export function renderDropdown_for_entities(
-    M_Class_Name_List,
-    fieldDataList = [],
-    field_data,
-    M_value,
-    activeSubTab,
-) {
-    const { activeTab } = use_M_Store();
+export function renderDropdown_for_entities(f_s_Class_Array, f_s_Class_Name) {
+    const M_Class_Name_List = ["f", "s"];
 
-    const foundValue = fieldDataList.find((item) => {
-        let valueToTest = Array.isArray(item) ? item[0] : item;
-        return (
-            typeof valueToTest === "string" &&
-            M_Class_Name_List.some((c) => valueToTest.startsWith(c + "::"))
-        );
-    });
-    // console.log("[1] foundValue:", foundValue);
-
-    let defaultValue = "";
-    let field_params = [];
-
-    if (foundValue) {
-        if (Array.isArray(foundValue)) {
-            const [stringValue, ...params] = foundValue;
-            defaultValue = stringValue.split("::")[1];
-            field_params = params;
-        } else {
-            defaultValue = foundValue.split("::")[1];
-            field_params = [];
-        }
-    }
-    // console.log("[2] defaultValue :", defaultValue);
-    // console.log("[3] field_params :", field_params);
+    let defaultValue = f_s_Class_Name.split("::")[1];
 
     return (
         <>
             <select className="M_field-dropdown" defaultValue={defaultValue}>
                 <option value="">--</option>
-                <M_Option_T
+                <M_Option
                     M_Class_Name_List={M_Class_Name_List}
-                    fieldDataList={fieldDataList}
+                    field_data={f_s_Class_Array}
                 />
             </select>
         </>

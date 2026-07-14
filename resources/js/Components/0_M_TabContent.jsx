@@ -68,7 +68,7 @@ export default function TabContent({ M_Class_Name }) {
                 )}
                 {M_Class_Name === "entities" && (
                     <EntityField
-                        field_data={field_data}
+                        f_s_Class_Array={field_data}
                         table_name={fieldname}
                     />
                 )}

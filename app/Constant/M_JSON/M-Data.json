@@ -31,14 +31,13 @@
     "s": {
         "EMAIL": [
             "email",
+            "d::STRING",
             "u::TEXT",
-            "d::",
-            "cd::FOREIGN"
+            "cd::UNIQUE"
         ],
         "CURRENCY": [
             "currency",
-            "u::TEL",
-            "d::INTEGER"
+            "u::TEL"
         ]
     }
 }

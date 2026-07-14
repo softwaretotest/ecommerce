@@ -1,44 +1,11 @@
 // resources/js/Components/0_M_Dropdown_D.jsx
 
-import { use_M_Option } from "@/Hooks/use_M_Option";
-
-/**
- * Prepare options for Dropdown D , U
- * @param {*} M_Class_Name_List
- * * M_Class_Name_List: e.g. ['d']
- * @param {*} fieldDataList
- * * fieldDataList: e.g.
- * *     ['d::STRING', 'u::FILE']
- * *     [['d::DECIMAL', 10, 2], "u::NUMBER"]
- * *     ['d::BOOLEAN', 'u::SELECT', ['cd::DEFAULT', true]]
- * *     ['cd::FOREIGN']
- * @returns options for <select>
- */
-function M_Option_D({ M_Class_Name_List, fieldDataList = [] }) {
-    console.log(
-        "APP_DATA tab - Dropdown_D  option DDDDD  M_Class_Name_List = ",
-        M_Class_Name_List,
-    );
-    const { getOptions } = use_M_Option();
-    if (!M_Class_Name_List) return null;
-    return M_Class_Name_List.flatMap((M_Class_Name) => {
-        const options = getOptions(M_Class_Name);
-
-        return options.map((item) => (
-            <option key={item} value={item}>
-                {item}
-            </option>
-        ));
-    });
-}
-
 import { useState, useEffect } from "react";
-import { M_value_Service } from "../Services/0_M_value_Service";
+import { M_value_Service } from "@/Services/0_M_value_Service";
 import { use_M_Store } from "@/Stores/0_M_Store";
-
+import { M_Option } from "@/Components/0_M_Option";
 import { D_Params } from "@/Components/0_M_D_Params";
 import { D_HEAL } from "@/Components/0_M_Dropdown_D_HEAL";
-
 import { prepare_new_M_value_for_Update_D } from "@/Components/0_M_value_Updater_D";
 import {
     find_NEW_D_Params_in_M_MAP,
@@ -50,11 +17,6 @@ import {
  * *
  * * Example usage:
  * * M_Class_Name_List: e.g. ['d']
- * * fieldDataList: e.g.
- * *     ['d::STRING', 'u::FILE']
- * *     [['d::DECIMAL', 10, 2], "u::NUMBER"]
- * *     ['d::BOOLEAN', 'u::SELECT', ['cd::DEFAULT', true]]
- * *     ['cd::FOREIGN']
  * * field_data = e.g. ['image', 'd::STRING', 'u::FILE']
  * *
  * * defaultValue = only for refresh e.g.
@@ -65,13 +27,28 @@ import {
  * * d_params = e.g. [ 10, 2 ] for DECIMAL [ total_digit , scale ]
  * *
  */
-export function renderDropdown_D(
-    M_Class_Name_List,
-    fieldDataList = [],
-    field_data,
-) {
+export function renderDropdown_D(M_Class_Name_List, field_data) {
     const debug = false;
-    if (fieldDataList.includes("cd::FOREIGN")) return; // FK need no other setting
+    const fieldDataList = field_data ? field_data.slice(1) : [];
+
+    if (field_data.includes("cd::FOREIGN")) {
+        if (debug)
+            console.log(
+                "1. JKLJKJKLJKLJKLJKLJKLJ - renderDropdown_D - M_Class_Name_List",
+                M_Class_Name_List,
+            );
+        if (debug)
+            console.log(
+                "1. JKLJKJKLJKLJKLJKLJKLJ - renderDropdown_D - field_data",
+                field_data,
+            );
+        if (debug)
+            console.log(
+                "1. JKLJKJKLJKLJKLJKLJKLJ - renderDropdown_D - fieldDataList",
+                fieldDataList,
+            );
+    }
+
     const {
         M_value,
         set_M_value,
@@ -119,8 +96,7 @@ export function renderDropdown_D(
          * // t:: f:: s:: u:: d::
          */
         let isMatch =
-            typeof valueToTest === "string" &&
-            M_Class_Name_List.some((c) => valueToTest.startsWith(c + "::"));
+            typeof valueToTest === "string" && valueToTest.startsWith("d::");
 
         return isMatch;
     });
@@ -131,15 +107,17 @@ export function renderDropdown_D(
      * * D_String_or_Array = e.g. d::INTEGER , u::TEXT , [d:DECIMAL,10,2]
      * */
     if (D_String_or_Array) {
-        if (Array.isArray(D_String_or_Array)) {
+        if (
+            Array.isArray(D_String_or_Array) &&
+            D_String_or_Array[0].includes("d::")
+        ) {
             const [stringValue, ...params] = D_String_or_Array;
             defaultValue = stringValue.split("::")[1];
             d_params = params;
         }
         //case string e.g. u:: and  d::
         if (
-            typeof D_String_or_Array === "string" ||
-            D_String_or_Array.includes("u::") ||
+            typeof D_String_or_Array === "string" &&
             D_String_or_Array.includes("d::")
         ) {
             defaultValue = D_String_or_Array.split("::")[1];
@@ -148,7 +126,7 @@ export function renderDropdown_D(
     }
     if (debug)
         console.log(
-            ")=)=)=)=)=)=) Dropdown fieldname =",
+            "2. JKLJKJKLJKLJKLJKLJKLJ - renderDropdown_D - Dropdown fieldname =",
             fieldname.padEnd(13),
             "\t d_params =",
             d_params,
@@ -189,7 +167,7 @@ export function renderDropdown_D(
         const new_selected_D = event.target.value;
         if (debug)
             console.log(
-                "PèPèPèPèPèPèPèPèPè Dropdown_D - set_D_Action - new_selected_D =",
+                "3. JKLJKJKLJKLJKLJKLJKLJ - renderDropdown_D - set_D_Action - new_selected_D =",
                 new_selected_D,
             );
         // update UI
@@ -216,9 +194,10 @@ export function renderDropdown_D(
                 }}
             >
                 <option value="">--</option>
-                <M_Option_D
+                <M_Option
                     M_Class_Name_List={M_Class_Name_List}
-                    fieldDataList={fieldDataList}
+                    // fieldDataList={fieldDataList}
+                    field_data={field_data}
                 />
             </select>
             {D_Params_State}

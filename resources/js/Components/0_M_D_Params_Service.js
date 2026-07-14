@@ -17,29 +17,23 @@ export function find_D_Params_in_GLOBAL_METADATA(D_Name_UPPERCASE, fieldname) {
     const key = fieldname.toUpperCase();
     // find in both classes app_data.f and m_data.s
     const field_data =
-        GLOBAL_METADATA?.app_data?.f?.[key] ||
-        GLOBAL_METADATA?.m_data?.s?.[key];
+        GLOBAL_METADATA?.app_data?.f?.[fieldname.toUpperCase()] ||
+        GLOBAL_METADATA?.m_data?.s?.[fieldname.toUpperCase()];
+    // console.log(
+    //     "OPOPOPOPOPOOPO -- find_D_Params_in_GLOBAL_METADATA -- D_Name_UPPERCASE = ",
+    //     D_Name_UPPERCASE,
+    // );
+    // console.log(
+    //     "OPOPOPOPOPOOPO -- find_D_Params_in_GLOBAL_METADATA -- fieldname = ",
+    //     fieldname,
+    // );
+    // console.log(
+    //     "OPOPOPOPOPOOPO -- find_D_Params_in_GLOBAL_METADATA -- field_data = ",
+    //     field_data,
+    // );
 
-    // field_data if not found return null (avoid error)
-    if (!field_data || !Array.isArray(field_data)) {
-        console.warn(`[DEBUG] No field_data found for key: ${key}`);
-        return null;
-    }
-
-    console.log(
-        "OPOPOPOPOPOOPO -- find_D_Params_in_GLOBAL_METADATA -- D_Name_UPPERCASE = ",
-        D_Name_UPPERCASE,
-    );
-    console.log(
-        "OPOPOPOPOPOOPO -- find_D_Params_in_GLOBAL_METADATA -- fieldname = ",
-        fieldname,
-    );
-    console.log(
-        "OPOPOPOPOPOOPO -- find_D_Params_in_GLOBAL_METADATA -- field_data = ",
-        field_data,
-    );
     /**
-     * @return  e.g. ['d::DECIMAL', 10, 10] or 'd::BOOLEAN'
+     * ['d::DECIMAL', 10, 10] or 'd::BOOLEAN'
      */
     const d_Class_Item = field_data.find((item) => {
         const target = Array.isArray(item) ? item[0] : item;
@@ -70,7 +64,7 @@ export function find_D_Params_in_GLOBAL_METADATA(D_Name_UPPERCASE, fieldname) {
  * @returns D_Array e.g. ['d::DECIMAL', 10, 2] or ['d::STRING', 255]
  */
 export function get_D_Array(event, activeField, M_value, set_M_value) {
-    const debug = true;
+    const debug = false;
     if (debug) console.log("get_D_Array 1. fieldname event = ", event);
     if (debug)
         console.log("get_D_Array 1. fieldname activeField = ", activeField);

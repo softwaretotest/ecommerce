@@ -8,12 +8,13 @@ import { use_M_Store } from "@/Stores/0_M_Store";
 
 export function renderCheckboxList(
     M_Class_Name_List,
-    fieldDataList = [],
     group_label,
     field_data,
     // M_value,
     // activeSubTab,
 ) {
+    const [fieldname, ...fieldDataList] = field_data;
+
     const { getOptions } = use_M_Option();
 
     // console.log("0_M_CheckBox.jsx - M_Class_Name_List:", M_Class_Name_List);

@@ -62,7 +62,7 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
             fieldname,
             checked_CD_States,
         );
-
+        console.log("KLKLKLKKLKLKLKL - CD_Rule - new_M_value = ", new_M_value);
         await M_value_Service.update(new_M_value);
     }
 

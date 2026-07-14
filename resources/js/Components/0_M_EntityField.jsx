@@ -4,8 +4,7 @@ import Field from "@/Components/0_M_Field.jsx";
 import { renderDropdown_for_entities } from "@/Components/0_M_Dropdown_Entities";
 
 /**
- * DB Table with DB Column in it
- * *
+ * * DB Table with DB Column in it
  * * {
  * *     "_comment": "\/M_JSON\/Entities.json",
  * *  "entities": {
@@ -19,7 +18,7 @@ import { renderDropdown_for_entities } from "@/Components/0_M_Dropdown_Entities"
  * *     }
  * * }
  */
-export default function EntityField({ field_data, table_name }) {
+export default function EntityField({ f_s_Class_Array, table_name }) {
     return (
         <div className="entity-wrapper-box">
             <div className="entity-header">
@@ -34,11 +33,11 @@ export default function EntityField({ field_data, table_name }) {
             <div className="fields-container">
                 <label>Fields for this DB Table</label>
 
-                {field_data.map((fieldItem, index) => (
+                {f_s_Class_Array.map((f_s_Class_Name, index) => (
                     <div key={index} className="field-row">
                         {renderDropdown_for_entities(
-                            ["f", "s"], // e.g. f::NAME, f::PRICE, f::STOCK, s::EMAIL
-                            [fieldItem],
+                            f_s_Class_Array,
+                            f_s_Class_Name,
                         )}
                     </div>
                 ))}
