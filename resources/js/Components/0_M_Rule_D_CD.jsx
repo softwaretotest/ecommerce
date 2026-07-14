@@ -16,7 +16,6 @@ import { Focus_CD_Rule_onChange } from "@/Components/0_M_Focus_CD_Rule_onChange"
  * @param {*} ALL_DB_options e.g. ["NULLABLE", "PRIMARY", ...] (all allow options)
  */
 export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
-    // console.log("Rule_D_CD.jsx - DB_options = ", DB_options);
     const [checked_CD, setChecked_CD] = useState(DB_options);
 
     const setJSON_Content_State = use_M_Store(
@@ -62,14 +61,13 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
             fieldname,
             checked_CD_States,
         );
-        console.log("KLKLKLKKLKLKLKL - CD_Rule - new_M_value = ", new_M_value);
+
         await M_value_Service.update(new_M_value);
     }
 
     return (
         <div className="M_checkbox-list">
             {ALL_DB_options.map((option) => (
-                // console.log("Rule_D_CD.jsx - checked_CD = ", checked_CD),
                 <div key={option} className="M_checkbox-item">
                     <label>
                         <input
@@ -86,14 +84,6 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
                         />
                         {option}
                     </label>
-                    {/* show or hide when user click on checkbox */}
-                    {/* MUCH MORE STRICT CONDITIONS, COULD PREVENT ERRORS */}
-                    {/* {((activeTab === "app_data" && activeSubTab === "f") ||
-                        (activeTab === "m_data" && activeSubTab === "s")) &&
-                        checked_CD.includes("DEFAULT") &&
-                        option === "DEFAULT" && (
-                            <DEFAULT_Panel field_data={field_data} />
-                        )} */}
 
                     {checked_CD.includes("DEFAULT") && option === "DEFAULT" && (
                         <DEFAULT_Panel field_data={field_data} />

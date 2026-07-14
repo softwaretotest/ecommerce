@@ -17,15 +17,13 @@ export default function TabContent({ M_Class_Name }) {
     const activeField = use_M_Store((state) => state.activeField);
     const setActiveField = use_M_Store((state) => state.setActiveField);
 
-    // const has_D_healed_on_Refresh = useRef(false);
-
     if (!M_value)
         return <div className="ui-placeholder">No UI for {M_Class_Name}</div>;
 
     const scrollRefs = useRef({});
     useScrollIntoView(activeField, scrollRefs);
 
-    // defind Javascript GLOBAL Variable window.D_HEAL if not exist
+    // define Javascript GLOBAL Variable window.D_HEAL if not exist
     if (typeof window !== "undefined" && !window.D_HEAL) {
         window.D_HEAL = { isLastField: false, total: 0, collected: {} };
     }
@@ -92,10 +90,10 @@ export default function TabContent({ M_Class_Name }) {
                             let isLastField =
                                 index === Object.entries(M_value).length - 1;
                             window.D_HEAL.isLastField = isLastField;
-                            console.log(
-                                " TabContent - window.D_HEAL.isLastField = ",
-                                window.D_HEAL.isLastField,
-                            );
+                            // console.log(
+                            //     " TabContent - window.D_HEAL.isLastField = ",
+                            //     window.D_HEAL.isLastField,
+                            // );
                         }
                         // !!! MUST HAVE return to show DOM !!!
                         return render_TabContent_DOM(fieldname, field_data);

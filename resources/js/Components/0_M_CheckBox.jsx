@@ -6,20 +6,24 @@ import { CD_Rule } from "@/Components/0_M_Rule_D_CD";
 import { UI_Rule } from "@/Components/0_M_Rule_U_UI";
 import { use_M_Store } from "@/Stores/0_M_Store";
 
-export function renderCheckboxList(
-    M_Class_Name_List,
-    group_label,
-    field_data,
-    // M_value,
-    // activeSubTab,
-) {
+export function renderCheckboxList(M_Class_Name_List, group_label, field_data) {
+    const debug = false;
     const [fieldname, ...fieldDataList] = field_data;
 
     const { getOptions } = use_M_Option();
 
-    // console.log("0_M_CheckBox.jsx - M_Class_Name_List:", M_Class_Name_List);
-    // console.log("0_M_CheckBox.jsx - fieldDataList:", fieldDataList);
-    // console.log("0_M_CheckBox.jsx - group_label:", group_label);
+    if (debug)
+        console.log(" 1. START----------------------------------------------");
+    if (debug)
+        console.log(
+            " 1. 0_M_CheckBox.jsx - M_Class_Name_List:",
+            M_Class_Name_List,
+        );
+    if (debug)
+        console.log(" 1. 0_M_CheckBox.jsx - fieldDataList:", fieldDataList);
+    if (debug) console.log(" 1. 0_M_CheckBox.jsx - group_label:", group_label);
+    if (debug)
+        console.log(" 1. ------------------------------------------------END");
 
     if (!Array.isArray(fieldDataList)) return null;
 
@@ -63,8 +67,12 @@ export function renderCheckboxList(
               )
             : [];
 
-    // console.log("0_M_CheckBox.jsx - DB_options:", DB_options);
-    // console.log("0_M_CheckBox.jsx - UI_options:", UI_options);
+    if (debug) console.log(" 2. 0_M_CheckBox.jsx - DB_options:", DB_options);
+    if (debug)
+        console.log(" 2. 0_M_CheckBox.jsx - ALL_DB_options:", ALL_DB_options);
+    if (debug) console.log(" 3. 0_M_CheckBox.jsx - UI_options:", UI_options);
+    if (debug)
+        console.log(" 3. 0_M_CheckBox.jsx - ALL_UI_options:", ALL_UI_options);
 
     return (
         <>

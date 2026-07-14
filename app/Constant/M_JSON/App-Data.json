@@ -4,16 +4,23 @@
         "IMAGE": [
             "image",
             "u::FILE",
-            "d::BOOLEAN"
-        ],
-        "NAME": [
-            "name",
-            "u::TEXT",
             [
                 "d::STRING",
                 255
             ],
-            "cud::REQUIRED"
+            [
+                "cd::DEFAULT",
+                null
+            ]
+        ],
+        "NAME": [
+            "name",
+            "u::TEXT",
+            "cud::REQUIRED",
+            [
+                "d::STRING",
+                255
+            ]
         ],
         "PRICE": [
             "price",
