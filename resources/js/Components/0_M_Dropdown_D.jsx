@@ -29,7 +29,7 @@ import {
  */
 export function renderDropdown_D(M_Class_Name_List, field_data) {
     const debug = false;
-    const fieldDataList = field_data ? field_data.slice(1) : [];
+    const fielddata_without_fieldname = field_data ? field_data.slice(1) : [];
 
     if (field_data.includes("cd::FOREIGN")) {
         if (debug)
@@ -44,8 +44,8 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
             );
         if (debug)
             console.log(
-                "1. JKLJKJKLJKLJKLJKLJKLJ - renderDropdown_D - fieldDataList",
-                fieldDataList,
+                "1. JKLJKJKLJKLJKLJKLJKLJ - renderDropdown_D - fielddata_without_fieldname",
+                fielddata_without_fieldname,
             );
     }
 
@@ -69,7 +69,7 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
      * * M_Class_Name_List.some((c) => valueToTest.startsWith(c + "::"))
      * * TO HARDCODE LIKE THIS
      * * const VALID_PREFIXES = ["t::", "f::", "s::", "u::", "d::"];
-     * * const D_String_or_Array = fieldDataList.find((item, index) => {
+     * * const D_String_or_Array = fielddata_without_fieldname.find((item, index) => {
      * *    let valueToTest = Array.isArray(item) ? item[0] : item;
      * *
      * *    let isMatch =
@@ -89,7 +89,7 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
      * *
      * * BECAUSE, IT WILL REMOVE t:: Dropdown its selected values
      */
-    const D_String_or_Array = fieldDataList.find((item) => {
+    const D_String_or_Array = fielddata_without_fieldname.find((item) => {
         let valueToTest = Array.isArray(item) ? item[0] : item;
 
         /**
@@ -196,7 +196,7 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
                 <option value="">--</option>
                 <M_Option
                     M_Class_Name_List={M_Class_Name_List}
-                    // fieldDataList={fieldDataList}
+                    // fielddata_without_fieldname={fielddata_without_fieldname}
                     field_data={field_data}
                 />
             </select>

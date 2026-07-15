@@ -40,13 +40,6 @@ export const use_M_Store = create((set) => ({
             }
             return { activeField: field };
         }),
-    JSON_Content_State: null,
-    setJSON_Content_State: (JSON_Content) =>
-        set({ JSON_Content_State: JSON_Content }),
-
-    // e.g ['cd::DEFAULT', 10, 2]
-    DEFAULT_Panel: [],
-    set_DEFAULT_Panel: (arrayValue) => set({ DEFAULT_Panel: arrayValue }),
 
     /**
      * * M_value = all Data from each json file

@@ -21,7 +21,7 @@ export function prepare_new_M_value_for_Update_D(
     activeField,
     old_M_value,
 ) {
-    const debug = false;
+    const debug = true;
     if (debug)
         console.log(
             " DDDD-Class  0. - prepare_new_M_value_for_Update_D - D_NAME = ",
@@ -117,8 +117,21 @@ export function prepare_new_M_value_for_Update_D(
             field_data_without_d,
         );
 
+    /**
+     * * if default_checked , then reset CD::DEFAULT
+     * * that means ,
+     * * if found CD::DEFAULT , then get DEFAULT_VALUES for D_NAME
+     */
+    const new_field_data_DEFAULT_HEAL = field_data_without_d.map((item) => {
+        if (Array.isArray(item) && item[0] === "cd::DEFAULT") {
+            const new_default = DEFAULT_VALUES_MAP[D_NAME]; // ดึงค่าเริ่มต้นใหม่ตาม Type
+            return ["cd::DEFAULT", new_default];
+        }
+        return item;
+    });
+
     new_M_value[fieldname_UPPERCASE] = [
-        ...field_data_without_d,
+        ...new_field_data_DEFAULT_HEAL,
         D_Array_or_String,
     ];
     if (debug) console.log(" DDDD-Class  5. new_M_value :", new_M_value);

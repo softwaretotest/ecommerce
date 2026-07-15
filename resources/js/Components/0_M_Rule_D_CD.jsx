@@ -18,10 +18,6 @@ import { Focus_CD_Rule_onChange } from "@/Components/0_M_Focus_CD_Rule_onChange"
 export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
     const [checked_CD, setChecked_CD] = useState(DB_options);
 
-    const setJSON_Content_State = use_M_Store(
-        (state) => state.setJSON_Content_State,
-    );
-
     const {
         M_value,
         set_M_value,

@@ -18,32 +18,24 @@ import { DEFAULT_VALUES_MAP } from "./0_M_MAP";
  * * e.g. DEFAULT_Panel = [d::DEFAULT, 10, 2]
  */
 export function DEFAULT_Panel({ field_data }) {
-    if (field_data[0] === "image") {
-        console.log(
-            "DEBUG: --- DEFAULT_Panel รับ field_data มาแบบนี้ ---",
-            JSON.stringify(field_data),
-        );
+    const fieldname = field_data[0];
 
-        // เปลี่ยนจาก find เป็นการ log ทุก item
-        field_data.forEach((item, index) => {
-            console.log(`DEBUG: item ที่ index ${index} คือ:`, item);
-        });
-    }
+    const debug = false && fieldname === "image";
+
     const M_value = use_M_Store((state) => state.M_value);
     const activeTab = use_M_Store((state) => state.activeTab);
     const activeSubTab = use_M_Store((state) => state.activeSubTab);
-    const fieldname = field_data[0];
 
-    if (fieldname === "image")
+    if (debug)
         console.log(
             `[ START DEBUG ] ---------- DEFAULT_Panel ----------------`,
         );
-    if (fieldname === "image")
+    if (debug)
         console.log(
             ` DEFAULT_Panel - 99999999999999 [0] DEFAULT_Panel | field_data = `,
             field_data,
         );
-    if (fieldname === "image")
+    if (debug)
         console.log(
             ` DEFAULT_Panel - 99999999999999 [1] DEFAULT_Panel | fieldname = ${fieldname}`,
         );
@@ -53,7 +45,7 @@ export function DEFAULT_Panel({ field_data }) {
     /**
      * M_value_field_data = ['is_active', 'd::BOOLEAN', 'u::SELECT', ['cd::DEFAULT', false]]
      */
-    if (fieldname === "image")
+    if (debug)
         console.log(
             ` DEFAULT_Panel - 99999999999999 [2.0] M_value_field_data = `,
             M_value_field_data,
@@ -66,7 +58,7 @@ export function DEFAULT_Panel({ field_data }) {
      * * we must include || field_data , in case first load M_value not exists
      */
     const existing_field_data = M_value_field_data || field_data;
-    if (fieldname === "image")
+    if (debug)
         console.log(
             ` DEFAULT_Panel - 99999999999999 [2.1] existing_field_data for ${fieldname}:`,
             existing_field_data,
@@ -80,7 +72,7 @@ export function DEFAULT_Panel({ field_data }) {
         existing_field_data.find(
             (item) => Array.isArray(item) && item[0] === "cd::DEFAULT",
         ) || [];
-    if (fieldname === "image")
+    if (debug)
         console.log(
             ` DEFAULT_Panel - 99999999999999 [3] DEFAULT_array for ${fieldname}:`,
             DEFAULT_array,
@@ -106,19 +98,19 @@ export function DEFAULT_Panel({ field_data }) {
         ? d_Class_Item[0].substring(3) //Array
         : d_Class_Item.substring(3); //String
 
-    if (fieldname === "image")
+    if (debug)
         console.log(
             " DEFAULT_Panel - 99999999999999 [3.1] d_Class_Item = ",
             d_Class_Item,
         );
-    if (fieldname === "image")
+    if (debug)
         console.log(
             " DEFAULT_Panel - 99999999999999 [3.2] d_Class_Name = ",
             d_Class_Name,
         );
 
     const dType = "d::" + d_Class_Name;
-    if (fieldname === "image")
+    if (debug)
         console.log(
             ` DEFAULT_Panel - 99999999999999 [4] dType for ${fieldname}:`,
             dType,
@@ -130,12 +122,12 @@ export function DEFAULT_Panel({ field_data }) {
      */
     const current_display_value = DEFAULT_array[1];
 
-    if (fieldname === "image")
+    if (debug)
         console.log(
             ` DEFAULT_Panel - 99999999999999 [5] Final Value determined for ${fieldname}:`,
             current_display_value,
         );
-    if (fieldname === "image")
+    if (debug)
         console.log(`[ END DEBUG ] ---------- DEFAULT_Panel ----------------`);
     return (
         <div className="M_params-container">

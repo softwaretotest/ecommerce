@@ -4,12 +4,14 @@
         "IMAGE": [
             "image",
             "u::FILE",
-            "d::INTEGER",
-            "cd::UNIQUE",
-            "cud::REQUIRED",
             [
                 "cd::DEFAULT",
                 0
+            ],
+            [
+                "d::DECIMAL",
+                10,
+                2
             ]
         ],
         "NAME": [
