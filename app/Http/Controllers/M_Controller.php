@@ -36,6 +36,18 @@ class M_Controller extends Controller
         $subTab = $request->input('subTab');
         $newData = $request->input('data');
 
+        /**
+         * Gemini said : Laravel Middleware "ConvertEmptyStringsToNull"
+         * make empty string to null automatically
+         * but, we don't want any null in JSON files
+         * so we, need to revers null to empty string
+         */
+        array_walk_recursive($newData, function (&$value) {
+            if ($value === null) {
+                $value = "";
+            }
+        });
+
         $path = $this->getPath($tab);
         $content = file_get_contents($path);
         $jsonData = json_decode($content, true);

@@ -17,8 +17,18 @@ import { DEFAULT_VALUES_MAP } from "./0_M_MAP";
  * *
  * * e.g. DEFAULT_Panel = [d::DEFAULT, 10, 2]
  */
-// export function DEFAULT_Panel({ field_data }) {
 export function DEFAULT_Panel({ field_data }) {
+    if (field_data[0] === "image") {
+        console.log(
+            "DEBUG: --- DEFAULT_Panel รับ field_data มาแบบนี้ ---",
+            JSON.stringify(field_data),
+        );
+
+        // เปลี่ยนจาก find เป็นการ log ทุก item
+        field_data.forEach((item, index) => {
+            console.log(`DEBUG: item ที่ index ${index} คือ:`, item);
+        });
+    }
     const M_value = use_M_Store((state) => state.M_value);
     const activeTab = use_M_Store((state) => state.activeTab);
     const activeSubTab = use_M_Store((state) => state.activeSubTab);
@@ -140,7 +150,9 @@ export function DEFAULT_Panel({ field_data }) {
                     </select>
                 )}
 
-                {(d_Class_Name === "INTEGER" || d_Class_Name === "DECIMAL") && (
+                {(d_Class_Name === "INTEGER" ||
+                    d_Class_Name === "DECIMAL" ||
+                    d_Class_Name === "UNSIGNED_BINT") && (
                     <input
                         className="DEFAULT_Panel"
                         type="number"
