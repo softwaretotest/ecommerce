@@ -4,24 +4,19 @@
         "IMAGE": [
             "image",
             [
-                "cd::DEFAULT",
-                0
+                "d::STRING",
+                255
             ],
-            [
-                "d::DECIMAL",
-                10,
-                2
-            ],
-            "u::TEXT"
+            "u::TEL"
         ],
         "NAME": [
             "name",
+            "u::TEXT",
             "cud::REQUIRED",
             [
                 "d::STRING",
                 255
-            ],
-            "u::TEXT"
+            ]
         ],
         "PRICE": [
             "price",

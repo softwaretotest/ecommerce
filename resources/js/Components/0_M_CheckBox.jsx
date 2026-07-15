@@ -3,7 +3,7 @@ import { useEffect } from "react";
 
 import { use_M_Option } from "@/Hooks/use_M_Option.js";
 import { CD_Rule } from "@/Components/0_M_Rule_D_CD";
-import { UI_Rule } from "@/Components/0_M_Rule_U_UI";
+import { CU_Rule } from "@/Components/0_M_Rule_U_CU";
 import { use_M_Store } from "@/Stores/0_M_Store";
 
 export function renderCheckboxList(M_Class_Name_List, group_label, field_data) {
@@ -81,7 +81,7 @@ export function renderCheckboxList(M_Class_Name_List, group_label, field_data) {
                 ALL_DB_options={ALL_DB_options}
                 field_data={field_data}
             />
-            <UI_Rule
+            <CU_Rule
                 UI_options={UI_options}
                 ALL_UI_options={ALL_UI_options}
                 field_data={field_data}
