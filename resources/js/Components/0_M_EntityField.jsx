@@ -19,6 +19,12 @@ import { renderDropdown_for_entities } from "@/Components/0_M_Dropdown_Entities"
  * * }
  */
 export default function EntityField({ f_s_Class_Array, table_name }) {
+    /**
+     * * React render to much in the beginning
+     * * later params are correct not error in ui
+     */
+    if (!Array.isArray(f_s_Class_Array)) return;
+
     return (
         <div className="entity-wrapper-box">
             <div className="entity-header">

@@ -4,13 +4,13 @@
         "IMAGE": [
             "image",
             "u::FILE",
-            "d::BOOLEAN",
+            "d::INTEGER",
+            "cd::UNIQUE",
+            "cud::REQUIRED",
             [
                 "cd::DEFAULT",
-                false
-            ],
-            "cd::UNIQUE",
-            "cud::REQUIRED"
+                0
+            ]
         ],
         "NAME": [
             "name",
