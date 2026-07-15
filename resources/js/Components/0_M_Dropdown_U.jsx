@@ -16,16 +16,14 @@ import { GLOBAL_METADATA } from "@/Providers/0_M_DataProvider";
  * Renders a dropdown select element
  * *
  * * Example usage:
- * * M_Class_Name_List: e.g. ['d']
- * * field_data = e.g. ['image', 'u::STRING', 'u::FILE']
+ * * M_Class_Name_List: e.g. ['u']  ['cu']
+ * * field_data = e.g. ['image', 'd::STRING', 'u::FILE']
  * *
  * * defaultValue = only for refresh e.g.
- * * <select defaultValue="ORDER_NR"> ... </select>
+ * * <select defaultValue="NUMBER"> ... </select>
  * *
  * * Params:
- * * defaultValue = field name , e.g. DECIMAL , STRING
- * * D_params = e.g. [ 10, 2 ] for DECIMAL [ total_digit , scale ]
- * *
+ * * defaultValue = fieldname , e.g. NUMBER , FILE , TEXT
  */
 export function renderDropdown_U(M_Class_Name_List, field_data) {
     const { M_value, set_M_value, activeField, setActiveField } = use_M_Store();
@@ -34,14 +32,11 @@ export function renderDropdown_U(M_Class_Name_List, field_data) {
     const fieldDataList = field_data ? field_data.slice(1) : [];
 
     /**
-     * U_String = e.g. u::INTEGER , [d:DECIMAL,10,2]
+     * U_String = e.g. u::NUMBER , u::FILE , u::TEXT
      */
     const U_String = fieldDataList.find((item) => {
         let valueToTest = Array.isArray(item) ? item[0] : item;
 
-        /**
-         * u::
-         */
         let isMatch =
             typeof valueToTest === "string" && valueToTest.startsWith("u::");
 
@@ -49,34 +44,21 @@ export function renderDropdown_U(M_Class_Name_List, field_data) {
     });
 
     let defaultValue = "";
-    let D_params = [];
     /**
      * * U_String = e.g. u::TEXT , [d:DECIMAL,10,2]
      * */
-    if (U_String) {
-        if (Array.isArray(U_String)) {
-            const [stringValue, ...params] = U_String;
-            defaultValue = stringValue.split("::")[1];
-            D_params = params;
-        }
+    if (U_String && U_String.startsWith("u::")) {
         //case string e.g. u:: and  u::
-        if (
-            typeof U_String === "string" ||
-            U_String.includes("u::") ||
-            U_String.includes("u::")
-        ) {
-            defaultValue = U_String.split("::")[1];
-            D_params = [];
-        }
+        defaultValue = U_String.split("::")[1];
     }
+
     // console.log(
-    //     ")=)=)=)=)=)=) Dropdown fieldname =",
+    //     ")=)=)=)=)=)=) Dropdown_U fieldname =",
     //     fieldname.padEnd(13),
-    //     "\t D_params =",
-    //     D_params,
     //     "\t\t U_String =",
     //     U_String,
     // );
+
     /**
      * * selected_U: state from dropdown e.g. STRING , DECIMAL , INTEGER
      * * handle_Change: update state when option change
@@ -98,9 +80,8 @@ export function renderDropdown_U(M_Class_Name_List, field_data) {
 
         // prepare new data
         const new_M_value = prepare_new_M_value_for_Update_U(
-            M_value,
-            fieldname,
             new_selected_U,
+            M_value,
         );
 
         await M_value_Service.update(new_M_value);

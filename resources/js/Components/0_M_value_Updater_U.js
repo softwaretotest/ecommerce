@@ -1,6 +1,9 @@
 // resources/js/Components/0_M_value_Updater_U.js
 import { GLOBAL_METADATA } from "@/Providers/0_M_DataProvider";
 import { D_PARAMS_MAP, DEFAULT_VALUES_MAP } from "@/Components/0_M_MAP";
+import { find_u_item } from "@/Components/0_M_Data_Helper";
+
+import { use_M_Store } from "@/Stores/0_M_Store";
 
 /**
  * 1. Clone & Isolate
@@ -16,25 +19,22 @@ import { D_PARAMS_MAP, DEFAULT_VALUES_MAP } from "@/Components/0_M_MAP";
  * @param fieldname e.g. image , stock , price , name
  * @param U_NAME = e.g. TEXT , INTEGER , DECIMAL
  */
-export function prepare_new_M_value_for_Update_U(
-    U_NAME,
-    activeField,
-    old_M_value,
-) {
-    const debug = false;
+export function prepare_new_M_value_for_Update_U(U_NAME, old_M_value) {
+    const activeField = use_M_Store.getState().activeField;
+    const debug = true;
     if (debug)
         console.log(
-            " UUUU-Class  0. - prepare_new_M_value_for_Update_D - U_NAME = ",
+            " UUUU-Class  0. - prepare_new_M_value_for_Update_U - U_NAME = ",
             U_NAME,
         );
     if (debug)
         console.log(
-            " UUUU-Class  0. - prepare_new_M_value_for_Update_D - activeField = ",
+            " UUUU-Class  0. - prepare_new_M_value_for_Update_U - activeField = ",
             activeField,
         );
     if (debug)
         console.log(
-            " UUUU-Class  0. - prepare_new_M_value_for_Update_D - old_M_value = ",
+            " UUUU-Class  0. - prepare_new_M_value_for_Update_U - old_M_value = ",
             old_M_value,
         );
 
@@ -50,9 +50,9 @@ export function prepare_new_M_value_for_Update_U(
             fieldname_UPPERCASE,
         );
 
-    const d_Class_UPPERCASE = `u::${U_NAME}`;
+    const u_Class_UPPERCASE = `u::${U_NAME}`;
     if (debug)
-        console.log(" UUUU-Class  2. d_Class_UPPERCASE = ", d_Class_UPPERCASE);
+        console.log(" UUUU-Class  2. u_Class_UPPERCASE  = ", u_Class_UPPERCASE);
 
     /**
      * * field_data = we use this name exactly case-sensitive in whole app
@@ -68,20 +68,17 @@ export function prepare_new_M_value_for_Update_U(
 
     /**
      * * Filter out all existing u::
-     * * ['image', 'u::TEXT', 'u::FILE', null, null]
+     * * ['image', 'd::STRING', 'cd::REQUIRED', null, 'cu::READONLY']
      */
     const field_data_without_u_with_null = field_data.filter((item) => {
         // if Array the first item[0] is always String (App Convention)
         const targetString = Array.isArray(item) ? item[0] : item;
 
-        const isD = targetString.startsWith("u::");
+        const isU = targetString.startsWith("u::");
 
-        // remove d cd cud (return false)
-        return !isD;
+        // remove u
+        return !isU;
     });
-
-    const U_String = get_U_String();
-    // if(debug)console.log(" UUUU-Class 4.0 U_String() (new items):", U_String);
 
     /**
      * * Filter out null items
@@ -96,7 +93,10 @@ export function prepare_new_M_value_for_Update_U(
             field_data_without_u,
         );
 
-    new_M_value[fieldname_UPPERCASE] = [...field_data_without_u, U_String];
+    new_M_value[fieldname_UPPERCASE] = [
+        ...field_data_without_u,
+        u_Class_UPPERCASE,
+    ];
     if (debug) console.log(" UUUU-Class  5. new_M_value :", new_M_value);
 
     /**

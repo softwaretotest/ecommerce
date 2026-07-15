@@ -3,7 +3,6 @@
     "f": {
         "IMAGE": [
             "image",
-            "u::FILE",
             [
                 "cd::DEFAULT",
                 0
@@ -12,16 +11,17 @@
                 "d::DECIMAL",
                 10,
                 2
-            ]
+            ],
+            "u::TEXT"
         ],
         "NAME": [
             "name",
-            "u::TEXT",
             "cud::REQUIRED",
             [
                 "d::STRING",
                 255
-            ]
+            ],
+            "u::TEXT"
         ],
         "PRICE": [
             "price",

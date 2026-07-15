@@ -27,3 +27,20 @@ export function get_D_NAME(field_data) {
 
     return base_d_value.replace("d::", "");
 }
+
+// export function find_u_item(field_data) {
+//     const u_item = field_data.find((item) => {
+//         const value = item;
+//         return typeof value === "string" && value.startsWith("u::");
+//     });
+//     return u_item;
+// }
+
+// /**
+//  * function for pull D Class from field_data
+//  * e.g. ['image', 'd::INTEGER'] -> 'INTEGER'
+//  */
+// export function get_U_NAME(field_data) {
+//     const u_item = find_u_item(field_data);
+//     return u_item.replace("u::", "");
+// }
