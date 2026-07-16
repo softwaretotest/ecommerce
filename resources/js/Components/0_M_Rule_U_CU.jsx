@@ -1,10 +1,12 @@
 // resources/js/Components/0_M_Rule_D_CU.jsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { use_M_Store } from "@/Stores/0_M_Store";
 import { M_value_Service } from "../Services/0_M_value_Service";
 
 import { prepare_new_M_value_for_Update_CU } from "@/Components/0_M_value_Updater_CU";
+import { prepare_new_M_value_for_Update_CD } from "@/Components/0_M_value_Updater_CD";
+import { validate_UI } from "@/Components/0_M_Rules";
 
 /**
  * Rule Fabric for onChange of CD Checkboxes (not done yet)
@@ -14,8 +16,6 @@ import { prepare_new_M_value_for_Update_CU } from "@/Components/0_M_value_Update
  * @param {*} ALL_UI_options e.g. ["READONLY", "DISABLED" , "REQUIRED"] (all allow options)
  */
 export function CU_Rule({ UI_options, ALL_UI_options, field_data }) {
-    const [checked_CU, setChecked_CU] = useState(UI_options);
-
     const {
         M_value,
         set_M_value,
@@ -33,6 +33,21 @@ export function CU_Rule({ UI_options, ALL_UI_options, field_data }) {
 
     const fieldname_UPPERCASE = fieldname.toUpperCase();
 
+    const checked_CD =
+        (use_M_Store.getState().checked_CD &&
+            use_M_Store.getState().checked_CD[fieldname]) ||
+        [];
+    const checked_CU =
+        (use_M_Store.getState().checked_CU &&
+            use_M_Store.getState().checked_CU[fieldname]) ||
+        [];
+    const setChecked_CD = use_M_Store.getState().setChecked_CD;
+    const setChecked_CU = use_M_Store.getState().setChecked_CU;
+
+    useEffect(() => {
+        setChecked_CU(fieldname, UI_options);
+    }, [activeSubTab, fieldname]);
+
     /**
      * * setChecked_CU
      * * prepare_new_M_value_for_Update_CU
@@ -41,21 +56,43 @@ export function CU_Rule({ UI_options, ALL_UI_options, field_data }) {
      * * update JSON View (JSON_Content.jsx)
      */
     async function set_CU_Actions(option, event) {
-        // calculate new State
+        /**
+         * * from checked_CD  e.g. checkbox REQUIRED
+         * * if     checked = add    REQUIRED
+         * * if not checked = remove REQUIRED
+         */
         const checked_CU_States = event.target.checked
             ? [...checked_CU, option]
             : checked_CU.filter((item) => item !== option);
 
         // update UI
-        setChecked_CU(checked_CU_States);
+        await setChecked_CU(fieldname, checked_CU_States);
 
-        // prepare new data
-        const new_M_value = prepare_new_M_value_for_Update_CU(
-            M_value,
-            fieldname,
-            checked_CU_States,
+        await validate_UI("CU", event);
+
+        console.log(
+            `jköjklöjklö -- CU_Rule -- use_M_Store.getState().checked_CU[${fieldname}] = `,
+            use_M_Store.getState().checked_CU[fieldname],
+        );
+        console.log(
+            `jköjklöjklö -- CU_Rule -- use_M_Store.getState().checked_CD[${fieldname}] = `,
+            use_M_Store.getState().checked_CD[fieldname],
         );
 
+        // prepare new M_values data
+        const new_M_value_1 = prepare_new_M_value_for_Update_CU(
+            M_value,
+            fieldname,
+            use_M_Store.getState().checked_CU[fieldname], //get the new validated checkbox states from global M_Store
+        );
+
+        const new_M_value = prepare_new_M_value_for_Update_CD(
+            new_M_value_1,
+            fieldname,
+            use_M_Store.getState().checked_CD[fieldname], //get the new validated checkbox states from global M_Store
+        );
+
+        console.log("jköjklöjklö -- CU_Rule -- new_M_value = ", new_M_value);
         await M_value_Service.update(new_M_value);
     }
 

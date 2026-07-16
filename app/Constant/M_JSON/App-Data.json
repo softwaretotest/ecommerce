@@ -3,11 +3,12 @@
     "f": {
         "IMAGE": [
             "image",
+            "u::FILE",
             [
                 "d::STRING",
                 255
             ],
-            "u::TEL"
+            "cu::DISABLED"
         ],
         "NAME": [
             "name",

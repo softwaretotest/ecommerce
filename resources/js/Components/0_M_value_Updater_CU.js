@@ -34,17 +34,17 @@ export function prepare_new_M_value_for_Update_CU(
         );
     if (debug)
         console.log(
-            "prepare_new_M_value_for_Update_CU 1. Incoming fieldname:",
+            "prepare_new_M_value_for_Update_CU - 1. Incoming fieldname:",
             fieldname,
         );
     if (debug)
         console.log(
-            "prepare_new_M_value_for_Update_CU 2. Incoming checked_CU_States:",
+            "prepare_new_M_value_for_Update_CU - 2. Incoming checked_CU_States:",
             checked_CU_States,
         );
     if (debug)
         console.log(
-            "prepare_new_M_value_for_Update_CU 3. Incoming old_M_value:",
+            "prepare_new_M_value_for_Update_CU - 3. Incoming old_M_value:",
             old_M_value,
         );
 

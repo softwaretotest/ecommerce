@@ -1,5 +1,5 @@
 // resources/js/Components/0_M_CheckBox.jsx
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { use_M_Option } from "@/Hooks/use_M_Option.js";
 import { CD_Rule } from "@/Components/0_M_Rule_D_CD";
@@ -66,6 +66,9 @@ export function renderCheckboxList(M_Class_Name_List, group_label, field_data) {
                   ),
               )
             : [];
+
+    const [checked_CD, setChecked_CD] = useState(DB_options);
+    const [checked_CU, setChecked_CU] = useState(UI_options);
 
     if (debug) console.log(" 2. 0_M_CheckBox.jsx - DB_options:", DB_options);
     if (debug)

@@ -24,7 +24,7 @@ export function prepare_new_M_value_for_Update_D_All_Fields(
     D_HEAL_collected,
     old_M_value,
 ) {
-    const debug = true;
+    const debug = false;
     if (debug)
         console.log(
             "DDDD-Class 0. - prepare_new_M_value_for_Update_D_All_Fields - D_HEAL_collected = ",

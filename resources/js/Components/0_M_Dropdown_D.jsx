@@ -54,8 +54,6 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
         set_M_value,
         activeField,
         setActiveField,
-        d_Arrays_healed,
-        set_d_Arrays_healed,
         isLastField,
         set_isLastField,
     } = use_M_Store();

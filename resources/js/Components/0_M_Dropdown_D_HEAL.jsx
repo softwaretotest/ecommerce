@@ -7,10 +7,7 @@ import { D_PARAMS_MAP } from "@/Components/0_M_MAP";
 /**
  * * this function effect on refresh
  * * logic for self healing of d::Class to d_Array
- * 1. save D_params to Backend App_Data.json use M_value_Service.update
- * 2. update JSON_Content - or maybe if GLOBAL_METADATA correct, it maybe solve itself
- * * TODO: we will skip 2 forever if we let JSON_Content update itself
- * * by monitoring a react state hasJSON_Change (every POST by M_value_Service )
+ * * save D_params to Backend App_Data.json use M_value_Service.update
  */
 export function D_HEAL(
     fieldname,

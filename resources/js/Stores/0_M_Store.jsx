@@ -3,7 +3,64 @@
 import { create } from "zustand";
 
 export const use_M_Store = create((set) => ({
-    debug: true,
+    debug: false,
+    debug_checked_CU: true,
+    debug_checked_CD: true,
+    debug_M_value: false,
+    debug_activeField: false,
+    debug_activeTab: false,
+    debug_activeSubTab: false,
+    debug_activeField: false,
+
+    checked_CD: {}, // atomic states
+    setChecked_CD: (fieldname, checked_CD_States) =>
+        set((state) => {
+            if (!fieldname) return { checked_CD: {} };
+
+            const NEW_checked_CD = {
+                ...state.checked_CD,
+                [fieldname]: checked_CD_States,
+            };
+
+            if (state.debug || state.debug_checked_CD) {
+                console.log(
+                    `[M_STORE_DEBUG] NEW_checked_CD[${fieldname}]:`,
+                    NEW_checked_CD[fieldname],
+                );
+                console.log(
+                    `[M_STORE_DEBUG] state.checked_CU[${fieldname}] :`,
+                    state.checked_CU[fieldname],
+                );
+                console.log("------------------------------------");
+            }
+
+            return { checked_CD: NEW_checked_CD };
+        }),
+
+    checked_CU: {}, // atomic states
+    setChecked_CU: (fieldname, checked_CU_States) =>
+        set((state) => {
+            if (!fieldname) return { checked_CU: {} };
+
+            const NEW_checked_CU = {
+                ...state.checked_CU,
+                [fieldname]: checked_CU_States,
+            };
+
+            if (state.debug || state.debug_checked_CU) {
+                console.log(
+                    `[M_STORE_DEBUG] state.checked_CD[${fieldname}]:`,
+                    state.checked_CD[fieldname],
+                );
+                console.log(
+                    `[M_STORE_DEBUG] New state.checked_CU[${fieldname}] :`,
+                    NEW_checked_CU[fieldname],
+                );
+                console.log("------------------------------------");
+            }
+
+            return { checked_CU: NEW_checked_CU };
+        }),
 
     has_M_value_Change: false,
     set_has_M_value_Change: (has_M_value_Change) =>
@@ -13,14 +70,10 @@ export const use_M_Store = create((set) => ({
     set_hasJSON_Change: (hasJSON_Change) =>
         set({ hasJSON_Change: hasJSON_Change }),
 
-    d_Arrays_healed: {},
-    set_d_Arrays_healed: (d_Arrays) => set({ d_Arrays_healed: d_Arrays }),
-
     activeTab: "m_data",
     setActiveTab: (tab) =>
         set((state) => {
-            if (state.debug) {
-                console.log(`[M_STORE_DEBUG] setActiveTab updated!`);
+            if (state.debug || state.debug_activeTab) {
                 console.log(`[M_STORE_DEBUG] New setActiveTab :`, tab);
                 console.log("------------------------------------");
             }
@@ -28,13 +81,19 @@ export const use_M_Store = create((set) => ({
         }),
 
     activeSubTab: "d",
-    setActiveSubTab: (subTab) => set({ activeSubTab: subTab }),
+    setActiveSubTab: (subTab) =>
+        set((state) => {
+            if (state.debug || state.debug_activeSubTab) {
+                console.log(`[M_STORE_DEBUG] New setActiveSubTab :`, subTab);
+                console.log("------------------------------------");
+            }
+            return { activeSubTab: subTab };
+        }),
 
     activeField: null,
     setActiveField: (field) =>
         set((state) => {
-            if (state.debug) {
-                console.log(`[M_STORE_DEBUG] activeField updated!`);
+            if (state.debug || state.debug_activeField) {
                 console.log(`[M_STORE_DEBUG] New activeField :`, field);
                 console.log("------------------------------------");
             }
@@ -49,8 +108,7 @@ export const use_M_Store = create((set) => ({
     M_value: {},
     set_M_value: (new_M_value) =>
         set((state) => {
-            if (state.debug) {
-                console.log(`[M_STORE_DEBUG] M_value updated!`);
+            if (state.debug || state.debug_M_value) {
                 console.log(`[M_STORE_DEBUG] New M_value:`, new_M_value);
                 console.log("------------------------------------");
             }
