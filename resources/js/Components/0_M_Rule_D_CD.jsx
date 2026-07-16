@@ -1,11 +1,9 @@
 // resources/js/Components/0_M_Rule_D_CD.jsx
 import { useState, useEffect } from "react";
-import { shallow } from "zustand/shallow";
 
 import { use_M_Store } from "@/Stores/0_M_Store";
-import { M_value_Service } from "../Services/0_M_value_Service";
 
-import { prepare_new_M_value_for_Update_CD } from "@/Components/0_M_value_Updater_CD";
+import { update_M_value_for_checked_CD_CU } from "@/Components/0_M_Rules_M_value_Updater";
 import { validate_UI } from "@/Components/0_M_Rules";
 
 import { DEFAULT_Panel } from "@/Components/0_M_DEFAULT_Panel";
@@ -17,15 +15,7 @@ import { DEFAULT_Panel } from "@/Components/0_M_DEFAULT_Panel";
  * @param {*} ALL_DB_options e.g. ["NULLABLE", "PRIMARY", ...] (all allow options)
  */
 export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
-    const {
-        M_value,
-        set_M_value,
-        activeField,
-        setActiveField,
-        activeTab,
-        activeSubTab,
-        setActiveSubTab,
-    } = use_M_Store();
+    const { activeSubTab } = use_M_Store();
 
     /**
      * field_data[] first element is fieldname
@@ -66,19 +56,11 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
             ? [...checked_CD, option]
             : checked_CD.filter((item) => item !== option);
 
-        //prepare checkbox atomic states before validate
         await setChecked_CD(fieldname, checked_CD_States);
-        // this validation save new checkbox states
+
         await validate_UI("CD", event);
 
-        // prepare new M_values data
-        const new_M_value = prepare_new_M_value_for_Update_CD(
-            M_value,
-            fieldname,
-            use_M_Store.getState().checked_CD[fieldname], //get the new validated checkbox states from global M_Store
-        );
-
-        await M_value_Service.update(new_M_value);
+        update_M_value_for_checked_CD_CU();
     }
 
     return (

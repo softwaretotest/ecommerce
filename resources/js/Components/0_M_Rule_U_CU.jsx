@@ -4,8 +4,7 @@ import { useState, useEffect } from "react";
 import { use_M_Store } from "@/Stores/0_M_Store";
 import { M_value_Service } from "../Services/0_M_value_Service";
 
-import { prepare_new_M_value_for_Update_CU } from "@/Components/0_M_value_Updater_CU";
-import { prepare_new_M_value_for_Update_CD } from "@/Components/0_M_value_Updater_CD";
+import { update_M_value_for_checked_CD_CU } from "@/Components/0_M_Rules_M_value_Updater";
 import { validate_UI } from "@/Components/0_M_Rules";
 
 /**
@@ -16,15 +15,7 @@ import { validate_UI } from "@/Components/0_M_Rules";
  * @param {*} ALL_UI_options e.g. ["READONLY", "DISABLED" , "REQUIRED"] (all allow options)
  */
 export function CU_Rule({ UI_options, ALL_UI_options, field_data }) {
-    const {
-        M_value,
-        set_M_value,
-        activeField,
-        setActiveField,
-        activeTab,
-        activeSubTab,
-        setActiveSubTab,
-    } = use_M_Store();
+    const { activeSubTab } = use_M_Store();
 
     /**
      * field_data[] first element is fieldname
@@ -70,30 +61,7 @@ export function CU_Rule({ UI_options, ALL_UI_options, field_data }) {
 
         await validate_UI("CU", event);
 
-        console.log(
-            `jköjklöjklö -- CU_Rule -- use_M_Store.getState().checked_CU[${fieldname}] = `,
-            use_M_Store.getState().checked_CU[fieldname],
-        );
-        console.log(
-            `jköjklöjklö -- CU_Rule -- use_M_Store.getState().checked_CD[${fieldname}] = `,
-            use_M_Store.getState().checked_CD[fieldname],
-        );
-
-        // prepare new M_values data
-        const new_M_value_1 = prepare_new_M_value_for_Update_CU(
-            M_value,
-            fieldname,
-            use_M_Store.getState().checked_CU[fieldname], //get the new validated checkbox states from global M_Store
-        );
-
-        const new_M_value = prepare_new_M_value_for_Update_CD(
-            new_M_value_1,
-            fieldname,
-            use_M_Store.getState().checked_CD[fieldname], //get the new validated checkbox states from global M_Store
-        );
-
-        console.log("jköjklöjklö -- CU_Rule -- new_M_value = ", new_M_value);
-        await M_value_Service.update(new_M_value);
+        update_M_value_for_checked_CD_CU();
     }
 
     return (

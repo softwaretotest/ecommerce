@@ -4,20 +4,21 @@
         "IMAGE": [
             "image",
             "u::FILE",
+            "cd::FOREIGN",
             [
-                "d::STRING",
-                255
-            ],
-            "cu::DISABLED"
+                "d::DECIMAL",
+                10,
+                2
+            ]
         ],
         "NAME": [
             "name",
             "u::TEXT",
-            "cud::REQUIRED",
             [
                 "d::STRING",
                 255
-            ]
+            ],
+            "cd::FOREIGN"
         ],
         "PRICE": [
             "price",

@@ -79,8 +79,6 @@ export async function validate_UI(checkbox_group_name, event) {
      * * ...............................
      */
     async function update_CD_FOREIGN(event) {
-        console.log(" 1. CUCUCUCUCUCCU CALLED !!!!!!!!!!!!!!!!!!!!");
-
         const fieldname = activeField.toLowerCase();
         const currentCD = store.checked_CD[fieldname] || [];
         const currentCU = store.checked_CU[fieldname] || [];
@@ -90,10 +88,10 @@ export async function validate_UI(checkbox_group_name, event) {
         if (event.target.checked && event.target.value === "FOREIGN") {
             newCD = ["FOREIGN"];
             newCU = [];
+            // Logic to remove defaulValue from D_Dropdown and U_Dropdown
         }
 
         if (event.target.checked && event.target.value !== "FOREIGN") {
-            console.log(" 2. CUCUCUCUCUCCU CALLED !!!!!!!!!!!!!!!!!!!!");
             newCD = currentCD.filter((item) => item !== "FOREIGN");
         }
 
