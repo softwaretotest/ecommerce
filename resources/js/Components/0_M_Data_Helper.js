@@ -7,7 +7,7 @@
  * @returns d_items[0] = 'd::INTEGER' or ['d::DECIMAL',10,2]
  * * there is always only one d:: in field_data
  */
-function find_d_item(field_data) {
+export function find_d_item(field_data) {
     const d_item = field_data.find((item) => {
         const value = Array.isArray(item) ? item[0] : item;
         return typeof value === "string" && value.startsWith("d::");

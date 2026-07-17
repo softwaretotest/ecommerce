@@ -51,7 +51,6 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
             DB_options.length > 0 &&
             (!checked_CD_onRefresh || checked_CD_onRefresh.length === 0)
         ) {
-            console.log("CD_Rule -- Initializing Store with:", DB_options);
             setChecked_CD(fieldname, DB_options);
         }
 

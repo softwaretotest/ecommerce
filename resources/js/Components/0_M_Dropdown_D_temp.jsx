@@ -66,10 +66,8 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
      */
     const D_String_or_Array = fielddata_without_fieldname.find((item) => {
         let valueToTest = Array.isArray(item) ? item[0] : item;
-
         let isMatch =
             typeof valueToTest === "string" && valueToTest.startsWith("d::");
-
         return isMatch;
     });
 

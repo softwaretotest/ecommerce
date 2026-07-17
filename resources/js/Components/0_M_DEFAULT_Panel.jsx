@@ -21,7 +21,7 @@ export function DEFAULT_Panel({ field_data }) {
     const fieldname = field_data[0];
 
     // const debug = true;
-    const debug = true && fieldname === "price";
+    const debug = false && fieldname === "price";
 
     const M_value = use_M_Store((state) => state.M_value);
     const activeTab = use_M_Store((state) => state.activeTab);
