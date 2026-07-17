@@ -20,7 +20,8 @@ import { DEFAULT_VALUES_MAP } from "./0_M_MAP";
 export function DEFAULT_Panel({ field_data }) {
     const fieldname = field_data[0];
 
-    const debug = false && fieldname === "image";
+    // const debug = true;
+    const debug = true && fieldname === "price";
 
     const M_value = use_M_Store((state) => state.M_value);
     const activeTab = use_M_Store((state) => state.activeTab);

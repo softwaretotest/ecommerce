@@ -4,13 +4,57 @@ import { create } from "zustand";
 
 export const use_M_Store = create((set) => ({
     debug: false,
-    debug_checked_CU: true,
-    debug_checked_CD: true,
+    debug_selected_U: true,
+    debug_selected_D: true,
+    debug_checked_CU: false,
+    debug_checked_CD: false,
     debug_M_value: false,
     debug_activeField: false,
     debug_activeTab: false,
     debug_activeSubTab: false,
     debug_activeField: false,
+
+    selected_D: {}, // atomic states
+    set_selected_D: (fieldname, selected_D_Value) =>
+        set((state) => {
+            if (!fieldname) return { selected_D: {} };
+
+            const NEW_selected_D = {
+                ...state.selected_D,
+                [fieldname]: selected_D_Value,
+            };
+
+            if (state.debug || state.debug_selected_D) {
+                console.log(
+                    `[M_STORE_DEBUG] NEW_selected_D[${fieldname}]:`,
+                    NEW_selected_D[fieldname],
+                );
+                console.log("------------------------------------");
+            }
+
+            return { selected_D: NEW_selected_D };
+        }),
+
+    selected_U: {}, // atomic states
+    set_selected_U: (fieldname, selected_U_Value) =>
+        set((state) => {
+            if (!fieldname) return { selected_U: {} };
+
+            const NEW_selected_U = {
+                ...state.selected_U,
+                [fieldname]: selected_U_Value,
+            };
+
+            if (state.debug || state.debug_selected_U) {
+                console.log(
+                    `[M_STORE_DEBUG] NEW_selected_U[${fieldname}]:`,
+                    NEW_selected_U[fieldname],
+                );
+                console.log("------------------------------------");
+            }
+
+            return { selected_U: NEW_selected_U };
+        }),
 
     checked_CD: {}, // atomic states
     setChecked_CD: (fieldname, checked_CD_States) =>
