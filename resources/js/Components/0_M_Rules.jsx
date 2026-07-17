@@ -98,18 +98,18 @@ export async function validate_UI(checkbox_group_name, event) {
         await store.setChecked_CD(fieldname, newCD);
         await store.setChecked_CU(fieldname, newCU);
 
-        console.log(
-            "JKLÖFDASJKLÖFDSA - validate_UI -- update_CD_FOREIGN --- currentCD = ",
-            currentCD,
-        );
-        console.log(
-            "JKLÖFDASJKLÖFDSA - validate_UI -- update_CD_FOREIGN --- event.target.checked =  ",
-            event.target.checked,
-        );
-        console.log(
-            "JKLÖFDASJKLÖFDSA - validate_UI -- update_CD_FOREIGN --- event.target.value =  ",
-            event.target.value,
-        );
-        console.log("-----------------------------------------------");
+        // console.log(
+        //     "JKLÖFDASJKLÖFDSA - validate_UI -- update_CD_FOREIGN --- currentCD = ",
+        //     currentCD,
+        // );
+        // console.log(
+        //     "JKLÖFDASJKLÖFDSA - validate_UI -- update_CD_FOREIGN --- event.target.checked =  ",
+        //     event.target.checked,
+        // );
+        // console.log(
+        //     "JKLÖFDASJKLÖFDSA - validate_UI -- update_CD_FOREIGN --- event.target.value =  ",
+        //     event.target.value,
+        // );
+        // console.log("-----------------------------------------------");
     }
 }

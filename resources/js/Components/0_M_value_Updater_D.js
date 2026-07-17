@@ -102,7 +102,11 @@ export function prepare_new_M_value_for_Update_D(
     }
 
     const D_Array_or_String = get_D_Array_or_String();
-    // if(debug)console.log(" DDDD-Class 4.0 D_Array_or_String() (new items):", D_Array_or_String);
+    if (debug)
+        console.log(
+            " DDDD-Class 4.0 D_Array_or_String() (new items):",
+            D_Array_or_String,
+        );
 
     /**
      * * Filter out null items
@@ -124,7 +128,7 @@ export function prepare_new_M_value_for_Update_D(
      */
     const new_field_data_DEFAULT_HEAL = field_data_without_d.map((item) => {
         if (Array.isArray(item) && item[0] === "cd::DEFAULT") {
-            const new_default = DEFAULT_VALUES_MAP[D_NAME]; // ดึงค่าเริ่มต้นใหม่ตาม Type
+            const new_default = DEFAULT_VALUES_MAP[D_NAME];
             return ["cd::DEFAULT", new_default];
         }
         return item;

@@ -163,7 +163,6 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
      * * update JSON View (JSON_Content.jsx)
      */
     async function set_D_Actions(event) {
-        console.log("CALL Dropdown D onChange");
         const new_selected_D = event.target.value;
         if (debug)
             console.log(

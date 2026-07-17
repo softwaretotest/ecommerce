@@ -1,7 +1,10 @@
 // resources/js/Components/0_M_DEFAULT_Panel.jsx
 import { useState } from "react";
 import { use_M_Store } from "@/Stores/0_M_Store";
+import { M_value_Service } from "@/Services/0_M_value_Service";
+
 import { DEFAULT_VALUES_MAP } from "./0_M_MAP";
+import { prepare_new_M_value_for_Update_CD_DEFAULT_Panel } from "@/Components/0_M_value_Updater_CD_DEFAULT_Panel";
 /**
  * Render input field for DEFAULT parameter based on field type
  * *
@@ -21,7 +24,7 @@ export function DEFAULT_Panel({ field_data }) {
     const fieldname = field_data[0];
 
     // const debug = true;
-    const debug = false && fieldname === "price";
+    const debug = false && fieldname === "image";
 
     const M_value = use_M_Store((state) => state.M_value);
     const activeTab = use_M_Store((state) => state.activeTab);
@@ -130,6 +133,15 @@ export function DEFAULT_Panel({ field_data }) {
         );
     if (debug)
         console.log(`[ END DEBUG ] ---------- DEFAULT_Panel ----------------`);
+
+    async function set_DEFAULT_Panel_Actions(event) {
+        const new_M_value = prepare_new_M_value_for_Update_CD_DEFAULT_Panel(
+            fieldname,
+            event,
+        );
+        await M_value_Service.update(new_M_value);
+    }
+
     return (
         <div className="M_params-container">
             <div className="M_params-field">
@@ -137,6 +149,7 @@ export function DEFAULT_Panel({ field_data }) {
                     <select
                         className="DEFAULT_Panel"
                         defaultValue={String(current_display_value ?? "")}
+                        onChange={(event) => set_DEFAULT_Panel_Actions(event)}
                     >
                         <option value="true">True</option>
                         <option value="false">False</option>
@@ -151,6 +164,7 @@ export function DEFAULT_Panel({ field_data }) {
                         type="number"
                         defaultValue={current_display_value ?? ""}
                         placeholder={`Enter ${d_Class_Name} value`}
+                        onChange={(event) => set_DEFAULT_Panel_Actions(event)}
                     />
                 )}
 
@@ -160,6 +174,7 @@ export function DEFAULT_Panel({ field_data }) {
                         type="text"
                         defaultValue={current_display_value ?? ""}
                         placeholder={`Enter ${d_Class_Name} value`}
+                        onChange={(event) => set_DEFAULT_Panel_Actions(event)}
                     />
                 )}
             </div>
