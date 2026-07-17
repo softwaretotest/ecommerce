@@ -15,7 +15,6 @@ import { DEFAULT_Panel } from "@/Components/0_M_DEFAULT_Panel";
  * @param {*} ALL_DB_options e.g. ["NULLABLE", "PRIMARY", ...] (all allow options)
  */
 export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
-    // if (!field_data) return;
     const { activeSubTab } = use_M_Store();
 
     /**
@@ -63,9 +62,7 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
 
         update_M_value_for_checked_CD_CU();
     }
-    // const currentFieldChecked = use_M_Store(
-    //     (state) => state.checked_CD[field_data[0]] || [],
-    // );
+
     return (
         <div className="M_checkbox-list">
             {ALL_DB_options.map((option) => (
@@ -85,10 +82,7 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
                         />
                         {option}
                     </label>
-                    {/* {option === "DEFAULT" && (
-                        <p>currentFieldChecked = {currentFieldChecked}</p>
-                    )} */}
-                    {/* {currentFieldChecked.includes("DEFAULT") && */}
+
                     {checked_CD.includes("DEFAULT") && option === "DEFAULT" && (
                         <DEFAULT_Panel field_data={field_data} />
                     )}
