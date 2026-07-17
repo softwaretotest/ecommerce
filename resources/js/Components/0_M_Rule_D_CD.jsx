@@ -35,9 +35,32 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
     const setChecked_CD = use_M_Store.getState().setChecked_CD;
     const setChecked_CU = use_M_Store.getState().setChecked_CU;
 
+    /**
+     * checked_CD Hydration in case global state
+     */
     useEffect(() => {
-        setChecked_CD(fieldname, DB_options);
-    }, [activeSubTab, fieldname]);
+        const checked_CD_onRefresh =
+            use_M_Store.getState().checked_CD?.[fieldname];
+        /**
+         * 1. Condition - not null
+         * 2. Condition - has some date to update checked_CD
+         * 3. Condition - update only on refresh
+         */
+        if (
+            DB_options &&
+            DB_options.length > 0 &&
+            (!checked_CD_onRefresh || checked_CD_onRefresh.length === 0)
+        ) {
+            console.log("CD_Rule -- Initializing Store with:", DB_options);
+            setChecked_CD(fieldname, DB_options);
+        }
+
+        /**
+         * * we removed DB_options from dependency
+         * * to avoid multiple set DB_options
+         * * we need this data only on refresh
+         */
+    }, [fieldname]);
 
     /**
      * * setChecked_CD
