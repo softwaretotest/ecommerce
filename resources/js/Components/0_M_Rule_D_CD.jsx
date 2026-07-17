@@ -7,6 +7,9 @@ import { update_M_value_for_checked_CD_CU } from "@/Components/0_M_Rules_M_value
 import { validate_UI } from "@/Components/0_M_Rules";
 
 import { DEFAULT_Panel } from "@/Components/0_M_DEFAULT_Panel";
+
+import { get_D_NAME, has_d_in_field_data } from "@/Components/0_M_Data_Helper";
+
 /**
  * Rule Fabric for onChange of CD Checkboxes (not done yet)
  * to make UI e.g. checkboxes inputs
@@ -84,6 +87,7 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
 
         update_M_value_for_checked_CD_CU();
     }
+    const D_NAME = get_D_NAME(field_data);
 
     return (
         <div className="M_checkbox-list">
@@ -94,10 +98,20 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
                             type="checkbox"
                             value={option}
                             /**
-                             * !!!! react state on checked ,
-                             * always need onChange to update state !!!
+                             * * !!!! react state on checked ,
+                             * * always need onChange to update state !!!
+                             * * if NO D_NAME ,
+                             * * then only Checkbox 'FOREIGN' enable & checked
                              */
-                            checked={checked_CD.includes(option)}
+                            checked={
+                                D_NAME
+                                    ? checked_CD.includes(option)
+                                    : option === "FOREIGN"
+                            }
+                            /**
+                             * if NO D_NAME , then only Checkbox 'FOREIGN' enable
+                             */
+                            disabled={!D_NAME && option !== "FOREIGN"}
                             onChange={(event) => {
                                 set_CD_Actions(option, event);
                             }}
@@ -105,9 +119,18 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
                         {option}
                     </label>
 
-                    {checked_CD.includes("DEFAULT") && option === "DEFAULT" && (
-                        <DEFAULT_Panel field_data={field_data} />
-                    )}
+                    {D_NAME &&
+                        option === "DEFAULT" &&
+                        checked_CD.includes(option) && (
+                            <DEFAULT_Panel
+                                D_NAME={D_NAME}
+                                field_data={
+                                    use_M_Store.getState().M_value[
+                                        fieldname_UPPERCASE
+                                    ]
+                                }
+                            />
+                        )}
                 </div>
             ))}
         </div>

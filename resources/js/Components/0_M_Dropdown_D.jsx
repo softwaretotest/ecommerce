@@ -12,7 +12,7 @@ import {
     find_D_Params_in_GLOBAL_METADATA,
 } from "@/Components/0_M_D_Params_Service";
 
-import { find_d_item } from "@/Components/0_M_Data_Helper";
+import { find_d_item, has_d_in_field_data } from "@/Components/0_M_Data_Helper";
 
 /**
  * Renders a dropdown select element
@@ -141,21 +141,6 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
         }
     }, [selected_D]);
 
-    // useEffect(() => {
-    //     if (!selected_D) return;
-    //     let d_params = find_D_Params_in_GLOBAL_METADATA(selected_D, fieldname);
-    //     let is_wrong_d_params_in_backend = false;
-    //     if (!d_params) {
-    //         is_wrong_d_params_in_backend = true;
-    //         d_params = find_NEW_D_Params_in_M_MAP(selected_D);
-    //     }
-
-    //     setD_Params_State(<D_Params D_NAME={selected_D} d_params={d_params} />);
-    //     if (is_wrong_d_params_in_backend) {
-    //         D_HEAL(fieldname, selected_D, M_value, d_params, M_value_Service);
-    //     }
-    // }, [selected_D]);
-
     /**
      * * set_selected_D
      * * prepare_new_M_value_for_Update_D
@@ -199,7 +184,7 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
                     field_data={field_data}
                 />
             </select>
-            {D_Params_State}
+            {has_d_in_field_data(field_data) && D_Params_State}
         </>
     );
 }

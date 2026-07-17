@@ -1,6 +1,7 @@
 // resources/js/Components/0_M_value_Updater_CD.js
 import { GLOBAL_METADATA } from "@/Providers/0_M_DataProvider";
 import { D_PARAMS_MAP, DEFAULT_VALUES_MAP } from "@/Components/0_M_MAP";
+import { remove_cd } from "@/Components/0_M_Data_Helper";
 
 /**
  * 1. Clone & Isolate
@@ -21,7 +22,7 @@ export function prepare_new_M_value_for_Update_D(
     activeField,
     old_M_value,
 ) {
-    const debug = false;
+    const debug = true && activeField.toLowerCase() === "image";
     if (debug)
         console.log(
             " DDDD-Class  0. - prepare_new_M_value_for_Update_D - D_NAME = ",
@@ -75,8 +76,6 @@ export function prepare_new_M_value_for_Update_D(
         const targetString = Array.isArray(item) ? item[0] : item;
 
         const isD = targetString.startsWith("d::");
-
-        // remove d cd cud (return false)
         return !isD;
     });
 
@@ -104,7 +103,7 @@ export function prepare_new_M_value_for_Update_D(
     const D_Array_or_String = get_D_Array_or_String();
     if (debug)
         console.log(
-            " DDDD-Class 4.0 D_Array_or_String() (new items):",
+            " DDDD-Class  4.0 D_Array_or_String() (new items):",
             D_Array_or_String,
         );
 
@@ -134,10 +133,15 @@ export function prepare_new_M_value_for_Update_D(
         return item;
     });
 
-    new_M_value[fieldname_UPPERCASE] = [
-        ...new_field_data_DEFAULT_HEAL,
-        D_Array_or_String,
-    ];
+    if (d_Class_UPPERCASE === "d::") {
+        const field_data_without_d_cd = remove_cd(field_data_without_d);
+        new_M_value[fieldname_UPPERCASE] = field_data_without_d_cd;
+    } else {
+        new_M_value[fieldname_UPPERCASE] = [
+            ...new_field_data_DEFAULT_HEAL,
+            D_Array_or_String,
+        ];
+    }
     if (debug) console.log(" DDDD-Class  5. new_M_value :", new_M_value);
 
     /**

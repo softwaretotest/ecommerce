@@ -1,7 +1,7 @@
 // resources/js/Components/0_M_MAP.js
 
 export const DEFAULT_VALUES_MAP = {
-    BOOLEAN: false,
+    BOOLEAN: true, // if you set BOOLEAN = false , you must add UI logic
     STRING: "",
     DECIMAL: 0,
     INTEGER: 0,

@@ -4,15 +4,7 @@
         "IMAGE": [
             "image",
             "u::FILE",
-            [
-                "cd::DEFAULT",
-                0
-            ],
-            [
-                "d::DECIMAL",
-                10,
-                2
-            ]
+            "d::BOOLEAN"
         ],
         "NAME": [
             "name",

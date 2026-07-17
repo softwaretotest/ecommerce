@@ -20,7 +20,7 @@ export function prepare_new_M_value_for_Update_CD(
     fieldname,
     checked_CD_States,
 ) {
-    const debug = false;
+    const debug = true;
     if (debug)
         console.log(
             "0. GLOBAL_METADATA.app_data.f.IMAGE[1] :",
