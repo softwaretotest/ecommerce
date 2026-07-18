@@ -3,8 +3,7 @@
     "f": {
         "IMAGE": [
             "image",
-            "u::FILE",
-            "d::BOOLEAN"
+            "u::FILE"
         ],
         "NAME": [
             "name",

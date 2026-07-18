@@ -30,7 +30,8 @@ import { find_d_item, has_d_in_field_data } from "@/Components/0_M_Data_Helper";
  * *
  */
 export function renderDropdown_D(M_Class_Name_List, field_data) {
-    const debug = false;
+    // const debug = true;
+    const debug = false && field_data[0] === "image";
 
     if (field_data.includes("cd::FOREIGN")) {
         if (debug)
@@ -107,6 +108,7 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
      */
     const selected_D = use_M_Store((state) => state.selected_D);
     const set_selected_D = use_M_Store.getState().set_selected_D;
+    const set_selected_D_latest = use_M_Store.getState().set_selected_D_latest;
 
     const selected_D_to_show =
         selected_D[fieldname] !== undefined
@@ -127,9 +129,17 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
             d_params = find_NEW_D_Params_in_M_MAP(selected_D_to_show);
         }
 
-        setD_Params_State(
-            <D_Params D_NAME={selected_D_to_show} d_params={d_params} />,
-        );
+        const selected_D_values = selected_D[fieldname];
+
+        const has_FOREIGN =
+            (Array.isArray(selected_D_values) ||
+                typeof selected_D_values === "string") &&
+            selected_D_values.includes("FOREIGN");
+
+        has_FOREIGN &&
+            setD_Params_State(
+                <D_Params D_NAME={selected_D_to_show} d_params={d_params} />,
+            );
         if (is_wrong_d_params_in_backend) {
             D_HEAL(
                 fieldname,
@@ -172,15 +182,31 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
             <select
                 className="M_field-dropdown"
                 value={selected_D_to_show}
-                key={selected_D_of_field_data}
+                // key={selected_D_of_field_data} // no need if react does not warn
+                disabled={use_M_Store
+                    .getState()
+                    .checked_CD[fieldname]?.includes("FOREIGN")}
                 onChange={(event) => {
+                    // 1. ทำ Deep Clone
+                    const deep_copied_selected_D = JSON.parse(
+                        JSON.stringify(use_M_Store.getState().selected_D),
+                    );
+
+                    // 2. บันทึก latest
+                    use_M_Store
+                        .getState()
+                        .set_selected_D_latest(
+                            fieldname,
+                            deep_copied_selected_D,
+                        );
+
+                    // 3. ส่ง event เข้าไปตรงๆ เพื่อให้ set_CD_Actions อ่านค่า event.target.checked ได้
                     set_D_Actions(event, fieldname);
                 }}
             >
                 <option value="">--</option>
                 <M_Option
                     M_Class_Name_List={M_Class_Name_List}
-                    // fielddata_without_fieldname={fielddata_without_fieldname}
                     field_data={field_data}
                 />
             </select>

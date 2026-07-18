@@ -84,7 +84,7 @@ export default function JSON_Content() {
                         //M_value = data[activeTab][activeSubTab]
                         ([fieldname, value]) => (
                             <div
-                                key={crypto.randomUUID() + fieldname} //fieldname = e.g. PRICE , STOCK etc.
+                                key={fieldname} //fieldname = e.g. PRICE , STOCK etc.
                                 ref={(DOM_Node) =>
                                     (scrollRefs.current[fieldname] = DOM_Node)
                                 }

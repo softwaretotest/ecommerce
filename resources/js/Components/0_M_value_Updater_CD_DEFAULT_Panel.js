@@ -6,7 +6,7 @@ export function prepare_new_M_value_for_Update_CD_DEFAULT_Panel(
     fieldname,
     event,
 ) {
-    const debug = false && fieldname === "image";
+    const debug = true && fieldname === "image";
 
     const old_M_value = use_M_Store.getState().M_value;
 

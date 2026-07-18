@@ -34,7 +34,10 @@ export default function M_Dashboard() {
                 {tabs.map((tab) => (
                     <button
                         key={tab.id}
-                        onClick={() => setActiveTab(tab.id)}
+                        onClick={() => {
+                            setActiveTab(tab.id);
+                            use_M_Store.getState().set_Tab_Changed(true);
+                        }}
                         className={`nav-button ${activeTab === tab.id ? "active" : ""}`}
                     >
                         {tab.label}

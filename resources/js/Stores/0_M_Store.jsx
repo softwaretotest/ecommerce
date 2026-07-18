@@ -4,15 +4,42 @@ import { create } from "zustand";
 
 export const use_M_Store = create((set) => ({
     debug: false,
-    debug_selected_U: true,
+    debug_M_value: false,
+
+    debug_selected_U: false,
     debug_selected_D: true,
+    debug_selected_D_latest: true,
+
     debug_checked_CU: false,
     debug_checked_CD: false,
-    debug_M_value: false,
+
     debug_activeField: false,
     debug_activeTab: false,
     debug_activeSubTab: false,
-    debug_activeField: false,
+
+    is_Tab_Changed: false,
+    set_Tab_Changed: (status) => set({ is_Tab_Changed: status }),
+
+    selected_D_latest: {}, // atomic states
+    set_selected_D_latest: (fieldname, selected_D_latest_value) =>
+        set((state) => {
+            if (!fieldname) return { selected_D_latest: {} };
+
+            const NEW_selected_D_latest = {
+                ...state.selected_D_latest,
+                [fieldname]: selected_D_latest_value,
+            };
+
+            if (state.debug || state.debug_selected_D_latest) {
+                console.log(
+                    `[M_STORE_DEBUG] NEW_selected_D_latest[${fieldname}]:`,
+                    NEW_selected_D_latest[fieldname],
+                );
+                console.log("------------------------------------");
+            }
+
+            return { selected_D_latest: NEW_selected_D_latest };
+        }),
 
     selected_D: {}, // atomic states
     set_selected_D: (fieldname, selected_D_Value) =>

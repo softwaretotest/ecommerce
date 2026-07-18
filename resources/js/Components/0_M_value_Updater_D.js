@@ -22,7 +22,7 @@ export function prepare_new_M_value_for_Update_D(
     activeField,
     old_M_value,
 ) {
-    const debug = true && activeField.toLowerCase() === "image";
+    const debug = false && activeField.toLowerCase() === "image";
     if (debug)
         console.log(
             " DDDD-Class  0. - prepare_new_M_value_for_Update_D - D_NAME = ",

@@ -92,7 +92,7 @@ export function renderDropdown_U(M_Class_Name_List, field_data) {
             <select
                 className="M_field-dropdown"
                 value={selected_U}
-                key={defaultValue}
+                // key={defaultValue}  // no need if react does not warn
                 onChange={(event) => {
                     set_U_Actions(event);
                 }}

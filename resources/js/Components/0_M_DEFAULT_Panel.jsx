@@ -24,9 +24,9 @@ export function DEFAULT_Panel({ field_data }) {
     const fieldname = field_data[0];
 
     // const debug = true;
-    const debug = true && fieldname === "image";
+    const debug = false && fieldname === "image";
 
-    const M_value = use_M_Store((state) => state.M_value);
+    const M_value = use_M_Store.getState().M_value;
     const activeTab = use_M_Store((state) => state.activeTab);
     const activeSubTab = use_M_Store((state) => state.activeSubTab);
 
@@ -147,8 +147,13 @@ export function DEFAULT_Panel({ field_data }) {
             <div className="M_params-field">
                 {d_Class_Name === "BOOLEAN" && (
                     <select
+                        // key={crypto.randomUUID()}  // no need if react does not warn
                         className="DEFAULT_Panel"
-                        defaultValue={String(current_display_value ?? "")}
+                        value={
+                            current_display_value !== undefined
+                                ? String(current_display_value)
+                                : ""
+                        }
                         onChange={(event) => set_DEFAULT_Panel_Actions(event)}
                     >
                         <option value="true">True</option>

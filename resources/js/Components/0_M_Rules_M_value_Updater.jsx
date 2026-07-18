@@ -10,13 +10,13 @@ export async function update_M_value_for_checked_CD_CU() {
     const activeField = use_M_Store.getState().activeField;
     const fieldname = activeField.toLowerCase();
 
-    const new_M_value_CU_updated = prepare_new_M_value_for_Update_CU(
+    const new_M_value_CU_updated = await prepare_new_M_value_for_Update_CU(
         use_M_Store.getState().M_value,
         fieldname,
         use_M_Store.getState().checked_CU[fieldname],
     );
 
-    const new_M_value_CU_CD_updated = prepare_new_M_value_for_Update_CD(
+    const new_M_value_CU_CD_updated = await prepare_new_M_value_for_Update_CD(
         new_M_value_CU_updated,
         fieldname,
         use_M_Store.getState().checked_CD[fieldname],

@@ -84,44 +84,75 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
         await setChecked_CD(fieldname, checked_CD_States);
 
         await validate_UI("CD", event);
-
-        update_M_value_for_checked_CD_CU();
+        console.log(
+            " CD_Rule --- set_CD_Actions -- after validate_UI -- M_value = ",
+            use_M_Store.getState().M_value,
+        );
+        await update_M_value_for_checked_CD_CU();
     }
-    const D_NAME = get_D_NAME(field_data);
 
     return (
         <div className="M_checkbox-list">
-            {ALL_DB_options.map((option) => (
-                <div key={option} className="M_checkbox-item">
-                    <label>
-                        <input
-                            type="checkbox"
-                            value={option}
-                            /**
-                             * * !!!! react state on checked ,
-                             * * always need onChange to update state !!!
-                             * * if NO D_NAME ,
-                             * * then only Checkbox 'FOREIGN' enable & checked
-                             */
-                            checked={
-                                D_NAME
-                                    ? checked_CD.includes(option)
-                                    : option === "FOREIGN"
-                            }
-                            /**
-                             * if NO D_NAME , then only Checkbox 'FOREIGN' enable
-                             */
-                            disabled={!D_NAME && option !== "FOREIGN"}
-                            onChange={(event) => {
-                                set_CD_Actions(option, event);
-                            }}
-                        />
-                        {option}
-                    </label>
+            {ALL_DB_options.map((option) => {
+                const D_NAME = get_D_NAME(field_data);
 
-                    {D_NAME &&
-                        option === "DEFAULT" &&
-                        checked_CD.includes(option) && (
+                // const is_Tab_Changed = use_M_Store.getState().is_Tab_Changed;
+
+                // /** logic to correct checkbox DEFAULT UI to match JSON Backend */
+                const last_selected_D =
+                    use_M_Store.getState().selected_D_latest[fieldname];
+
+                const is_last_D_Empty =
+                    !last_selected_D || last_selected_D[fieldname] === "";
+                // console.log(
+                //     "return LOOP CD_Rule - is_last_D_Empty = ",
+                //     is_last_D_Empty,
+                // );
+                /** checked logic for showing DEFAULT_Panel */
+                const is_show_DEFAULT_Panel =
+                    D_NAME &&
+                    !is_last_D_Empty &&
+                    option === "DEFAULT" &&
+                    checked_CD.includes(option);
+
+                /** checked logic for CD Checkboxes */
+                // const is_CD_checked = D_NAME // && !is_last_D_Empty && !is_Tab_Changed
+                //     ? checked_CD.includes(option)
+                //     : option === "FOREIGN";
+
+                return (
+                    <div key={option} className="M_checkbox-item">
+                        <label>
+                            <input
+                                type="checkbox"
+                                value={option}
+                                // checked={is_CD_checked}
+                                checked={checked_CD.includes(option)}
+                                // disabled={!D_NAME && option !== "FOREIGN"}
+                                onChange={(event) => {
+                                    // 1. ทำ Deep Clone ที่ถูกต้อง
+                                    const deep_copied_selected_D = JSON.parse(
+                                        JSON.stringify(
+                                            use_M_Store.getState().selected_D,
+                                        ),
+                                    );
+
+                                    // 2. บันทึก latest
+                                    use_M_Store
+                                        .getState()
+                                        .set_selected_D_latest(
+                                            fieldname,
+                                            deep_copied_selected_D,
+                                        );
+
+                                    // 3. เรียกฟังก์ชันเดิม (ไม่มีการใช้ event.target.checked ตรงนี้)
+                                    set_CD_Actions(option, event);
+                                }}
+                            />
+                            {option}
+                        </label>
+
+                        {is_show_DEFAULT_Panel && (
                             <DEFAULT_Panel
                                 D_NAME={D_NAME}
                                 field_data={
@@ -131,8 +162,9 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
                                 }
                             />
                         )}
-                </div>
-            ))}
+                    </div>
+                );
+            })}
         </div>
     );
 }

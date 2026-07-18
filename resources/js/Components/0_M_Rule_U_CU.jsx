@@ -60,8 +60,7 @@ export function CU_Rule({ UI_options, ALL_UI_options, field_data }) {
         await setChecked_CU(fieldname, checked_CU_States);
 
         await validate_UI("CU", event);
-
-        update_M_value_for_checked_CD_CU();
+        await update_M_value_for_checked_CD_CU();
     }
 
     return (

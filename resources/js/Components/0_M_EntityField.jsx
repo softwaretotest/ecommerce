@@ -40,7 +40,10 @@ export default function EntityField({ f_s_Class_Array, table_name }) {
                 <label>Fields for this DB Table</label>
 
                 {f_s_Class_Array.map((f_s_Class_Name, index) => (
-                    <div key={index} className="field-row">
+                    <div
+                        // key={index}  // no need if react does not warn
+                        className="field-row"
+                    >
                         {renderDropdown_for_entities(
                             f_s_Class_Array,
                             f_s_Class_Name,

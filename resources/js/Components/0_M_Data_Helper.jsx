@@ -1,4 +1,6 @@
 // \resources\js\Components\0_M_Data_Helper.js
+import { M_value_Service } from "@/Services/0_M_value_Service";
+import { use_M_Store } from "@/Stores/0_M_Store";
 
 /**
  * @param {*} field_data = e.g.
@@ -46,6 +48,21 @@ export function remove_cd(field_data) {
 }
 
 /**
+ * * remove all d: from field_data
+ * * e.g. ['image', 'd::STRING' , 'u::TEXT'] -> ['image', 'u::TEXT']
+ * * e.g. ['image', ['d::STRING',255] ] -> ['image']
+ */
+export function remove_d(field_data) {
+    if (!Array.isArray(field_data)) return [];
+    return field_data.filter((item) => {
+        const targetString = Array.isArray(item) ? item[0] : item;
+        const isD =
+            typeof targetString === "string" && targetString.startsWith("d::");
+        return !isD;
+    });
+}
+
+/**
  * * check if field_data has "d::NAME" or ["d::NAME", params ]
  */
 export function has_d_in_field_data(field_data) {
@@ -58,4 +75,21 @@ export function has_d_in_field_data(field_data) {
             typeof targetString === "string" && targetString.startsWith("d::")
         );
     });
+}
+
+/**
+ * * check if field_data has "d::NAME" or ["d::NAME", params ]
+ * * this func. called e.g. onChange of checkbox FOREIGN
+ * * before calling value_updater_CD, where cd::FOREIGN
+ * * will be added to M_value Backend like any other CDs
+ */
+export async function remove_D_from_Backend() {
+    const store = use_M_Store.getState();
+    const activeField = use_M_Store.getState().activeField;
+    const fieldname = activeField.toLowerCase();
+    const new_M_value = { ...store.M_value };
+    const field_data = new_M_value[fieldname.toUpperCase()];
+    const field_data_without_d = remove_d(field_data);
+    new_M_value[fieldname.toUpperCase()] = field_data_without_d;
+    await M_value_Service.update(new_M_value);
 }

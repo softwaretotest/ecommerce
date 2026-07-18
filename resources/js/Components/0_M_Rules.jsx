@@ -1,6 +1,7 @@
 // \resources\js\Components\0_M_Rules.jsx
+import { M_value_Service } from "@/Services/0_M_value_Service";
 import { use_M_Store } from "@/Stores/0_M_Store";
-
+import { remove_D_from_Backend } from "@/Components/0_M_Data_Helper";
 export async function validate_UI(checkbox_group_name, event) {
     const store = use_M_Store.getState();
     const activeField = use_M_Store.getState().activeField;
@@ -20,6 +21,7 @@ export async function validate_UI(checkbox_group_name, event) {
 
     const setChecked_CU = use_M_Store.getState().setChecked_CU;
 
+    // Rules for CD , CU Actions
     if (checkbox_group_name === "CD") {
         await update_CD_FOREIGN(event);
         if (event.target.value === "REQUIRED") update_CU_REQUIRED();
@@ -28,6 +30,10 @@ export async function validate_UI(checkbox_group_name, event) {
         await update_CD_FOREIGN(event);
         if (event.target.value === "REQUIRED") update_CD_REQUIRED();
     }
+
+    // Rules for FOREIGN Actions
+    await remove_D_from_selected_D_if_FOREIGN();
+    await restore_previous_selected_D_if_FOREIGN(event);
 
     /**
      * * logic for cud::REQUIRED
@@ -111,5 +117,33 @@ export async function validate_UI(checkbox_group_name, event) {
         //     event.target.value,
         // );
         // console.log("-----------------------------------------------");
+    }
+
+    /**
+     * if FOREIGN checked , then clear selected_D
+     */
+    async function remove_D_from_selected_D_if_FOREIGN() {
+        const { checked_CD, selected_D, set_selected_D } =
+            use_M_Store.getState();
+
+        const is_FOREIGN_checked = checked_CD[fieldname]?.includes("FOREIGN");
+
+        if (is_FOREIGN_checked) {
+            set_selected_D(fieldname, "");
+            remove_D_from_Backend();
+        }
+    }
+
+    function restore_previous_selected_D_if_FOREIGN(event) {
+        const { checked_CD, selected_D, set_selected_D, selected_D_latest } =
+            use_M_Store.getState();
+
+        const is_FOREIGN_unchecked =
+            event.target.value === "FOREIGN" &&
+            !checked_CD[fieldname]?.includes("FOREIGN");
+
+        if (is_FOREIGN_unchecked) {
+            set_selected_D(fieldname, selected_D_latest[fieldname]);
+        }
     }
 }
