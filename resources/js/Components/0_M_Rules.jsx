@@ -143,7 +143,7 @@ export async function validate_UI(checkbox_group_name, event) {
             use_M_Store.getState();
 
         const is_FOREIGN_was_unchecked =
-            event.target.value === "FOREIGN" &&
+            // event.target.value === "FOREIGN" &&
             !checked_CD[fieldname]?.includes("FOREIGN");
 
         console.log(

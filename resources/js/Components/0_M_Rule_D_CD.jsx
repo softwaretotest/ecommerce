@@ -105,10 +105,16 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
 
                 const is_last_D_Empty =
                     !last_selected_D || last_selected_D[fieldname] === "";
-                // console.log(
-                //     "return LOOP CD_Rule - is_last_D_Empty = ",
-                //     is_last_D_Empty,
-                // );
+
+                if (fieldname === "image")
+                    console.log(
+                        `return LOOP CD_Rule ---- D_NAME = ${D_NAME}`,
+                        `is_last_D_Empty = ${is_last_D_Empty}`,
+                        `option = ${option}`,
+                        `( option === "DEFAULT )" = ${option === "DEFAULT"}`,
+                        `checked_CD.includes(${option}) = ${checked_CD.includes(option)}`,
+                    );
+
                 /** checked logic for showing DEFAULT_Panel */
                 const is_show_DEFAULT_Panel =
                     D_NAME &&

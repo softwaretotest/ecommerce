@@ -5,9 +5,12 @@
             "image",
             "u::FILE",
             [
-                "d::DECIMAL",
-                10,
-                2
+                "d::STRING",
+                255
+            ],
+            [
+                "cd::DEFAULT",
+                ""
             ]
         ],
         "NAME": [
