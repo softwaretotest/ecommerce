@@ -1,6 +1,7 @@
 // \resources\js\Components\0_M_Data_Helper.js
 import { M_value_Service } from "@/Services/0_M_value_Service";
 import { use_M_Store } from "@/Stores/0_M_Store";
+import { find_NEW_D_Params_in_M_MAP } from "@/Components/0_M_D_Params_Service";
 
 /**
  * @param {*} field_data = e.g.
@@ -63,6 +64,30 @@ export function remove_d(field_data) {
 }
 
 /**
+ * * add new d:: get D_Params from D_PARAMS_MAP
+ * * e.g. ['image', 'u::TEXT'] -> ['image' , 'd::INTEGER' , 'u::TEXT']
+ * * e.g. ['stock', 'u::TEXT'] -> ['stock' , ['d::DECIMAL',10,2] , 'u::TEXT']
+ */
+export function add_NEW_d(field_data_without_d, D_NAME) {
+    if (!Array.isArray(field_data_without_d)) return [];
+    const d_params = find_NEW_D_Params_in_M_MAP(D_NAME);
+    console.log(
+        `!!!!!! Data_Helper - add_NEW_d - d_params of ${D_NAME} = `,
+        d_params,
+    );
+    let field_data_with_NEW_d = [];
+    if (!d_params) {
+        field_data_with_NEW_d = [...field_data_without_d, `d::${D_NAME}`];
+    } else {
+        field_data_with_NEW_d = [
+            ...field_data_without_d,
+            [`d::${D_NAME}`, ...d_params],
+        ];
+    }
+    return field_data_with_NEW_d;
+}
+
+/**
  * * check if field_data has "d::NAME" or ["d::NAME", params ]
  */
 export function has_d_in_field_data(field_data) {
@@ -92,4 +117,32 @@ export async function remove_D_from_Backend() {
     const field_data_without_d = remove_d(field_data);
     new_M_value[fieldname.toUpperCase()] = field_data_without_d;
     await M_value_Service.update(new_M_value);
+}
+
+export async function update_D_SAVE_Backend(D_NAME) {
+    const store = use_M_Store.getState();
+    const activeField = use_M_Store.getState().activeField;
+    const fieldname = activeField.toLowerCase();
+    const new_M_value = { ...store.M_value };
+    const field_data = new_M_value[fieldname.toUpperCase()];
+    const field_data_without_d = remove_d(field_data);
+
+    const field_data_with_NEW_d = add_NEW_d(field_data_without_d, D_NAME);
+    console.log(
+        "!!!!!!!! Data_Helper - update_D_SAVE_Backend - field_data_with_NEW_d = ",
+        field_data_with_NEW_d,
+    );
+    new_M_value[fieldname.toUpperCase()] = field_data_with_NEW_d;
+    await M_value_Service.update(new_M_value);
+}
+
+/**
+ *
+ * @param {*} FIELDNAME e.g IMAGE , STOCK
+ * @returns e.g. INTEGER , DECIMAL
+ */
+export function get_D_NAME_by_FIELDNAME(FIELDNAME) {
+    const store = use_M_Store.getState();
+    const fiel_data = store.M_value[FIELDNAME];
+    return get_D_NAME(fiel_data);
 }

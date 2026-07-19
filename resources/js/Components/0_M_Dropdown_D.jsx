@@ -108,7 +108,6 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
      */
     const selected_D = use_M_Store((state) => state.selected_D);
     const set_selected_D = use_M_Store.getState().set_selected_D;
-    const set_selected_D_latest = use_M_Store.getState().set_selected_D_latest;
 
     const selected_D_to_show =
         selected_D[fieldname] !== undefined
@@ -136,10 +135,13 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
                 typeof selected_D_values === "string") &&
             selected_D_values.includes("FOREIGN");
 
-        has_FOREIGN &&
+        if (!has_FOREIGN && d_params) {
             setD_Params_State(
                 <D_Params D_NAME={selected_D_to_show} d_params={d_params} />,
             );
+        } else {
+            setD_Params_State(null);
+        }
         if (is_wrong_d_params_in_backend) {
             D_HEAL(
                 fieldname,
@@ -159,6 +161,11 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
      */
     async function set_D_Actions(event) {
         const new_selected_D = event.target.value;
+        //user must not select empty D
+        if (new_selected_D === "") {
+            alert("click FOREIGN to unselect D");
+            return;
+        }
         if (debug)
             console.log(
                 "3. JKLJKJKLJKLJKLJKLJKLJ - renderDropdown_D - set_D_Action - new_selected_D =",
@@ -187,20 +194,6 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
                     .getState()
                     .checked_CD[fieldname]?.includes("FOREIGN")}
                 onChange={(event) => {
-                    // 1. ทำ Deep Clone
-                    const deep_copied_selected_D = JSON.parse(
-                        JSON.stringify(use_M_Store.getState().selected_D),
-                    );
-
-                    // 2. บันทึก latest
-                    use_M_Store
-                        .getState()
-                        .set_selected_D_latest(
-                            fieldname,
-                            deep_copied_selected_D,
-                        );
-
-                    // 3. ส่ง event เข้าไปตรงๆ เพื่อให้ set_CD_Actions อ่านค่า event.target.checked ได้
                     set_D_Actions(event, fieldname);
                 }}
             >

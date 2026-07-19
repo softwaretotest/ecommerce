@@ -36,7 +36,8 @@ export default function M_Dashboard() {
                         key={tab.id}
                         onClick={() => {
                             setActiveTab(tab.id);
-                            use_M_Store.getState().set_Tab_Changed(true);
+                            // if (tab.id === "app_data")
+                            //     alert("APP DATA !!!!!!! SELECTED");
                         }}
                         className={`nav-button ${activeTab === tab.id ? "active" : ""}`}
                     >

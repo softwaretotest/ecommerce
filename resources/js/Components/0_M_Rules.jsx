@@ -1,11 +1,15 @@
 // \resources\js\Components\0_M_Rules.jsx
 import { M_value_Service } from "@/Services/0_M_value_Service";
 import { use_M_Store } from "@/Stores/0_M_Store";
-import { remove_D_from_Backend } from "@/Components/0_M_Data_Helper";
+import {
+    remove_D_from_Backend,
+    update_D_SAVE_Backend,
+} from "@/Components/0_M_Data_Helper";
 export async function validate_UI(checkbox_group_name, event) {
     const store = use_M_Store.getState();
     const activeField = use_M_Store.getState().activeField;
     const fieldname = activeField.toLowerCase();
+    const FIELDNAME = activeField.toUpperCase();
 
     const checked_CD =
         (use_M_Store.getState().checked_CD &&
@@ -134,16 +138,36 @@ export async function validate_UI(checkbox_group_name, event) {
         }
     }
 
-    function restore_previous_selected_D_if_FOREIGN(event) {
-        const { checked_CD, selected_D, set_selected_D, selected_D_latest } =
+    async function restore_previous_selected_D_if_FOREIGN(event) {
+        const { checked_CD, selected_D, set_selected_D, selected_D_FOREIGN } =
             use_M_Store.getState();
 
-        const is_FOREIGN_unchecked =
+        const is_FOREIGN_was_unchecked =
             event.target.value === "FOREIGN" &&
             !checked_CD[fieldname]?.includes("FOREIGN");
 
-        if (is_FOREIGN_unchecked) {
-            set_selected_D(fieldname, selected_D_latest[fieldname]);
+        console.log(
+            " !!!!!!!!!!! Rules -- is_FOREIGN_was_unchecked = ",
+            is_FOREIGN_was_unchecked,
+            ` -- selected_D_FOREIGN[${FIELDNAME}] = `,
+            selected_D_FOREIGN[FIELDNAME],
+        );
+
+        if (is_FOREIGN_was_unchecked) {
+            await set_selected_D(fieldname, selected_D_FOREIGN[FIELDNAME]);
+
+            const D_NAME = use_M_Store.getState().selected_D_FOREIGN[FIELDNAME];
+            console.log(
+                " !!!!!!!!!!! Rules -- is_FOREIGN_was_unchecked = ",
+                is_FOREIGN_was_unchecked,
+
+                ` -- selected_D_FOREIGN[${FIELDNAME}] = `,
+                selected_D_FOREIGN[FIELDNAME],
+
+                ` -- D_NAME = ${D_NAME}`,
+            );
+
+            update_D_SAVE_Backend(D_NAME);
         }
     }
 }

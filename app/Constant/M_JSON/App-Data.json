@@ -3,7 +3,11 @@
     "f": {
         "IMAGE": [
             "image",
-            "u::FILE"
+            "u::FILE",
+            [
+                "d::STRING",
+                255
+            ]
         ],
         "NAME": [
             "name",

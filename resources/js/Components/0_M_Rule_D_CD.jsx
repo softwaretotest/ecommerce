@@ -18,6 +18,7 @@ import { get_D_NAME, has_d_in_field_data } from "@/Components/0_M_Data_Helper";
  * @param {*} ALL_DB_options e.g. ["NULLABLE", "PRIMARY", ...] (all allow options)
  */
 export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
+    if (!field_data) return;
     const { activeSubTab } = use_M_Store();
 
     /**
@@ -25,7 +26,7 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
      */
     const fieldname = field_data[0];
 
-    const fieldname_UPPERCASE = fieldname.toUpperCase();
+    const FIELDNAME = fieldname.toUpperCase();
 
     const checked_CD =
         (use_M_Store.getState().checked_CD &&
@@ -37,6 +38,8 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
         [];
     const setChecked_CD = use_M_Store.getState().setChecked_CD;
     const setChecked_CU = use_M_Store.getState().setChecked_CU;
+    const set_is_FOREIGN_changed =
+        use_M_Store.getState().set_is_FOREIGN_changed;
 
     /**
      * checked_CD Hydration in case global state
@@ -96,11 +99,9 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
             {ALL_DB_options.map((option) => {
                 const D_NAME = get_D_NAME(field_data);
 
-                // const is_Tab_Changed = use_M_Store.getState().is_Tab_Changed;
-
                 // /** logic to correct checkbox DEFAULT UI to match JSON Backend */
                 const last_selected_D =
-                    use_M_Store.getState().selected_D_latest[fieldname];
+                    use_M_Store.getState().selected_D_FOREIGN[fieldname];
 
                 const is_last_D_Empty =
                     !last_selected_D || last_selected_D[fieldname] === "";
@@ -115,37 +116,54 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
                     option === "DEFAULT" &&
                     checked_CD.includes(option);
 
-                /** checked logic for CD Checkboxes */
-                // const is_CD_checked = D_NAME // && !is_last_D_Empty && !is_Tab_Changed
-                //     ? checked_CD.includes(option)
-                //     : option === "FOREIGN";
-
                 return (
                     <div key={option} className="M_checkbox-item">
                         <label>
                             <input
                                 type="checkbox"
                                 value={option}
-                                // checked={is_CD_checked}
+                                readOnly={!use_M_Store.getState().activeField} // is this really neccessary ?
                                 checked={checked_CD.includes(option)}
-                                // disabled={!D_NAME && option !== "FOREIGN"}
                                 onChange={(event) => {
-                                    // 1. ทำ Deep Clone ที่ถูกต้อง
-                                    const deep_copied_selected_D = JSON.parse(
-                                        JSON.stringify(
-                                            use_M_Store.getState().selected_D,
-                                        ),
-                                    );
-
-                                    // 2. บันทึก latest
-                                    use_M_Store
-                                        .getState()
-                                        .set_selected_D_latest(
-                                            fieldname,
-                                            deep_copied_selected_D,
+                                    const selected_D =
+                                        use_M_Store.getState().selected_D;
+                                    if (
+                                        event.target.value === "FOREIGN" &&
+                                        selected_D[fieldname] != ""
+                                    ) {
+                                        console.log(
+                                            `${event.target.value} CLICKED -- selected_D = `,
+                                            selected_D,
+                                        );
+                                        console.log(
+                                            `${event.target.value} CLICKED -- selected_D[${FIELDNAME}] = `,
+                                            selected_D[FIELDNAME],
                                         );
 
-                                    // 3. เรียกฟังก์ชันเดิม (ไม่มีการใช้ event.target.checked ตรงนี้)
+                                        /**
+                                         * * WE DON'T NEED THIS SHITTY SOLUTION FROM GEMINI
+                                         * * selected_D is atomic state with deep structure
+                                         * * (fieldname, D_NAME_or_D_Array) must use deep copy
+                                         * * to get all children of it
+                                         */
+                                        // const deep_copied_selected_D =
+                                        //     JSON.parse(
+                                        //         JSON.stringify(
+                                        //             use_M_Store.getState()
+                                        //                 .selected_D,
+                                        //         ),
+                                        //     );
+
+                                        use_M_Store
+                                            .getState()
+                                            .set_selected_D_FOREIGN(
+                                                FIELDNAME,
+                                                selected_D[FIELDNAME],
+                                                // deep_copied_selected_D[
+                                                //     FIELDNAME
+                                                // ],
+                                            );
+                                    }
                                     set_CD_Actions(option, event);
                                 }}
                             />
@@ -156,9 +174,7 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
                             <DEFAULT_Panel
                                 D_NAME={D_NAME}
                                 field_data={
-                                    use_M_Store.getState().M_value[
-                                        fieldname_UPPERCASE
-                                    ]
+                                    use_M_Store.getState().M_value[FIELDNAME]
                                 }
                             />
                         )}

@@ -1,44 +1,45 @@
 // resources/js/Stores/0_M_Store.jsx
 
 import { create } from "zustand";
+import {
+    get_D_NAME,
+    get_D_NAME_by_FIELDNAME,
+} from "@/Components/0_M_Data_Helper";
 
 export const use_M_Store = create((set) => ({
     debug: false,
     debug_M_value: false,
 
     debug_selected_U: false,
-    debug_selected_D: true,
-    debug_selected_D_latest: true,
+    debug_selected_D: true, // e.g. INTEGER , STRING
+    debug_selected_D_FOREIGN: true,
 
     debug_checked_CU: false,
-    debug_checked_CD: false,
+    debug_checked_CD: false, // e.g. ['INDEX', 'DEFAULT', 'NULLABLE']
 
-    debug_activeField: false,
+    debug_activeField: true,
     debug_activeTab: false,
     debug_activeSubTab: false,
 
-    is_Tab_Changed: false,
-    set_Tab_Changed: (status) => set({ is_Tab_Changed: status }),
-
-    selected_D_latest: {}, // atomic states
-    set_selected_D_latest: (fieldname, selected_D_latest_value) =>
+    selected_D_FOREIGN: {}, // atomic states
+    set_selected_D_FOREIGN: (fieldname, selected_D_FOREIGN) =>
         set((state) => {
-            if (!fieldname) return { selected_D_latest: {} };
+            if (!fieldname) return { selected_D_FOREIGN: {} };
 
-            const NEW_selected_D_latest = {
-                ...state.selected_D_latest,
-                [fieldname]: selected_D_latest_value,
+            const NEW_selected_D_FOREIGN = {
+                ...state.selected_D_FOREIGN,
+                [fieldname]: selected_D_FOREIGN,
             };
 
-            if (state.debug || state.debug_selected_D_latest) {
+            if (state.debug || state.debug_selected_D_FOREIGN) {
                 console.log(
-                    `[M_STORE_DEBUG] NEW_selected_D_latest[${fieldname}]:`,
-                    NEW_selected_D_latest[fieldname],
+                    `[M_STORE_DEBUG] NEW_selected_D_FOREIGN[${fieldname.toUpperCase()}]:`,
+                    NEW_selected_D_FOREIGN[fieldname.toUpperCase()],
                 );
                 console.log("------------------------------------");
             }
 
-            return { selected_D_latest: NEW_selected_D_latest };
+            return { selected_D_FOREIGN: NEW_selected_D_FOREIGN };
         }),
 
     selected_D: {}, // atomic states
@@ -162,13 +163,18 @@ export const use_M_Store = create((set) => ({
         }),
 
     activeField: null,
-    setActiveField: (field) =>
+    setActiveField: (FIELDNAME) =>
         set((state) => {
             if (state.debug || state.debug_activeField) {
-                console.log(`[M_STORE_DEBUG] New activeField :`, field);
+                console.log(`[M_STORE_DEBUG] New activeField :`, FIELDNAME);
                 console.log("------------------------------------");
             }
-            return { activeField: field };
+
+            // selected_D can be save to prepare for the case, if FOREIGN clicked
+            const D_NAME = get_D_NAME_by_FIELDNAME(FIELDNAME);
+            state.set_selected_D(FIELDNAME, D_NAME);
+
+            return { activeField: FIELDNAME };
         }),
 
     /**
