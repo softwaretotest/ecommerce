@@ -118,7 +118,7 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
                 /** checked logic for showing DEFAULT_Panel */
                 const is_show_DEFAULT_Panel =
                     D_NAME &&
-                    !is_last_D_Empty &&
+                    is_last_D_Empty &&
                     option === "DEFAULT" &&
                     checked_CD.includes(option);
 

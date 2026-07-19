@@ -5,12 +5,13 @@
             "image",
             "u::FILE",
             [
-                "d::STRING",
-                255
+                "cd::DEFAULT",
+                0
             ],
             [
-                "cd::DEFAULT",
-                ""
+                "d::DECIMAL",
+                10,
+                2
             ]
         ],
         "NAME": [
@@ -38,17 +39,8 @@
         ],
         "STOCK": [
             "stock",
-            [
-                "d::DECIMAL",
-                10,
-                10
-            ],
             "u::NUMBER",
-            [
-                "cd::DEFAULT",
-                0
-            ],
-            "cud::REQUIRED"
+            "cd::FOREIGN"
         ],
         "IS_ACTIVE": [
             "is_active",
