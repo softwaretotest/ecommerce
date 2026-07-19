@@ -5,8 +5,9 @@
             "image",
             "u::FILE",
             [
-                "d::STRING",
-                255
+                "d::DECIMAL",
+                10,
+                2
             ]
         ],
         "NAME": [

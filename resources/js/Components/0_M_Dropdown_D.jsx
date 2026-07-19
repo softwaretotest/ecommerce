@@ -108,13 +108,15 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
      */
     const selected_D = use_M_Store((state) => state.selected_D);
     const set_selected_D = use_M_Store.getState().set_selected_D;
+    // const D_Params_State = use_M_Store((state) => state.D_Params_State);
+    const set_D_Params_State = use_M_Store.getState().set_D_Params_State;
 
     const selected_D_to_show =
         selected_D[fieldname] !== undefined
             ? selected_D[fieldname]
             : selected_D_of_field_data;
 
-    const [D_Params_State, setD_Params_State] = useState(null);
+    // const [D_Params_State, set_D_Params_State] = useState(null);
 
     useEffect(() => {
         if (!selected_D_to_show) return;
@@ -130,18 +132,22 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
 
         const selected_D_values = selected_D[fieldname];
 
+        // to show <D_Params /> it depends on selected_D and checkbox FOREIGN
         const has_FOREIGN =
             (Array.isArray(selected_D_values) ||
                 typeof selected_D_values === "string") &&
             selected_D_values.includes("FOREIGN");
 
         if (!has_FOREIGN && d_params) {
-            setD_Params_State(
+            set_D_Params_State(
+                fieldname,
                 <D_Params D_NAME={selected_D_to_show} d_params={d_params} />,
             );
         } else {
-            setD_Params_State(null);
+            set_D_Params_State({});
         }
+
+        // ADD D_Params to d:: if exists , fix the wrong d:: Config
         if (is_wrong_d_params_in_backend) {
             D_HEAL(
                 fieldname,
@@ -183,7 +189,14 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
 
         await M_value_Service.update(new_M_value);
     }
-
+    // console.log(
+    //     "Rendering:",
+    //     fieldname,
+    //     D_Params_State ? D_Params_State[fieldname] : "Not Found",
+    // );
+    const D_Params_State_for_field = use_M_Store((state) =>
+        state.D_Params_State ? state.D_Params_State[fieldname] : null,
+    );
     return (
         <>
             <select
@@ -203,7 +216,7 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
                     field_data={field_data}
                 />
             </select>
-            {has_d_in_field_data(field_data) && D_Params_State}
+            {has_d_in_field_data(field_data) && D_Params_State_for_field}
         </>
     );
 }

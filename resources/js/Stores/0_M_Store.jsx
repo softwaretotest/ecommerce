@@ -21,20 +21,70 @@ export const use_M_Store = create((set) => ({
     debug_activeTab: false,
     debug_activeSubTab: false,
 
-    selected_D_FOREIGN: {}, // atomic states
-    set_selected_D_FOREIGN: (fieldname, selected_D_FOREIGN) =>
+    debug_D_Params_State: false,
+
+    has_M_value_Change: false,
+    set_has_M_value_Change: (has_M_value_Change) =>
+        set({ has_M_value_Change: has_M_value_Change }),
+
+    hasJSON_Change: false,
+    set_hasJSON_Change: (hasJSON_Change) =>
+        set({ hasJSON_Change: hasJSON_Change }),
+
+    D_Params_State: {},
+    set_D_Params_State: (fieldname, D_Params_State) =>
         set((state) => {
-            if (!fieldname) return { selected_D_FOREIGN: {} };
+            if (!fieldname) return { D_Params_State: {} };
+
+            const NEW_D_Params_State = {
+                ...state.D_Params_State,
+                [fieldname]: D_Params_State,
+            };
+
+            /**
+             * * we need this log because,
+             * * D_Params_State containt HTML <D_Params />
+             * * to make console.log more readable
+             * */
+            if (state.debug || state.debug_D_Params_State) {
+                console.log(`[DEBUG_DETAIL] Field: ${fieldname}`);
+                console.log(
+                    `[DEBUG_DETAIL] Type of content:`,
+                    typeof NEW_D_Params_State[fieldname],
+                );
+                console.log(
+                    `[DEBUG_DETAIL] Full Object:`,
+                    NEW_D_Params_State[fieldname],
+                );
+                if (
+                    NEW_D_Params_State[fieldname] &&
+                    NEW_D_Params_State[fieldname].props
+                ) {
+                    console.log(
+                        `[DEBUG_DETAIL] Props inside:`,
+                        NEW_D_Params_State[fieldname].props,
+                    );
+                }
+                console.log("------------------------------------");
+            }
+
+            return { D_Params_State: NEW_D_Params_State };
+        }),
+
+    selected_D_FOREIGN: {}, // atomic states
+    set_selected_D_FOREIGN: (FIELDNAME, selected_D_FOREIGN) =>
+        set((state) => {
+            if (!FIELDNAME) return { selected_D_FOREIGN: {} };
 
             const NEW_selected_D_FOREIGN = {
                 ...state.selected_D_FOREIGN,
-                [fieldname]: selected_D_FOREIGN,
+                [FIELDNAME]: selected_D_FOREIGN,
             };
 
             if (state.debug || state.debug_selected_D_FOREIGN) {
                 console.log(
-                    `[M_STORE_DEBUG] NEW_selected_D_FOREIGN[${fieldname.toUpperCase()}]:`,
-                    NEW_selected_D_FOREIGN[fieldname.toUpperCase()],
+                    `[M_STORE_DEBUG] NEW_selected_D_FOREIGN[${FIELDNAME}]:`,
+                    NEW_selected_D_FOREIGN[FIELDNAME],
                 );
                 console.log("------------------------------------");
             }
@@ -43,19 +93,19 @@ export const use_M_Store = create((set) => ({
         }),
 
     selected_D: {}, // atomic states
-    set_selected_D: (fieldname, selected_D_Value) =>
+    set_selected_D: (FIELDNAME, selected_D_Value) =>
         set((state) => {
-            if (!fieldname) return { selected_D: {} };
+            if (!FIELDNAME) return { selected_D: {} };
 
             const NEW_selected_D = {
                 ...state.selected_D,
-                [fieldname]: selected_D_Value,
+                [FIELDNAME]: selected_D_Value,
             };
 
             if (state.debug || state.debug_selected_D) {
                 console.log(
-                    `[M_STORE_DEBUG] NEW_selected_D[${fieldname}]:`,
-                    NEW_selected_D[fieldname],
+                    `[M_STORE_DEBUG] NEW_selected_D[${FIELDNAME}]:`,
+                    NEW_selected_D[FIELDNAME],
                 );
                 console.log("------------------------------------");
             }
@@ -133,14 +183,6 @@ export const use_M_Store = create((set) => ({
 
             return { checked_CU: NEW_checked_CU };
         }),
-
-    has_M_value_Change: false,
-    set_has_M_value_Change: (has_M_value_Change) =>
-        set({ has_M_value_Change: has_M_value_Change }),
-
-    hasJSON_Change: false,
-    set_hasJSON_Change: (hasJSON_Change) =>
-        set({ hasJSON_Change: hasJSON_Change }),
 
     activeTab: "m_data",
     setActiveTab: (tab) =>
