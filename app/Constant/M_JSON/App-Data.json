@@ -11,11 +11,12 @@
         ],
         "NAME": [
             "name",
+            "u::TEXT",
+            "cud::REQUIRED",
             [
                 "d::STRING",
                 255
-            ],
-            "u::TEXT"
+            ]
         ],
         "PRICE": [
             "price",

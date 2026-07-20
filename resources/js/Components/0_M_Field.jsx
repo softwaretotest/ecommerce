@@ -8,6 +8,7 @@ import { use_M_Store } from "@/Stores/0_M_Store.jsx";
 export default function Field({ field_data }) {
     const { activeTab, activeSubTab } = use_M_Store();
     const fieldname = field_data[0];
+    const is_CURRENCY = field_data[0].toLowerCase() === "currency";
 
     function make_dropdown_D(label, names) {
         return (
@@ -42,6 +43,23 @@ export default function Field({ field_data }) {
         );
     }
 
+    /**
+     * * for now to make M_Project_UI works
+     * * we prevent user from edit CURRENCY field
+     * * xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+     * * TODO: move s::CURRENCY to bm::CURRENCY (Behavior + Modifier)
+     * * which is neither DB nor UI property ,
+     * * bm::CLASS will have separate logic e.g. function validata currency
+     */
+    const CHECKBOX_and_DROPDOWN = !is_CURRENCY && (
+        <div className="field-dropdown-grid">
+            {make_dropdown_D("D", ["d"])}
+            {make_checkbox("CD", ["cd", "cud"])}
+            {make_dropdown_U("U", ["u"])}
+            {make_checkbox("CU", ["cu", "cud"])}
+        </div>
+    );
+
     return (
         <div className="field-wrapper-box">
             <div className="field-header-container">
@@ -57,13 +75,7 @@ export default function Field({ field_data }) {
                     className="App_Data_VALUE"
                 />
             </div>
-
-            <div className="field-dropdown-grid">
-                {make_dropdown_D("D", ["d"])}
-                {make_checkbox("CD", ["cd", "cud"])}
-                {make_dropdown_U("U", ["u"])}
-                {make_checkbox("CU", ["cu", "cud"])}
-            </div>
+            {CHECKBOX_and_DROPDOWN}
         </div>
     );
 }

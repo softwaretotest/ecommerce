@@ -12,8 +12,22 @@ import { M_Option } from "@/Components/0_M_Option";
  */
 export function renderDropdown_for_entities(f_s_Class_Array, f_s_Class_Name) {
     const M_Class_Name_List = ["f", "s"];
-
-    let defaultValue = f_s_Class_Name.split("::")[1];
+    console.log(
+        " !!!!!!!!!!!!!! renderDropdown_for_entities -- f_s_Class_Name = ",
+        f_s_Class_Name,
+    );
+    let defaultValue = "";
+    if (typeof f_s_Class_Name === "string" && f_s_Class_Name.includes("::")) {
+        defaultValue = f_s_Class_Name.split("::")[1];
+    } else if (typeof f_s_Class_Name === "string") {
+        defaultValue = f_s_Class_Name;
+    } else {
+        // กรณีเป็น Array หรือประเภทอื่นๆ ให้ดึงค่าแรกหรือจัดการตามความเหมาะสม
+        console.warn(
+            "⚠️ renderDropdown_for_entities received non-string:",
+            f_s_Class_Name,
+        );
+    }
 
     return (
         <>
