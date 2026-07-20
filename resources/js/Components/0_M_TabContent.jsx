@@ -13,8 +13,8 @@ import DB_Tablename from "@/Components/0_M_DB_Tablename";
 
 export default function TabContent({ M_Class_Name }) {
     const M_value = use_M_Store((state) => state.M_value);
-    const has_NEW_Field = use_M_Store((state) => state.has_NEW_Field);
-    const set_has_NEW_Field = use_M_Store((state) => state.set_has_NEW_Field);
+    const NEW_fieldname = use_M_Store((state) => state.NEW_fieldname);
+    const set_NEW_fieldname = use_M_Store((state) => state.set_NEW_fieldname);
     const activeTab = use_M_Store((state) => state.activeTab);
     const activeField = use_M_Store((state) => state.activeField);
     const setActiveField = use_M_Store((state) => state.setActiveField);
@@ -84,15 +84,19 @@ export default function TabContent({ M_Class_Name }) {
         return has_same_fieldname;
     }
 
+    /**
+     * * get new fieldname from UI
+     * * and save to JSON Backend
+     * @returns
+     */
     async function add_field() {
-        // วิธีที่ 1: ดึงค่าผ่าน DOM querySelector สดๆ ตรงนี้เลยตามที่คุณต้องการ
-        const inputElement = document.querySelector(".input_fieldname");
-        const raw_name = inputElement ? inputElement.value : "";
+        const input_box_fieldname = document.querySelector(".input_fieldname");
+        const raw_name = input_box_fieldname ? input_box_fieldname.value : "";
 
         const trimmed_name = raw_name.trim();
         if (!trimmed_name) return;
 
-        await set_has_NEW_Field(trimmed_name); //set flag for useEffect in Dropdown_D.jsx
+        await set_NEW_fieldname(trimmed_name); //set flag for useEffect in Dropdown_D.jsx
 
         const field_data = [trimmed_name, ["d::STRING", 255]];
         const FIELDNAME = field_data[0].toUpperCase();
@@ -105,31 +109,28 @@ export default function TabContent({ M_Class_Name }) {
         await M_value_Service.update(new_M_value);
         setActiveField(FIELDNAME); // for auto scroll
 
-        // เคลียร์ค่าใน input ทิ้งหลังเพิ่มสำเร็จ
-        if (inputElement) inputElement.value = "";
-        setInputFieldname(""); // เคลียร์ state ร่วมด้วยเพื่อให้ปุ่ม disabled กลับมาล็อกเหมือนเดิม
+        //clear input box , after finish
+        if (input_box_fieldname) input_box_fieldname.value = "";
+        set_new_FIELDNAME("");
     }
 
-    const [inputFieldname, setInputFieldname] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
+    const [new_FIELDNAME, set_new_FIELDNAME] = useState("");
+    const [Error_NEW_FIELDNAME, set_Error_NEW_FIELDNAME] = useState("");
     function handleFieldnameChange(value) {
-        setInputFieldname(value);
+        set_new_FIELDNAME(value);
 
-        // 1. เช็คว่าว่างเปล่าไหม
         if (!value.trim()) {
-            setErrorMessage("Fieldname cannot be empty.");
+            set_Error_NEW_FIELDNAME("Fieldname cannot be empty.");
             return;
         }
 
-        // 2. เช็คว่าชื่อซ้ำหรือไม่ (สมมติว่าคุณมีฟังก์ชันเช็คซ้ำอยู่แล้ว หรือเช็คจากข้อมูลที่มี)
-        // ตัวอย่างเช่น เช็คกับ M_value ที่มีอยู่
         const isDuplicate =
             M_value && Object.keys(M_value).includes(value.trim());
 
         if (isDuplicate) {
-            setErrorMessage("This field name already exists.");
+            set_Error_NEW_FIELDNAME("This field name already exists.");
         } else {
-            setErrorMessage(""); // ถ้าผ่านหมดเคลียร์ error ให้หายไป
+            set_Error_NEW_FIELDNAME(""); // clear if no error
         }
     }
     return (
@@ -142,19 +143,20 @@ export default function TabContent({ M_Class_Name }) {
                     type="text"
                     className="input_fieldname"
                     placeholder="new field name"
-                    value={inputFieldname}
-                    onChange={(e) => handleFieldnameChange(e.target.value)}
+                    value={new_FIELDNAME}
+                    onChange={(e) =>
+                        handleFieldnameChange(e.target.value.toUpperCase())
+                    }
                 />
 
-                {/* แสดง error ใกล้ๆ text box (ถ้ามีข้อความ error ถึงจะเรนเดอร์ขึ้นมา) */}
-                {errorMessage && (
-                    <span className="error-text">{errorMessage}</span>
+                {Error_NEW_FIELDNAME && (
+                    <span className="error-text">{Error_NEW_FIELDNAME}</span>
                 )}
 
                 <button
                     className="add-button"
                     onClick={add_field}
-                    disabled={!inputFieldname || errorMessage} // ล็อกปุ่มถ้ายังว่างหรือมี error
+                    disabled={!new_FIELDNAME || Error_NEW_FIELDNAME}
                 >
                     ADD FIELD
                 </button>
@@ -164,7 +166,8 @@ export default function TabContent({ M_Class_Name }) {
                 {Object.entries(M_value).map(
                     ([fieldname, field_data], index) => {
                         // SAVE TO Javascript GLOBAL Variable
-                        // Dropdown_D run D_HEAL only after refresh and activeTab = app_data
+                        // Dropdown_D run D_HEAL only
+                        // after refresh and activeTab = app_data
                         if (
                             !window.D_HEAL.isLastField &&
                             activeTab === "app_data"
@@ -172,10 +175,6 @@ export default function TabContent({ M_Class_Name }) {
                             let isLastField =
                                 index === Object.entries(M_value).length - 1;
                             window.D_HEAL.isLastField = isLastField;
-                            // console.log(
-                            //     " TabContent - window.D_HEAL.isLastField = ",
-                            //     window.D_HEAL.isLastField,
-                            // );
                         }
                         // !!! MUST HAVE return to show DOM !!!
                         return render_TabContent_DOM(fieldname, field_data);

@@ -50,8 +50,8 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
     const {
         M_value,
         set_M_value,
-        has_NEW_Field,
-        set_has_NEW_Field,
+        NEW_fieldname,
+        set_NEW_fieldname,
         activeField,
         setActiveField,
         isLastField,
@@ -64,12 +64,6 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
      * * D_String_or_Array = e.g. d::INTEGER , [d:DECIMAL,10,2]
      */
     const D_String_or_Array = find_d_item(field_data);
-    // const D_String_or_Array = field_data.find((item, index) => {
-    //     let valueToTest = Array.isArray(item) ? item[0] : item;
-    //     let isMatch =
-    //         typeof valueToTest === "string" && valueToTest.startsWith("d::");
-    //     return isMatch;
-    // });
 
     let selected_D_of_field_data = "";
     let d_params = [];
@@ -119,17 +113,14 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
             ? selected_D[fieldname]
             : selected_D_of_field_data;
 
-    // const [D_Params_State, set_D_Params_State] = useState(null);
-
     useEffect(() => {
         if (!selected_D_to_show) return;
         let d_params = [];
         let is_wrong_d_params_in_backend = false;
-        const is_this_field_new = fieldname === has_NEW_Field;
+        const is_this_field_new = fieldname === NEW_fieldname;
         // user clicked ADD FIELD
         if (is_this_field_new) {
-            // ตอนเป็นฟิลด์ใหม่ ต้องดึงจาก M_value ปัจจุบัน ไม่ใช่ Global Metadata
-            d_params = find_D_Params_in_M_value(fieldname, selected_D_to_show);
+            d_params = find_D_Params_in_M_value(selected_D_to_show, fieldname);
         } else {
             d_params = find_D_Params_in_GLOBAL_METADATA(
                 selected_D_to_show,
@@ -145,7 +136,6 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
         const selected_D_values = selected_D[fieldname];
 
         // to show <D_Params /> it depends on selected_D and checkbox FOREIGN
-
         const has_FOREIGN =
             (Array.isArray(selected_D_values) ||
                 typeof selected_D_values === "string") &&
@@ -170,7 +160,7 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
                 M_value_Service,
             );
         }
-    }, [selected_D, has_NEW_Field]);
+    }, [selected_D, NEW_fieldname, fieldname]);
 
     /**
      * * set_selected_D

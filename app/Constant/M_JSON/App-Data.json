@@ -1,85 +1,16 @@
 {
     "_comment": "\/M_JSON\/App-Data.json",
     "f": {
-        "5772578": [
-            "5772578",
-            [
-                "d::STRING",
-                255
-            ]
-        ],
-        "RTEWTETGRESG": [
-            "rtewtetgresg",
-            [
-                "d::STRING",
-                255
-            ]
-        ],
-        "F5EAZ454545E": [
-            "f5eaz454545e",
-            [
-                "d::STRING",
-                255
-            ]
-        ],
-        "5ZATGERSGFTWER": [
-            "5zatgersgftwer",
-            [
-                "d::STRING",
-                255
-            ]
-        ],
-        "TZWERWTRWETRWETRE": [
-            "tzwerwtrwetrwetre",
-            [
-                "d::STRING",
-                255
-            ]
-        ],
-        "THRHZTHRNGGGGGE4574": [
-            "thrhzthrnggggge4574",
-            [
-                "d::STRING",
-                255
-            ]
-        ],
-        "Z6W4Z5RDSZ": [
-            "z6w4z5rdsz",
-            [
-                "d::STRING",
-                255
-            ]
-        ],
-        "5825858IU": [
-            "5825858iu",
-            [
-                "d::STRING",
-                255
-            ]
-        ],
-        "U65645Z": [
-            "u65645z",
-            [
-                "d::STRING",
-                255
-            ]
-        ],
         "IMAGE": [
             "image",
-            "u::FILE",
-            [
-                "d::STRING",
-                255
-            ]
+            "d::STRING",
+            "u::FILE"
         ],
         "NAME": [
             "name",
+            "d::STRING",
             "u::TEXT",
-            "cud::REQUIRED",
-            [
-                "d::STRING",
-                255
-            ]
+            "cud::REQUIRED"
         ],
         "PRICE": [
             "price",
@@ -143,11 +74,8 @@
         ],
         "ORDER_NR": [
             "order_nr",
-            "u::TEXT",
-            [
-                "d::STRING",
-                255
-            ]
+            "d::STRING",
+            "u::TEXT"
         ],
         "ORDER_ID": [
             "order_id",
@@ -164,20 +92,6 @@
         "USER_ID": [
             "user_id",
             "cd::FOREIGN"
-        ],
-        "HZU6HZUSR45HZUSE": [
-            "hzu6hzusr45hzuse",
-            [
-                "d::STRING",
-                255
-            ]
-        ],
-        "DSGAREA": [
-            "dsgarea",
-            [
-                "d::STRING",
-                255
-            ]
         ]
     },
     "t": {
