@@ -109,6 +109,20 @@ body {
     gap: 10px;
     margin-bottom: 20px;
 }
+.tch-label {
+    align-self: center;
+    background-color: #aabba3;
+    padding: 10px;
+}
+
+.tab-content-header {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    gap: 5px;
+    padding: 8px;
+}
+
 .dashboard-main-box {
     border: 1px solid #ccc;
     padding: 10px;
@@ -271,22 +285,39 @@ body {
     max-width: 250px;
 }
 
+.add-button {
+    background-color: #3498db;
+}
+
+.delete-button {
+    background-color: #f08730;
+}
+
+.field-nav-link {
+    background: #f8f9fa;
+}
+
+.add-button,
+.delete-button,
 .field-nav-link {
     text-align: left;
     padding: 8px 12px;
-    background: #f8f9fa;
     border: 1px solid #ddd;
     cursor: pointer;
     border-radius: 4px;
     font-size: 0.9em;
+    font-weight: bold;
 
     white-space: nowrap;
 }
-
+.add-button:hover,
+.delete-button:hover,
 .field-nav-link:hover {
     background: #e2e6ea;
 }
 
+.add-button.active,
+.delete-button.active,
 .field-nav-link.active {
     background-color: #e3342f;
     color: white;

@@ -24,10 +24,22 @@ export const use_M_Store = create((set) => ({
     debug_activeTab: false,
     debug_activeSubTab: false,
 
+    debug_has_NEW_Field: true,
+
     debug_D_Params_State: false,
 
-    has_M_value_Change: false,
+    has_NEW_Field: null,
+    set_has_NEW_Field: (has_NEW_Field) =>
+        // set({ has_NEW_Field: has_NEW_Field }),
+        set((state) => {
+            if (state.debug || state.debug_has_NEW_Field) {
+                console.log(`[M_STORE_DEBUG] has_NEW_Field :`, has_NEW_Field);
+                console.log("------------------------------------");
+            }
+            return { has_NEW_Field: has_NEW_Field };
+        }),
 
+    has_M_value_Change: false,
     set_has_M_value_Change: (has_M_value_Change) =>
         set({ has_M_value_Change: has_M_value_Change }),
 

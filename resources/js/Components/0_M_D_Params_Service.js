@@ -1,6 +1,7 @@
 // \resources\js\Components\0_M_D_Params_Service.js
 import { GLOBAL_METADATA } from "@/Providers/0_M_DataProvider";
 import { D_PARAMS_MAP } from "@/Components/0_M_MAP";
+import { use_M_Store } from "@/Stores/0_M_Store";
 
 /**
  * prepare d_params for React.Component <D_Params />
@@ -13,8 +14,34 @@ export function find_NEW_D_Params_in_M_MAP(D_Name_UPPERCASE) {
     return d_params;
 }
 
+export async function find_D_Params_in_M_value(D_Name_UPPERCASE, fieldname) {
+    const M_value = use_M_Store.getState().M_value;
+
+    const FIELDNAME = fieldname.toUpperCase();
+    const field_data = M_value[FIELDNAME];
+
+    if (!Array.isArray(field_data)) return null;
+
+    /**
+     * e.g. ['d::DECIMAL', 10, 2] , 'd::BOOLEAN'
+     */
+    const d_Class_Item = field_data.find((item) => {
+        const target = Array.isArray(item) ? item[0] : item;
+        return typeof target === "string" && target.startsWith("d::");
+    });
+
+    const d_Name = d_Class_Item[0].replace("d::", "");
+
+    /**
+     * * cut out d:: to send only params , e.g.
+     * * before [ 'd::DECIMAL', 10 , 2 ]
+     * * after  [ 10 , 2 ]
+     */
+    if (d_Name === D_Name_UPPERCASE) return d_Class_Item.slice(1);
+    else return null;
+}
+
 export function find_D_Params_in_GLOBAL_METADATA(D_Name_UPPERCASE, fieldname) {
-    const key = fieldname.toUpperCase();
     // find in both classes app_data.f and m_data.s
     const field_data =
         GLOBAL_METADATA?.app_data?.f?.[fieldname.toUpperCase()] ||

@@ -74,6 +74,7 @@ export default function Field({ field_data }) {
                     defaultValue={fieldname}
                     className="App_Data_VALUE"
                 />
+                <button className="delete-button">DELETE</button>
             </div>
             {CHECKBOX_and_DROPDOWN}
         </div>

@@ -4,6 +4,7 @@ import { React, useState, useRef, useEffect } from "react";
 import { useScrollIntoView } from "@/hooks/useScrollIntoView";
 
 import { use_M_Store } from "@/Stores/0_M_Store.jsx";
+import { M_value_Service } from "@/Services/0_M_value_Service";
 
 import SpecialField from "@/Components/0_M_SpecialField";
 import Field from "@/Components/0_M_Field";
@@ -12,6 +13,8 @@ import DB_Tablename from "@/Components/0_M_DB_Tablename";
 
 export default function TabContent({ M_Class_Name }) {
     const M_value = use_M_Store((state) => state.M_value);
+    const has_NEW_Field = use_M_Store((state) => state.has_NEW_Field);
+    const set_has_NEW_Field = use_M_Store((state) => state.set_has_NEW_Field);
     const activeTab = use_M_Store((state) => state.activeTab);
     const activeField = use_M_Store((state) => state.activeField);
     const setActiveField = use_M_Store((state) => state.setActiveField);
@@ -72,11 +75,57 @@ export default function TabContent({ M_Class_Name }) {
             </div>
         );
     }
+
+    function check_duplicate_in_M_value(new_fieldname) {
+        const target = new_fieldname.trim().toUpperCase();
+        const has_same_fieldname = Object.keys(M_value).some(
+            (key) => key.toUpperCase() === target,
+        );
+        return has_same_fieldname;
+    }
+
+    async function add_field() {
+        const raw_name = prompt("Enter new field name:");
+
+        if (!raw_name || raw_name.trim() === "") {
+            return; // ยกเลิกถ้ายกเลิกการพิมพ์หรือไม่ใส่ชื่อ
+        }
+
+        const trimmed_name = raw_name.trim();
+
+        const has_same_fieldname = check_duplicate_in_M_value(trimmed_name);
+        if (has_same_fieldname) {
+            alert(
+                `Fieldname = ${trimmed_name} already exists !!! Please use a different name`,
+            );
+            return;
+        }
+
+        await set_has_NEW_Field(trimmed_name); //set flag for useEffect in Dropdown_D.jsx
+
+        const field_data = [trimmed_name, ["d::STRING", 255]];
+        const FIELDNAME = field_data[0].toUpperCase();
+
+        const new_M_value = {
+            [FIELDNAME]: field_data,
+            ...M_value,
+        };
+
+        await M_value_Service.update(new_M_value);
+        setActiveField(FIELDNAME); // for auto scroll
+    }
+
     return (
         <>
-            <div>
-                <label>M_Class_Name = {M_Class_Name}</label>
+            <div className="tab-content-header">
+                <label className="tch-label">
+                    M_Class_Name = {M_Class_Name}
+                </label>
+                <button className="add-button" onClick={add_field}>
+                    ADD FIELD
+                </button>
             </div>
+
             <div className="input-engine-container">
                 {Object.entries(M_value).map(
                     ([fieldname, field_data], index) => {

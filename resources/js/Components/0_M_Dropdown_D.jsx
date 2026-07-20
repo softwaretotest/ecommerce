@@ -10,6 +10,7 @@ import { prepare_new_M_value_for_Update_D } from "@/Components/0_M_value_Updater
 import {
     find_NEW_D_Params_in_M_MAP,
     find_D_Params_in_GLOBAL_METADATA,
+    find_D_Params_in_M_value,
 } from "@/Components/0_M_D_Params_Service";
 
 import { find_d_item, has_d_in_field_data } from "@/Components/0_M_Data_Helper";
@@ -49,6 +50,8 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
     const {
         M_value,
         set_M_value,
+        has_NEW_Field,
+        set_has_NEW_Field,
         activeField,
         setActiveField,
         isLastField,
@@ -120,11 +123,20 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
 
     useEffect(() => {
         if (!selected_D_to_show) return;
-        let d_params = find_D_Params_in_GLOBAL_METADATA(
-            selected_D_to_show,
-            fieldname,
-        );
+        let d_params = [];
         let is_wrong_d_params_in_backend = false;
+        const is_this_field_new = fieldname === has_NEW_Field;
+        // user clicked ADD FIELD
+        if (is_this_field_new) {
+            // ตอนเป็นฟิลด์ใหม่ ต้องดึงจาก M_value ปัจจุบัน ไม่ใช่ Global Metadata
+            d_params = find_D_Params_in_M_value(fieldname, selected_D_to_show);
+        } else {
+            d_params = find_D_Params_in_GLOBAL_METADATA(
+                selected_D_to_show,
+                fieldname,
+            );
+        }
+
         if (!d_params) {
             is_wrong_d_params_in_backend = true;
             d_params = find_NEW_D_Params_in_M_MAP(selected_D_to_show);
@@ -133,6 +145,7 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
         const selected_D_values = selected_D[fieldname];
 
         // to show <D_Params /> it depends on selected_D and checkbox FOREIGN
+
         const has_FOREIGN =
             (Array.isArray(selected_D_values) ||
                 typeof selected_D_values === "string") &&
@@ -157,7 +170,7 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
                 M_value_Service,
             );
         }
-    }, [selected_D]);
+    }, [selected_D, has_NEW_Field]);
 
     /**
      * * set_selected_D
