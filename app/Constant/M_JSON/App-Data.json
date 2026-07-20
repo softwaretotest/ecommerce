@@ -8,6 +8,41 @@
                 255
             ]
         ],
+        "RTEWTETGRESG": [
+            "rtewtetgresg",
+            [
+                "d::STRING",
+                255
+            ]
+        ],
+        "F5EAZ454545E": [
+            "f5eaz454545e",
+            [
+                "d::STRING",
+                255
+            ]
+        ],
+        "5ZATGERSGFTWER": [
+            "5zatgersgftwer",
+            [
+                "d::STRING",
+                255
+            ]
+        ],
+        "TZWERWTRWETRWETRE": [
+            "tzwerwtrwetrwetre",
+            [
+                "d::STRING",
+                255
+            ]
+        ],
+        "THRHZTHRNGGGGGE4574": [
+            "thrhzthrnggggge4574",
+            [
+                "d::STRING",
+                255
+            ]
+        ],
         "Z6W4Z5RDSZ": [
             "z6w4z5rdsz",
             [
@@ -129,6 +164,20 @@
         "USER_ID": [
             "user_id",
             "cd::FOREIGN"
+        ],
+        "HZU6HZUSR45HZUSE": [
+            "hzu6hzusr45hzuse",
+            [
+                "d::STRING",
+                255
+            ]
+        ],
+        "DSGAREA": [
+            "dsgarea",
+            [
+                "d::STRING",
+                255
+            ]
         ]
     },
     "t": {

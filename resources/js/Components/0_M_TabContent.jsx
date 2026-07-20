@@ -85,21 +85,12 @@ export default function TabContent({ M_Class_Name }) {
     }
 
     async function add_field() {
-        const raw_name = prompt("Enter new field name:");
-
-        if (!raw_name || raw_name.trim() === "") {
-            return; // ยกเลิกถ้ายกเลิกการพิมพ์หรือไม่ใส่ชื่อ
-        }
+        // วิธีที่ 1: ดึงค่าผ่าน DOM querySelector สดๆ ตรงนี้เลยตามที่คุณต้องการ
+        const inputElement = document.querySelector(".input_fieldname");
+        const raw_name = inputElement ? inputElement.value : "";
 
         const trimmed_name = raw_name.trim();
-
-        const has_same_fieldname = check_duplicate_in_M_value(trimmed_name);
-        if (has_same_fieldname) {
-            alert(
-                `Fieldname = ${trimmed_name} already exists !!! Please use a different name`,
-            );
-            return;
-        }
+        if (!trimmed_name) return;
 
         await set_has_NEW_Field(trimmed_name); //set flag for useEffect in Dropdown_D.jsx
 
@@ -113,15 +104,58 @@ export default function TabContent({ M_Class_Name }) {
 
         await M_value_Service.update(new_M_value);
         setActiveField(FIELDNAME); // for auto scroll
+
+        // เคลียร์ค่าใน input ทิ้งหลังเพิ่มสำเร็จ
+        if (inputElement) inputElement.value = "";
+        setInputFieldname(""); // เคลียร์ state ร่วมด้วยเพื่อให้ปุ่ม disabled กลับมาล็อกเหมือนเดิม
     }
 
+    const [inputFieldname, setInputFieldname] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
+    function handleFieldnameChange(value) {
+        setInputFieldname(value);
+
+        // 1. เช็คว่าว่างเปล่าไหม
+        if (!value.trim()) {
+            setErrorMessage("Fieldname cannot be empty.");
+            return;
+        }
+
+        // 2. เช็คว่าชื่อซ้ำหรือไม่ (สมมติว่าคุณมีฟังก์ชันเช็คซ้ำอยู่แล้ว หรือเช็คจากข้อมูลที่มี)
+        // ตัวอย่างเช่น เช็คกับ M_value ที่มีอยู่
+        const isDuplicate =
+            M_value && Object.keys(M_value).includes(value.trim());
+
+        if (isDuplicate) {
+            setErrorMessage("This field name already exists.");
+        } else {
+            setErrorMessage(""); // ถ้าผ่านหมดเคลียร์ error ให้หายไป
+        }
+    }
     return (
         <>
             <div className="tab-content-header">
                 <label className="tch-label">
                     M_Class_Name = {M_Class_Name}
                 </label>
-                <button className="add-button" onClick={add_field}>
+                <input
+                    type="text"
+                    className="input_fieldname"
+                    placeholder="new field name"
+                    value={inputFieldname}
+                    onChange={(e) => handleFieldnameChange(e.target.value)}
+                />
+
+                {/* แสดง error ใกล้ๆ text box (ถ้ามีข้อความ error ถึงจะเรนเดอร์ขึ้นมา) */}
+                {errorMessage && (
+                    <span className="error-text">{errorMessage}</span>
+                )}
+
+                <button
+                    className="add-button"
+                    onClick={add_field}
+                    disabled={!inputFieldname || errorMessage} // ล็อกปุ่มถ้ายังว่างหรือมี error
+                >
                     ADD FIELD
                 </button>
             </div>

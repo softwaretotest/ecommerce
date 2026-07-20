@@ -115,14 +115,6 @@ body {
     padding: 10px;
 }
 
-.tab-content-header {
-    display: flex;
-    justify-content: space-between;
-    flex-direction: row;
-    gap: 5px;
-    padding: 8px;
-}
-
 .dashboard-main-box {
     border: 1px solid #ccc;
     padding: 10px;
@@ -195,6 +187,8 @@ body {
     margin-bottom: 15px;
     gap: 10px;
 }
+
+.input_fieldname,
 .App_Data_KEY {
     border: 2px solid #3498db;
     padding: 5px;
@@ -397,4 +391,40 @@ body {
 .DEFAULT_Panel {
     width: 100%;
     border-radius: 4px;
+}
+.tab-content-header {
+    gap: 5px;
+    padding: 8px;
+    display: grid;
+    /* คอลัมน์แรกพอดีตัว, คอลัมน์สองกินพื้นที่ที่เหลือทั้งหมด, คอลัมน์สามพอดีตัวปุ่ม */
+    grid-template-columns: max-content 1fr max-content;
+    grid-template-rows: auto auto;
+    grid-template-areas:
+        "tch-label input_fieldname add-button"
+        "error-text error-text error-text";
+    align-items: center;
+}
+
+.tch-label {
+    grid-area: tch-label;
+}
+
+.input_fieldname {
+    grid-area: input_fieldname;
+    justify-self: end; /* ดึงตัว input ให้วิ่งไปชิดติดกับปุ่มฝั่งขวาโดยไม่ต้องตั้ง width fix */
+}
+
+.add-button {
+    grid-area: add-button;
+}
+
+.error-text {
+    grid-area: error-text;
+    color: red;
+    font-size: 15px;
+    font-weight: bold;
+    display: block;
+    margin-top: 4px;
+    background-color: white;
+    text-align: right;
 }
