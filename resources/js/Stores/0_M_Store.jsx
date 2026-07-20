@@ -4,13 +4,16 @@ import { create } from "zustand";
 import {
     get_D_NAME,
     get_D_NAME_by_FIELDNAME,
+    get_U_NAME,
+    get_U_NAME_by_FIELDNAME,
 } from "@/Components/0_M_Data_Helper";
 
 export const use_M_Store = create((set) => ({
     debug: false,
     debug_M_value: false,
 
-    debug_selected_U: false,
+    debug_selected_U: true,
+    debug_selected_U_FOREIGN: true,
     debug_selected_D: true, // e.g. INTEGER , STRING
     debug_selected_D_FOREIGN: true,
 
@@ -24,6 +27,7 @@ export const use_M_Store = create((set) => ({
     debug_D_Params_State: false,
 
     has_M_value_Change: false,
+
     set_has_M_value_Change: (has_M_value_Change) =>
         set({ has_M_value_Change: has_M_value_Change }),
 
@@ -69,6 +73,27 @@ export const use_M_Store = create((set) => ({
             }
 
             return { D_Params_State: NEW_D_Params_State };
+        }),
+
+    selected_U_FOREIGN: {}, // atomic states
+    set_selected_U_FOREIGN: (FIELDNAME, selected_U_FOREIGN) =>
+        set((state) => {
+            if (!FIELDNAME) return { selected_U_FOREIGN: {} };
+
+            const NEW_selected_U_FOREIGN = {
+                ...state.selected_U_FOREIGN,
+                [FIELDNAME]: selected_U_FOREIGN,
+            };
+
+            if (state.debug || state.debug_selected_U_FOREIGN) {
+                console.log(
+                    `[M_STORE_DEBUG] NEW_selected_U_FOREIGN[${FIELDNAME}]:`,
+                    NEW_selected_U_FOREIGN[FIELDNAME],
+                );
+                console.log("------------------------------------");
+            }
+
+            return { selected_U_FOREIGN: NEW_selected_U_FOREIGN };
         }),
 
     selected_D_FOREIGN: {}, // atomic states
@@ -215,6 +240,10 @@ export const use_M_Store = create((set) => ({
             // selected_D can be save to prepare for the case, if FOREIGN clicked
             const D_NAME = get_D_NAME_by_FIELDNAME(FIELDNAME);
             state.set_selected_D(FIELDNAME, D_NAME);
+
+            // selected_D can be save to prepare for the case, if FOREIGN clicked
+            const U_NAME = get_U_NAME_by_FIELDNAME(FIELDNAME);
+            state.set_selected_U(FIELDNAME, U_NAME);
 
             return { activeField: FIELDNAME };
         }),

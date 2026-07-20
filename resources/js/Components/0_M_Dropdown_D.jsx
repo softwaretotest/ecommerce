@@ -108,7 +108,7 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
      */
     const selected_D = use_M_Store((state) => state.selected_D);
     const set_selected_D = use_M_Store.getState().set_selected_D;
-    // const D_Params_State = use_M_Store((state) => state.D_Params_State);
+
     const set_D_Params_State = use_M_Store.getState().set_D_Params_State;
 
     const selected_D_to_show =
@@ -172,6 +172,7 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
             alert("click FOREIGN to unselect D");
             return;
         }
+
         if (debug)
             console.log(
                 "3. JKLJKJKLJKLJKLJKLJKLJ - renderDropdown_D - set_D_Action - new_selected_D =",
@@ -189,11 +190,7 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
 
         await M_value_Service.update(new_M_value);
     }
-    // console.log(
-    //     "Rendering:",
-    //     fieldname,
-    //     D_Params_State ? D_Params_State[fieldname] : "Not Found",
-    // );
+
     const D_Params_State_for_field = use_M_Store((state) =>
         state.D_Params_State ? state.D_Params_State[fieldname] : null,
     );
@@ -207,7 +204,7 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
                     .getState()
                     .checked_CD[fieldname]?.includes("FOREIGN")}
                 onChange={(event) => {
-                    set_D_Actions(event, fieldname);
+                    set_D_Actions(event);
                 }}
             >
                 <option value="">--</option>

@@ -19,7 +19,13 @@ import { get_D_NAME, has_d_in_field_data } from "@/Components/0_M_Data_Helper";
  */
 export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
     if (!field_data) return;
-    const { activeSubTab } = use_M_Store();
+    const {
+        activeSubTab,
+        selected_D,
+        selected_U,
+        set_selected_D_FOREIGN,
+        set_selected_U_FOREIGN,
+    } = use_M_Store();
 
     /**
      * field_data[] first element is fieldname
@@ -75,6 +81,7 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
      * * update JSON View (JSON_Content.jsx)
      */
     async function set_CD_Actions(option, event) {
+        set_FOREIGN_Actions(event);
         /**
          * * from checked_CD  e.g. checkbox REQUIRED
          * * if     checked = add    REQUIRED
@@ -94,6 +101,30 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
         await update_M_value_for_checked_CD_CU();
     }
 
+    function set_FOREIGN_Actions(event) {
+        if (event.target.value === "FOREIGN" && selected_D[fieldname] != "") {
+            console.log(
+                `${event.target.value} CLICKED -- selected_D = `,
+                selected_D,
+            );
+            console.log(
+                `${event.target.value} CLICKED -- selected_D[${FIELDNAME}] = `,
+                selected_D[FIELDNAME],
+            );
+            console.log(
+                `${event.target.value} CLICKED -- selected_U = `,
+                selected_U,
+            );
+            console.log(
+                `${event.target.value} CLICKED -- selected_U[${FIELDNAME}] = `,
+                selected_U[FIELDNAME],
+            );
+
+            set_selected_D_FOREIGN(FIELDNAME, selected_D[FIELDNAME]);
+            set_selected_U_FOREIGN(FIELDNAME, selected_U[FIELDNAME]);
+        }
+    }
+
     return (
         <div className="M_checkbox-list">
             {ALL_DB_options.map((option) => {
@@ -106,14 +137,15 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
                 const is_last_D_Empty =
                     !last_selected_D || last_selected_D[fieldname] === "";
 
-                if (fieldname === "image")
-                    console.log(
-                        `return LOOP CD_Rule ---- D_NAME = ${D_NAME}`,
-                        `is_last_D_Empty = ${is_last_D_Empty}`,
-                        `option = ${option}`,
-                        `( option === "DEFAULT )" = ${option === "DEFAULT"}`,
-                        `checked_CD.includes(${option}) = ${checked_CD.includes(option)}`,
-                    );
+                // We will use this to clean too complicate logic of is_show_DEFAULT_Panel
+                // if (fieldname === "image")
+                //     console.log(
+                //         `return LOOP CD_Rule ---- D_NAME = ${D_NAME}`,
+                //         `is_last_D_Empty = ${is_last_D_Empty}`,
+                //         `option = ${option}`,
+                //         `( option === "DEFAULT )" = ${option === "DEFAULT"}`,
+                //         `checked_CD.includes(${option}) = ${checked_CD.includes(option)}`,
+                //     );
 
                 /** checked logic for showing DEFAULT_Panel */
                 const is_show_DEFAULT_Panel =
@@ -131,45 +163,6 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
                                 readOnly={!use_M_Store.getState().activeField} // is this really neccessary ?
                                 checked={checked_CD.includes(option)}
                                 onChange={(event) => {
-                                    const selected_D =
-                                        use_M_Store.getState().selected_D;
-                                    if (
-                                        event.target.value === "FOREIGN" &&
-                                        selected_D[fieldname] != ""
-                                    ) {
-                                        console.log(
-                                            `${event.target.value} CLICKED -- selected_D = `,
-                                            selected_D,
-                                        );
-                                        console.log(
-                                            `${event.target.value} CLICKED -- selected_D[${FIELDNAME}] = `,
-                                            selected_D[FIELDNAME],
-                                        );
-
-                                        /**
-                                         * * WE DON'T NEED THIS SHITTY SOLUTION FROM GEMINI
-                                         * * selected_D is atomic state with deep structure
-                                         * * (fieldname, D_NAME_or_D_Array) must use deep copy
-                                         * * to get all children of it
-                                         */
-                                        // const deep_copied_selected_D =
-                                        //     JSON.parse(
-                                        //         JSON.stringify(
-                                        //             use_M_Store.getState()
-                                        //                 .selected_D,
-                                        //         ),
-                                        //     );
-
-                                        use_M_Store
-                                            .getState()
-                                            .set_selected_D_FOREIGN(
-                                                FIELDNAME,
-                                                selected_D[FIELDNAME],
-                                                // deep_copied_selected_D[
-                                                //     FIELDNAME
-                                                // ],
-                                            );
-                                    }
                                     set_CD_Actions(option, event);
                                 }}
                             />

@@ -19,11 +19,11 @@ import { GLOBAL_METADATA } from "@/Providers/0_M_DataProvider";
  * * M_Class_Name_List: e.g. ['u']  ['cu']
  * * field_data = e.g. ['image', 'd::STRING', 'u::FILE']
  * *
- * * defaultValue = only for refresh e.g.
- * * <select defaultValue="NUMBER"> ... </select>
+ * * selected_U_of_field_data = only for refresh e.g.
+ * * <select selected_U_of_field_data="NUMBER"> ... </select>
  * *
  * * Params:
- * * defaultValue = fieldname , e.g. NUMBER , FILE , TEXT
+ * * selected_U_of_field_data = fieldname , e.g. NUMBER , FILE , TEXT
  */
 export function renderDropdown_U(M_Class_Name_List, field_data) {
     const { M_value, set_M_value, activeField, setActiveField } = use_M_Store();
@@ -43,13 +43,13 @@ export function renderDropdown_U(M_Class_Name_List, field_data) {
         return isMatch;
     });
 
-    let defaultValue = "";
+    let selected_U_of_field_data = "";
     /**
      * * U_String = e.g. u::TEXT , [d:DECIMAL,10,2]
      * */
     if (U_String && U_String.startsWith("u::")) {
         //case string e.g. u:: and  u::
-        defaultValue = U_String.split("::")[1];
+        selected_U_of_field_data = U_String.split("::")[1];
     }
 
     // console.log(
@@ -63,7 +63,13 @@ export function renderDropdown_U(M_Class_Name_List, field_data) {
      * * selected_U: state from dropdown e.g. STRING , DECIMAL , INTEGER
      * * handle_Change: update state when option change
      */
-    const [selected_U, set_Selected_U] = useState(defaultValue);
+    const selected_U = use_M_Store((state) => state.selected_U);
+    const set_selected_U = use_M_Store.getState().set_selected_U;
+
+    const selected_U_to_show =
+        selected_U[fieldname] !== undefined
+            ? selected_U[fieldname]
+            : selected_U_of_field_data;
 
     /**
      * * set_Selected_U
@@ -74,9 +80,14 @@ export function renderDropdown_U(M_Class_Name_List, field_data) {
      */
     async function set_U_Actions(event) {
         const new_selected_U = event.target.value;
+        //user must not select empty U
+        if (new_selected_U === "") {
+            alert("click FOREIGN to unselect U");
+            return;
+        }
 
         // update UI
-        set_Selected_U(new_selected_U);
+        set_Selected_U(fieldname, new_selected_U);
 
         // prepare new data
         const new_M_value = prepare_new_M_value_for_Update_U(
@@ -91,8 +102,11 @@ export function renderDropdown_U(M_Class_Name_List, field_data) {
         <>
             <select
                 className="M_field-dropdown"
-                value={selected_U}
-                // key={defaultValue}  // no need if react does not warn
+                value={selected_U_to_show}
+                // key={selected_U_of_field_data}  // no need if react does not warn
+                disabled={use_M_Store
+                    .getState()
+                    .checked_CD[fieldname]?.includes("FOREIGN")}
                 onChange={(event) => {
                     set_U_Actions(event);
                 }}

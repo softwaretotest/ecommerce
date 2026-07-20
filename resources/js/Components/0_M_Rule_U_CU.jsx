@@ -1,4 +1,4 @@
-// resources/js/Components/0_M_Rule_D_CU.jsx
+// resources/js/Components/0_M_Rule_U_CU.jsx
 import { useState, useEffect } from "react";
 
 import { use_M_Store } from "@/Stores/0_M_Store";
@@ -48,7 +48,7 @@ export function CU_Rule({ UI_options, ALL_UI_options, field_data }) {
      */
     async function set_CU_Actions(option, event) {
         /**
-         * * from checked_CD  e.g. checkbox REQUIRED
+         * * from checked_CU  e.g. checkbox REQUIRED
          * * if     checked = add    REQUIRED
          * * if not checked = remove REQUIRED
          */
@@ -71,12 +71,35 @@ export function CU_Rule({ UI_options, ALL_UI_options, field_data }) {
                         <input
                             type="checkbox"
                             value={option}
-                            /**
-                             * !!!! react state on checked ,
-                             * always need onChange to update state !!!
-                             */
+                            readOnly={!use_M_Store.getState().activeField} // is this really neccessary ?
                             checked={checked_CU.includes(option)}
                             onChange={(event) => {
+                                const selected_U =
+                                    use_M_Store.getState().selected_U;
+                                if (
+                                    use_M_Store
+                                        .getState()
+                                        .selected_CD[
+                                            fieldname
+                                        ]?.includes("FOREIGN") &&
+                                    selected_U[fieldname] != ""
+                                ) {
+                                    console.log(
+                                        `FOREIGN CLICKED -- selected_U = `,
+                                        selected_U,
+                                    );
+                                    console.log(
+                                        `FOREIGN CLICKED -- selected_U[${FIELDNAME}] = `,
+                                        selected_U[FIELDNAME],
+                                    );
+
+                                    use_M_Store
+                                        .getState()
+                                        .set_selected_U_FOREIGN(
+                                            FIELDNAME,
+                                            selected_U[FIELDNAME],
+                                        );
+                                }
                                 set_CU_Actions(option, event);
                             }}
                         />
