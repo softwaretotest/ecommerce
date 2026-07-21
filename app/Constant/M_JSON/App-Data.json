@@ -3,8 +3,11 @@
     "f": {
         "IMAGE": [
             "image",
-            "d::undefined",
-            "u::undefined",
+            "u::FILE",
+            [
+                "d::STRING",
+                255
+            ],
             "cu::DISABLED"
         ],
         "NAME": [
