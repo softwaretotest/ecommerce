@@ -2,7 +2,9 @@
 import { renderDropdown_D } from "@/Components/0_M_Dropdown_D.jsx";
 import { renderDropdown_U } from "@/Components/0_M_Dropdown_U.jsx";
 import { renderCheckboxList } from "@/Components/0_M_CheckBox.jsx";
+
 import { use_M_Option } from "@/Hooks/use_M_Option.js"; // Import new hook
+import { M_value_Service } from "@/Services/0_M_value_Service";
 import { use_M_Store } from "@/Stores/0_M_Store.jsx";
 
 export default function Field({ field_data }) {
@@ -59,6 +61,32 @@ export default function Field({ field_data }) {
         </div>
     );
 
+    /**
+     * * onClick DELETE-Button of activeField
+     * * remove the active field from M_value
+     * * and update JSON Backend
+     */
+    async function delete_field() {
+        const FIELDNAME = document
+            .querySelector(".App_Data_KEY")
+            .value.toUpperCase();
+        const isConfirmed = window.confirm(
+            `Are you sure to delete ${FIELDNAME}?`,
+        );
+        if (isConfirmed) {
+            // โค้ดสำหรับสั่งลบข้อมูล
+            console.log(
+                " !!!!!!!!!!!!!! Field.jsx -- delete_field -- FIELDNAME = ",
+                FIELDNAME,
+            );
+
+            const new_M_value = { ...use_M_Store.getState().M_value };
+            //delete object(M_value)'s item by KEY(FIELDNAME)
+            delete new_M_value[FIELDNAME];
+            await M_value_Service.update(new_M_value);
+        }
+    }
+
     return (
         <div className="field-wrapper-box">
             <div className="field-header-container">
@@ -73,7 +101,9 @@ export default function Field({ field_data }) {
                     defaultValue={fieldname}
                     className="App_Data_VALUE"
                 />
-                <button className="delete-button">DELETE</button>
+                <button className="delete-button" onClick={delete_field}>
+                    DELETE
+                </button>
             </div>
             {CHECKBOX_and_DROPDOWN}
         </div>

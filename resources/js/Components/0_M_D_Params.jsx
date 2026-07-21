@@ -33,13 +33,13 @@ export function D_Params({ D_NAME, d_params }) {
                         type="number"
                         defaultValue={d_params[index]}
                         /**
-                         * * readOnly={!activeField}
+                         * * disabled={!activeField}
                          * * prevent activeField = null ,
                          * * user must select a field first
                          * * (= TabContent setActiveField)
                          * * before making any change in UI
                          */
-                        readOnly={!activeField}
+                        disabled={!activeField}
                         className="d_param_input"
                         onChange={(event) => {
                             save_M_value_Data(

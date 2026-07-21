@@ -1,27 +1,11 @@
 {
     "_comment": "\/M_JSON\/App-Data.json",
     "f": {
-        "IMAGE": [
-            "image",
-            [
-                "d::STRING",
-                255
-            ],
-            "u::FILE"
-        ],
         "NAME": [
             "name",
-            "cud::REQUIRED",
-            [
-                "cd::DEFAULT",
-                0
-            ],
-            [
-                "d::DECIMAL",
-                10,
-                2
-            ],
-            "u::NUMBER"
+            "d::BOOLEAN",
+            "u::SELECT",
+            "cd::UNIQUE"
         ],
         "PRICE": [
             "price",

@@ -37,7 +37,7 @@ export default function TabContent({ M_Class_Name }) {
                 ref={(DOM_Node) => (scrollRefs.current[fieldname] = DOM_Node)}
                 className={`form-subtab-content-row ${activeField === fieldname ? "is-focused" : ""}`}
                 onClick={() => setActiveField(fieldname)}
-                readOnly={!activeField}
+                disabled={!activeField}
             >
                 {["d", "u", "cd", "cu", "cud"].includes(M_Class_Name) && (
                     <>

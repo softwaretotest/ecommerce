@@ -10,7 +10,7 @@ import {
 
 export const use_M_Store = create((set) => ({
     debug: false,
-    debug_M_value: false,
+    debug_M_value: true,
 
     debug_selected_U: false,
     debug_selected_U_FOREIGN: false,
@@ -20,7 +20,7 @@ export const use_M_Store = create((set) => ({
     debug_checked_CU: false,
     debug_checked_CD: false, // e.g. ['INDEX', 'DEFAULT', 'NULLABLE']
 
-    debug_activeField: false,
+    debug_activeField: true,
     debug_activeTab: false,
     debug_activeSubTab: false,
 

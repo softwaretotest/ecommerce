@@ -9,8 +9,20 @@ import { find_NEW_D_Params_in_M_MAP } from "@/Components/0_M_D_Params_Service";
  * * ['price', 'u::NUMBER', ['d::DECIMAL',10,2] ,  ['cd::DEFAULT', 0] ]
  * @returns d_items[0] = 'd::INTEGER' or ['d::DECIMAL',10,2]
  * * there is always only one d:: in field_data
+ * * !!!! IMPORTANT !!!!
+ * * !!!! WE MUST FIND THE TRUTH REASON OF THIS BUG  !!!!
+ * * We need this guard
+ * * if (!field_data || !Array.isArray(field_data)) return null;
+ * * because onChange of M_value ,
+ * * REASON IS : GEMINI said
+ * * maybe children Components are re-rendered
+ * * and trigger many automated checks to this function
+ * * during deleted field_data is null
  */
 export function find_d_item(field_data) {
+    // we need this guard for DELETE field
+    if (!field_data || !Array.isArray(field_data)) return null;
+
     const d_item = field_data.find((item) => {
         const value = Array.isArray(item) ? item[0] : item;
         return typeof value === "string" && value.startsWith("d::");
