@@ -9,9 +9,10 @@ import { get_D_Array } from "@/Components/0_M_D_Params_Service";
 export function D_Params({ D_NAME, d_params }) {
     if (!d_params) return;
 
-    const { set_M_value, activeField, setActiveField } = use_M_Store();
+    const { activeField } = use_M_Store();
 
     const M_value = use_M_Store.getState().M_value;
+    const set_M_value = use_M_Store.getState().set_M_value;
     const config = D_PARAMS_MAP[D_NAME];
 
     return (
@@ -34,7 +35,8 @@ export function D_Params({ D_NAME, d_params }) {
                         /**
                          * * readOnly={!activeField}
                          * * prevent activeField = null ,
-                         * * user must setActiveField first
+                         * * user must select a field first
+                         * * (= TabContent setActiveField)
                          * * before making any change in UI
                          */
                         readOnly={!activeField}

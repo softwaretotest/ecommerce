@@ -6,7 +6,6 @@ import { use_M_Option } from "@/Hooks/use_M_Option.js"; // Import new hook
 import { use_M_Store } from "@/Stores/0_M_Store.jsx";
 
 export default function Field({ field_data }) {
-    const { activeTab, activeSubTab } = use_M_Store();
     const fieldname = field_data[0];
     const is_CURRENCY = field_data[0].toLowerCase() === "currency";
 

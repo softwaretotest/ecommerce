@@ -72,7 +72,7 @@ export function renderDropdown_U(M_Class_Name_List, field_data) {
             : selected_U_of_field_data;
 
     /**
-     * * set_Selected_U
+     * * set_selected_U
      * * prepare_new_M_value_for_Update_U
      * * set_M_value
      * * update JSON file (App-Data.json , M-Data.json , Entities.json)
@@ -87,7 +87,7 @@ export function renderDropdown_U(M_Class_Name_List, field_data) {
         }
 
         // update UI
-        set_Selected_U(fieldname, new_selected_U);
+        set_selected_U(fieldname, new_selected_U);
 
         // prepare new data
         const new_M_value = prepare_new_M_value_for_Update_U(

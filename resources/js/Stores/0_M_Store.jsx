@@ -12,19 +12,19 @@ export const use_M_Store = create((set) => ({
     debug: false,
     debug_M_value: true,
 
-    debug_selected_U: false,
-    debug_selected_U_FOREIGN: false,
-    debug_selected_D: false, // e.g. INTEGER , STRING
-    debug_selected_D_FOREIGN: false,
+    debug_selected_U: true,
+    debug_selected_U_FOREIGN: true,
+    debug_selected_D: true, // e.g. INTEGER , STRING
+    debug_selected_D_FOREIGN: true,
 
-    debug_checked_CU: false,
-    debug_checked_CD: false, // e.g. ['INDEX', 'DEFAULT', 'NULLABLE']
+    debug_checked_CU: true,
+    debug_checked_CD: true, // e.g. ['INDEX', 'DEFAULT', 'NULLABLE']
 
-    debug_activeField: true,
+    debug_activeField: false,
     debug_activeTab: false,
     debug_activeSubTab: false,
 
-    debug_NEW_fieldname: true,
+    debug_NEW_fieldname: false,
 
     debug_D_Params_State: false,
 

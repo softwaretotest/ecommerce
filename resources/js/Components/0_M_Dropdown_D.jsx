@@ -32,7 +32,7 @@ import { find_d_item, has_d_in_field_data } from "@/Components/0_M_Data_Helper";
  */
 export function renderDropdown_D(M_Class_Name_List, field_data) {
     // const debug = true;
-    const debug = false && field_data[0] === "image";
+    const debug = true && field_data[0] === "image";
 
     if (field_data.includes("cd::FOREIGN")) {
         if (debug)
@@ -47,16 +47,16 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
             );
     }
 
-    const {
-        M_value,
-        set_M_value,
-        NEW_fieldname,
-        set_NEW_fieldname,
-        activeField,
-        setActiveField,
-        isLastField,
-        set_isLastField,
-    } = use_M_Store();
+    // const M_value = use_M_Store.getState((state) => state.M_value);
+    // const NEW_fieldname = use_M_Store.getState((state) => state.NEW_fieldname);
+
+    /**
+     * * M_value, NEW_fieldname must be scripted together
+     * * to make FOREIGN Actions working
+     */
+    const { M_value, NEW_fieldname } = use_M_Store();
+
+    const set_M_value = use_M_Store.getState().set_M_value;
 
     const fieldname = field_data[0];
 

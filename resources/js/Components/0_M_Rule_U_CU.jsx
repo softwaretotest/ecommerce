@@ -22,7 +22,7 @@ export function CU_Rule({ UI_options, ALL_UI_options, field_data }) {
      */
     const fieldname = field_data[0];
 
-    const fieldname_UPPERCASE = fieldname.toUpperCase();
+    const FIELDNAME = fieldname.toUpperCase();
 
     const checked_CD =
         (use_M_Store.getState().checked_CD &&
@@ -76,12 +76,13 @@ export function CU_Rule({ UI_options, ALL_UI_options, field_data }) {
                             onChange={(event) => {
                                 const selected_U =
                                     use_M_Store.getState().selected_U;
+                                const set_selected_U_FOREIGN =
+                                    use_M_Store.getState()
+                                        .set_selected_U_FOREIGN;
                                 if (
-                                    use_M_Store
-                                        .getState()
-                                        .selected_CD[
-                                            fieldname
-                                        ]?.includes("FOREIGN") &&
+                                    checked_CD[fieldname]?.includes(
+                                        "FOREIGN",
+                                    ) &&
                                     selected_U[fieldname] != ""
                                 ) {
                                     console.log(
@@ -89,16 +90,14 @@ export function CU_Rule({ UI_options, ALL_UI_options, field_data }) {
                                         selected_U,
                                     );
                                     console.log(
-                                        `FOREIGN CLICKED -- selected_U[${FIELDNAME}] = `,
-                                        selected_U[FIELDNAME],
+                                        `FOREIGN CLICKED -- selected_U[${fieldname}] = `,
+                                        selected_U[fieldname],
                                     );
 
-                                    use_M_Store
-                                        .getState()
-                                        .set_selected_U_FOREIGN(
-                                            FIELDNAME,
-                                            selected_U[FIELDNAME],
-                                        );
+                                    set_selected_U_FOREIGN(
+                                        FIELDNAME,
+                                        selected_U[fieldname],
+                                    );
                                 }
                                 set_CU_Actions(option, event);
                             }}

@@ -33,7 +33,6 @@ export default function SubTab({ data }) {
     /**
      * SET SubTab
      */
-    const activeTab = use_M_Store((state) => state.activeTab);
     const activeSubTab = use_M_Store((state) => state.activeSubTab);
     const setActiveSubTab = use_M_Store((state) => state.setActiveSubTab);
 
