@@ -26,7 +26,6 @@ export function find_d_item(field_data) {
  * * there is always only one d:: in field_data
  */
 export function find_u_item(field_data) {
-    console.log(" !!!!!!!!!!!!!!!! find_u_item -- field_data = ", field_data);
     const u_item = field_data.find((item) => {
         return typeof item === "string" && item.startsWith("u::");
     });
@@ -104,10 +103,6 @@ export function add_NEW_d_u(field_data_without_d_u, D_NAME, U_NAME) {
     // ADD NEW D
     if (!Array.isArray(field_data_without_d_u)) return [];
     const d_params = find_NEW_D_Params_in_M_MAP(D_NAME);
-    console.log(
-        `!!!!!! Data_Helper - add_NEW_d_u - d_params of ${D_NAME} = `,
-        d_params,
-    );
     let field_data_with_NEW_d = [];
     if (!d_params) {
         field_data_with_NEW_d = [...field_data_without_d_u, `d::${D_NAME}`];
@@ -168,10 +163,6 @@ export async function update_D_U_SAVE_Backend(D_NAME, U_NAME) {
         field_data_without_d_u,
         D_NAME,
         U_NAME,
-    );
-    console.log(
-        "!!!!!!!! Data_Helper - update_D_U_SAVE_Backend - field_data_with_NEW_d_u = ",
-        field_data_with_NEW_d_u,
     );
     new_M_value[fieldname.toUpperCase()] = field_data_with_NEW_d_u;
     await M_value_Service.update(new_M_value);

@@ -74,15 +74,11 @@ export default function Field({ field_data }) {
             `Are you sure to delete ${FIELDNAME}?`,
         );
         if (isConfirmed) {
-            // โค้ดสำหรับสั่งลบข้อมูล
-            console.log(
-                " !!!!!!!!!!!!!! Field.jsx -- delete_field -- FIELDNAME = ",
-                FIELDNAME,
-            );
-
             const new_M_value = { ...use_M_Store.getState().M_value };
+
             //delete object(M_value)'s item by KEY(FIELDNAME)
             delete new_M_value[FIELDNAME];
+
             await M_value_Service.update(new_M_value);
         }
     }

@@ -134,17 +134,17 @@ export async function validate_UI(checkbox_group_name, event) {
 
         if (debug)
             console.log(
-                "JKLÖFDASJKLÖFDSA - validate_UI -- update_CD_FOREIGN --- currentCD = ",
+                "JHKLJHKLJHKLJHKLJHKL ---- validate_UI -- update_CD_FOREIGN --- currentCD = ",
                 currentCD,
             );
         if (debug)
             console.log(
-                "JKLÖFDASJKLÖFDSA - validate_UI -- update_CD_FOREIGN --- event.target.checked =  ",
+                "JHKLJHKLJHKLJHKLJHKL ---- validate_UI -- update_CD_FOREIGN --- event.target.checked =  ",
                 event.target.checked,
             );
         if (debug)
             console.log(
-                "JKLÖFDASJKLÖFDSA - validate_UI -- update_CD_FOREIGN --- event.target.value =  ",
+                "JHKLJHKLJHKLJHKLJHKL ---- validate_UI -- update_CD_FOREIGN --- event.target.value =  ",
                 event.target.value,
             );
         if (debug)
@@ -161,7 +161,7 @@ export async function validate_UI(checkbox_group_name, event) {
             use_M_Store.getState();
         if (debug)
             console.log(
-                `[0] !!!!!!!!!!!!!! Rules.jsx -- remove_D_U_from_selected_D_if_FOREIGN -- checked_CD[${fieldname}] `,
+                `[0] JHKLJHKLJHKLJHKLJHKL ---- Rules.jsx -- remove_D_U_from_selected_D_if_FOREIGN -- checked_CD[${fieldname}] `,
                 checked_CD[fieldname],
             );
         const is_FOREIGN_checked = checked_CD[fieldname]?.includes("FOREIGN");
@@ -169,7 +169,7 @@ export async function validate_UI(checkbox_group_name, event) {
         if (is_FOREIGN_checked) {
             if (debug)
                 console.log(
-                    `[1] !!!!!!!!!!!!!! Rules.jsx -- remove_D_U_from_selected_D_if_FOREIGN -- is_FOREIGN_checked = `,
+                    `[1] JHKLJHKLJHKLJHKLJHKL ---- Rules.jsx -- remove_D_U_from_selected_D_if_FOREIGN -- is_FOREIGN_checked = `,
                     is_FOREIGN_checked,
                 );
             set_selected_D(fieldname, "");
@@ -189,7 +189,7 @@ export async function validate_UI(checkbox_group_name, event) {
 
         if (debug)
             console.log(
-                "[2.0] !!!!!!!!!!! Rules -- restore_previous_selected_D_U_if_FOREIGN -- is_auto_uncheck_FOREIGN_by_CU_CD = ",
+                "[2.0] JHKLJHKLJHKLJHKLJHKL ---- Rules -- restore_previous_selected_D_U_if_FOREIGN -- is_auto_uncheck_FOREIGN_by_CU_CD = ",
                 is_auto_uncheck_FOREIGN_by_CU_CD,
             );
 
@@ -200,17 +200,17 @@ export async function validate_UI(checkbox_group_name, event) {
 
         if (debug)
             console.log(
-                "[2.1] !!!!!!!!!!! Rules -- restore_previous_selected_D_U_if_FOREIGN -- is_FOREIGN_WAS_unchecked = ",
+                "[2.1] JHKLJHKLJHKLJHKLJHKL ---- Rules -- restore_previous_selected_D_U_if_FOREIGN -- is_FOREIGN_WAS_unchecked = ",
                 is_FOREIGN_WAS_unchecked,
             );
         if (debug)
             console.log(
-                `[3] !!!!!!!!!!! Rules -- restore_previous_selected_D_U_if_FOREIGN  -- selected_D_FOREIGN[${FIELDNAME}] = `,
+                `[3] JHKLJHKLJHKLJHKLJHKL ---- Rules -- restore_previous_selected_D_U_if_FOREIGN  -- selected_D_FOREIGN[${FIELDNAME}] = `,
                 selected_D_FOREIGN[FIELDNAME],
             );
         if (debug)
             console.log(
-                `[4] !!!!!!!!!!! Rules -- restore_previous_selected_D_U_if_FOREIGN  -- selected_U_FOREIGN[${FIELDNAME}] = `,
+                `[4] JHKLJHKLJHKLJHKLJHKL ---- Rules -- restore_previous_selected_D_U_if_FOREIGN  -- selected_U_FOREIGN[${FIELDNAME}] = `,
                 selected_U_FOREIGN[FIELDNAME],
             );
 
@@ -222,26 +222,26 @@ export async function validate_UI(checkbox_group_name, event) {
             const U_NAME = use_M_Store.getState().selected_U_FOREIGN[FIELDNAME];
             if (debug)
                 console.log(
-                    "[5] !!!!!!!!!!! Rules -- restore_previous_selected_D_U_if_FOREIGN  !!!!!!!!!!! Rules -- is_FOREIGN_WAS_unchecked = ",
+                    "[5] JHKLJHKLJHKLJHKLJHKL ---- Rules -- restore_previous_selected_D_U_if_FOREIGN  JHKLJHKLJHKLJHKLJHKL ---- Rules -- is_FOREIGN_WAS_unchecked = ",
                     is_FOREIGN_WAS_unchecked,
                 );
             if (debug)
                 console.log(
-                    `[6] !!!!!!!!!!! Rules -- restore_previous_selected_D_U_if_FOREIGN  -- selected_D_FOREIGN[${FIELDNAME}] = `,
+                    `[6] JHKLJHKLJHKLJHKLJHKL ---- Rules -- restore_previous_selected_D_U_if_FOREIGN  -- selected_D_FOREIGN[${FIELDNAME}] = `,
                     selected_D_FOREIGN[FIELDNAME],
                 );
             if (debug)
                 console.log(
-                    `[7] !!!!!!!!!!! Rules -- restore_previous_selected_D_U_if_FOREIGN  -- D_NAME = ${D_NAME}`,
+                    `[7] JHKLJHKLJHKLJHKLJHKL ---- Rules -- restore_previous_selected_D_U_if_FOREIGN  -- D_NAME = ${D_NAME}`,
                 );
             if (debug)
                 console.log(
-                    `[8] !!!!!!!!!!! Rules -- restore_previous_selected_D_U_if_FOREIGN  -- selected_U_FOREIGN[${FIELDNAME}] = `,
+                    `[8] JHKLJHKLJHKLJHKLJHKL ---- Rules -- restore_previous_selected_D_U_if_FOREIGN  -- selected_U_FOREIGN[${FIELDNAME}] = `,
                     selected_U_FOREIGN[FIELDNAME],
                 );
             if (debug)
                 console.log(
-                    `[9] !!!!!!!!!!! Rules -- restore_previous_selected_D_U_if_FOREIGN  -- U_NAME = ${U_NAME}`,
+                    `[9] JHKLJHKLJHKLJHKLJHKL ---- Rules -- restore_previous_selected_D_U_if_FOREIGN  -- U_NAME = ${U_NAME}`,
                 );
 
             update_D_U_SAVE_Backend(D_NAME, U_NAME);
