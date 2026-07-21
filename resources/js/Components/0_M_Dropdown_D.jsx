@@ -32,7 +32,7 @@ import { find_d_item, has_d_in_field_data } from "@/Components/0_M_Data_Helper";
  */
 export function renderDropdown_D(M_Class_Name_List, field_data) {
     // const debug = true;
-    const debug = true && field_data[0] === "image";
+    const debug = false && field_data[0] === "image";
 
     if (field_data.includes("cd::FOREIGN")) {
         if (debug)
@@ -57,6 +57,7 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
     const { M_value, NEW_fieldname } = use_M_Store();
 
     const set_M_value = use_M_Store.getState().set_M_value;
+    const activeField = use_M_Store.getState().activeField;
 
     const fieldname = field_data[0];
 
@@ -203,6 +204,8 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
                 className="M_field-dropdown"
                 value={selected_D_to_show}
                 // key={selected_D_of_field_data} // no need if react does not warn
+
+                readOnly={!activeField}
                 disabled={use_M_Store
                     .getState()
                     .checked_CD[fieldname]?.includes("FOREIGN")}

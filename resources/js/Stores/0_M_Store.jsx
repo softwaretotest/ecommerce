@@ -10,15 +10,15 @@ import {
 
 export const use_M_Store = create((set) => ({
     debug: false,
-    debug_M_value: true,
+    debug_M_value: false,
 
-    debug_selected_U: true,
-    debug_selected_U_FOREIGN: true,
-    debug_selected_D: true, // e.g. INTEGER , STRING
-    debug_selected_D_FOREIGN: true,
+    debug_selected_U: false,
+    debug_selected_U_FOREIGN: false,
+    debug_selected_D: false, // e.g. INTEGER , STRING
+    debug_selected_D_FOREIGN: false,
 
-    debug_checked_CU: true,
-    debug_checked_CD: true, // e.g. ['INDEX', 'DEFAULT', 'NULLABLE']
+    debug_checked_CU: false,
+    debug_checked_CD: false, // e.g. ['INDEX', 'DEFAULT', 'NULLABLE']
 
     debug_activeField: false,
     debug_activeTab: false,
@@ -28,9 +28,26 @@ export const use_M_Store = create((set) => ({
 
     debug_D_Params_State: false,
 
+    debug_is_auto_uncheck_FOREIGN_by_CU_CD: true,
+
+    is_auto_uncheck_FOREIGN_by_CU_CD: false,
+    set_is_auto_uncheck_FOREIGN_by_CU_CD: (is_auto_uncheck_FOREIGN_by_CU_CD) =>
+        set((state) => {
+            if (state.debug || state.debug_is_auto_uncheck_FOREIGN_by_CU_CD) {
+                console.log(
+                    `[M_STORE_DEBUG] is_auto_uncheck_FOREIGN_by_CU_CD :`,
+                    is_auto_uncheck_FOREIGN_by_CU_CD,
+                );
+                console.log("------------------------------------");
+            }
+            return {
+                is_auto_uncheck_FOREIGN_by_CU_CD:
+                    is_auto_uncheck_FOREIGN_by_CU_CD,
+            };
+        }),
+
     NEW_fieldname: null,
     set_NEW_fieldname: (NEW_fieldname) =>
-        // set({ NEW_fieldname: NEW_fieldname }),
         set((state) => {
             if (state.debug || state.debug_NEW_fieldname) {
                 console.log(`[M_STORE_DEBUG] NEW_fieldname :`, NEW_fieldname);

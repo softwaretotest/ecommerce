@@ -3,21 +3,25 @@
     "f": {
         "IMAGE": [
             "image",
-            "u::FILE",
             [
                 "d::STRING",
                 255
             ],
-            "cu::DISABLED"
+            "u::FILE"
         ],
         "NAME": [
             "name",
-            "u::TEXT",
             "cud::REQUIRED",
             [
-                "d::STRING",
-                255
-            ]
+                "cd::DEFAULT",
+                0
+            ],
+            [
+                "d::DECIMAL",
+                10,
+                2
+            ],
+            "u::NUMBER"
         ],
         "PRICE": [
             "price",

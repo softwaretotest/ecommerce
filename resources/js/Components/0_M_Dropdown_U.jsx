@@ -104,6 +104,8 @@ export function renderDropdown_U(M_Class_Name_List, field_data) {
                 className="M_field-dropdown"
                 value={selected_U_to_show}
                 // key={selected_U_of_field_data}  // no need if react does not warn
+
+                readOnly={!activeField}
                 disabled={use_M_Store
                     .getState()
                     .checked_CD[fieldname]?.includes("FOREIGN")}
