@@ -120,7 +120,8 @@ export default function SubTab({ data }) {
                             }
                             className={`field-nav-link ${activeField === fieldname ? "active" : ""}`}
                             onClick={() => {
-                                setActiveField(fieldname);
+                                // fieldname = null , when field deleted
+                                if (!fieldname) setActiveField(fieldname);
                             }}
                         >
                             {/* if Class t (DB_Tablename) remove T:: */}

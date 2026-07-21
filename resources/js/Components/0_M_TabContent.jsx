@@ -36,7 +36,10 @@ export default function TabContent({ M_Class_Name }) {
                 key={fieldname}
                 ref={(DOM_Node) => (scrollRefs.current[fieldname] = DOM_Node)}
                 className={`form-subtab-content-row ${activeField === fieldname ? "is-focused" : ""}`}
-                onClick={() => setActiveField(fieldname)}
+                onClick={() => {
+                    // fieldname = null , when field deleted
+                    if (!fieldname) setActiveField(fieldname);
+                }}
                 disabled={!activeField}
             >
                 {["d", "u", "cd", "cu", "cud"].includes(M_Class_Name) && (
@@ -108,7 +111,7 @@ export default function TabContent({ M_Class_Name }) {
         };
 
         await M_value_Service.update(new_M_value);
-        setActiveField(FIELDNAME); // for auto scroll
+        if (!FIELDNAME) setActiveField(FIELDNAME); // for auto scroll
 
         //clear input box , after finish
         if (input_box_fieldname) input_box_fieldname.value = "";
