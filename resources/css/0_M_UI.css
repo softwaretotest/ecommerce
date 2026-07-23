@@ -56,8 +56,8 @@ body {
     margin-bottom: 15px;
 }
 .fields-container {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* แบ่งเป็น 2 คอลัมน์เท่าๆ กัน */
     gap: 3px;
 }
 .field-label {
@@ -142,12 +142,7 @@ body {
     gap: 5px;
     padding: 3px;
 }
-.field-row {
-    display: grid;
-    grid-template-columns: 1fr 40px 1fr;
-    align-items: center;
-    gap: 10px;
-}
+
 .field-separator {
     text-align: center;
     font-weight: bold;
@@ -427,4 +422,66 @@ body {
     margin-top: 4px;
     background-color: white;
     text-align: right;
+}
+
+/* CSS for ENTITIES TAB */
+/* กล่องรายชื่อตัวเลือกแบบถาวร (Permanent List Box) */
+.choices-list-box {
+    max-height: 1000px;
+    overflow-y: auto; /* เปิดใช้งาน Vertical Scrollbar เมื่อข้อมูลเกินความสูง */
+    border: 1px solid #ccc;
+    padding: 8px;
+    background-color: #fff; /* เติมพื้นหลังให้ดูสะอาดตา */
+}
+
+/* ตกแต่ง Scrollbar ให้ดูทันสมัย (รองรับ Chrome, Edge, Safari) */
+.choices-list-box::-webkit-scrollbar {
+    width: 8px; /* ความกว้างของ Scrollbar */
+}
+
+.choices-list-box::-webkit-scrollbar-track {
+    background: #f1f1f1; /* สีพื้นหลังรางเลื่อน */
+    border-radius: 4px;
+}
+
+.choices-list-box::-webkit-scrollbar-thumb {
+    background: #c1c1c1; /* สีตัวเลื่อน Scrollbar */
+    border-radius: 4px;
+}
+
+.choices-list-box::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8; /* สีตอนเอาเมาส์ชี้ตัวเลื่อน */
+}
+
+/* แต่ละรายการตัวเลือกภายในกล่อง */
+.choice-item {
+    padding: 6px 8px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s ease;
+}
+
+/* เอฟเฟกต์ตอนเอาเมาส์ชี้รายการตัวเลือก */
+.choice-item:hover {
+    background-color: #f5f5f5;
+}
+
+/* ช่องค้นหาด้านบน */
+.entity-search-box-wrapper {
+    margin-bottom: 8px;
+}
+
+.entity-search-input {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* กรณีไม่มีข้อมูล */
+.no-choice {
+    padding: 10px;
+    text-align: center;
+    color: #888;
 }
