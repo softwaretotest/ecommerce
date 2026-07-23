@@ -55,11 +55,7 @@ body {
 .field-wrapper {
     margin-bottom: 15px;
 }
-.entities-sfields-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr; /* แบ่งเป็น 2 คอลัมน์เท่าๆ กัน */
-    gap: 3px;
-}
+
 .field-label {
     display: block;
     font-weight: bold;
@@ -425,31 +421,52 @@ body {
 }
 
 /* CSS for ENTITIES TAB */
-/* กล่องรายชื่อตัวเลือกแบบถาวร (Permanent List Box) */
-.entities-choices-list-box {
-    max-height: 1000px;
-    overflow-y: auto; /* เปิดใช้งาน Vertical Scrollbar เมื่อข้อมูลเกินความสูง */
+
+.entities-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    width: 100%;
+    align-items: start; /* สำคัญ: ป้องกันไม่ให้ฝั่งขวายืดตัวตามฝั่งซ้ายจนสุดแนวตั้งแบบยืดเยื้อ */
+}
+
+.entities-seleted {
+    margin-bottom: 0;
+    /* ปล่อยให้ความสูงขยายตามจำนวน Tag ที่เลือกจริง (10-20 ตัว) */
+}
+
+.entity-select-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    /* ให้ความสูงฝั่งขวาล็อกหรือจำกัดไว้ไม่ให้เกินฝั่งซ้าย โดยใช้การควบคุมที่ตัว list box */
+}
+
+.entities-choices-list {
+    max-height: 180px; /* ปรับตัวเลขนี้ได้ตามต้องการเพื่อให้ความสูงใกล้เคียงกับฝั่งซ้ายตอนมีฟิลด์ปกติ */
+    overflow-y: auto; /* ถ้าเกินความสูงนี้จะมี Scrollbar ทันที ไม่มียืดทะลุกอบ */
     border: 1px solid #ccc;
     padding: 8px;
-    background-color: #fff; /* เติมพื้นหลังให้ดูสะอาดตา */
+    background-color: #fff;
+    box-sizing: border-box;
 }
 
 /* ตกแต่ง Scrollbar ให้ดูทันสมัย (รองรับ Chrome, Edge, Safari) */
-.entities-choices-list-box::-webkit-scrollbar {
+.entities-choices-list::-webkit-scrollbar {
     width: 8px; /* ความกว้างของ Scrollbar */
 }
 
-.entities-choices-list-box::-webkit-scrollbar-track {
+.entities-choices-list::-webkit-scrollbar-track {
     background: #f1f1f1; /* สีพื้นหลังรางเลื่อน */
     border-radius: 4px;
 }
 
-.entities-choices-list-box::-webkit-scrollbar-thumb {
+.entities-choices-list::-webkit-scrollbar-thumb {
     background: #c1c1c1; /* สีตัวเลื่อน Scrollbar */
     border-radius: 4px;
 }
 
-.entities-choices-list-box::-webkit-scrollbar-thumb:hover {
+.entities-choices-list::-webkit-scrollbar-thumb:hover {
     background: #a8a8a8; /* สีตอนเอาเมาส์ชี้ตัวเลื่อน */
 }
 

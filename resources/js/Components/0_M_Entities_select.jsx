@@ -6,14 +6,10 @@ import { get_all_fieldnames } from "@/Providers/0_M_DataProvider";
 
 /**
  * * Renders F and S choices/selected items for Entities
- * @param {Array} f_s_Class_Array - Current table's assigned fields (e.g., ['f::ORDER_NR', ...])
- * @param {String} f_s_Class_Name - Specific field name or item being evaluated
+ * @param {Array} f_s_Class_Array - Current table's assigned fields
+ * * e.g. ['f::NAME', 'f::IMAGE', 's::EMAIL', 'f::IS_ACTIVE']
  */
 export function render_F_S_select(f_s_Class_Array) {
-    console.log(
-        "!!!!!!!!!!!!! 0_M_Entities_select -- render_F_S_select -- f_s_Class_Array = ",
-        f_s_Class_Array,
-    );
     const M_value = use_M_Store((state) => state.M_value);
 
     let all_choices = [];
@@ -45,7 +41,7 @@ export function render_F_S_select(f_s_Class_Array) {
 
     return (
         <div className="entity-select-container">
-            {/* 1. Search Box ด้านบน */}
+            {/* Search Box for F and S */}
             <div className="entity-search-box-wrapper">
                 <input
                     className="entity-search-input"
@@ -58,8 +54,8 @@ export function render_F_S_select(f_s_Class_Array) {
                 />
             </div>
 
-            {/* 2. กล่องแสดงรายการตัวเลือกแบบถาวร พร้อมจำกัดความสูงและใส่ Scrollbar */}
-            <div className="entities-choices-list-box">
+            {/* List of F and S */}
+            <div className="entities-choices-list">
                 {filtered_all_choices.length > 0 ? (
                     filtered_all_choices.map((choice, idx) => (
                         <div

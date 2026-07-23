@@ -1,15 +1,16 @@
 {
     "_comment": "\/M_JSON\/App-Data.json",
     "f": {
+        "IMAGE": [
+            "image",
+            "d::STRING",
+            "u::FILE"
+        ],
         "NAME": [
             "name",
-            [
-                "cd::DEFAULT",
-                true
-            ],
-            "cd::INDEX",
-            "d::BOOLEAN",
-            "u::FILE"
+            "d::STRING",
+            "u::TEXT",
+            "cud::REQUIRED"
         ],
         "PRICE": [
             "price",
@@ -73,11 +74,8 @@
         ],
         "ORDER_NR": [
             "order_nr",
-            "u::TEXT",
-            [
-                "d::STRING",
-                255
-            ]
+            "d::STRING",
+            "u::TEXT"
         ],
         "ORDER_ID": [
             "order_id",

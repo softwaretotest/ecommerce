@@ -36,7 +36,7 @@ export default function EntityField({ f_s_Class_Array, table_name }) {
                 />
             </div>
 
-            <div className="entities-sfields-container">
+            <div className="entities-container">
                 {/* selected_F_S */}
                 <div className="entities-seleted">
                     <label className="entities-label">
