@@ -91,7 +91,7 @@ export default function JSON_Content() {
                                 className={`json-line ${activeField === fieldname ? "json-highlight" : ""}`}
                                 onClick={() => {
                                     // fieldname = null , when field deleted
-                                    if (!fieldname) setActiveField(fieldname);
+                                    if (fieldname) setActiveField(fieldname);
                                 }}
                             >
                                 <span className="json-fieldname">

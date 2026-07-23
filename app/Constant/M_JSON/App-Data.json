@@ -3,9 +3,13 @@
     "f": {
         "NAME": [
             "name",
+            [
+                "cd::DEFAULT",
+                true
+            ],
+            "cd::INDEX",
             "d::BOOLEAN",
-            "u::SELECT",
-            "cd::UNIQUE"
+            "u::FILE"
         ],
         "PRICE": [
             "price",

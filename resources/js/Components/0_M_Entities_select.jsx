@@ -1,44 +1,71 @@
 // resources/js/Components/0_M_Entities_select.jsx
-
+import React, { useState } from "react";
 import { use_M_Store } from "@/Stores/0_M_Store";
-import { M_Option } from "@/Components/0_M_Option";
 
 /**
- * *Renders a dropdown select element
- * @param f_s_Class_Array = all f_s_Class_Array of table t::orders
- * * e.g. ['f::ORDER_NR', 'f::PRODUCT_ID', 'f::USER_ID', 'f::QUANTITY', 'f::CONFIRM_ORDER']
- * @param f_s_Class_Name = e.g. 's::EMAIL' , 'f::NAME' , 'f::USER_ID' etc.
- * @returns  A select-input with defaultValue and option for Entities
+ * * Renders F and S choices/selected items for Entities
+ * @param {Array} f_s_Class_Array - Current table's assigned fields (e.g., ['f::ORDER_NR', ...])
+ * @param {String} f_s_Class_Name - Specific field name or item being evaluated
  */
 export function render_F_S_select(f_s_Class_Array, f_s_Class_Name) {
-    const M_Class_Name_List = ["f", "s"];
-    let defaultValue = "";
-    if (typeof f_s_Class_Name === "string" && f_s_Class_Name.includes("::")) {
-        defaultValue = f_s_Class_Name.split("::")[1];
-    } else if (typeof f_s_Class_Name === "string") {
-        defaultValue = f_s_Class_Name;
-    } else {
-        /**
-         * * this bug , found after we added FOREIGN logic
-         * * to auto. unselect D U CD CU , and restore D and U
-         * * e.g.
-         * * installHook.js:1 ⚠️ render_F_S_select received non-string: (3) ['d::DECIMAL', 10, 2]
-         */
-        console.warn(
-            "⚠️ render_F_S_select received non-string:",
-            f_s_Class_Name,
-        );
+    const M_value = use_M_Store((state) => state.M_value);
+
+    let all_choices = [];
+
+    if (M_value) {
+        Object.entries(M_value).forEach(([key, val]) => {
+            if (Array.isArray(val)) {
+                val.forEach((item) => {
+                    all_choices.push(item);
+                });
+            }
+        });
     }
 
+    // state สำหรับเก็บข้อความค้นหาใน Search Box
+    const [searchTerm, setSearchTerm] = useState("");
+
+    // กรองข้อมูลตามคำค้นหา (Custom Search Logic แบบบ้านๆ แต่ทรงพลัง)
+    const filteredChoices = f_s_Class_Array
+        ? f_s_Class_Array.filter((choice) =>
+              String(choice).toLowerCase().includes(searchTerm.toLowerCase()),
+          )
+        : [];
+
     return (
-        <>
-            <select className="M_field-dropdown" defaultValue={defaultValue}>
-                <option value="">--</option>
-                {/* <M_Option
-                    M_Class_Name_List={M_Class_Name_List}
-                    field_data={f_s_Class_Array}
-                /> */}
-            </select>
-        </>
+        <div className="entity-select-container">
+            {/* 1. Search Box ด้านบน */}
+            <div className="entity-search-box-wrapper">
+                <input
+                    type="text"
+                    placeholder="Search fields..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="entity-search-input"
+                />
+            </div>
+
+            {/* 2. กล่องแสดงรายการตัวเลือกแบบถาวร พร้อมจำกัดความสูงและใส่ Scrollbar */}
+            <div className="choices-list-box">
+                {filteredChoices.length > 0 ? (
+                    filteredChoices.map((choice, idx) => (
+                        <div
+                            key={idx}
+                            className="choice-item"
+                            onClick={() => {
+                                // เดี๋ยวเรามาเขียน Logic กดเลือก / ย้ายฝั่ง ตรงนี้ในสเต็ปถัดไป
+                                console.log("Selected:", choice);
+                            }}
+                        >
+                            {choice}
+                        </div>
+                    ))
+                ) : (
+                    <div className="no-choice">
+                        Please, insert a new field in APP_DATA
+                    </div>
+                )}
+            </div>
+        </div>
     );
 }

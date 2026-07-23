@@ -11,6 +11,13 @@ import { find_NEW_D_Params_in_M_MAP } from "@/Components/0_M_D_Params_Service";
  * * there is always only one d:: in field_data
  */
 export function find_d_item(field_data) {
+    /**
+     * * in case M_DATA -- Subtab = D ,
+     * * typeOf field_data = string , e.g. boolean, integer
+     * * TODO: make logic for this , if needed
+     */
+    if (!Array.isArray(field_data)) return;
+
     const d_item = field_data.find((item) => {
         const value = Array.isArray(item) ? item[0] : item;
         return typeof value === "string" && value.startsWith("d::");
@@ -26,6 +33,13 @@ export function find_d_item(field_data) {
  * * there is always only one d:: in field_data
  */
 export function find_u_item(field_data) {
+    /**
+     * * in case M_DATA -- Subtab = D ,
+     * * typeOf field_data = string , e.g. boolean, integer
+     * * TODO: make logic for this , if needed
+     */
+    if (!Array.isArray(field_data)) return;
+
     const u_item = field_data.find((item) => {
         return typeof item === "string" && item.startsWith("u::");
     });

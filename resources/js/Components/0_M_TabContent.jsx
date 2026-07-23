@@ -38,7 +38,7 @@ export default function TabContent({ M_Class_Name }) {
                 className={`form-subtab-content-row ${activeField === fieldname ? "is-focused" : ""}`}
                 onClick={() => {
                     // fieldname = null , when field deleted
-                    if (!fieldname) setActiveField(fieldname);
+                    if (fieldname) setActiveField(fieldname);
                 }}
                 disabled={!activeField}
             >
