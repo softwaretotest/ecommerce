@@ -28,22 +28,19 @@ export function render_F_S_select(f_s_Class_Array) {
         });
     }
 
-    // state สำหรับเก็บข้อความค้นหาใน Search Box
-    const [searchTerm, setSearchTerm] = useState("");
+    // state for Search Box
+    const [searchTerm_f_s, set_SearchTerm_f_s] = useState("");
 
-    // กรองข้อมูลตามคำค้นหา (Custom Search Logic แบบบ้านๆ แต่ทรงพลัง)
-    const filteredChoices = f_s_Class_Array
-        ? f_s_Class_Array.filter((choice) =>
-              String(choice).toLowerCase().includes(searchTerm.toLowerCase()),
-          )
-        : [];
-
-    // กรองข้อมูลตามคำค้นหา (Custom Search Logic แบบบ้านๆ แต่ทรงพลัง)
+    /**
+     * * logic to get all fieldnames from GLOBAL_METADATA
+     * * @returns all f:: and s:: field names
+     * * e.g. [NAME, PRICE, STOCK, EMAIL, CURRENCY, etc. ]
+     */
     const all_f_s_choices = get_all_fieldnames();
 
     // กรองข้อมูลทั้งหมดตามคำค้นหาที่พิมพ์ใน Search Box
     const filtered_all_choices = all_f_s_choices.filter((choice) =>
-        String(choice).toUpperCase().includes(searchTerm),
+        String(choice).toUpperCase().includes(searchTerm_f_s),
     );
 
     return (
@@ -54,9 +51,9 @@ export function render_F_S_select(f_s_Class_Array) {
                     className="entity-search-input"
                     type="text"
                     placeholder="Search fields..."
-                    value={searchTerm}
+                    value={searchTerm_f_s}
                     onChange={(e) =>
-                        setSearchTerm(e.target.value.toUpperCase())
+                        set_SearchTerm_f_s(e.target.value.toUpperCase())
                     }
                 />
             </div>
@@ -78,7 +75,7 @@ export function render_F_S_select(f_s_Class_Array) {
                     ))
                 ) : (
                     <div className="entities-no-choice">
-                        {searchTerm} NOT FOUND !!! <br />
+                        {searchTerm_f_s} NOT FOUND !!! <br />
                         Please, insert a new field in APP_DATA
                     </div>
                 )}
