@@ -12,6 +12,8 @@ export const use_M_Store = create((set) => ({
     debug: false,
     debug_M_value: true,
 
+    debug_selected_F_S: true,
+
     debug_selected_U: false,
     debug_selected_U_FOREIGN: false,
     debug_selected_D: false, // e.g. INTEGER , STRING
@@ -102,6 +104,27 @@ export const use_M_Store = create((set) => ({
             }
 
             return { D_Params_State: NEW_D_Params_State };
+        }),
+
+    selected_F_S: {}, // atomic states
+    set_selected_F_S: (fieldname, selected_F_S_Value) =>
+        set((state) => {
+            if (!fieldname) return { selected_F_S: {} };
+
+            const NEW_selected_F_S = {
+                ...state.selected_F_S,
+                [fieldname]: selected_F_S_Value,
+            };
+
+            if (state.debug || state.debug_selected_F_S) {
+                console.log(
+                    `[M_STORE_DEBUG] NEW_selected_F_S[${fieldname}]:`,
+                    NEW_selected_F_S[fieldname],
+                );
+                console.log("------------------------------------");
+            }
+
+            return { selected_F_S: NEW_selected_F_S };
         }),
 
     selected_U_FOREIGN: {}, // atomic states

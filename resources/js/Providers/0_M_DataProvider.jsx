@@ -46,3 +46,22 @@ export const M_DataProvider = ({ children }) => {
 };
 
 export const use_M_Data = () => useContext(MetadataContext);
+
+/**
+ * * logic to get all fieldnames from GLOBAL_METADATA
+ * * @returns all f:: and s:: field names
+ * * e.g. [NAME, PRICE, STOCK, EMAIL, CURRENCY, etc. ]
+ */
+export function get_all_fieldnames() {
+    let all_fieldnames = [];
+    const field_datas = {
+        ...GLOBAL_METADATA?.app_data?.f,
+        ...GLOBAL_METADATA?.m_data?.s,
+    };
+
+    Object.values(field_datas).forEach((field_data) => {
+        all_fieldnames.push(field_data[0].toUpperCase());
+    });
+
+    return all_fieldnames;
+}

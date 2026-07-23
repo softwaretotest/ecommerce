@@ -55,7 +55,7 @@ body {
 .field-wrapper {
     margin-bottom: 15px;
 }
-.fields-container {
+.entities-sfields-container {
     display: grid;
     grid-template-columns: 1fr 1fr; /* แบ่งเป็น 2 คอลัมน์เท่าๆ กัน */
     gap: 3px;
@@ -426,7 +426,7 @@ body {
 
 /* CSS for ENTITIES TAB */
 /* กล่องรายชื่อตัวเลือกแบบถาวร (Permanent List Box) */
-.choices-list-box {
+.entities-choices-list-box {
     max-height: 1000px;
     overflow-y: auto; /* เปิดใช้งาน Vertical Scrollbar เมื่อข้อมูลเกินความสูง */
     border: 1px solid #ccc;
@@ -435,26 +435,25 @@ body {
 }
 
 /* ตกแต่ง Scrollbar ให้ดูทันสมัย (รองรับ Chrome, Edge, Safari) */
-.choices-list-box::-webkit-scrollbar {
+.entities-choices-list-box::-webkit-scrollbar {
     width: 8px; /* ความกว้างของ Scrollbar */
 }
 
-.choices-list-box::-webkit-scrollbar-track {
+.entities-choices-list-box::-webkit-scrollbar-track {
     background: #f1f1f1; /* สีพื้นหลังรางเลื่อน */
     border-radius: 4px;
 }
 
-.choices-list-box::-webkit-scrollbar-thumb {
+.entities-choices-list-box::-webkit-scrollbar-thumb {
     background: #c1c1c1; /* สีตัวเลื่อน Scrollbar */
     border-radius: 4px;
 }
 
-.choices-list-box::-webkit-scrollbar-thumb:hover {
+.entities-choices-list-box::-webkit-scrollbar-thumb:hover {
     background: #a8a8a8; /* สีตอนเอาเมาส์ชี้ตัวเลื่อน */
 }
 
-/* แต่ละรายการตัวเลือกภายในกล่อง */
-.choice-item {
+.entities-choice-item {
     padding: 6px 8px;
     cursor: pointer;
     border-bottom: 1px solid #eee;
@@ -462,8 +461,15 @@ body {
 }
 
 /* เอฟเฟกต์ตอนเอาเมาส์ชี้รายการตัวเลือก */
-.choice-item:hover {
+.entities-choice-item:hover {
     background-color: #f5f5f5;
+}
+
+.entities-no-choice {
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    color: #072cc3;
 }
 
 /* ช่องค้นหาด้านบน */
@@ -479,9 +485,31 @@ body {
     box-sizing: border-box;
 }
 
-/* กรณีไม่มีข้อมูล */
-.no-choice {
-    padding: 10px;
-    text-align: center;
-    color: #888;
+.entities-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.entities-selected-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.entities-selected-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 18px;
+    padding: 6px 12px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.entities-icon {
+    margin-left: 8px;
+    color: #e53e3e;
+    font-weight: bold;
 }

@@ -36,21 +36,47 @@ export default function EntityField({ f_s_Class_Array, table_name }) {
                 />
             </div>
 
-            <label>Fields for this DB Table</label>
-            <div className="fields-container">
+            <div className="entities-sfields-container">
                 {/* selected_F_S */}
-                {f_s_Class_Array.map((f_s_Class_Name, index) => (
-                    <div key={index} className="field-row">
-                        {render_F_S_select(f_s_Class_Array, f_s_Class_Name)}
+                <div className="entities-seleted">
+                    <label className="entities-label">
+                        Selected Fields for this Table
+                    </label>
+
+                    <div className="entities-selected-container">
+                        {Array.isArray(f_s_Class_Array) &&
+                        f_s_Class_Array.length > 0 ? (
+                            f_s_Class_Array.map((f_s_Class, index) => (
+                                <div
+                                    key={index}
+                                    className="entities-selected-item"
+                                    onClick={() => {
+                                        // TODO : logic to remove back to all choices
+                                        console.log(
+                                            "Remove selected:",
+                                            f_s_Class,
+                                        );
+                                    }}
+                                >
+                                    <span className="entities-icon">❌</span>
+                                    <span>{f_s_Class.split("::")[1]}</span>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="entities-label">
+                                No fields selected yet.
+                            </div>
+                        )}
                     </div>
-                ))}
+                </div>
 
                 {/* f:: s:: all choices */}
-                {f_s_Class_Array.map((f_s_Class_Name, index) => (
-                    <div key={index} className="field-row">
-                        {render_F_S_select(f_s_Class_Array, f_s_Class_Name)}
-                    </div>
-                ))}
+                <div>
+                    <label className="entities-label">
+                        all existing fields to choose
+                    </label>
+                    {render_F_S_select(f_s_Class_Array)}
+                </div>
             </div>
         </div>
     );
