@@ -34,17 +34,27 @@ export function render_F_S_select(f_s_Class_Array) {
      */
     const all_f_s_choices = get_all_fieldnames();
 
-    // กรองข้อมูลทั้งหมดตามคำค้นหาที่พิมพ์ใน Search Box
-    const filtered_all_choices = all_f_s_choices.filter((choice) =>
-        String(choice).toUpperCase().includes(searchTerm_f_s),
-    );
+    /**
+     * * Get all existing field
+     * * sort alphanumeric
+     */
+    const filtered_all_choices = all_f_s_choices
+        .filter((choice) =>
+            String(choice).toUpperCase().includes(searchTerm_f_s),
+        )
+        .sort((a, b) =>
+            String(a).localeCompare(String(b), undefined, {
+                numeric: true,
+                sensitivity: "base",
+            }),
+        );
 
     return (
-        <div className="entity-select-container">
+        <div className="entities-select-container">
             {/* Search Box for F and S */}
             <div className="entity-search-box-wrapper">
                 <input
-                    className="entity-search-input"
+                    className="entities-input"
                     type="text"
                     placeholder="Search fields..."
                     value={searchTerm_f_s}

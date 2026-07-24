@@ -24,49 +24,56 @@ export default function EntityField({ f_s_Class_Array, table_name }) {
      * * later params are correct not error in ui
      */
     if (!Array.isArray(f_s_Class_Array)) return;
-
+    console.log(
+        " !!!!!!!!!!!!!!!! EntityField -- f_s_Class_Array = ",
+        f_s_Class_Array,
+    );
     return (
-        <div className="entity-wrapper-box">
-            <div className="entity-header">
-                <input
-                    type="text"
-                    defaultValue={table_name.replace("t::", "")}
-                    className="App_Data_VALUE"
-                    readOnly
-                />
-            </div>
-
+        <div className="entities-wrapper-box">
             <div className="entities-container">
                 {/* selected_F_S */}
                 <div className="entities-seleted">
                     <label className="entities-label">
-                        Selected Fields for this Table
+                        Table / Selected Fields
                     </label>
-
-                    <div className="entities-selected-container">
-                        {Array.isArray(f_s_Class_Array) &&
-                        f_s_Class_Array.length > 0 ? (
-                            f_s_Class_Array.map((f_s_Class, index) => (
-                                <div
-                                    key={index}
-                                    className="entities-selected-item"
-                                    onClick={() => {
-                                        // TODO : logic to remove back to all choices
-                                        console.log(
-                                            "Remove selected:",
-                                            f_s_Class,
-                                        );
-                                    }}
-                                >
-                                    <span className="entities-icon">❌</span>
-                                    <span>{f_s_Class.split("::")[1]}</span>
+                    <div className="entities-left-column">
+                        <input
+                            type="text"
+                            defaultValue={table_name.replace("t::", "")}
+                            className="App_Data_VALUE"
+                            readOnly
+                        />
+                        <div className="entities-selected-container">
+                            {Array.isArray(f_s_Class_Array) &&
+                            f_s_Class_Array.length > 0 ? (
+                                f_s_Class_Array.map((f_s_Class, index) => (
+                                    <div
+                                        key={index}
+                                        className="entities-selected-item"
+                                        onClick={() => {
+                                            // TODO : logic to remove back to all choices
+                                            console.log(
+                                                "Remove selected:",
+                                                f_s_Class,
+                                            );
+                                        }}
+                                    >
+                                        <span className="entities-icon">
+                                            ❌
+                                        </span>
+                                        {/* <span>??!!--{f_s_Class}--!!??</span> */}
+                                        {/* <span>{f_s_Class.split("::")[1]}</span> */}
+                                        {typeof f_s_Class === "string"
+                                            ? f_s_Class.split("::")[1]
+                                            : ""}
+                                    </div>
+                                ))
+                            ) : (
+                                <div className="entities-label">
+                                    No fields selected yet.
                                 </div>
-                            ))
-                        ) : (
-                            <div className="entities-label">
-                                No fields selected yet.
-                            </div>
-                        )}
+                            )}
+                        </div>
                     </div>
                 </div>
 

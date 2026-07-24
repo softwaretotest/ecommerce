@@ -31,9 +31,12 @@
     "s": {
         "EMAIL": [
             "email",
-            "d::STRING",
             "u::TEXT",
-            "cd::UNIQUE"
+            "cd::UNIQUE",
+            [
+                "d::STRING",
+                255
+            ]
         ],
         "CURRENCY": [
             "currency",

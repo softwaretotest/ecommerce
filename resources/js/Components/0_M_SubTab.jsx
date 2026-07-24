@@ -20,7 +20,7 @@ import "../../css/0_M_UI.css";
  * if SubTab = ENTITIES , then data = content of 1_Entities.json
  * ,e.g. * t:: = Tablename
  */
-export default function SubTab({ data }) {
+export default function SubTab({ data, activeTab_param }) {
     // console.count("[DEBUG] SubTab Rendered");
     if (!data) return;
 
@@ -44,49 +44,192 @@ export default function SubTab({ data }) {
     );
 
     /**
-     * get M_value from SubTab
+     * first M_value on refresh
      */
     const M_value = useMemo(() => {
         return data[activeSubTab] || {};
     }, [data, activeSubTab]);
 
+    /**
+     * * subTab set_M_value , when user klick to change SubTab
+     */
     useEffect(() => {
         // เพิ่มการเช็คว่า M_value มีข้อมูลจริงก่อนสั่ง set
         if (!M_value || Object.keys(M_value).length === 0) return;
 
         use_M_Store.getState().set_M_value(M_value);
-    }, [activeSubTab]);
+        // console.log(
+        //     "!!!!!!!!!!!!  SubTab -- useEffect -- activeSubTab = ",
+        //     activeSubTab,
+        // );
+        // console.log(
+        //     "!!!!!!!!!!!!  SubTab -- useEffect -- use_M_Store.getState().activeTab = ",
+        //     use_M_Store.getState().activeTab,
+        // );
+        // console.log(
+        //     "!!!!!!!!!!!!  SubTab -- useEffect -- activeTab_param = ",
+        //     activeTab_param,
+        // );
+    }, [activeSubTab, activeTab_param]);
 
     const fieldnames = Object.keys(M_value || {});
 
     /**
-     * SET default Subtab
+     * SET default Subtab (DEBUG VERSION - WITH LINE NUMBERS)
      */
+    // useEffect(() => {
+    //     console.log("==========================================");
+    //     console.log("[82] [DEBUG useEffect] Triggered!");
+    //     console.log("[83] [DEBUG useEffect] raw data passed in:", data);
+    //     console.log(
+    //         "[84] [DEBUG useEffect] current activeSubTab from store:",
+    //         activeSubTab,
+    //     );
+
+    //     // get all SubTab from data
+    //     const currentSubTabs = Object.keys(data).filter(
+    //         (key) => typeof data[key] === "object",
+    //     );
+
+    //     console.log(
+    //         "[95] [DEBUG useEffect] -> Keys inside data:",
+    //         Object.keys(data),
+    //     );
+    //     console.log(
+    //         "[99] [DEBUG useEffect] -> Filtered currentSubTabs result:",
+    //         currentSubTabs,
+    //     );
+    //     console.log(
+    //         "[103] [DEBUG useEffect] -> Does currentSubTabs include activeSubTab ('" +
+    //             activeSubTab +
+    //             "')?:",
+    //         currentSubTabs.includes(activeSubTab),
+    //     );
+
+    //     const isMissing = !activeSubTab;
+    //     const isNotInList = !currentSubTabs.includes(activeSubTab);
+
+    //     // choose one SubTab if no chosen
+    //     if (isMissing || isNotInList) {
+    //         const Default_SubTab = get_Default_SubTab(currentSubTabs);
+    //         console.log(
+    //             "[116] [DEBUG useEffect] Condition MET! Setting default SubTab to:",
+    //             Default_SubTab,
+    //         );
+    //         setActiveSubTab(Default_SubTab);
+    //     } else {
+    //         console.log(
+    //             "[121] [DEBUG useEffect] Condition NOT met. activeSubTab is valid, doing nothing.",
+    //         );
+    //     }
+    //     console.log("==========================================");
+    // }, [data]); //lately activeSubTab was removed from dependency, to avoid re-dender this useEffect
+    const activeTab = use_M_Store.getState().activeTab;
+
+    const [can_render_TabContent, set_can_render_TabContent] = useState(false);
     useEffect(() => {
-        // get all SubTab from data
-        const currentSubTabs = Object.keys(data).filter(
-            (key) => typeof data[key] === "object",
+        console.log("==========================================");
+        console.log("[82] [DEBUG useEffect] Triggered!");
+        console.log("[83] [DEBUG useEffect] raw data passed in :", data);
+        console.log("[84] [DEBUG useEffect] activeTab :", activeTab);
+        console.log(
+            "[85] [DEBUG useEffect] current activeSubTab from store:",
+            activeSubTab,
         );
 
+        if (!activeTab) return; //this was set in M_Store on refresh
+
+        const Default_SubTab = get_Default_SubTab(activeTab);
+
         // choose one SubTab if no chosen
-        if (!activeSubTab || !currentSubTabs.includes(activeSubTab)) {
-            const default_SubTab = getDefaultSubTab(currentSubTabs);
-            setActiveSubTab(default_SubTab);
+        if (!activeSubTab) {
+            console.log(
+                "[116] [DEBUG useEffect] Condition MET! Setting default SubTab to:",
+                Default_SubTab,
+            );
+            setActiveSubTab(Default_SubTab);
+            set_can_render_TabContent(false);
+            return;
         }
+
+        const all_subTab_in_data = Object.keys(data).filter(
+            (key) => typeof data[key] === "object" && data[key] !== null,
+        );
+        console.log("[117] [DEBUG useEffect] data : ", data);
+        console.log(
+            "[118] [DEBUG useEffect] all_subTab_in_data : ",
+            all_subTab_in_data,
+        );
+
+        if (activeSubTab && !all_subTab_in_data.includes(activeSubTab)) {
+            setActiveSubTab(Default_SubTab);
+            set_can_render_TabContent(false);
+            return;
+        }
+
+        set_can_render_TabContent(true);
+        // if activeTab and activeSubTab correct)
+        // [84] [DEBUG useEffect] activeTab : m_data
+        // [85] [DEBUG useEffect] current activeSubTab from store: d
     }, [data, activeSubTab]);
 
-    function getDefaultSubTab(default_SubTab) {
-        if (default_SubTab.includes("ENTITIES")) {
-            return "ENTITIES";
+    function get_Default_SubTab() {
+        // const activeTab = use_M_Store.getState().activeTab;
+        if (activeTab === "entities") {
+            console.log("[134] [DEBUG get_Default_SubTab] matched entities");
+            return "entities";
         }
 
-        if (default_SubTab.includes("app_data")) {
+        if (activeTab === "app_data") {
+            console.log(
+                "[139] [DEBUG get_Default_SubTab] matched app_data -> returning 'f'",
+            );
             return "f";
         }
 
+        if (activeTab === "m_data") {
+            console.log(
+                "[140] [DEBUG get_Default_SubTab] matched app_data -> returning 'f'",
+            );
+            return "d";
+        }
+
         // A Tab must have at least 1 SubTab
-        return default_SubTab[0];
+        // console.log(
+        //     "[161] [DEBUG get_Default_SubTab] fallback to first index:",
+        //     default_SubTab_list[0],
+        // );
+        // return default_SubTab_list[0];
     }
+
+    // /**
+    //  * SET default Subtab
+    //  */
+    // useEffect(() => {
+    //     // get all SubTab from data
+    //     const currentSubTabs = Object.keys(data).filter(
+    //         (key) => typeof data[key] === "object",
+    //     );
+
+    //     // choose one SubTab if no chosen
+    //     if (!activeSubTab || !currentSubTabs.includes(activeSubTab)) {
+    //         const default_SubTab = get_Default_SubTab(currentSubTabs);
+    //         setActiveSubTab(default_SubTab);
+    //     }
+    // }, [data, activeSubTab]);
+
+    // function get_Default_SubTab(default_SubTab) {
+    //     if (default_SubTab.includes("ENTITIES")) {
+    //         return "ENTITIES";
+    //     }
+
+    //     if (default_SubTab.includes("app_data")) {
+    //         return "f";
+    //     }
+
+    //     // A Tab must have at least 1 SubTab
+    //     return default_SubTab[0];
+    // }
 
     return (
         <>
@@ -132,7 +275,12 @@ export default function SubTab({ data }) {
 
                 {/* left column = Input Boxes */}
                 <div className="column-flex-form">
-                    <TabContent M_Class_Name={activeSubTab} />
+                    {can_render_TabContent && (
+                        <TabContent
+                            M_Class_Name={activeSubTab}
+                            activeTab_param={activeTab_param}
+                        />
+                    )}
                 </div>
 
                 {/* right column = JSON */}

@@ -45,9 +45,15 @@ export default function M_Dashboard() {
             </div>
 
             <div className="dashboard-main-box">
-                {activeTab === "m_data" && <SubTab data={data.m_data} />}
-                {activeTab === "app_data" && <SubTab data={data.app_data} />}
-                {activeTab === "entities" && <SubTab data={data.entities} />}
+                {activeTab === "m_data" && (
+                    <SubTab data={data.m_data} activeTab_param="m_data" />
+                )}
+                {activeTab === "app_data" && (
+                    <SubTab data={data.app_data} activeTab_param="app_data" />
+                )}
+                {activeTab === "entities" && (
+                    <SubTab data={data.entities} activeTab_param="entities" />
+                )}
             </div>
         </div>
     );

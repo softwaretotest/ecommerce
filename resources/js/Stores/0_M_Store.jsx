@@ -12,7 +12,7 @@ export const use_M_Store = create((set) => ({
     debug: false,
     debug_M_value: true,
 
-    debug_selected_F_S: true,
+    debug_selected_F_S: false,
 
     debug_selected_U: false,
     debug_selected_U_FOREIGN: false,
@@ -22,7 +22,7 @@ export const use_M_Store = create((set) => ({
     debug_checked_CU: false,
     debug_checked_CD: false, // e.g. ['INDEX', 'DEFAULT', 'NULLABLE']
 
-    debug_activeField: true,
+    debug_activeField: false,
     debug_activeTab: false,
     debug_activeSubTab: false,
 
@@ -30,7 +30,7 @@ export const use_M_Store = create((set) => ({
 
     debug_D_Params_State: false,
 
-    debug_is_auto_uncheck_FOREIGN_by_CU_CD: true,
+    debug_is_auto_uncheck_FOREIGN_by_CU_CD: false,
 
     is_auto_uncheck_FOREIGN_by_CU_CD: false,
     set_is_auto_uncheck_FOREIGN_by_CU_CD: (is_auto_uncheck_FOREIGN_by_CU_CD) =>
@@ -261,7 +261,7 @@ export const use_M_Store = create((set) => ({
             return { checked_CU: NEW_checked_CU };
         }),
 
-    activeTab: "m_data",
+    activeTab: "m_data", //default on refresh
     setActiveTab: (tab) =>
         set((state) => {
             if (state.debug || state.debug_activeTab) {
@@ -271,7 +271,7 @@ export const use_M_Store = create((set) => ({
             return { activeTab: tab };
         }),
 
-    activeSubTab: "d",
+    activeSubTab: "d", //default on refresh
     setActiveSubTab: (subTab) =>
         set((state) => {
             if (state.debug || state.debug_activeSubTab) {

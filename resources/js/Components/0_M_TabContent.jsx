@@ -11,13 +11,37 @@ import Field from "@/Components/0_M_Field";
 import EntityField from "@/Components/0_M_EntityField";
 import DB_Tablename from "@/Components/0_M_DB_Tablename";
 
-export default function TabContent({ M_Class_Name }) {
+export default function TabContent({ M_Class_Name, activeTab_param }) {
     const M_value = use_M_Store((state) => state.M_value);
     const NEW_fieldname = use_M_Store((state) => state.NEW_fieldname);
     const set_NEW_fieldname = use_M_Store((state) => state.set_NEW_fieldname);
     const activeTab = use_M_Store((state) => state.activeTab);
     const activeField = use_M_Store((state) => state.activeField);
     const setActiveField = use_M_Store((state) => state.setActiveField);
+
+    // ==========================================
+    // TRUTH INSPECTOR: ตรวจสอบความถูกต้องของขุมกำลังก่อนเรนเดอร์
+    // result : M_value changed is the truth , to update or send data
+    // ==========================================
+    // useEffect(() => {
+    //     console.group("🔍 [TabContent TRUTH INSPECTOR]");
+    //     console.log(
+    //         "1. activeTab_param (มาจาก Dashboard สดๆ):",
+    //         activeTab_param,
+    //     );
+    //     console.log("2. activeTab (มาจาก Global Store):", activeTab);
+    //     console.log(
+    //         "3. M_Class_Name (Prop ที่รับเข้ามา หรือ activeSubTab):",
+    //         M_Class_Name,
+    //     );
+    //     console.log(
+    //         "4. ตรวจสอบว่า activeTab_param ตรงกับ activeTab ไหม?:",
+    //         activeTab_param === activeTab,
+    //     );
+    //     console.log("5. M_value ปัจจุบันมีหน้าตาเป็นอย่างไร:", M_value);
+    //     console.groupEnd();
+    // }, [M_Class_Name, activeTab_param, activeTab, M_value]);
+    // ==========================================
 
     if (!M_value)
         return <div className="ui-placeholder">No UI for {M_Class_Name}</div>;
@@ -71,10 +95,16 @@ export default function TabContent({ M_Class_Name }) {
                     <DB_Tablename field_data={field_data} />
                 )}
                 {M_Class_Name === "entities" && (
-                    <EntityField
-                        f_s_Class_Array={field_data}
-                        table_name={fieldname}
-                    />
+                    // && activeTab === "entities"
+                    <>
+                        <p>activeTab = {activeTab}</p>
+                        <p>f_s_Class_Array = {field_data}</p>
+                        <p>fieldname = {fieldname}</p>
+                        <EntityField
+                            f_s_Class_Array={field_data}
+                            table_name={fieldname}
+                        />
+                    </>
                 )}
             </div>
         );
