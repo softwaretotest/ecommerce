@@ -91,7 +91,7 @@ export default function SubTab({ data }) {
         }
 
         /**
-         * * if activeTab and activeSubTab correct)
+         * * if activeTab and activeSubTab correct) e.g.
          * * activeTab : m_data
          * * activeSubTab from store: d
          */
@@ -115,8 +115,6 @@ export default function SubTab({ data }) {
             return "d";
         }
     }
-
-    const fieldnames = Object.keys(M_value || {});
 
     return (
         <>
@@ -150,7 +148,7 @@ export default function SubTab({ data }) {
             <div className="content-box content-grid">
                 {/* SIDEBAR */}
                 <nav className="field-sidebar">
-                    {fieldnames.map((fieldname) => (
+                    {Object.keys(M_value).map((fieldname) => (
                         <button
                             key={fieldname}
                             ref={(DOM_Node) =>
