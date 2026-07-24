@@ -19,19 +19,9 @@ export default function M_Dashboard() {
     if (!data) return <div>Loading...</div>;
 
     const tabs = [
-        { id: "m_data", label: "M_DATA", key: "m_data", jsonData: data.m_data },
-        {
-            id: "app_data",
-            label: "APP_DATA",
-            key: "app_data",
-            jsonData: data.app_data,
-        },
-        {
-            id: "entities",
-            label: "ENTITIES",
-            key: "entities",
-            jsonData: data.entities,
-        },
+        { id: "m_data", label: "M_DATA", key: "m_data" },
+        { id: "app_data", label: "APP_DATA", key: "app_data" },
+        { id: "entities", label: "ENTITIES", key: "entities" },
     ];
 
     return (
