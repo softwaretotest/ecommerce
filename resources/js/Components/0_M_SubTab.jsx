@@ -138,6 +138,9 @@ export default function SubTab({ data }) {
                                 if (data[subtab]) {
                                     set_M_value(data[subtab]);
                                 }
+                                //clear activeField on subTab changed
+                                setActiveField(null);
+                                scrollRefs.current = {};
                             }}
                         >
                             {subtab.toUpperCase()}

@@ -15,6 +15,7 @@ export default function M_Dashboard() {
 
     const activeTab = use_M_Store((state) => state.activeTab);
     const setActiveTab = use_M_Store((state) => state.setActiveTab);
+    const setActiveField = use_M_Store.getState().setActiveField;
 
     if (!data) return <div>Loading...</div>;
 
@@ -34,6 +35,8 @@ export default function M_Dashboard() {
                         key={tab.id}
                         onClick={() => {
                             setActiveTab(tab.id);
+                            //clear activeField on subTab changed
+                            setActiveField(null);
                         }}
                         className={`nav-button ${activeTab === tab.id ? "active" : ""}`}
                     >
