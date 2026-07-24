@@ -11,6 +11,7 @@ import "@/../css/0_M_UI.css";
 
 export default function M_Dashboard() {
     const data = use_M_Data();
+    // const M_value = use_M_Store((state) => state.M_value);
     const save_All_Data = use_M_Store((state) => state.save_All_Data);
 
     const activeTab = use_M_Store((state) => state.activeTab);
@@ -19,19 +20,9 @@ export default function M_Dashboard() {
     if (!data) return <div>Loading...</div>;
 
     const tabs = [
-        { id: "m_data", label: "M_DATA", key: "m_data", jsonData: data.m_data },
-        {
-            id: "app_data",
-            label: "APP_DATA",
-            key: "app_data",
-            jsonData: data.app_data,
-        },
-        {
-            id: "entities",
-            label: "ENTITIES",
-            key: "entities",
-            jsonData: data.entities,
-        },
+        { id: "m_data", label: "M_DATA", key: "m_data" },
+        { id: "app_data", label: "APP_DATA", key: "app_data" },
+        { id: "entities", label: "ENTITIES", key: "entities" },
     ];
 
     return (
@@ -43,7 +34,7 @@ export default function M_Dashboard() {
                     <button
                         key={tab.id}
                         onClick={() => {
-                            setActiveTab(tab.id);
+                            setActiveTab(tab.id, tab.jsonData);
                         }}
                         className={`nav-button ${activeTab === tab.id ? "active" : ""}`}
                     >

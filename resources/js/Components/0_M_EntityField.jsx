@@ -19,15 +19,6 @@ import { render_F_S_select } from "@/Components/0_M_Entities_select";
  * * }
  */
 export default function EntityField({ f_s_Class_Array, table_name }) {
-    /**
-     * * React render to much in the beginning
-     * * later params are correct not error in ui
-     */
-    if (!Array.isArray(f_s_Class_Array)) return;
-    console.log(
-        " !!!!!!!!!!!!!!!! EntityField -- f_s_Class_Array = ",
-        f_s_Class_Array,
-    );
     return (
         <div className="entities-wrapper-box">
             <div className="entities-container">
@@ -61,11 +52,7 @@ export default function EntityField({ f_s_Class_Array, table_name }) {
                                         <span className="entities-icon">
                                             ❌
                                         </span>
-                                        {/* <span>??!!--{f_s_Class}--!!??</span> */}
-                                        {/* <span>{f_s_Class.split("::")[1]}</span> */}
-                                        {typeof f_s_Class === "string"
-                                            ? f_s_Class.split("::")[1]
-                                            : ""}
+                                        {f_s_Class.split("::")[1]}
                                     </div>
                                 ))
                             ) : (

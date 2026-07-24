@@ -261,25 +261,65 @@ export const use_M_Store = create((set) => ({
             return { checked_CU: NEW_checked_CU };
         }),
 
+    // activeTab: "m_data", //default on refresh
+    // setActiveTab: (tab) =>
+    //     set((state) => {
+    //         if (state.debug || state.debug_activeTab) {
+    //             console.log(`[M_STORE_DEBUG] New setActiveTab :`, tab);
+    //             console.log("------------------------------------");
+    //         }
+    //         return { activeTab: tab };
+    //     }),
+
     activeTab: "m_data", //default on refresh
-    setActiveTab: (tab) =>
+    setActiveTab: (tab, jsonData = null) =>
         set((state) => {
             if (state.debug || state.debug_activeTab) {
                 console.log(`[M_STORE_DEBUG] New setActiveTab :`, tab);
                 console.log("------------------------------------");
             }
-            return { activeTab: tab };
+
+            // ถ้ามี jsonData ส่งมาด้วย ให้คำนวณค่าเริ่มต้นของ SubTab และ M_value เผื่อไว้เลย
+            let updates = { activeTab: tab };
+
+            if (jsonData) {
+                let defaultSubTab = "d";
+                if (tab === "entities") defaultSubTab = "entities";
+                if (tab === "app_data") defaultSubTab = "f";
+
+                updates.activeSubTab = defaultSubTab;
+                if (jsonData[defaultSubTab]) {
+                    updates.M_value = jsonData[defaultSubTab];
+                }
+            }
+
+            return updates;
         }),
 
-    activeSubTab: "d", //default on refresh
-    setActiveSubTab: (subTab) =>
+    activeSubTab: "d", // default on refresh
+    setActiveSubTab: (subTab, subTabularData = null) =>
         set((state) => {
             if (state.debug || state.debug_activeSubTab) {
                 console.log(`[M_STORE_DEBUG] New setActiveSubTab :`, subTab);
                 console.log("------------------------------------");
             }
-            return { activeSubTab: subTab };
+
+            let updates = { activeSubTab: subTab };
+            if (subTabularData) {
+                updates.M_value = subTabularData;
+            }
+            return updates;
         }),
+
+    // activeSubTab: "d", //default on refresh
+    // setActiveSubTab: (subTab) =>
+    //     set((state) => {
+    //         if (state.debug || state.debug_activeSubTab) {
+    //             console.log(`[M_STORE_DEBUG] New setActiveSubTab :`, subTab);
+    //             console.log("------------------------------------");
+    //         }
+    //         return { activeSubTab: subTab };
+    //     }),
 
     activeField: null,
     setActiveField: (FIELDNAME) =>

@@ -23,7 +23,6 @@ import { prepare_new_M_value_for_Update_CD_DEFAULT_Panel } from "@/Components/0_
 export function DEFAULT_Panel({ field_data }) {
     const fieldname = field_data[0];
 
-    // const debug = true;
     const debug = false && fieldname === "image";
 
     const M_value = use_M_Store.getState().M_value;

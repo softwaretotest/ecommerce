@@ -23,7 +23,6 @@ export default function SubTab({ data }) {
      * ONLY 1 state to focus 3 Components with same click
      */
     const M_value = use_M_Store((state) => state.M_value);
-    const set_M_value = use_M_Store((state) => state.set_M_value);
 
     const activeField = use_M_Store((state) => state.activeField);
     const setActiveField = use_M_Store((state) => state.setActiveField);
@@ -40,6 +39,8 @@ export default function SubTab({ data }) {
     /**
      * first M_value on render/refresh
      */
+    // const M_value = data[activeSubTab];
+    const fieldnames = Object.keys(use_M_Store.getState().M_value || {});
     const activeTab = use_M_Store.getState().activeTab;
 
     /**
@@ -50,6 +51,10 @@ export default function SubTab({ data }) {
      */
     const [can_render_TabContent, set_can_render_TabContent] = useState(false);
     useEffect(() => {
+        // 1. subTab set_M_value , when user klick to change SubTab
+        // use_M_Store.getState().set_M_value(use_M_Store.getState().M_value);
+        use_M_Store.getState().set_M_value(M_value);
+
         if (!activeTab) return; //this was set in M_Store on refresh
 
         const Default_SubTab = get_Default_SubTab(activeTab);
@@ -57,9 +62,6 @@ export default function SubTab({ data }) {
         // 2. SET default Subtab , if undefined
         if (!activeSubTab) {
             setActiveSubTab(Default_SubTab);
-            if (data[Default_SubTab]) {
-                set_M_value(data[Default_SubTab]);
-            }
             set_can_render_TabContent(false);
             return;
         }
@@ -78,16 +80,8 @@ export default function SubTab({ data }) {
          */
         if (activeSubTab && !Object.keys(data).includes(activeSubTab)) {
             setActiveSubTab(Default_SubTab);
-            if (data[Default_SubTab]) {
-                set_M_value(data[Default_SubTab]);
-            }
             set_can_render_TabContent(false);
             return;
-        }
-
-        // 1. subTab set_M_value, sync data when activeSubTab changes
-        if (data[activeSubTab]) {
-            set_M_value(data[activeSubTab]);
         }
 
         /**
@@ -96,7 +90,7 @@ export default function SubTab({ data }) {
          * * activeSubTab from store: d
          */
         set_can_render_TabContent(true);
-    }, [activeSubTab, data]); // Reason for Dependency : user klicks tab , data changes
+    }, [activeSubTab]); // Reason for Dependency : user klicks tab , data changes
 
     /**
      * * call when user klicks change tab , to set default subTab
@@ -116,14 +110,13 @@ export default function SubTab({ data }) {
         }
     }
 
-    const fieldnames = Object.keys(M_value || {});
-
     return (
         <>
-            {/* Tab        SubTab */}
-            {/* M-DATA     S CD D U CU CUD */}
-            {/* APP-DATA   F T */}
-            {/* ENTITIES   ENTITIES*/}
+            {" "}
+            {/* Tab         SubTab */}
+            {/* M-DATA      S CD D U CU CUD */}
+            {/* APP-DATA    F T */}
+            {/* ENTITIES    ENTITIES*/}
             <div className="subtab-container">
                 {Object.keys(data)
                     .filter(
@@ -137,16 +130,13 @@ export default function SubTab({ data }) {
                             className={`subtab-button ${activeSubTab === subtab ? "active" : ""}`}
                             onClick={() => {
                                 setActiveSubTab(subtab);
-                                if (data[subtab]) {
-                                    set_M_value(data[subtab]);
-                                }
                             }}
                         >
                             {subtab.toUpperCase()}
                         </button>
                     ))}
             </div>
-            {/* SIDEBAR , TabContent , JSON_Content */}
+            {/* SIDEBAR , TabConten , JSON_Content */}
             <div className="content-box content-grid">
                 {/* SIDEBAR */}
                 <nav className="field-sidebar">

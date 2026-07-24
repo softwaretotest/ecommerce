@@ -31,7 +31,6 @@ import { find_d_item, has_d_in_field_data } from "@/Components/0_M_Data_Helper";
  * *
  */
 export function renderDropdown_D(M_Class_Name_List, field_data) {
-    // const debug = true;
     const debug = false && field_data[0] === "image";
 
     if (field_data.includes("cd::FOREIGN")) {

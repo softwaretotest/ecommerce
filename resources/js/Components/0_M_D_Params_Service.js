@@ -104,8 +104,8 @@ export function get_D_Array(event, activeField, M_value, set_M_value) {
     if (debug) console.log("get_D_Array 2. fieldname = ", fieldname);
 
     const field_data = M_value[fieldname];
-    if (!field_data) return;
-    // if(debug)console.log("get_D_Array 3. field_data = ", field_data);
+
+    if (debug) console.log("get_D_Array 3. field_data = ", field_data);
 
     /**
      * *  find d_Class_UPPERCASE_Array
