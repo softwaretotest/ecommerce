@@ -26,7 +26,7 @@ export const use_M_Store = create((set) => ({
     debug_activeTab: false,
     debug_activeSubTab: false,
 
-    debug_NEW_added_fieldname: false,
+    debug_NEW_added_fieldname: true,
 
     debug_D_Params_State: false,
 
@@ -46,6 +46,19 @@ export const use_M_Store = create((set) => ({
                 is_auto_uncheck_FOREIGN_by_CU_CD:
                     is_auto_uncheck_FOREIGN_by_CU_CD,
             };
+        }),
+
+    is_new_field_added: false,
+    set_is_new_field_added: (is_new_field_added) =>
+        set((state) => {
+            if (state.debug || state.debug_is_new_field_added) {
+                console.log(
+                    `[M_STORE_DEBUG] is_new_field_added :`,
+                    is_new_field_added,
+                );
+                console.log("------------------------------------");
+            }
+            return { is_new_field_added: is_new_field_added };
         }),
 
     NEW_added_fieldname: null,
@@ -299,11 +312,11 @@ export const use_M_Store = create((set) => ({
             }
 
             // selected_D can be save to prepare for the case, if FOREIGN clicked
-            const D_NAME = get_D_NAME_by_FIELDNAME(fieldname);
+            const D_NAME = get_D_NAME_by_FIELDNAME(fieldname?.toUpperCase());
             state.set_selected_D(fieldname, D_NAME);
 
             // selected_D can be save to prepare for the case, if FOREIGN clicked
-            const U_NAME = get_U_NAME_by_FIELDNAME(fieldname);
+            const U_NAME = get_U_NAME_by_FIELDNAME(fieldname?.toUpperCase());
             state.set_selected_U(fieldname, U_NAME);
 
             return { activeField: fieldname };

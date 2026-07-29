@@ -110,8 +110,10 @@ export function remove_d_u(field_data) {
 
 /**
  * * add new d:: get D_Params from D_PARAMS_MAP
- * * e.g. ['image', 'u::TEXT'] -> ['image' , 'd::INTEGER' , 'u::TEXT']
- * * e.g. ['stock', 'u::TEXT'] -> ['stock' , ['d::DECIMAL',10,2] , 'u::TEXT']
+ * * e.g. ['image'] -> ['image' , 'd::INTEGER' , 'u::TEXT']
+ * * e.g. ['stock'] -> ['stock' , ['d::DECIMAL',10,2] , 'u::TEXT']
+ * * U_NAME could be undefined by user
+ * * e.g. ['price'] -> ['price' , ['d::DECIMAL',10,2]]
  */
 export function add_NEW_d_u(field_data_without_d_u, D_NAME, U_NAME) {
     // ADD NEW D
@@ -127,8 +129,13 @@ export function add_NEW_d_u(field_data_without_d_u, D_NAME, U_NAME) {
         ];
     }
 
-    // ADD NEW U
-    const field_data_with_NEW_d_u = [...field_data_with_NEW_d, `u::${U_NAME}`];
+    // ADD NEW U (could be undefined by user)
+    let field_data_with_NEW_d_u = null;
+    if (U_NAME) {
+        field_data_with_NEW_d_u = [...field_data_with_NEW_d, `u::${U_NAME}`];
+    } else {
+        field_data_with_NEW_d_u = [...field_data_with_NEW_d];
+    }
 
     return field_data_with_NEW_d_u;
 }

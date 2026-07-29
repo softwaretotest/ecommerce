@@ -83,10 +83,10 @@ export function renderDropdown_U(M_Class_Name_List, field_data) {
     async function set_U_Actions(event) {
         const new_selected_U = event.target.value;
         //user must not select empty U
-        if (new_selected_U === "") {
-            alert("click FOREIGN to unselect U");
-            return;
-        }
+        // if (new_selected_U === "") {
+        //     alert("click FOREIGN to unselect U");
+        //     return;
+        // }
 
         // update UI
         set_selected_U(fieldname, new_selected_U);

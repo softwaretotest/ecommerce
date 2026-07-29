@@ -51,7 +51,7 @@ export async function validate_UI(checkbox_group_name, event) {
     }
 
     // Rules for FOREIGN Actions
-    await remove_D_U_from_selected_D_if_FOREIGN();
+    await remove_D_U_from_selected_D_U_if_FOREIGN();
     await restore_previous_selected_D_U_if_FOREIGN(event);
 
     /**
@@ -133,17 +133,17 @@ export async function validate_UI(checkbox_group_name, event) {
 
         if (debug)
             console.log(
-                "JHKLJHKLJHKLJHKLJHKL ---- validate_UI -- update_CD_FOREIGN --- currentCD = ",
+                "[-1] JHKLJHKLJHKLJHKLJHKL ---- validate_UI -- update_CD_FOREIGN --- currentCD = ",
                 currentCD,
             );
         if (debug)
             console.log(
-                "JHKLJHKLJHKLJHKLJHKL ---- validate_UI -- update_CD_FOREIGN --- event.target.checked =  ",
+                "[-1] JHKLJHKLJHKLJHKLJHKL ---- validate_UI -- update_CD_FOREIGN --- event.target.checked =  ",
                 event.target.checked,
             );
         if (debug)
             console.log(
-                "JHKLJHKLJHKLJHKLJHKL ---- validate_UI -- update_CD_FOREIGN --- event.target.value =  ",
+                "[-1] JHKLJHKLJHKLJHKLJHKL ---- validate_UI -- update_CD_FOREIGN --- event.target.value =  ",
                 event.target.value,
             );
         if (debug)
@@ -153,14 +153,14 @@ export async function validate_UI(checkbox_group_name, event) {
     /**
      * if FOREIGN checked , then clear selected_D
      */
-    async function remove_D_U_from_selected_D_if_FOREIGN() {
+    async function remove_D_U_from_selected_D_U_if_FOREIGN() {
         const { checked_CD, selected_D, set_selected_D } =
             use_M_Store.getState();
         const { checked_CU, selected_U, set_selected_U } =
             use_M_Store.getState();
         if (debug)
             console.log(
-                `[0] JHKLJHKLJHKLJHKLJHKL ---- Rules.jsx -- remove_D_U_from_selected_D_if_FOREIGN -- checked_CD[${fieldname}] `,
+                `[0] JHKLJHKLJHKLJHKLJHKL ---- Rules.jsx -- remove_D_U_from_selected_D_U_if_FOREIGN -- checked_CD[${fieldname}] `,
                 checked_CD[fieldname],
             );
         const is_FOREIGN_checked = checked_CD[fieldname]?.includes("FOREIGN");
@@ -168,7 +168,7 @@ export async function validate_UI(checkbox_group_name, event) {
         if (is_FOREIGN_checked) {
             if (debug)
                 console.log(
-                    `[1] JHKLJHKLJHKLJHKLJHKL ---- Rules.jsx -- remove_D_U_from_selected_D_if_FOREIGN -- is_FOREIGN_checked = `,
+                    `[1] JHKLJHKLJHKLJHKLJHKL ---- Rules.jsx -- remove_D_U_from_selected_D_U_if_FOREIGN -- is_FOREIGN_checked = `,
                     is_FOREIGN_checked,
                 );
             set_selected_D(fieldname, "");
@@ -221,7 +221,7 @@ export async function validate_UI(checkbox_group_name, event) {
             const U_NAME = use_M_Store.getState().selected_U_FOREIGN[fieldname];
             if (debug)
                 console.log(
-                    "[5] JHKLJHKLJHKLJHKLJHKL ---- Rules -- restore_previous_selected_D_U_if_FOREIGN  JHKLJHKLJHKLJHKLJHKL ---- Rules -- is_FOREIGN_WAS_unchecked = ",
+                    "[5] JHKLJHKLJHKLJHKLJHKL ---- Rules -- restore_previous_selected_D_U_if_FOREIGN -- is_FOREIGN_WAS_unchecked = ",
                     is_FOREIGN_WAS_unchecked,
                 );
             if (debug)

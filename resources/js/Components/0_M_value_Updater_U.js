@@ -92,10 +92,14 @@ export function prepare_new_M_value_for_Update_U(U_NAME, old_M_value) {
             field_data_without_u,
         );
 
-    new_M_value[fieldname_UPPERCASE] = [
-        ...field_data_without_u,
-        u_Class_UPPERCASE,
-    ];
+    if (U_NAME) {
+        new_M_value[fieldname_UPPERCASE] = [
+            ...field_data_without_u,
+            u_Class_UPPERCASE,
+        ];
+    } else {
+        new_M_value[fieldname_UPPERCASE] = [...field_data_without_u];
+    }
     if (debug) console.log(" UUUU-Class  5. new_M_value :", new_M_value);
 
     /**

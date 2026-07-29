@@ -122,11 +122,13 @@ export default function TabContent() {
         };
 
         await M_value_Service.update(new_M_value);
-        if (fieldname) setActiveField(fieldname); // for auto scroll
+        if (fieldname) await setActiveField(fieldname); // for auto scroll, not work
+        // this make auto scroll for JSON_Content works if new field added
+        use_M_Store.getState().set_is_new_field_added(true);
 
         //clear input box , after finish
         if (input_box_fieldname) input_box_fieldname.value = "";
-        set_new_FIELDNAME("");
+        await set_new_FIELDNAME("");
 
         // ---------------- handle selected_D and selected_U -----------
         const D_NAME = get_D_NAME(new_field_data);

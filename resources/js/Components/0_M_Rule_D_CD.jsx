@@ -18,6 +18,7 @@ import { get_D_NAME, has_d_in_field_data } from "@/Components/0_M_Data_Helper";
  * @param {*} ALL_DB_options e.g. ["NULLABLE", "PRIMARY", ...] (all allow options)
  */
 export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
+    const debug = true;
     /**
      * field_data[] first element is fieldname
      */
@@ -103,11 +104,13 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
             ? [...checked_CD, option]
             : checked_CD.filter((item) => item !== option);
 
-        console.log(" !!!!!!!!!!!!!!!! CD_Rule -- fieldname = ", fieldname);
-        console.log(
-            " !!!!!!!!!!!!!!!! CD_Rule -- checked_CD_States = ",
-            checked_CD_States,
-        );
+        if (debug)
+            console.log("[0] NBNBNBNBNBNB CD_Rule -- fieldname = ", fieldname);
+        if (debug)
+            console.log(
+                "[1] NBNBNBNBNBNB CD_Rule -- checked_CD_States = ",
+                checked_CD_States,
+            );
         await setChecked_CD(fieldname, checked_CD_States);
 
         await validate_UI("CD", event);
@@ -115,23 +118,36 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
         await update_M_value_for_checked_CD_CU();
     }
 
+    /**
+     * * save backup of seleted_D_FOREIGN and selected_U_FOREIGN for restore
+     * * save only when checkbox FOREIGN is checked
+     * @param {*} event
+     */
     function set_FOREIGN_Actions(event) {
         const selected_D = use_M_Store.getState().selected_D;
         const selected_U = use_M_Store.getState().selected_U;
-        if (event.target.value === "FOREIGN") {
-            console.log(`!!!!!!!!!!!!!!!!! CALLED --- set_FOREIGN_Actions`);
-            console.log(
-                `!!!!!!!!!!!!!!!!! CALLED --- set_FOREIGN_Actions -- fieldname = `,
-                fieldname,
-            );
-            console.log(
-                `!!!!!!!!!!!!!!!!! CALLED --- set_FOREIGN_Actions -- selected_D[${fieldname}] = `,
-                selected_D[fieldname],
-            );
-            console.log(
-                `!!!!!!!!!!!!!!!!! CALLED --- set_FOREIGN_Actions -- selected_U[${fieldname}] = `,
-                selected_U[fieldname],
-            );
+        if (event.target.value === "FOREIGN" && event.target.checked) {
+            if (debug)
+                console.log(
+                    `[2] NBNBNBNBNBNB! CALLED --- set_FOREIGN_Actions (SAVE BACKUP)`,
+                );
+            if (debug)
+                console.log(`[] NBNBNBNBNBNB! CALLED --- set_FOREIGN_Actions`);
+            if (debug)
+                console.log(
+                    `[3] NBNBNBNBNBNB! CALLED --- set_FOREIGN_Actions -- fieldname = `,
+                    fieldname,
+                );
+            if (debug)
+                console.log(
+                    `[4] NBNBNBNBNBNB! CALLED --- set_FOREIGN_Actions -- selected_D[${fieldname}] = `,
+                    selected_D[fieldname],
+                );
+            if (debug)
+                console.log(
+                    `[5] NBNBNBNBNBNB! CALLED --- set_FOREIGN_Actions -- selected_U[${fieldname}] = `,
+                    selected_U[fieldname],
+                );
             set_selected_D_FOREIGN(fieldname, selected_D[fieldname]);
             set_selected_U_FOREIGN(fieldname, selected_U[fieldname]);
         }
@@ -151,7 +167,7 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
 
                 // We will use this to clean too complicate logic of is_show_DEFAULT_Panel
                 // if (fieldname === "image")
-                //     console.log(
+                //     if(debug) console.log(
                 //         `return LOOP CD_Rule ---- D_NAME = ${D_NAME}`,
                 //         `is_last_D_Empty = ${is_last_D_Empty}`,
                 //         `option = ${option}`,
@@ -162,7 +178,7 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
                 /** checked logic for showing DEFAULT_Panel */
                 const is_show_DEFAULT_Panel =
                     D_NAME &&
-                    is_last_D_Empty &&
+                    // is_last_D_Empty &&
                     option === "DEFAULT" &&
                     checked_CD.includes(option);
 

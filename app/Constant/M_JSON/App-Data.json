@@ -1,13 +1,16 @@
 {
     "_comment": "\/M_JSON\/App-Data.json",
     "f": {
+        "FEW": [
+            "few",
+            "d::INTEGER"
+        ],
         "IMAGE": [
             "image",
-            "d::undefined",
-            "u::undefined",
+            "u::FILE",
             [
-                "cd::DEFAULT",
-                ""
+                "d::STRING",
+                255
             ]
         ],
         "NAME": [
@@ -27,11 +30,11 @@
                 2
             ],
             "u::NUMBER",
-            "s::CURRENCY",
             [
                 "cd::DEFAULT",
                 0
-            ]
+            ],
+            "s::CURRENCY"
         ],
         "STOCK": [
             "stock",
@@ -45,9 +48,7 @@
                 "cd::DEFAULT",
                 0
             ],
-            "cud::REQUIRED",
-            "cd::INDEX",
-            "cd::NULLABLE"
+            "cud::REQUIRED"
         ],
         "IS_ACTIVE": [
             "is_active",
@@ -95,18 +96,15 @@
         ],
         "PRODUCT_ID": [
             "product_id",
-            "d::undefined",
-            "u::undefined"
+            "cd::FOREIGN"
         ],
         "SHOP_ID": [
             "shop_id",
-            "d::undefined",
-            "u::undefined",
-            "cu::DISABLED"
+            "cd::FOREIGN"
         ],
         "USER_ID": [
             "user_id",
-            "cd::FOREIGN"
+            "d::undefined"
         ]
     },
     "t": {
