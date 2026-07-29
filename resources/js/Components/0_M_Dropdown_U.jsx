@@ -26,7 +26,9 @@ import { GLOBAL_METADATA } from "@/Providers/0_M_DataProvider";
  * * selected_U_of_field_data = fieldname , e.g. NUMBER , FILE , TEXT
  */
 export function renderDropdown_U(M_Class_Name_List, field_data) {
-    const { M_value, set_M_value, activeField, setActiveField } = use_M_Store();
+    const { M_value, activeField } = use_M_Store();
+    const set_M_value = use_M_Store.getState().set_M_value;
+    const setActiveField = use_M_Store.getState().setActiveField;
 
     const fieldname = field_data[0];
     const fieldDataList = field_data ? field_data.slice(1) : [];

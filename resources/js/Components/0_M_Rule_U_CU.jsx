@@ -85,14 +85,14 @@ export function CU_Rule({ UI_options, ALL_UI_options, field_data }) {
                                     ) &&
                                     selected_U[fieldname] != ""
                                 ) {
-                                    console.log(
-                                        `FOREIGN CLICKED -- selected_U = `,
-                                        selected_U,
-                                    );
-                                    console.log(
-                                        `FOREIGN CLICKED -- selected_U[${fieldname}] = `,
-                                        selected_U[fieldname],
-                                    );
+                                    // console.log(
+                                    //     `FOREIGN CLICKED -- selected_U = `,
+                                    //     selected_U,
+                                    // );
+                                    // console.log(
+                                    //     `FOREIGN CLICKED -- selected_U[${fieldname}] = `,
+                                    //     selected_U[fieldname],
+                                    // );
 
                                     set_selected_U_FOREIGN(
                                         FIELDNAME,

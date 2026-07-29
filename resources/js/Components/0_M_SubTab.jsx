@@ -85,7 +85,10 @@ export default function SubTab({ data }) {
             return;
         }
 
-        // 1. subTab set_M_value, sync data when activeSubTab changes
+        /**
+         * * 1. subTab set_M_value, sync data when activeSubTab changes
+         * * and activeSubTab exists in data
+         */
         if (data[activeSubTab]) {
             set_M_value(data[activeSubTab]);
         }
@@ -96,7 +99,7 @@ export default function SubTab({ data }) {
          * * activeSubTab from store: d
          */
         set_can_render_TabContent(true);
-    }, [activeSubTab, data]); // Reason for Dependency : user klicks tab , data changes
+    }, [activeSubTab]); // Reason for Dependency : user klicks tab , data changes
 
     /**
      * * call when user klicks change tab , to set default subTab

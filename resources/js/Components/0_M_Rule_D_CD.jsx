@@ -18,14 +18,6 @@ import { get_D_NAME, has_d_in_field_data } from "@/Components/0_M_Data_Helper";
  * @param {*} ALL_DB_options e.g. ["NULLABLE", "PRIMARY", ...] (all allow options)
  */
 export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
-    const {
-        activeSubTab,
-        selected_D,
-        selected_U,
-        set_selected_D_FOREIGN,
-        set_selected_U_FOREIGN,
-    } = use_M_Store();
-
     /**
      * field_data[] first element is fieldname
      */
@@ -33,14 +25,37 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
 
     const FIELDNAME = fieldname.toUpperCase();
 
+    /**
+     * * DROPDOWN - Handling
+     * * -----------------
+     */
+    // const { activeSubTab, selected_D, selected_U } = use_M_Store();
+    const activeSubTab = use_M_Store((state) => state.activeSubTab);
+    const selected_D = use_M_Store((state) => state.selected_D);
+    const selected_U = use_M_Store((state) => state.selected_U);
+
+    const set_selected_D_FOREIGN =
+        use_M_Store.getState().set_selected_D_FOREIGN;
+    const set_selected_U_FOREIGN =
+        use_M_Store.getState().set_selected_U_FOREIGN;
+
+    /**
+     * * CHECKBOX - Handling
+     * * --------------------
+     * * otherwise  checked_CD.includes(option);
+     * * Uncaught TypeError: Cannot read properties of undefined (reading 'includes')
+     * * LOG CD CU said:
+     * * [M_STORE_DEBUG]     state.checked_CD[image] : undefined
+     * * [M_STORE_DEBUG] New state.checked_CU[image] : []
+     * * We cannot prevent React fist render too fast , before data checked_Cx is ready
+     * * :::: SOLUTION :::: WORKAROUND
+     * * send empty || [] instead of undefined
+     */
     const checked_CD =
-        (use_M_Store.getState().checked_CD &&
-            use_M_Store.getState().checked_CD[fieldname]) ||
-        [];
+        use_M_Store((state) => state.checked_CD?.[fieldname]) || [];
     const checked_CU =
-        (use_M_Store.getState().checked_CU &&
-            use_M_Store.getState().checked_CU[fieldname]) ||
-        [];
+        use_M_Store((state) => state.checked_CU?.[fieldname]) || [];
+
     const setChecked_CD = use_M_Store.getState().setChecked_CD;
     const setChecked_CU = use_M_Store.getState().setChecked_CU;
     const set_is_FOREIGN_changed =
@@ -93,32 +108,12 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
         await setChecked_CD(fieldname, checked_CD_States);
 
         await validate_UI("CD", event);
-        console.log(
-            " CD_Rule --- set_CD_Actions -- after validate_UI -- M_value = ",
-            use_M_Store.getState().M_value,
-        );
+
         await update_M_value_for_checked_CD_CU();
     }
 
     function set_FOREIGN_Actions(event) {
         if (event.target.value === "FOREIGN" && selected_D[fieldname] != "") {
-            console.log(
-                `${event.target.value} CLICKED -- selected_D = `,
-                selected_D,
-            );
-            console.log(
-                `${event.target.value} CLICKED -- selected_D[${FIELDNAME}] = `,
-                selected_D[FIELDNAME],
-            );
-            console.log(
-                `${event.target.value} CLICKED -- selected_U = `,
-                selected_U,
-            );
-            console.log(
-                `${event.target.value} CLICKED -- selected_U[${FIELDNAME}] = `,
-                selected_U[FIELDNAME],
-            );
-
             set_selected_D_FOREIGN(FIELDNAME, selected_D[FIELDNAME]);
             set_selected_U_FOREIGN(FIELDNAME, selected_U[FIELDNAME]);
         }

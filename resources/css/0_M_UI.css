@@ -74,7 +74,6 @@ body {
     color: #fff;
     padding: 15px;
     border-radius: 8px;
-    max-height: 500px;
     overflow-y: auto;
 }
 .json-header {
