@@ -13,17 +13,6 @@ export async function validate_UI(checkbox_group_name, event) {
     const fieldname = activeField.toLowerCase();
     const FIELDNAME = activeField.toUpperCase();
 
-    /**
-     * * this local state cause error:
-     * * react-dom-DZQ9hRBr.js?v=b745d579:9605 Uncaught (in promise)
-     * * Error: Invalid hook call.
-     * * Hooks can only be called inside of the body of a function component
-     */
-    // const [
-    //     is_auto_uncheck_FOREIGN_by_CU_CD,
-    //     set_is_auto_uncheck_FOREIGN_by_CU_CD,
-    // ] = useState(false);
-
     const set_is_auto_uncheck_FOREIGN_by_CU_CD =
         use_M_Store.getState().set_is_auto_uncheck_FOREIGN_by_CU_CD;
 

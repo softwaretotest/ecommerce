@@ -47,13 +47,13 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
     }
 
     // const M_value = use_M_Store.getState((state) => state.M_value);
-    // const NEW_fieldname = use_M_Store.getState((state) => state.NEW_fieldname);
+    // const NEW_added_fieldname = use_M_Store.getState((state) => state.NEW_added_fieldname);
 
     /**
-     * * M_value, NEW_fieldname must be scripted together
+     * * M_value, NEW_added_fieldname must be scripted together
      * * to make FOREIGN Actions working
      */
-    const { M_value, NEW_fieldname } = use_M_Store();
+    const { M_value, NEW_added_fieldname } = use_M_Store();
 
     const set_M_value = use_M_Store.getState().set_M_value;
     const activeField = use_M_Store.getState().activeField;
@@ -113,13 +113,38 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
             ? selected_D[fieldname]
             : selected_D_of_field_data;
 
+    /**
+     * * this useEffect handle D_Params and D_HEAL
+     * * if NOT has_FOREIGN  &&
+     * * if NO  D exists in field_data
+     * * then no need to handle both
+     */
     useEffect(() => {
         if (!selected_D_to_show) return;
+
+        // const selected_D_values = selected_D[fieldname];
+        const checked_CD_values = use_M_Store.getState().checked_CD[fieldname];
+
+        // to show <D_Params /> it depends on selected_D and checkbox FOREIGN
+        const has_FOREIGN =
+            Array.isArray(checked_CD_values) &&
+            checked_CD_values.includes("FOREIGN");
+
+        if (has_FOREIGN) return;
+
         let d_params = [];
         let is_wrong_d_params_in_backend = false;
-        const is_this_field_new = fieldname === NEW_fieldname;
+        const is_this_field_new = fieldname === NEW_added_fieldname;
         // user clicked ADD FIELD
         if (is_this_field_new) {
+            console.log(
+                "!!!!!!!!!!!!!! Dropdown_D , useEffect -- selected_D_to_show = ",
+                selected_D_to_show,
+            );
+            console.log(
+                "!!!!!!!!!!!!!! Dropdown_D , useEffect -- fieldname = ",
+                fieldname,
+            );
             d_params = find_D_Params_in_M_value(selected_D_to_show, fieldname);
         } else {
             d_params = find_D_Params_in_GLOBAL_METADATA(
@@ -132,14 +157,6 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
             is_wrong_d_params_in_backend = true;
             d_params = find_NEW_D_Params_in_M_MAP(selected_D_to_show);
         }
-
-        const selected_D_values = selected_D[fieldname];
-
-        // to show <D_Params /> it depends on selected_D and checkbox FOREIGN
-        const has_FOREIGN =
-            (Array.isArray(selected_D_values) ||
-                typeof selected_D_values === "string") &&
-            selected_D_values.includes("FOREIGN");
 
         if (!has_FOREIGN && d_params) {
             set_D_Params_State(
@@ -160,7 +177,7 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
                 M_value_Service,
             );
         }
-    }, [selected_D, NEW_fieldname, fieldname]);
+    }, [selected_D, NEW_added_fieldname, fieldname]);
 
     /**
      * * set_selected_D
@@ -204,10 +221,12 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
                 value={selected_D_to_show}
                 // key={selected_D_of_field_data} // no need if react does not warn
 
-                disabled={!activeField}
-                disabled={use_M_Store
-                    .getState()
-                    .checked_CD[fieldname]?.includes("FOREIGN")}
+                disabled={
+                    // !activeField ||
+                    use_M_Store
+                        .getState()
+                        .checked_CD[fieldname]?.includes("FOREIGN")
+                }
                 onChange={(event) => {
                     set_D_Actions(event);
                 }}

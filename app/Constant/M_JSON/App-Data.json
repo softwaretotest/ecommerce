@@ -1,6 +1,45 @@
 {
     "_comment": "\/M_JSON\/App-Data.json",
     "f": {
+        "TRWETRWE": [
+            "TRWETRWE",
+            "cd::FOREIGN"
+        ],
+        "TRWE": [
+            "TRWE",
+            [
+                "d::STRING",
+                255
+            ]
+        ],
+        "TREZ45": [
+            "TREZ45",
+            [
+                "d::STRING",
+                255
+            ]
+        ],
+        "R4TQ": [
+            "R4TQ",
+            [
+                "d::STRING",
+                255
+            ]
+        ],
+        "DFAS": [
+            "DFAS",
+            [
+                "d::STRING",
+                255
+            ]
+        ],
+        "RTWEZ4": [
+            "RTWEZ4",
+            [
+                "d::STRING",
+                255
+            ]
+        ],
         "IMAGE": [
             "image",
             "u::FILE",
@@ -80,8 +119,11 @@
         ],
         "ORDER_NR": [
             "order_nr",
-            "d::STRING",
-            "u::TEXT"
+            "u::TEXT",
+            [
+                "d::STRING",
+                255
+            ]
         ],
         "ORDER_ID": [
             "order_id",

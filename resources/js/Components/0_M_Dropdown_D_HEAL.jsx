@@ -72,11 +72,6 @@ export function D_HEAL(
                 window.D_HEAL.collected,
             );
 
-        /**
-         * * TODO :
-         * * renew this function to update M_value
-         * * by window.D_HEAL.collected all at once
-         */
         new_M_value = prepare_new_M_value_for_Update_D_All_Fields(
             window.D_HEAL.collected,
             M_value,

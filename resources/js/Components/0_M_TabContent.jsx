@@ -13,8 +13,12 @@ import DB_Tablename from "@/Components/0_M_DB_Tablename";
 
 export default function TabContent() {
     const M_value = use_M_Store((state) => state.M_value);
-    const NEW_fieldname = use_M_Store((state) => state.NEW_fieldname);
-    const set_NEW_fieldname = use_M_Store((state) => state.set_NEW_fieldname);
+    const NEW_added_fieldname = use_M_Store(
+        (state) => state.NEW_added_fieldname,
+    );
+    const set_NEW_added_fieldname = use_M_Store(
+        (state) => state.set_NEW_added_fieldname,
+    );
     const activeTab = use_M_Store((state) => state.activeTab);
     const activeSubTab = use_M_Store((state) => state.activeSubTab);
     const activeField = use_M_Store((state) => state.activeField);
@@ -101,7 +105,7 @@ export default function TabContent() {
         const trimmed_name = raw_name.trim();
         if (!trimmed_name) return;
 
-        await set_NEW_fieldname(trimmed_name); //set flag for useEffect in Dropdown_D.jsx
+        await set_NEW_added_fieldname(trimmed_name); //set flag for useEffect in Dropdown_D.jsx
 
         const field_data = [trimmed_name, ["d::STRING", 255]];
         const FIELDNAME = field_data[0].toUpperCase();
@@ -112,7 +116,7 @@ export default function TabContent() {
         };
 
         await M_value_Service.update(new_M_value);
-        if (!FIELDNAME) setActiveField(FIELDNAME); // for auto scroll
+        if (FIELDNAME) setActiveField(FIELDNAME); // for auto scroll
 
         //clear input box , after finish
         if (input_box_fieldname) input_box_fieldname.value = "";

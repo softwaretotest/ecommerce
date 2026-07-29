@@ -17,8 +17,7 @@ export function find_NEW_D_Params_in_M_MAP(D_Name_UPPERCASE) {
 export function find_D_Params_in_M_value(D_Name_UPPERCASE, fieldname) {
     const M_value = use_M_Store.getState().M_value;
 
-    const FIELDNAME = fieldname.toUpperCase();
-    const field_data = M_value[FIELDNAME];
+    const field_data = M_value[fieldname];
 
     if (!Array.isArray(field_data)) return null;
 
