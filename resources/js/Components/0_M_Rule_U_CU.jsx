@@ -22,8 +22,6 @@ export function CU_Rule({ UI_options, ALL_UI_options, field_data }) {
      */
     const fieldname = field_data[0];
 
-    const FIELDNAME = fieldname.toUpperCase();
-
     const checked_CD =
         (use_M_Store.getState().checked_CD &&
             use_M_Store.getState().checked_CD[fieldname]) ||
@@ -95,7 +93,7 @@ export function CU_Rule({ UI_options, ALL_UI_options, field_data }) {
                                     // );
 
                                     set_selected_U_FOREIGN(
-                                        FIELDNAME,
+                                        fieldname,
                                         selected_U[fieldname],
                                     );
                                 }

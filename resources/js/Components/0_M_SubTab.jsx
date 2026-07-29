@@ -154,20 +154,20 @@ export default function SubTab({ data }) {
             <div className="content-box content-grid">
                 {/* SIDEBAR */}
                 <nav className="field-sidebar">
-                    {Object.keys(M_value).map((fieldname) => (
+                    {Object.keys(M_value).map((M_value_KEY) => (
                         <button
-                            key={fieldname}
+                            key={M_value_KEY}
                             ref={(DOM_Node) =>
-                                (scrollRefs.current[fieldname] = DOM_Node)
+                                (scrollRefs.current[M_value_KEY] = DOM_Node)
                             }
-                            className={`field-nav-link ${activeField === fieldname ? "active" : ""}`}
+                            className={`field-nav-link ${activeField === M_value_KEY ? "active" : ""}`}
                             onClick={() => {
-                                // fieldname = null , when field deleted
-                                if (fieldname) setActiveField(fieldname);
+                                // M_value_KEY = null , when field deleted
+                                if (M_value_KEY) setActiveField(M_value_KEY);
                             }}
                         >
                             {/* if Class t (DB_Tablename) remove T:: */}
-                            {fieldname.toUpperCase().replaceAll("T::", "")}
+                            {M_value_KEY.toUpperCase().replaceAll("T::", "")}
                         </button>
                     ))}
                 </nav>

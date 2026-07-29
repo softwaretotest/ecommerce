@@ -271,19 +271,6 @@ body {
     flex-direction: column;
     max-width: 250px;
 }
-
-.add-button {
-    background-color: #3498db;
-}
-
-.delete-button {
-    background-color: #f08730;
-}
-
-.field-nav-link {
-    background: #f8f9fa;
-}
-
 .add-button,
 .delete-button,
 .field-nav-link {
@@ -310,6 +297,20 @@ body {
     color: white;
     border-color: #e3342f;
     font-weight: bold;
+}
+
+.add-button {
+    background-color: #3498db;
+}
+
+.delete-button {
+    background-color: #f08730;
+    margin: 0;
+    padding: 12px 20px;
+}
+
+.field-nav-link {
+    background: #f8f9fa;
 }
 
 .json-list {
@@ -547,4 +548,17 @@ body {
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
+}
+
+.field-name-group,
+.field-key-group a {
+    font-size: small;
+    font-weight: bold;
+}
+
+.field-name-group,
+.field-key-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }

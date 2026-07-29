@@ -58,7 +58,7 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
     const set_M_value = use_M_Store.getState().set_M_value;
     const activeField = use_M_Store.getState().activeField;
 
-    const fieldname = field_data[0];
+    const fieldname = field_data[0].toLowerCase();
 
     /**
      * * D_String_or_Array = e.g. d::INTEGER , [d:DECIMAL,10,2]
@@ -120,31 +120,52 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
      * * then no need to handle both
      */
     useEffect(() => {
+        // ------------ GUARD ------------------
+        if (debug)
+            console.log(
+                "[0] -- FDSAFDSAFDSAFDAS -- Dropdown_D -- useEffect -- selected_D_to_show = ",
+                selected_D_to_show,
+            );
         if (!selected_D_to_show) return;
 
-        // const selected_D_values = selected_D[fieldname];
         const checked_CD_values = use_M_Store.getState().checked_CD[fieldname];
+
+        if (debug)
+            console.log(
+                "[1] -- FDSAFDSAFDSAFDAS -- Dropdown_D -- useEffect -- checked_CD_values = ",
+                checked_CD_values,
+            );
 
         // to show <D_Params /> it depends on selected_D and checkbox FOREIGN
         const has_FOREIGN =
             Array.isArray(checked_CD_values) &&
             checked_CD_values.includes("FOREIGN");
 
-        if (has_FOREIGN) return;
+        if (debug)
+            console.log(
+                "[2] -- FDSAFDSAFDSAFDAS -- Dropdown_D -- useEffect -- has_FOREIGN = ",
+                has_FOREIGN,
+            );
 
+        // in any case with FOREIGN , then NO D_Params
+        if (has_FOREIGN) {
+            set_D_Params_State(fieldname, null);
+            return;
+        }
+
+        // ------------ CHECK D_Params & D_HEAL ------------------
         let d_params = [];
         let is_wrong_d_params_in_backend = false;
         const is_this_field_new = fieldname === NEW_added_fieldname;
+
+        if (debug)
+            console.log(
+                "[3] -- FDSAFDSAFDSAFDAS -- Dropdown_D -- useEffect -- is_this_field_new = ",
+                is_this_field_new,
+            );
+
         // user clicked ADD FIELD
         if (is_this_field_new) {
-            console.log(
-                "!!!!!!!!!!!!!! Dropdown_D , useEffect -- selected_D_to_show = ",
-                selected_D_to_show,
-            );
-            console.log(
-                "!!!!!!!!!!!!!! Dropdown_D , useEffect -- fieldname = ",
-                fieldname,
-            );
             d_params = find_D_Params_in_M_value(selected_D_to_show, fieldname);
         } else {
             d_params = find_D_Params_in_GLOBAL_METADATA(
@@ -158,13 +179,25 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
             d_params = find_NEW_D_Params_in_M_MAP(selected_D_to_show);
         }
 
+        if (debug)
+            console.log(
+                "[4] -- FDSAFDSAFDSAFDAS -- Dropdown_D -- useEffect -- d_params = ",
+                d_params,
+            );
+
+        if (debug)
+            console.log(
+                "[5] -- FDSAFDSAFDSAFDAS -- Dropdown_D -- useEffect -- is_wrong_d_params_in_backend = ",
+                is_wrong_d_params_in_backend,
+            );
+
         if (!has_FOREIGN && d_params) {
             set_D_Params_State(
                 fieldname,
                 <D_Params D_NAME={selected_D_to_show} d_params={d_params} />,
             );
         } else {
-            set_D_Params_State({});
+            set_D_Params_State(fieldname, null);
         }
 
         // ADD D_Params to d:: if exists , fix the wrong d:: Config

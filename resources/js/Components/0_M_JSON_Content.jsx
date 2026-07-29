@@ -82,20 +82,22 @@ export default function JSON_Content() {
                 <div className="json-list">
                     {Object.entries(data[activeTab][activeSubTab]).map(
                         //M_value = data[activeTab][activeSubTab]
-                        ([fieldname, value]) => (
+                        ([Data_M_value_KEY, value]) => (
                             <div
-                                key={fieldname} //fieldname = e.g. PRICE , STOCK etc.
+                                key={Data_M_value_KEY} //Data_M_value_KEY = e.g. PRICE , STOCK etc.
                                 ref={(DOM_Node) =>
-                                    (scrollRefs.current[fieldname] = DOM_Node)
+                                    (scrollRefs.current[Data_M_value_KEY] =
+                                        DOM_Node)
                                 }
-                                className={`json-line ${activeField === fieldname ? "json-highlight" : ""}`}
+                                className={`json-line ${activeField === Data_M_value_KEY ? "json-highlight" : ""}`}
                                 onClick={() => {
-                                    // fieldname = null , when field deleted
-                                    if (fieldname) setActiveField(fieldname);
+                                    // Data_M_value_KEY = null , when field deleted
+                                    if (Data_M_value_KEY)
+                                        setActiveField(Data_M_value_KEY);
                                 }}
                             >
                                 <span className="json-fieldname">
-                                    "{fieldname}"
+                                    "{Data_M_value_KEY}"
                                 </span>
                                 : {renderArrayItem(value, 1)}
                             </div>

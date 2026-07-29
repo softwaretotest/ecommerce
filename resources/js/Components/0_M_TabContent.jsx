@@ -10,6 +10,7 @@ import SpecialField from "@/Components/0_M_SpecialField";
 import Field from "@/Components/0_M_Field";
 import EntityField from "@/Components/0_M_EntityField";
 import DB_Tablename from "@/Components/0_M_DB_Tablename";
+import { get_D_NAME, get_U_NAME } from "@/Components/0_M_Data_Helper";
 
 export default function TabContent() {
     const M_value = use_M_Store((state) => state.M_value);
@@ -70,7 +71,7 @@ export default function TabContent() {
                     <SpecialField field_data={field_data} />
                 )}
                 {activeSubTab === "f" && Array.isArray(field_data) && (
-                    <Field field_data={field_data} M_value={M_value} />
+                    <Field field_data={field_data} />
                 )}
                 {activeSubTab === "t" && (
                     <DB_Tablename field_data={field_data} />
@@ -93,9 +94,13 @@ export default function TabContent() {
         return has_same_fieldname;
     }
 
+    const [new_FIELDNAME, set_new_FIELDNAME] = useState("");
     /**
      * * get new fieldname from UI
      * * and save to JSON Backend
+     * * BE CAREFULL to save convention : always like this
+     * * fieldname = lowercase
+     * * M_value [KEY] , KEY = UPPERCASE
      * @returns
      */
     async function add_field() {
@@ -105,25 +110,59 @@ export default function TabContent() {
         const trimmed_name = raw_name.trim();
         if (!trimmed_name) return;
 
-        await set_NEW_added_fieldname(trimmed_name); //set flag for useEffect in Dropdown_D.jsx
+        await set_NEW_added_fieldname(trimmed_name.toLowerCase()); //set flag for useEffect in Dropdown_D.jsx
 
-        const field_data = [trimmed_name, ["d::STRING", 255]];
-        const FIELDNAME = field_data[0].toUpperCase();
+        const new_field_data = [trimmed_name.toLowerCase(), ["d::STRING", 255]];
+        const fieldname = new_field_data[0];
+        const M_value_KEY = new_field_data[0].toUpperCase();
 
         const new_M_value = {
-            [FIELDNAME]: field_data,
+            [M_value_KEY]: new_field_data,
             ...M_value,
         };
 
         await M_value_Service.update(new_M_value);
-        if (FIELDNAME) setActiveField(FIELDNAME); // for auto scroll
+        if (fieldname) setActiveField(fieldname); // for auto scroll
 
         //clear input box , after finish
         if (input_box_fieldname) input_box_fieldname.value = "";
         set_new_FIELDNAME("");
+
+        // ---------------- handle selected_D and selected_U -----------
+        const D_NAME = get_D_NAME(new_field_data);
+        if (D_NAME) use_M_Store.getState().set_selected_D(fieldname, D_NAME);
+        console.log(
+            `!!!!!!!!! TabContent -- selected_D = `,
+            use_M_Store.getState().selected_D,
+        );
+        console.log(
+            `!!!!!!!!! TabContent -- selected_D[${fieldname}] = `,
+            use_M_Store.getState().selected_D[fieldname],
+        );
+        const U_NAME = get_U_NAME(new_field_data);
+        if (U_NAME) use_M_Store.getState().set_selected_U(fieldname, U_NAME);
+        console.log(
+            "!!!!!!!!! TabContent -- selected_U = ",
+            use_M_Store.getState().selected_U,
+        );
+        console.log(
+            `!!!!!!!!! TabContent -- selected_U[${fieldname}] = `,
+            use_M_Store.getState().selected_U[fieldname],
+        );
+        const set_selected_D_FOREIGN =
+            use_M_Store.getState().set_selected_D_FOREIGN;
+        const set_selected_U_FOREIGN =
+            use_M_Store.getState().set_selected_U_FOREIGN;
+        set_selected_D_FOREIGN(
+            fieldname,
+            use_M_Store.getState().selected_D[fieldname],
+        );
+        set_selected_U_FOREIGN(
+            fieldname,
+            use_M_Store.getState().selected_U[fieldname],
+        );
     }
 
-    const [new_FIELDNAME, set_new_FIELDNAME] = useState("");
     const [Error_NEW_FIELDNAME, set_Error_NEW_FIELDNAME] = useState("");
     function handleFieldnameChange(value) {
         set_new_FIELDNAME(value);
@@ -173,7 +212,7 @@ export default function TabContent() {
 
             <div className="input-engine-container">
                 {Object.entries(M_value).map(
-                    ([fieldname, field_data], index) => {
+                    ([M_value_KEY, field_data], index) => {
                         // SAVE TO Javascript GLOBAL Variable
                         // Dropdown_D run D_HEAL only
                         // after refresh and activeTab = app_data
@@ -186,7 +225,7 @@ export default function TabContent() {
                             window.D_HEAL.isLastField = isLastField;
                         }
                         // !!! MUST HAVE return to show DOM !!!
-                        return render_TabContent_DOM(fieldname, field_data);
+                        return render_TabContent_DOM(M_value_KEY, field_data);
                     },
                 )}
             </div>

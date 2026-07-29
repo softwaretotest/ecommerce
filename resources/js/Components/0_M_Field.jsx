@@ -86,17 +86,23 @@ export default function Field({ field_data }) {
     return (
         <div className="field-wrapper-box">
             <div className="field-header-container">
-                <input
-                    type="text"
-                    defaultValue={fieldname.toUpperCase()}
-                    className="App_Data_KEY"
-                />
+                <div className="field-key-group">
+                    <a>M_value[KEY]</a>
+                    <input
+                        type="text"
+                        defaultValue={fieldname.toUpperCase()}
+                        className="App_Data_KEY"
+                    />
+                </div>
                 <span className="field-separator-colon">:</span>
-                <input
-                    type="text"
-                    defaultValue={fieldname}
-                    className="App_Data_VALUE"
-                />
+                <div className="field-name-group">
+                    <a>fieldname</a>
+                    <input
+                        type="text"
+                        defaultValue={fieldname}
+                        className="App_Data_VALUE"
+                    />
+                </div>
                 <button className="delete-button" onClick={delete_field}>
                     DELETE
                 </button>

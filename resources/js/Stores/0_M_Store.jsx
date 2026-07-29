@@ -19,12 +19,12 @@ export const use_M_Store = create((set) => ({
     debug_selected_D: true, // e.g. INTEGER , STRING
     debug_selected_D_FOREIGN: true,
 
-    debug_checked_CU: true,
-    debug_checked_CD: true, // e.g. ['INDEX', 'DEFAULT', 'NULLABLE']
+    debug_checked_CU: false,
+    debug_checked_CD: false, // e.g. ['INDEX', 'DEFAULT', 'NULLABLE']
 
     debug_activeField: true,
     debug_activeTab: false,
-    debug_activeSubTab: true,
+    debug_activeSubTab: false,
 
     debug_NEW_added_fieldname: false,
 
@@ -131,19 +131,19 @@ export const use_M_Store = create((set) => ({
         }),
 
     selected_U_FOREIGN: {}, // atomic states
-    set_selected_U_FOREIGN: (FIELDNAME, selected_U_FOREIGN) =>
+    set_selected_U_FOREIGN: (fieldname, selected_U_FOREIGN) =>
         set((state) => {
-            if (!FIELDNAME) return { selected_U_FOREIGN: {} };
+            if (!fieldname) return { selected_U_FOREIGN: {} };
 
             const NEW_selected_U_FOREIGN = {
                 ...state.selected_U_FOREIGN,
-                [FIELDNAME]: selected_U_FOREIGN,
+                [fieldname]: selected_U_FOREIGN,
             };
 
             if (state.debug || state.debug_selected_U_FOREIGN) {
                 console.log(
-                    `[M_STORE_DEBUG] NEW_selected_U_FOREIGN[${FIELDNAME}]:`,
-                    NEW_selected_U_FOREIGN[FIELDNAME],
+                    `[M_STORE_DEBUG] NEW_selected_U_FOREIGN[${fieldname}]:`,
+                    NEW_selected_U_FOREIGN[fieldname],
                 );
                 console.log("------------------------------------");
             }
@@ -152,19 +152,19 @@ export const use_M_Store = create((set) => ({
         }),
 
     selected_D_FOREIGN: {}, // atomic states
-    set_selected_D_FOREIGN: (FIELDNAME, selected_D_FOREIGN) =>
+    set_selected_D_FOREIGN: (fieldname, selected_D_FOREIGN) =>
         set((state) => {
-            if (!FIELDNAME) return { selected_D_FOREIGN: {} };
+            if (!fieldname) return { selected_D_FOREIGN: {} };
 
             const NEW_selected_D_FOREIGN = {
                 ...state.selected_D_FOREIGN,
-                [FIELDNAME]: selected_D_FOREIGN,
+                [fieldname]: selected_D_FOREIGN,
             };
 
             if (state.debug || state.debug_selected_D_FOREIGN) {
                 console.log(
-                    `[M_STORE_DEBUG] NEW_selected_D_FOREIGN[${FIELDNAME}]:`,
-                    NEW_selected_D_FOREIGN[FIELDNAME],
+                    `[M_STORE_DEBUG] NEW_selected_D_FOREIGN[${fieldname}]:`,
+                    NEW_selected_D_FOREIGN[fieldname],
                 );
                 console.log("------------------------------------");
             }
@@ -173,19 +173,19 @@ export const use_M_Store = create((set) => ({
         }),
 
     selected_D: {}, // atomic states
-    set_selected_D: (FIELDNAME, selected_D_Value) =>
+    set_selected_D: (fieldname, selected_D_Value) =>
         set((state) => {
-            if (!FIELDNAME) return { selected_D: {} };
+            if (!fieldname) return { selected_D: {} };
 
             const NEW_selected_D = {
                 ...state.selected_D,
-                [FIELDNAME]: selected_D_Value,
+                [fieldname]: selected_D_Value,
             };
 
             if (state.debug || state.debug_selected_D) {
                 console.log(
-                    `[M_STORE_DEBUG] NEW_selected_D[${FIELDNAME}]:`,
-                    NEW_selected_D[FIELDNAME],
+                    `[M_STORE_DEBUG] NEW_selected_D[${fieldname}]:`,
+                    NEW_selected_D[fieldname],
                 );
                 console.log("------------------------------------");
             }
@@ -291,22 +291,22 @@ export const use_M_Store = create((set) => ({
         }),
 
     activeField: null,
-    setActiveField: (FIELDNAME) =>
+    setActiveField: (fieldname) =>
         set((state) => {
             if (state.debug || state.debug_activeField) {
-                console.log(`[M_STORE_DEBUG] New activeField :`, FIELDNAME);
+                console.log(`[M_STORE_DEBUG] New activeField :`, fieldname);
                 console.log("------------------------------------");
             }
 
             // selected_D can be save to prepare for the case, if FOREIGN clicked
-            const D_NAME = get_D_NAME_by_FIELDNAME(FIELDNAME);
-            state.set_selected_D(FIELDNAME, D_NAME);
+            const D_NAME = get_D_NAME_by_FIELDNAME(fieldname);
+            state.set_selected_D(fieldname, D_NAME);
 
             // selected_D can be save to prepare for the case, if FOREIGN clicked
-            const U_NAME = get_U_NAME_by_FIELDNAME(FIELDNAME);
-            state.set_selected_U(FIELDNAME, U_NAME);
+            const U_NAME = get_U_NAME_by_FIELDNAME(fieldname);
+            state.set_selected_U(fieldname, U_NAME);
 
-            return { activeField: FIELDNAME };
+            return { activeField: fieldname };
         }),
 
     /**

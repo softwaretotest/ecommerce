@@ -7,11 +7,14 @@ import { CU_Rule } from "@/Components/0_M_Rule_U_CU";
 import { use_M_Store } from "@/Stores/0_M_Store";
 
 export function renderCheckboxList(M_Class_Name_List, group_label, field_data) {
-    const debug = false && field_data[0] === "stock";
+    const debug = false && field_data[0] === "image";
     const [fieldname, ...fieldDataList] = field_data;
 
     const { getOptions } = use_M_Option();
 
+    if (debug)
+        console.log(" 0. START----------------------------------------------");
+    if (debug) console.log(" 1. 0_M_CheckBox.jsx - field_data:", field_data);
     if (debug)
         console.log(" 1. START----------------------------------------------");
     if (debug)

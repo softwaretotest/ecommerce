@@ -23,16 +23,14 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
      */
     const fieldname = field_data[0];
 
-    const FIELDNAME = fieldname.toUpperCase();
-
     /**
      * * DROPDOWN - Handling
      * * -----------------
      */
     // const { activeSubTab, selected_D, selected_U } = use_M_Store();
     const activeSubTab = use_M_Store((state) => state.activeSubTab);
-    const selected_D = use_M_Store((state) => state.selected_D);
-    const selected_U = use_M_Store((state) => state.selected_U);
+    // const selected_D = use_M_Store((state) => state.selected_D);
+    // const selected_U = use_M_Store((state) => state.selected_U);
 
     const set_selected_D_FOREIGN =
         use_M_Store.getState().set_selected_D_FOREIGN;
@@ -105,6 +103,11 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
             ? [...checked_CD, option]
             : checked_CD.filter((item) => item !== option);
 
+        console.log(" !!!!!!!!!!!!!!!! CD_Rule -- fieldname = ", fieldname);
+        console.log(
+            " !!!!!!!!!!!!!!!! CD_Rule -- checked_CD_States = ",
+            checked_CD_States,
+        );
         await setChecked_CD(fieldname, checked_CD_States);
 
         await validate_UI("CD", event);
@@ -113,9 +116,24 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
     }
 
     function set_FOREIGN_Actions(event) {
-        if (event.target.value === "FOREIGN" && selected_D[fieldname] != "") {
-            set_selected_D_FOREIGN(FIELDNAME, selected_D[FIELDNAME]);
-            set_selected_U_FOREIGN(FIELDNAME, selected_U[FIELDNAME]);
+        const selected_D = use_M_Store.getState().selected_D;
+        const selected_U = use_M_Store.getState().selected_U;
+        if (event.target.value === "FOREIGN") {
+            console.log(`!!!!!!!!!!!!!!!!! CALLED --- set_FOREIGN_Actions`);
+            console.log(
+                `!!!!!!!!!!!!!!!!! CALLED --- set_FOREIGN_Actions -- fieldname = `,
+                fieldname,
+            );
+            console.log(
+                `!!!!!!!!!!!!!!!!! CALLED --- set_FOREIGN_Actions -- selected_D[${fieldname}] = `,
+                selected_D[fieldname],
+            );
+            console.log(
+                `!!!!!!!!!!!!!!!!! CALLED --- set_FOREIGN_Actions -- selected_U[${fieldname}] = `,
+                selected_U[fieldname],
+            );
+            set_selected_D_FOREIGN(fieldname, selected_D[fieldname]);
+            set_selected_U_FOREIGN(fieldname, selected_U[fieldname]);
         }
     }
 
@@ -166,9 +184,7 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
                         {is_show_DEFAULT_Panel && (
                             <DEFAULT_Panel
                                 D_NAME={D_NAME}
-                                field_data={
-                                    use_M_Store.getState().M_value[FIELDNAME]
-                                }
+                                field_data={field_data}
                             />
                         )}
                     </div>

@@ -11,7 +11,17 @@ export async function validate_UI(checkbox_group_name, event) {
     const store = use_M_Store.getState();
     const activeField = use_M_Store.getState().activeField;
     const fieldname = activeField.toLowerCase();
-    const FIELDNAME = activeField.toUpperCase();
+
+    /**
+     * * this local state cause error:
+     * * react-dom-DZQ9hRBr.js?v=b745d579:9605 Uncaught (in promise)
+     * * Error: Invalid hook call.
+     * * Hooks can only be called inside of the body of a function component
+     */
+    // const [
+    //     is_auto_uncheck_FOREIGN_by_CU_CD,
+    //     set_is_auto_uncheck_FOREIGN_by_CU_CD,
+    // ] = useState(false);
 
     const set_is_auto_uncheck_FOREIGN_by_CU_CD =
         use_M_Store.getState().set_is_auto_uncheck_FOREIGN_by_CU_CD;
@@ -194,21 +204,21 @@ export async function validate_UI(checkbox_group_name, event) {
             );
         if (debug)
             console.log(
-                `[3] JHKLJHKLJHKLJHKLJHKL ---- Rules -- restore_previous_selected_D_U_if_FOREIGN  -- selected_D_FOREIGN[${FIELDNAME}] = `,
-                selected_D_FOREIGN[FIELDNAME],
+                `[3] JHKLJHKLJHKLJHKLJHKL ---- Rules -- restore_previous_selected_D_U_if_FOREIGN  -- selected_D_FOREIGN[${fieldname}] = `,
+                selected_D_FOREIGN[fieldname],
             );
         if (debug)
             console.log(
-                `[4] JHKLJHKLJHKLJHKLJHKL ---- Rules -- restore_previous_selected_D_U_if_FOREIGN  -- selected_U_FOREIGN[${FIELDNAME}] = `,
-                selected_U_FOREIGN[FIELDNAME],
+                `[4] JHKLJHKLJHKLJHKLJHKL ---- Rules -- restore_previous_selected_D_U_if_FOREIGN  -- selected_U_FOREIGN[${fieldname}] = `,
+                selected_U_FOREIGN[fieldname],
             );
 
         if (is_FOREIGN_WAS_unchecked) {
-            await set_selected_D(fieldname, selected_D_FOREIGN[FIELDNAME]);
-            await set_selected_U(fieldname, selected_U_FOREIGN[FIELDNAME]);
+            await set_selected_D(fieldname, selected_D_FOREIGN[fieldname]);
+            await set_selected_U(fieldname, selected_U_FOREIGN[fieldname]);
 
-            const D_NAME = use_M_Store.getState().selected_D_FOREIGN[FIELDNAME];
-            const U_NAME = use_M_Store.getState().selected_U_FOREIGN[FIELDNAME];
+            const D_NAME = use_M_Store.getState().selected_D_FOREIGN[fieldname];
+            const U_NAME = use_M_Store.getState().selected_U_FOREIGN[fieldname];
             if (debug)
                 console.log(
                     "[5] JHKLJHKLJHKLJHKLJHKL ---- Rules -- restore_previous_selected_D_U_if_FOREIGN  JHKLJHKLJHKLJHKLJHKL ---- Rules -- is_FOREIGN_WAS_unchecked = ",
@@ -216,8 +226,8 @@ export async function validate_UI(checkbox_group_name, event) {
                 );
             if (debug)
                 console.log(
-                    `[6] JHKLJHKLJHKLJHKLJHKL ---- Rules -- restore_previous_selected_D_U_if_FOREIGN  -- selected_D_FOREIGN[${FIELDNAME}] = `,
-                    selected_D_FOREIGN[FIELDNAME],
+                    `[6] JHKLJHKLJHKLJHKLJHKL ---- Rules -- restore_previous_selected_D_U_if_FOREIGN  -- selected_D_FOREIGN[${fieldname}] = `,
+                    selected_D_FOREIGN[fieldname],
                 );
             if (debug)
                 console.log(
@@ -225,8 +235,8 @@ export async function validate_UI(checkbox_group_name, event) {
                 );
             if (debug)
                 console.log(
-                    `[8] JHKLJHKLJHKLJHKLJHKL ---- Rules -- restore_previous_selected_D_U_if_FOREIGN  -- selected_U_FOREIGN[${FIELDNAME}] = `,
-                    selected_U_FOREIGN[FIELDNAME],
+                    `[8] JHKLJHKLJHKLJHKLJHKL ---- Rules -- restore_previous_selected_D_U_if_FOREIGN  -- selected_U_FOREIGN[${fieldname}] = `,
+                    selected_U_FOREIGN[fieldname],
                 );
             if (debug)
                 console.log(
