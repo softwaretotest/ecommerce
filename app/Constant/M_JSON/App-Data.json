@@ -3,14 +3,21 @@
     "f": {
         "IMAGE": [
             "image",
-            "d::STRING",
-            "u::FILE"
+            "d::undefined",
+            "u::undefined",
+            [
+                "cd::DEFAULT",
+                ""
+            ]
         ],
         "NAME": [
             "name",
-            "d::STRING",
             "u::TEXT",
-            "cud::REQUIRED"
+            "cud::REQUIRED",
+            [
+                "d::STRING",
+                255
+            ]
         ],
         "PRICE": [
             "price",
@@ -20,11 +27,11 @@
                 2
             ],
             "u::NUMBER",
+            "s::CURRENCY",
             [
                 "cd::DEFAULT",
                 0
-            ],
-            "s::CURRENCY"
+            ]
         ],
         "STOCK": [
             "stock",
@@ -38,7 +45,9 @@
                 "cd::DEFAULT",
                 0
             ],
-            "cud::REQUIRED"
+            "cud::REQUIRED",
+            "cd::INDEX",
+            "cd::NULLABLE"
         ],
         "IS_ACTIVE": [
             "is_active",
@@ -74,8 +83,11 @@
         ],
         "ORDER_NR": [
             "order_nr",
-            "d::STRING",
-            "u::TEXT"
+            "u::TEXT",
+            [
+                "d::STRING",
+                255
+            ]
         ],
         "ORDER_ID": [
             "order_id",
@@ -83,11 +95,14 @@
         ],
         "PRODUCT_ID": [
             "product_id",
-            "cd::FOREIGN"
+            "d::undefined",
+            "u::undefined"
         ],
         "SHOP_ID": [
             "shop_id",
-            "cd::FOREIGN"
+            "d::undefined",
+            "u::undefined",
+            "cu::DISABLED"
         ],
         "USER_ID": [
             "user_id",

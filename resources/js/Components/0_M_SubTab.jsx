@@ -156,14 +156,16 @@ export default function SubTab({ data }) {
                 <nav className="field-sidebar">
                     {Object.keys(M_value).map((M_value_KEY) => (
                         <button
-                            key={M_value_KEY}
+                            key={M_value_KEY.toLowerCase()}
                             ref={(DOM_Node) =>
-                                (scrollRefs.current[M_value_KEY] = DOM_Node)
+                                (scrollRefs.current[M_value_KEY.toLowerCase()] =
+                                    DOM_Node)
                             }
-                            className={`field-nav-link ${activeField === M_value_KEY ? "active" : ""}`}
+                            className={`field-nav-link ${activeField === M_value_KEY.toLowerCase() ? "active" : ""}`}
                             onClick={() => {
                                 // M_value_KEY = null , when field deleted
-                                if (M_value_KEY) setActiveField(M_value_KEY);
+                                if (M_value_KEY)
+                                    setActiveField(M_value_KEY.toLowerCase());
                             }}
                         >
                             {/* if Class t (DB_Tablename) remove T:: */}

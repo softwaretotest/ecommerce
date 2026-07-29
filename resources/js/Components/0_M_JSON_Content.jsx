@@ -84,16 +84,19 @@ export default function JSON_Content() {
                         //M_value = data[activeTab][activeSubTab]
                         ([Data_M_value_KEY, value]) => (
                             <div
-                                key={Data_M_value_KEY} //Data_M_value_KEY = e.g. PRICE , STOCK etc.
+                                key={Data_M_value_KEY.toLowerCase()} //Data_M_value_KEY = e.g. PRICE , STOCK etc.
                                 ref={(DOM_Node) =>
-                                    (scrollRefs.current[Data_M_value_KEY] =
-                                        DOM_Node)
+                                    (scrollRefs.current[
+                                        Data_M_value_KEY.toLowerCase()
+                                    ] = DOM_Node)
                                 }
-                                className={`json-line ${activeField === Data_M_value_KEY ? "json-highlight" : ""}`}
+                                className={`json-line ${activeField === Data_M_value_KEY.toLowerCase() ? "json-highlight" : ""}`}
                                 onClick={() => {
                                     // Data_M_value_KEY = null , when field deleted
                                     if (Data_M_value_KEY)
-                                        setActiveField(Data_M_value_KEY);
+                                        setActiveField(
+                                            Data_M_value_KEY.toLowerCase(),
+                                        );
                                 }}
                             >
                                 <span className="json-fieldname">

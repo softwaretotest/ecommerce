@@ -225,7 +225,10 @@ export default function TabContent() {
                             window.D_HEAL.isLastField = isLastField;
                         }
                         // !!! MUST HAVE return to show DOM !!!
-                        return render_TabContent_DOM(M_value_KEY, field_data);
+                        return render_TabContent_DOM(
+                            M_value_KEY.toLowerCase(),
+                            field_data,
+                        );
                     },
                 )}
             </div>
