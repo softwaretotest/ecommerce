@@ -3,6 +3,18 @@ import { use_M_Store } from "@/Stores/0_M_Store.jsx";
 import { API } from "@/Configs/api";
 
 /**
+ * * EXPLAIN M_value = { Object }
+ * * M_value has same format like JSON to simplify convertion
+ * * ------------------------------------------
+ * * CONVENTION
+ * *{ M_value_KEY: [ fieldname , ...field_definition] }
+ * * field_data  = [ fieldname , ...field_definition]
+ * * M_value_KEY <=> fieldname
+ * * UPPPERCASE  <=> lowercase
+ * * e.g.
+ * * {"IMAGE": [ "image", ["d::STRING" , 255] , "u::FILE"]}
+ * * ------------------------------------------
+ * * function of M_value_Service
  * 0. save M_value to Global States M_Store
  * 1. POST to Backend
  * 2. notify use_M_Data to notify JSON_Content to update it self with Backend

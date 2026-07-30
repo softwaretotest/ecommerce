@@ -180,16 +180,21 @@ body {
 }
 
 .fieldname,
-.new_field_name,
-.M_value_KEY {
+.M_value_KEY,
+.new_field_name {
     border: 2px solid #3498db;
     padding: 6px 8px;
     font-weight: bold;
     font-size: large;
-    justify-items: center;
     border-radius: 4px;
     width: 160px;
 }
+.fieldname,
+.M_value_KEY,
+.justify-items-center {
+    justify-items: center;
+}
+
 .tablename {
     width: 100%;
     border: 2px solid green;
@@ -221,16 +226,12 @@ body {
     margin-bottom: 5px;
 }
 
+.D_Dropdown,
 .U_Dropdown {
     padding: 3px;
     width: 100%;
     border-radius: 4px;
-}
-
-.D_Dropdown {
-    padding: 3px;
-    width: 100%;
-    border-radius: 4px;
+    text-align: center;
 }
 
 .M_checkbox-list {
@@ -405,7 +406,7 @@ body {
     padding: 8px;
     display: grid;
     /* คอลัมน์แรกพอดีตัว, คอลัมน์สองกินพื้นที่ที่เหลือทั้งหมด, คอลัมน์สามพอดีตัวปุ่ม */
-    grid-template-columns: max-content 1fr max-content;
+    grid-template-columns: max-content minmax(0, 1fr) max-content;
     grid-template-rows: auto auto;
     grid-template-areas:
         "tch-label new_field_name add-button"
@@ -419,13 +420,24 @@ body {
 
 .new_field_name {
     grid-area: new_field_name;
-    justify-self: end; /* ดึงตัว input ให้วิ่งไปชิดติดกับปุ่มฝั่งขวาโดยไม่ต้องตั้ง width fix */
+    justify-self: end;
 }
 
 .add-button {
     grid-area: add-button;
 }
 
+@keyframes blink-three-times {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.2;
+    }
+    100% {
+        opacity: 1;
+    }
+}
 .error-text {
     grid-area: error-text;
     color: red;
@@ -434,7 +446,9 @@ body {
     display: block;
     margin-top: 4px;
     background-color: white;
-    text-align: right;
+    text-align: center;
+
+    animation: blink-three-times 0.5s ease-in-out 3;
 }
 
 /* CSS for ENTITIES TAB */
@@ -564,15 +578,13 @@ body {
     box-sizing: border-box;
 }
 
-.field-name-group,
-.field-key-group a {
-    font-size: small;
-    font-weight: bold;
-}
-
-.field-name-group,
-.field-key-group {
+.field-input-group {
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.field-input-group a {
+    font-size: small;
+    font-weight: bold;
 }

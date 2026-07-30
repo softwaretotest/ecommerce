@@ -82,11 +82,6 @@ export function renderDropdown_U(M_Class_Name_List, field_data) {
      */
     async function set_U_Actions(event) {
         const new_selected_U = event.target.value;
-        //user must not select empty U
-        // if (new_selected_U === "") {
-        //     alert("click FOREIGN to unselect U");
-        //     return;
-        // }
 
         // update UI
         set_selected_U(fieldname, new_selected_U);
@@ -105,8 +100,6 @@ export function renderDropdown_U(M_Class_Name_List, field_data) {
             <select
                 className="U_Dropdown"
                 value={selected_U_to_show}
-                // key={selected_U_of_field_data}  // no need if react does not warn
-
                 disabled={
                     // !activeField ||
                     use_M_Store

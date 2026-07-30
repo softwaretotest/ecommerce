@@ -1,46 +1,48 @@
 // resources/js/Components/0_M_Field.jsx
-import { renderDropdown_D } from "@/Components/0_M_Dropdown_D.jsx";
-import { renderDropdown_U } from "@/Components/0_M_Dropdown_U.jsx";
-import { renderCheckboxList } from "@/Components/0_M_CheckBox.jsx";
+import { useState } from "react";
 
-import { use_M_Option } from "@/Hooks/use_M_Option.js"; // Import new hook
+import { renderDropdown_D } from "@/Components/0_M_Dropdown_D";
+import { renderDropdown_U } from "@/Components/0_M_Dropdown_U";
+import { renderCheckboxList } from "@/Components/0_M_CheckBox";
+
+import { use_M_Option } from "@/Hooks/use_M_Option";
+import { useError } from "@/Hooks/useError";
+
 import { M_value_Service } from "@/Services/0_M_value_Service";
-import { use_M_Store } from "@/Stores/0_M_Store.jsx";
+import { use_M_Store } from "@/Stores/0_M_Store";
 
 export default function Field({ field_data }) {
     const fieldname = field_data[0];
     const is_CURRENCY = field_data[0].toLowerCase() === "currency";
 
+    const [FIELDNAME, set_FIELDNAME] = useState(fieldname);
+
+    const { Error_FIELDNAME, handle_Fieldname_Change } = useError();
+
     function make_dropdown_D(label, names) {
         return (
-            <>
-                <div className="field-column">
-                    <div className="field-label">{label}</div>
-                    {renderDropdown_D(names, field_data)}
-                </div>
-            </>
+            <div className="field-column">
+                <div className="field-label">{label}</div>
+                {renderDropdown_D(names, field_data)}
+            </div>
         );
     }
 
     function make_dropdown_U(label, names) {
         return (
-            <>
-                <div className="field-column">
-                    <div className="field-label">{label}</div>
-                    {renderDropdown_U(names, field_data)}
-                </div>
-            </>
+            <div className="field-column">
+                <div className="field-label">{label}</div>
+                {renderDropdown_U(names, field_data)}
+            </div>
         );
     }
 
     function make_checkbox(label, names) {
         return (
-            <>
-                <div className="field-column">
-                    <div className="field-label">{label}</div>
-                    {renderCheckboxList(names, label, field_data)}
-                </div>
-            </>
+            <div className="field-column">
+                <div className="field-label">{label}</div>
+                {renderCheckboxList(names, label, field_data)}
+            </div>
         );
     }
 
@@ -83,26 +85,39 @@ export default function Field({ field_data }) {
         }
     }
 
+    function render_fieldname_input(fieldname, className, disabled = false) {
+        return (
+            <div className="field-input-group">
+                <a>{className}</a>
+                <input
+                    type="text"
+                    value={
+                        disabled
+                            ? FIELDNAME.toLowerCase()
+                            : FIELDNAME.toUpperCase()
+                    }
+                    className={className}
+                    disabled={disabled}
+                    onChange={(event) =>
+                        handle_Fieldname_Change(
+                            event.target.value,
+                            set_FIELDNAME,
+                        )
+                    }
+                />
+            </div>
+        );
+    }
+
     return (
         <div className="field-wrapper-box">
             <div className="field-header-container">
-                <div className="field-key-group">
-                    <a>M_value_KEY</a>
-                    <input
-                        type="text"
-                        defaultValue={fieldname.toUpperCase()}
-                        className="M_value_KEY"
-                    />
-                </div>
+                {render_fieldname_input(fieldname.toUpperCase(), "M_value_KEY")}
+
                 <span className="field-separator-colon">:</span>
-                <div className="field-name-group">
-                    <a>fieldname</a>
-                    <input
-                        type="text"
-                        defaultValue={fieldname}
-                        className="fieldname"
-                    />
-                </div>
+
+                {render_fieldname_input(fieldname, "fieldname", true)}
+
                 <button className="delete-button" onClick={delete_field}>
                     DELETE
                 </button>

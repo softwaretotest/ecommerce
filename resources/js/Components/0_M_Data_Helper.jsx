@@ -218,3 +218,43 @@ export function get_U_NAME_by_FIELDNAME(FIELDNAME) {
     const fiel_data = store.M_value[FIELDNAME];
     return get_U_NAME(fiel_data);
 }
+
+/**
+ * set seleted_D and selected_U by field_data
+ * @param {*} field_data
+ */
+export function handle_selected_D_U(field_data) {
+    const fieldname = field_data[0];
+    const D_NAME = get_D_NAME(field_data);
+    if (D_NAME) use_M_Store.getState().set_selected_D(fieldname, D_NAME);
+    console.log(
+        `!!!!!!!!! TabContent -- selected_D = `,
+        use_M_Store.getState().selected_D,
+    );
+    console.log(
+        `!!!!!!!!! TabContent -- selected_D[${fieldname}] = `,
+        use_M_Store.getState().selected_D[fieldname],
+    );
+    const U_NAME = get_U_NAME(field_data);
+    if (U_NAME) use_M_Store.getState().set_selected_U(fieldname, U_NAME);
+    console.log(
+        "!!!!!!!!! TabContent -- selected_U = ",
+        use_M_Store.getState().selected_U,
+    );
+    console.log(
+        `!!!!!!!!! TabContent -- selected_U[${fieldname}] = `,
+        use_M_Store.getState().selected_U[fieldname],
+    );
+    const set_selected_D_FOREIGN =
+        use_M_Store.getState().set_selected_D_FOREIGN;
+    const set_selected_U_FOREIGN =
+        use_M_Store.getState().set_selected_U_FOREIGN;
+    set_selected_D_FOREIGN(
+        fieldname,
+        use_M_Store.getState().selected_D[fieldname],
+    );
+    set_selected_U_FOREIGN(
+        fieldname,
+        use_M_Store.getState().selected_U[fieldname],
+    );
+}

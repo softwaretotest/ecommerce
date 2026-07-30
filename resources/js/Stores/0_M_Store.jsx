@@ -76,6 +76,10 @@ export const use_M_Store = create((set) => ({
             return { NEW_added_fieldname: NEW_added_fieldname };
         }),
 
+    Error_FIELDNAME: "",
+    set_Error_FIELDNAME: (Error_FIELDNAME) =>
+        set({ Error_FIELDNAME: Error_FIELDNAME }),
+
     has_M_value_Change: false,
     set_has_M_value_Change: (has_M_value_Change) =>
         set({ has_M_value_Change: has_M_value_Change }),
