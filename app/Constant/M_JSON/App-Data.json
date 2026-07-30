@@ -1,17 +1,13 @@
 {
     "_comment": "\/M_JSON\/App-Data.json",
     "f": {
-        "FEW": [
-            "few",
-            "d::INTEGER"
-        ],
         "IMAGE": [
             "image",
-            "u::FILE",
             [
                 "d::STRING",
                 255
-            ]
+            ],
+            "u::FILE"
         ],
         "NAME": [
             "name",
@@ -104,7 +100,7 @@
         ],
         "USER_ID": [
             "user_id",
-            "d::undefined"
+            "cd::FOREIGN"
         ]
     },
     "t": {

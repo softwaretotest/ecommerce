@@ -112,10 +112,18 @@ export function remove_d_u(field_data) {
  * * add new d:: get D_Params from D_PARAMS_MAP
  * * e.g. ['image'] -> ['image' , 'd::INTEGER' , 'u::TEXT']
  * * e.g. ['stock'] -> ['stock' , ['d::DECIMAL',10,2] , 'u::TEXT']
+ * * ------------------------------------------------
  * * U_NAME could be undefined by user
  * * e.g. ['price'] -> ['price' , ['d::DECIMAL',10,2]]
+ * * ------------------------------------------------
+ * * D_NAME = "INTEGER" :
+ * * in case user wanna change a Foreign Key field
  */
-export function add_NEW_d_u(field_data_without_d_u, D_NAME, U_NAME) {
+export function add_NEW_d_u(
+    field_data_without_d_u,
+    D_NAME = "INTEGER",
+    U_NAME,
+) {
     // ADD NEW D
     if (!Array.isArray(field_data_without_d_u)) return [];
     const d_params = find_NEW_D_Params_in_M_MAP(D_NAME);

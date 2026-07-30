@@ -31,7 +31,7 @@ export default function EntityField({ f_s_Class_Array, table_name }) {
                         <input
                             type="text"
                             defaultValue={table_name.replace("t::", "")}
-                            className="App_Data_VALUE"
+                            className="tablename"
                             readOnly
                         />
                         <div className="entities-selected-container">

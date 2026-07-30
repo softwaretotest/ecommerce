@@ -55,40 +55,6 @@ export default function JSON_Content() {
         return <span className="json-primitive">{JSON.stringify(value)}</span>;
     };
 
-    // useEffect(() => {
-    //     if (!data) return;
-
-    //     setDisplayData(data);
-
-    //     if (hasJSON_Change) {
-    //         set_hasJSON_Change(false);
-    //         // สั่งเลื่อนจอตรงนี้ได้เลยโดยตรง ไม่ต้องเรียกผ่าน Custom Hook
-    //         if (activeField) {
-    //             // const timer = setTimeout(() => {
-    //             const element =
-    //                 scrollRefs.current[
-    //                     use_M_Store.getState().NEW_added_fieldname.toLowerCase()
-    //                 ];
-    //             if (element && use_M_Store.getState().is_new_field_added) {
-    //                 element.scrollIntoView({
-    //                     behavior: "smooth",
-    //                     block: "center",
-    //                 });
-    //                 use_M_Store.getState().set_is_new_field_added(false);
-    //             }
-    //             // }, 50);
-
-    //             // return () => clearTimeout(timer);
-    //         }
-    //     }
-    // }, [
-    //     hasJSON_Change,
-    //     data,
-    //     activeSubTab,
-    //     activeField,
-    //     // use_M_Store.getState().NEW_added_fieldname,
-    // ]);
-
     /**
      * * this useEffect does following:
      * 1. update JSON_Content
@@ -119,7 +85,7 @@ export default function JSON_Content() {
                 }
             }
         }
-    }, [hasJSON_Change]); // this 3 dependencies only for JSON Backend Data changed
+    }, [hasJSON_Change]); // only for JSON Backend Data changed
 
     if (!displayData) {
         return <div>loading data...</div>;

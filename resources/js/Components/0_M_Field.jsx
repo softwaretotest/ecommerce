@@ -14,8 +14,8 @@ export default function Field({ field_data }) {
     function make_dropdown_D(label, names) {
         return (
             <>
-                <div className="dropdown-column">
-                    <div className="dropdown-label">{label}</div>
+                <div className="field-column">
+                    <div className="field-label">{label}</div>
                     {renderDropdown_D(names, field_data)}
                 </div>
             </>
@@ -25,8 +25,8 @@ export default function Field({ field_data }) {
     function make_dropdown_U(label, names) {
         return (
             <>
-                <div className="dropdown-column">
-                    <div className="dropdown-label">{label}</div>
+                <div className="field-column">
+                    <div className="field-label">{label}</div>
                     {renderDropdown_U(names, field_data)}
                 </div>
             </>
@@ -36,8 +36,8 @@ export default function Field({ field_data }) {
     function make_checkbox(label, names) {
         return (
             <>
-                <div className="dropdown-column">
-                    <div className="dropdown-label">{label}</div>
+                <div className="field-column">
+                    <div className="field-label">{label}</div>
                     {renderCheckboxList(names, label, field_data)}
                 </div>
             </>
@@ -68,7 +68,7 @@ export default function Field({ field_data }) {
      */
     async function delete_field() {
         const FIELDNAME = document
-            .querySelector(".App_Data_KEY")
+            .querySelector(".M_value_KEY")
             .value.toUpperCase();
         const isConfirmed = window.confirm(
             `Are you sure to delete ${FIELDNAME}?`,
@@ -87,11 +87,11 @@ export default function Field({ field_data }) {
         <div className="field-wrapper-box">
             <div className="field-header-container">
                 <div className="field-key-group">
-                    <a>M_value[KEY]</a>
+                    <a>M_value_KEY</a>
                     <input
                         type="text"
                         defaultValue={fieldname.toUpperCase()}
-                        className="App_Data_KEY"
+                        className="M_value_KEY"
                     />
                 </div>
                 <span className="field-separator-colon">:</span>
@@ -100,7 +100,7 @@ export default function Field({ field_data }) {
                     <input
                         type="text"
                         defaultValue={fieldname}
-                        className="App_Data_VALUE"
+                        className="fieldname"
                     />
                 </div>
                 <button className="delete-button" onClick={delete_field}>

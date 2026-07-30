@@ -21,7 +21,7 @@ export default function DB_Tablename({ field_data }) {
     return (
         <input
             type="text"
-            className="M_Data_VALUE"
+            className="fieldname"
             defaultValue={field_data}
             // onBlur={(e) => handleUpdate(fieldname, e.target.value)}
         />

@@ -51,7 +51,7 @@ export default function TabContent() {
                 {["d", "u", "cd", "cu", "cud"].includes(activeSubTab) && (
                     <>
                         <input
-                            className="M_Data_KEY"
+                            className="M_value_KEY"
                             defaultValue={
                                 activeSubTab === "t"
                                     ? fieldname
@@ -61,7 +61,7 @@ export default function TabContent() {
                         <span className="field-separator-colon">:</span>
                         <input
                             type="text"
-                            className="M_Data_VALUE"
+                            className="fieldname"
                             defaultValue={field_data}
                         />
                     </>
@@ -104,7 +104,7 @@ export default function TabContent() {
      * @returns
      */
     async function add_field() {
-        const input_box_fieldname = document.querySelector(".input_fieldname");
+        const input_box_fieldname = document.querySelector(".new_field_name");
         const raw_name = input_box_fieldname ? input_box_fieldname.value : "";
 
         const trimmed_name = raw_name.trim();
@@ -191,7 +191,7 @@ export default function TabContent() {
                 </label>
                 <input
                     type="text"
-                    className="input_fieldname"
+                    className="new_field_name"
                     placeholder="new field name"
                     value={new_FIELDNAME}
                     onChange={(e) =>

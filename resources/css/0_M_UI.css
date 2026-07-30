@@ -166,27 +166,31 @@ body {
 /* --- Field Component Styles --- */
 .field-wrapper-box {
     border: 1px solid #000;
-    padding: 15px;
-    margin-top: 10px;
+    padding: 7px;
 }
 .field-header-container {
     display: flex;
+    flex-direction: row;
     align-items: center;
-    margin-bottom: 15px;
-    gap: 10px;
+    margin-bottom: 10px;
+    gap: 5px;
+}
+.field-header-container * {
+    flex: 1;
 }
 
-.input_fieldname,
-.App_Data_KEY {
-    width: 100%;
+.fieldname,
+.new_field_name,
+.M_value_KEY {
     border: 2px solid #3498db;
     padding: 6px 8px;
     font-weight: bold;
     font-size: large;
+    justify-items: center;
     border-radius: 4px;
-    width: 120px;
+    width: 160px;
 }
-.App_Data_VALUE {
+.tablename {
     width: 100%;
     border: 2px solid green;
     padding: 6px 8px;
@@ -197,23 +201,33 @@ body {
     border-radius: 4px;
 }
 .field-separator-colon {
+    font-size: xx-large;
     font-weight: bold;
+    text-align: center;
 }
 .field-dropdown-grid {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
+    display: grid;
+    /* สมมติสัดส่วนเป็น D (กว้างพอดี หรือ 1fr), CD (1fr), U (ตามเนื้อหา), CU (1fr) */
+    grid-template-columns: 1fr 1fr auto 1fr;
+    gap: 7px;
 }
-.dropdown-column {
+.field-column {
     flex: 1;
     text-align: center;
-    width: 120px;
+    width: 100%;
 }
-.dropdown-label {
+.field-label {
     font-weight: bold;
     margin-bottom: 5px;
 }
-.M_field-dropdown {
+
+.U_Dropdown {
+    padding: 3px;
+    width: 100%;
+    border-radius: 4px;
+}
+
+.D_Dropdown {
     padding: 3px;
     width: 100%;
     border-radius: 4px;
@@ -394,7 +408,7 @@ body {
     grid-template-columns: max-content 1fr max-content;
     grid-template-rows: auto auto;
     grid-template-areas:
-        "tch-label input_fieldname add-button"
+        "tch-label new_field_name add-button"
         "error-text error-text error-text";
     align-items: center;
 }
@@ -403,8 +417,8 @@ body {
     grid-area: tch-label;
 }
 
-.input_fieldname {
-    grid-area: input_fieldname;
+.new_field_name {
+    grid-area: new_field_name;
     justify-self: end; /* ดึงตัว input ให้วิ่งไปชิดติดกับปุ่มฝั่งขวาโดยไม่ต้องตั้ง width fix */
 }
 
