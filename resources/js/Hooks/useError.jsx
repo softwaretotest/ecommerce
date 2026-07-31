@@ -1,6 +1,10 @@
 // \resources\js\Hooks\useError.js
 import { useState } from "react";
+
 import { use_M_Store } from "@/Stores/0_M_Store";
+
+import { rename_M_value_KEY_and_fieldname } from "@/Services/0_M_value_Service";
+import { M_value_Service } from "@/Services/0_M_value_Service";
 
 export function useError() {
     const { Error_FIELDNAME, set_Error_FIELDNAME } = use_M_Store();
@@ -13,7 +17,11 @@ export function useError() {
      * @param {*} event = value of fieldname input onChange
      * @returns
      */
-    function handle_Fieldname_Change(fieldname, set_fieldname = null) {
+    async function handle_Fieldname_Change(
+        fieldname,
+        set_fieldname = null,
+        options = {},
+    ) {
         let FIELDNAME = fieldname.toUpperCase().replace(/\s+/g, "_");
         FIELDNAME = FIELDNAME.trim();
 
@@ -24,16 +32,20 @@ export function useError() {
             return;
         }
 
-        if (typeof set_fieldname === "function") {
+        if (typeof set_fieldname === "function" && options.ADD) {
             set_fieldname(FIELDNAME);
         }
 
         const M_value = use_M_Store.getState().M_value;
+        const set_has_Fieldname_Change =
+            use_M_Store.getState().set_has_Fieldname_Change;
 
         const isDuplicate = M_value && Object.keys(M_value).includes(FIELDNAME);
 
         if (isDuplicate) {
-            set_error("This field name already exists.");
+            set_error(
+                `This field \u2003 ${fieldname.toUpperCase()} \u2003 already exists.`,
+            );
             return;
         } else {
             set_Error_FIELDNAME(""); // clear if no error
@@ -43,15 +55,17 @@ export function useError() {
             set_error("Fieldname cannot be empty.");
             return;
         }
+
+        if (typeof set_fieldname === "function" && options.UPDATE) {
+            set_fieldname(FIELDNAME);
+            const OLD_KEY = use_M_Store.getState().activeField.toUpperCase();
+            const NEW_KEY = fieldname.toUpperCase();
+            rename_M_value_KEY_and_fieldname(M_value, OLD_KEY, NEW_KEY);
+        }
     }
 
     function set_error(error_text) {
-        set_Error_FIELDNAME("");
-        setTimeout(() => {
-            set_Error_FIELDNAME(
-                <span className="error-text">{error_text}</span>,
-            );
-        }, 5);
+        set_Error_FIELDNAME(<span className="error-text">{error_text}</span>);
     }
 
     return {

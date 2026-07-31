@@ -2,7 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { M_value_Service } from "@/Services/0_M_value_Service";
+
 import { use_M_Store } from "@/Stores/0_M_Store";
+
+import { setCursor } from "@/utils/setCursor";
+
 import { M_Option } from "@/Components/0_M_Option";
 import { D_Params } from "@/Components/0_M_D_Params";
 import { D_HEAL } from "@/Components/0_M_Dropdown_D_HEAL";
@@ -12,7 +16,6 @@ import {
     find_D_Params_in_GLOBAL_METADATA,
     find_D_Params_in_M_value,
 } from "@/Components/0_M_D_Params_Service";
-
 import { find_d_item, has_d_in_field_data } from "@/Components/0_M_Data_Helper";
 
 /**
@@ -46,11 +49,8 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
             );
     }
 
-    // const M_value = use_M_Store.getState((state) => state.M_value);
-    // const NEW_added_fieldname = use_M_Store.getState((state) => state.NEW_added_fieldname);
-
     /**
-     * * M_value, NEW_added_fieldname must be scripted together
+     * * M_value, NEW_added_fieldname must be defined together
      * * to make FOREIGN Actions working
      */
     const { M_value, NEW_added_fieldname } = use_M_Store();
@@ -121,6 +121,19 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
      */
     useEffect(() => {
         // ------------ GUARD ------------------
+        if (debug)
+            console.log(
+                "[0] -- FDSAFDSAFDSAFDAS -- Dropdown_D -- useEffect -- has_Fieldname_Change = ",
+                use_M_Store.getState().has_Fieldname_Change,
+            );
+        if (use_M_Store.getState().has_Fieldname_Change) {
+            const activeField = use_M_Store.getState().activeField;
+
+            setCursor(activeField);
+
+            use_M_Store.getState().set_has_Fieldname_Change(false);
+        }
+
         if (debug)
             console.log(
                 "[0] -- FDSAFDSAFDSAFDAS -- Dropdown_D -- useEffect -- selected_D_to_show = ",
@@ -201,7 +214,8 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
         }
 
         // ADD D_Params to d:: if exists , fix the wrong d:: Config
-        if (is_wrong_d_params_in_backend) {
+        // && !is_this_field_new <-- this to avoid unneccessary D_HEAL on fieldname change
+        if (is_wrong_d_params_in_backend && !is_this_field_new) {
             D_HEAL(
                 fieldname,
                 selected_D_to_show,

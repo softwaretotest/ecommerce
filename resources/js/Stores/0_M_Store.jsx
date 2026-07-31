@@ -22,13 +22,15 @@ export const use_M_Store = create((set) => ({
     debug_checked_CU: false,
     debug_checked_CD: false, // e.g. ['INDEX', 'DEFAULT', 'NULLABLE']
 
-    debug_activeField: false,
+    debug_activeField: true,
     debug_activeTab: false,
     debug_activeSubTab: false,
 
     debug_is_new_field_added: false,
 
     debug_NEW_added_fieldname: false,
+
+    debug_has_Fieldname_Change: true,
 
     debug_D_Params_State: false,
 
@@ -83,6 +85,19 @@ export const use_M_Store = create((set) => ({
     has_M_value_Change: false,
     set_has_M_value_Change: (has_M_value_Change) =>
         set({ has_M_value_Change: has_M_value_Change }),
+
+    has_Fieldname_Change: false,
+    set_has_Fieldname_Change: (has_Fieldname_Change) =>
+        set((state) => {
+            if (state.debug || state.debug_has_Fieldname_Change) {
+                console.log(
+                    `[M_STORE_DEBUG] has_Fieldname_Change :`,
+                    has_Fieldname_Change,
+                );
+                console.log("------------------------------------");
+            }
+            return { has_Fieldname_Change: has_Fieldname_Change };
+        }),
 
     hasJSON_Change: false,
     set_hasJSON_Change: (hasJSON_Change) =>
@@ -336,6 +351,21 @@ export const use_M_Store = create((set) => ({
     M_value: {},
     set_M_value: (new_M_value) =>
         set((state) => {
+            // // this sort alphanummeric M_value by KEY DOES NOT WORK
+            // // 1. ดึง Key ทั้งหมดมาเรียงลำดับตามตัวอักษร (A-Z)
+            // const sortedKeys = Object.keys(new_M_value).sort((a, b) =>
+            //     a.localeCompare(b, undefined, {
+            //         numeric: true,
+            //         sensitivity: "base",
+            //     }),
+            // );
+
+            // // 2. สร้าง Object ใหม่ที่เรียง Key ตามที่จัดระเบียบแล้ว
+            // const sorted_M_value = {};
+            // sortedKeys.forEach((key) => {
+            //     sorted_M_value[key] = new_M_value[key];
+            // });
+
             if (state.debug || state.debug_M_value) {
                 console.log(`[M_STORE_DEBUG] New M_value:`, new_M_value);
                 console.log("------------------------------------");

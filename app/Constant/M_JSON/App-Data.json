@@ -1,19 +1,24 @@
 {
     "_comment": "\/M_JSON\/App-Data.json",
     "f": {
-        "IMAGE": [
-            "image",
-            "d::STRING",
-            "u::FILE"
+        "DFAS": [
+            "dfas",
+            [
+                "d::STRING",
+                255
+            ]
         ],
-        "NAME": [
-            "name",
-            "d::STRING",
+        "NDDDDDDDDDFSA": [
+            "ndddddddddfsa",
             "u::TEXT",
-            "cud::REQUIRED"
+            "cud::REQUIRED",
+            [
+                "d::STRING",
+                255
+            ]
         ],
-        "PRICE": [
-            "price",
+        "PRICEF": [
+            "pricef",
             [
                 "d::DECIMAL",
                 10,
@@ -74,8 +79,11 @@
         ],
         "ORDER_NR": [
             "order_nr",
-            "d::STRING",
-            "u::TEXT"
+            "u::TEXT",
+            [
+                "d::STRING",
+                255
+            ]
         ],
         "ORDER_ID": [
             "order_id",
@@ -89,8 +97,8 @@
             "shop_id",
             "cd::FOREIGN"
         ],
-        "USER_ID": [
-            "user_id",
+        "USE": [
+            "use",
             "cd::FOREIGN"
         ]
     },

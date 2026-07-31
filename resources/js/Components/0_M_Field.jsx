@@ -102,6 +102,7 @@ export default function Field({ field_data }) {
                         handle_Fieldname_Change(
                             event.target.value,
                             set_FIELDNAME,
+                            { UPDATE: true },
                         )
                     }
                 />

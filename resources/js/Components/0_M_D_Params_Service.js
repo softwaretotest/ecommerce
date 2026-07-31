@@ -41,22 +41,26 @@ export function find_D_Params_in_M_value(D_Name_UPPERCASE, fieldname) {
 }
 
 export function find_D_Params_in_GLOBAL_METADATA(D_Name_UPPERCASE, fieldname) {
+    const debug = false;
     // find in both classes app_data.f and m_data.s
     const field_data =
         GLOBAL_METADATA?.app_data?.f?.[fieldname.toUpperCase()] ||
         GLOBAL_METADATA?.m_data?.s?.[fieldname.toUpperCase()];
-    // console.log(
-    //     "OPOPOPOPOPOOPO -- find_D_Params_in_GLOBAL_METADATA -- D_Name_UPPERCASE = ",
-    //     D_Name_UPPERCASE,
-    // );
-    // console.log(
-    //     "OPOPOPOPOPOOPO -- find_D_Params_in_GLOBAL_METADATA -- fieldname = ",
-    //     fieldname,
-    // );
-    // console.log(
-    //     "OPOPOPOPOPOOPO -- find_D_Params_in_GLOBAL_METADATA -- field_data = ",
-    //     field_data,
-    // );
+    if (debug)
+        console.log(
+            "OPOPOPOPOPOOPO -- find_D_Params_in_GLOBAL_METADATA -- D_Name_UPPERCASE = ",
+            D_Name_UPPERCASE,
+        );
+    if (debug)
+        console.log(
+            "OPOPOPOPOPOOPO -- find_D_Params_in_GLOBAL_METADATA -- fieldname = ",
+            fieldname,
+        );
+    if (debug)
+        console.log(
+            "OPOPOPOPOPOOPO -- find_D_Params_in_GLOBAL_METADATA -- field_data = ",
+            field_data,
+        );
 
     /**
      * ['d::DECIMAL', 10, 10] or 'd::BOOLEAN'

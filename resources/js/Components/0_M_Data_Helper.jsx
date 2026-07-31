@@ -220,41 +220,39 @@ export function get_U_NAME_by_FIELDNAME(FIELDNAME) {
 }
 
 /**
- * set seleted_D and selected_U by field_data
+ * set seleted_D and selected_U and selected_*_FOREIGN by field_data
  * @param {*} field_data
  */
-export function handle_selected_D_U(field_data) {
+export function set_selected_D_U_FOREIGN(field_data) {
     const fieldname = field_data[0];
-    const D_NAME = get_D_NAME(field_data);
-    if (D_NAME) use_M_Store.getState().set_selected_D(fieldname, D_NAME);
-    console.log(
-        `!!!!!!!!! TabContent -- selected_D = `,
-        use_M_Store.getState().selected_D,
-    );
-    console.log(
-        `!!!!!!!!! TabContent -- selected_D[${fieldname}] = `,
-        use_M_Store.getState().selected_D[fieldname],
-    );
-    const U_NAME = get_U_NAME(field_data);
-    if (U_NAME) use_M_Store.getState().set_selected_U(fieldname, U_NAME);
-    console.log(
-        "!!!!!!!!! TabContent -- selected_U = ",
-        use_M_Store.getState().selected_U,
-    );
-    console.log(
-        `!!!!!!!!! TabContent -- selected_U[${fieldname}] = `,
-        use_M_Store.getState().selected_U[fieldname],
-    );
+
+    const selected_D = use_M_Store.getState().selected_D;
+    const selected_U = use_M_Store.getState().selected_U;
+    const set_selected_D = use_M_Store.getState().set_selected_D;
+    const set_selected_U = use_M_Store.getState().set_selected_U;
     const set_selected_D_FOREIGN =
         use_M_Store.getState().set_selected_D_FOREIGN;
     const set_selected_U_FOREIGN =
         use_M_Store.getState().set_selected_U_FOREIGN;
-    set_selected_D_FOREIGN(
-        fieldname,
-        use_M_Store.getState().selected_D[fieldname],
-    );
-    set_selected_U_FOREIGN(
-        fieldname,
-        use_M_Store.getState().selected_U[fieldname],
-    );
+
+    const D_NAME = get_D_NAME(field_data);
+    const U_NAME = get_U_NAME(field_data);
+
+    if (D_NAME) set_selected_D(fieldname, D_NAME);
+    if (U_NAME) set_selected_U(fieldname, U_NAME);
+
+    set_selected_D_FOREIGN(fieldname, selected_D[fieldname]);
+    set_selected_U_FOREIGN(fieldname, selected_U[fieldname]);
+}
+
+/**
+ * * clone field_data with new_fieldname
+ * @param {*} old_field_data e.g. ['image' , ['d::STRING',255] , 'u::FILE ]
+ * @param {*} new_fieldname
+ * @returns new_field_data e.g. ['product_image' , ['d::STRING',255] , 'u::FILE ]
+ */
+export function change_fieldname_in_field_data(field_data, new_fieldname) {
+    const new_field_data = [...field_data];
+    new_field_data[0] = new_fieldname;
+    return new_field_data;
 }

@@ -7,7 +7,7 @@ import {
     update_D_U_SAVE_Backend,
 } from "@/Components/0_M_Data_Helper";
 export async function validate_UI(checkbox_group_name, event) {
-    const debug = true;
+    const debug = false;
     const store = use_M_Store.getState();
     const activeField = use_M_Store.getState().activeField;
     const fieldname = activeField.toLowerCase();

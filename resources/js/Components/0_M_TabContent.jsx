@@ -12,7 +12,7 @@ import Field from "@/Components/0_M_Field";
 import EntityField from "@/Components/0_M_EntityField";
 import DB_Tablename from "@/Components/0_M_DB_Tablename";
 import { get_D_NAME, get_U_NAME } from "@/Components/0_M_Data_Helper";
-import { handle_selected_D_U } from "@/Components/0_M_Data_Helper";
+import { set_selected_D_U_FOREIGN } from "@/Components/0_M_Data_Helper";
 
 export default function TabContent() {
     const { Error_FIELDNAME, handle_Fieldname_Change } = useError();
@@ -125,42 +125,9 @@ export default function TabContent() {
 
         //clear input box , after finish
         if (input_box_fieldname) input_box_fieldname.value = "";
-        await set_new_FIELDNAME("");
+        set_new_FIELDNAME("");
 
-        handle_selected_D_U(new_field_data);
-        // ---------------- handle_selected_D_U -----------
-        // const D_NAME = get_D_NAME(new_field_data);
-        // if (D_NAME) use_M_Store.getState().set_selected_D(fieldname, D_NAME);
-        // console.log(
-        //     `!!!!!!!!! TabContent -- selected_D = `,
-        //     use_M_Store.getState().selected_D,
-        // );
-        // console.log(
-        //     `!!!!!!!!! TabContent -- selected_D[${fieldname}] = `,
-        //     use_M_Store.getState().selected_D[fieldname],
-        // );
-        // const U_NAME = get_U_NAME(new_field_data);
-        // if (U_NAME) use_M_Store.getState().set_selected_U(fieldname, U_NAME);
-        // console.log(
-        //     "!!!!!!!!! TabContent -- selected_U = ",
-        //     use_M_Store.getState().selected_U,
-        // );
-        // console.log(
-        //     `!!!!!!!!! TabContent -- selected_U[${fieldname}] = `,
-        //     use_M_Store.getState().selected_U[fieldname],
-        // );
-        // const set_selected_D_FOREIGN =
-        //     use_M_Store.getState().set_selected_D_FOREIGN;
-        // const set_selected_U_FOREIGN =
-        //     use_M_Store.getState().set_selected_U_FOREIGN;
-        // set_selected_D_FOREIGN(
-        //     fieldname,
-        //     use_M_Store.getState().selected_D[fieldname],
-        // );
-        // set_selected_U_FOREIGN(
-        //     fieldname,
-        //     use_M_Store.getState().selected_U[fieldname],
-        // );
+        set_selected_D_U_FOREIGN(new_field_data);
     }
 
     return (
@@ -178,6 +145,7 @@ export default function TabContent() {
                         handle_Fieldname_Change(
                             event.target.value,
                             set_new_FIELDNAME,
+                            { ADD: true },
                         )
                     }
                 />

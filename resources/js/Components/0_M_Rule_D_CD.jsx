@@ -18,7 +18,7 @@ import { get_D_NAME, has_d_in_field_data } from "@/Components/0_M_Data_Helper";
  * @param {*} ALL_DB_options e.g. ["NULLABLE", "PRIMARY", ...] (all allow options)
  */
 export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
-    const debug = true;
+    const debug = false;
     /**
      * field_data[] first element is fieldname
      */
