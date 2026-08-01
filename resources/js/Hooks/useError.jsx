@@ -37,6 +37,7 @@ export function useError() {
         }
 
         const M_value = use_M_Store.getState().M_value;
+        const activeField = use_M_Store.getState().activeField;
         const set_has_Fieldname_Change =
             use_M_Store.getState().set_has_Fieldname_Change;
 
@@ -58,8 +59,18 @@ export function useError() {
 
         if (typeof set_fieldname === "function" && options.UPDATE) {
             set_fieldname(FIELDNAME);
-            const OLD_KEY = use_M_Store.getState().activeField.toUpperCase();
-            const NEW_KEY = fieldname.toUpperCase();
+            let OLD_KEY = "";
+            let NEW_KEY = "";
+            if (activeField.startsWith("t::")) {
+                // case TABLENAME of ENTITIES
+                // before e.g. t::orders , after e.g. t::ORDERS
+                OLD_KEY = activeField.toUpperCase().replace("T", "t");
+                NEW_KEY = "t::" + fieldname.toUpperCase();
+            } else {
+                // in case M_value_KEY of APP_DATA
+                OLD_KEY = activeField.toUpperCase();
+                NEW_KEY = fieldname.toUpperCase();
+            }
             rename_M_value_KEY_and_fieldname(M_value, OLD_KEY, NEW_KEY);
         }
     }

@@ -114,17 +114,22 @@ export async function rename_M_value_KEY_and_fieldname(
     OLD_KEY,
     NEW_KEY,
 ) {
+    const debug = false;
     if (OLD_KEY === NEW_KEY) return old_M_value;
 
-    const set_has_Fieldname_Change =
-        use_M_Store.getState().set_has_Fieldname_Change;
+    const activeTab = use_M_Store.getState().activeTab;
+    const activeSubTab = use_M_Store.getState().activeSubTab;
     const setActiveField = use_M_Store.getState().setActiveField;
     const set_NEW_added_fieldname =
         use_M_Store.getState().set_NEW_added_fieldname;
+    const set_has_Fieldname_Change =
+        use_M_Store.getState().set_has_Fieldname_Change;
 
     const new_M_value = {};
 
     for (const KEY of Object.keys(old_M_value)) {
+        if (debug)
+            console.log(`[SERVICE] --  ${KEY} === ${OLD_KEY} === ${NEW_KEY}`);
         if (KEY === OLD_KEY) {
             const old_field_data = old_M_value[OLD_KEY];
             const M_value_with_new_fieldname = change_fieldname_in_field_data(
@@ -136,14 +141,14 @@ export async function rename_M_value_KEY_and_fieldname(
             new_M_value[KEY] = old_M_value[KEY];
         }
     }
-    // return new_M_value;
-
     setActiveField(NEW_KEY.toLowerCase());
     set_NEW_added_fieldname(NEW_KEY.toLowerCase());
     set_has_Fieldname_Change(true);
     await M_value_Service.update(new_M_value);
 
-    update_cascade_fieldname_in_entities(OLD_KEY, NEW_KEY);
+    if (activeTab === "app_data" && activeSubTab === "f") {
+        update_cascade_fieldname_in_entities(OLD_KEY, NEW_KEY);
+    }
 }
 
 /**
@@ -153,12 +158,19 @@ export async function rename_M_value_KEY_and_fieldname(
  * @param {*} NEW_KEY e.g. PRODUCT_IMAGE
  */
 function update_cascade_fieldname_in_entities(OLD_KEY, NEW_KEY) {
+    const debug = false;
     const entities = GLOBAL_METADATA?.entities?.entities;
+
+    if (debug)
+        console.log(`[1][SERVICE] -- OLD_KEY: ${OLD_KEY}, NEW_KEY: ${NEW_KEY}`);
+    if (debug) console.log(`[2][SERVICE] entities:`, entities);
 
     const new_M_value_Entities = {};
 
     for (const table in entities) {
         const fields = entities[table];
+        if (debug) console.log(`[2.0][SERVICE] -- table: ${table}`);
+        if (debug) console.log(`[2.1][SERVICE] -- fields: ${fields}`);
         const new_fields = fields.map((field) => {
             // for fields e.g. f::NAME, f::IMAGE, f::USER_ID
             if (field === "f::" + OLD_KEY) {
@@ -168,11 +180,21 @@ function update_cascade_fieldname_in_entities(OLD_KEY, NEW_KEY) {
             if (field === "s::" + OLD_KEY) {
                 return "s::" + NEW_KEY;
             }
+            if (debug)
+                console.log(
+                    `[3.2][SERVICE] -- field: ${field} === ${"f::" + OLD_KEY}`,
+                );
             return field;
         });
+        if (debug) console.log(`[4][SERVICE] -- New fields:`, new_fields);
         new_M_value_Entities[table] = new_fields;
     }
 
+    if (debug)
+        console.log(
+            `[5][SERVICE] -- new_M_value_Entities:`,
+            new_M_value_Entities,
+        );
     const cascade = {
         activeTab: "entities",
         activeSubTab: "entities",

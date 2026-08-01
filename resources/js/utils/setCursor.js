@@ -9,9 +9,11 @@
  * @param {*} activeField
  */
 export function setCursor(activeField) {
+    if (!activeField) return;
     const targetInput = document.querySelector(
-        `.fieldname[value="${activeField}"], .M_value_KEY[value="${activeField?.toUpperCase()}"]`,
+        `.M_value_KEY[value="${activeField?.toUpperCase()}"]`,
     );
+
     targetInput.focus();
     targetInput.setSelectionRange(
         targetInput.value.length,
