@@ -26,21 +26,20 @@ import { setCursor } from "@/utils/setCursor";
 export default function EntityField({ f_s_Class_Array, tablename }) {
     const { handle_Fieldname_Change } = useError();
     const [TABLENAME_State, set_TABLENAME_State] = useState(tablename);
-    // const selected_F_S = use_M_Store((state) => state.selected_F_S);
-    // const set_selected_F_S = use_M_Store.getState().set_selected_F_S;
+    const selected_F_S = use_M_Store((state) => state.selected_F_S);
+    const set_selected_F_S = use_M_Store.getState().set_selected_F_S;
 
-    // useEffect(() => {
-    //     if (tablename && f_s_Class_Array) {
-    //         set_selected_F_S(tablename, f_s_Class_Array);
-    //     }
-    // }, [f_s_Class_Array, tablename]);
+    useEffect(() => {
+        if (tablename && f_s_Class_Array) {
+            set_selected_F_S(tablename, f_s_Class_Array);
+        }
+    }, [f_s_Class_Array, tablename]);
 
     function render_TABLENAME_State() {
         return (
             <input
                 type="text"
-                // value={TABLENAME_State}
-                value={tablename}
+                value={TABLENAME_State}
                 className="M_value_KEY"
                 onChange={async (event) => {
                     await handle_Fieldname_Change(
@@ -57,39 +56,12 @@ export default function EntityField({ f_s_Class_Array, tablename }) {
         );
     }
 
-    function render_selected_F_S() {
-        return (
-            <div className="entities-selected-container">
-                {Array.isArray(f_s_Class_Array) &&
-                f_s_Class_Array.length > 0 ? (
-                    f_s_Class_Array.map((f_s_Class, index) => (
-                        <div
-                            key={index}
-                            className="entities-selected-item"
-                            onClick={() => {
-                                // TODO : logic to remove back to all choices
-                                console.log("Remove selected:", f_s_Class);
-                            }}
-                        >
-                            <span className="entities-icon">❌</span>
-                            {f_s_Class.split("::")[1]}
-                        </div>
-                    ))
-                ) : (
-                    <div className="entities-label">
-                        No fields selected yet.
-                    </div>
-                )}
-            </div>
-        );
-    }
-
     // function render_selected_F_S() {
     //     return (
     //         <div className="entities-selected-container">
-    //             {Array.isArray(selected_F_S[tablename]) &&
-    //             selected_F_S[tablename].length > 0 ? (
-    //                 selected_F_S[tablename].map((f_s_Class, index) => (
+    //             {Array.isArray(f_s_Class_Array) &&
+    //             f_s_Class_Array.length > 0 ? (
+    //                 f_s_Class_Array.map((f_s_Class, index) => (
     //                     <div
     //                         key={index}
     //                         className="entities-selected-item"
@@ -110,6 +82,33 @@ export default function EntityField({ f_s_Class_Array, tablename }) {
     //         </div>
     //     );
     // }
+
+    function render_selected_F_S() {
+        return (
+            <div className="entities-selected-container">
+                {Array.isArray(selected_F_S[tablename]) &&
+                selected_F_S[tablename].length > 0 ? (
+                    selected_F_S[tablename].map((f_s_Class, index) => (
+                        <div
+                            key={index}
+                            className="entities-selected-item"
+                            onClick={() => {
+                                // TODO : logic to remove back to all choices
+                                console.log("Remove selected:", f_s_Class);
+                            }}
+                        >
+                            <span className="entities-icon">❌</span>
+                            {f_s_Class.split("::")[1]}
+                        </div>
+                    ))
+                ) : (
+                    <div className="entities-label">
+                        No fields selected yet.
+                    </div>
+                )}
+            </div>
+        );
+    }
 
     return (
         <div className="entities-wrapper-box">

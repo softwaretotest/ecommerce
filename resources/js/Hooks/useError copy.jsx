@@ -24,7 +24,7 @@ export function useError() {
     ) {
         let FIELDNAME = fieldname.toUpperCase().replace(/\s+/g, "_");
         FIELDNAME = FIELDNAME.trim();
-
+        console.log(`[1][HOOK] handle_Fieldname_Change: ${FIELDNAME}`);
         // logic to validate alphanumeric
         const alphanumeric_regex = /^[A-Z0-9_]*$/;
         if (!alphanumeric_regex.test(FIELDNAME)) {
@@ -54,6 +54,7 @@ export function useError() {
             set_error("Fieldname cannot be empty.");
             return;
         }
+        console.log(`[2][HOOK] handle_Fieldname_Change: ${FIELDNAME}`);
 
         if (typeof set_fieldname === "function" && options.UPDATE) {
             set_fieldname(FIELDNAME);
@@ -63,13 +64,12 @@ export function useError() {
                 // case TABLENAME of ENTITIES
                 // before e.g. t::orders , after e.g. t::ORDERS
                 OLD_KEY = activeField.toUpperCase().replace("T", "t");
-                NEW_KEY = "t::" + FIELDNAME;
+                NEW_KEY = "t::" + fieldname.toUpperCase();
             } else {
                 // in case M_value_KEY of APP_DATA
                 OLD_KEY = activeField.toUpperCase();
-                NEW_KEY = FIELDNAME;
+                NEW_KEY = fieldname.toUpperCase();
             }
-
             rename_M_value_KEY_and_fieldname(M_value, OLD_KEY, NEW_KEY);
         }
     }
