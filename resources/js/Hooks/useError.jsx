@@ -24,7 +24,7 @@ export function useError() {
     ) {
         let FIELDNAME = fieldname.toUpperCase().replace(/\s+/g, "_");
         FIELDNAME = FIELDNAME.trim();
-
+        console.log(`[1][HOOK] handle_Fieldname_Change: ${FIELDNAME}`);
         // logic to validate alphanumeric
         const alphanumeric_regex = /^[A-Z0-9_]*$/;
         if (!alphanumeric_regex.test(FIELDNAME)) {
@@ -38,8 +38,6 @@ export function useError() {
 
         const M_value = use_M_Store.getState().M_value;
         const activeField = use_M_Store.getState().activeField;
-        const set_has_Fieldname_Change =
-            use_M_Store.getState().set_has_Fieldname_Change;
 
         const isDuplicate = M_value && Object.keys(M_value).includes(FIELDNAME);
 
@@ -56,6 +54,7 @@ export function useError() {
             set_error("Fieldname cannot be empty.");
             return;
         }
+        console.log(`[2][HOOK] handle_Fieldname_Change: ${FIELDNAME}`);
 
         if (typeof set_fieldname === "function" && options.UPDATE) {
             set_fieldname(FIELDNAME);

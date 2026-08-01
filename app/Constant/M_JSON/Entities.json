@@ -10,19 +10,19 @@
         ],
         "t::PRODUCTS": [
             "f::NAME",
-            "f::IMAGE",
+            "f::IM AGE",
             "f::SHOP_ID",
             "f::PRICE",
             "f::STOCK"
         ],
         "t::SHOPS": [
             "f::NAME",
-            "f::IMAGE",
+            "f::IM AGE",
             "f::USER_ID"
         ],
         "t::USERS": [
             "f::NAME",
-            "f::IMAGE",
+            "f::IM AGE",
             "s::EMAIL",
             "f::IS_ACTIVE"
         ]
