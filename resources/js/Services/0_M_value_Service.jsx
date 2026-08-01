@@ -114,10 +114,7 @@ export async function rename_M_value_KEY_and_fieldname(
     OLD_KEY,
     NEW_KEY,
 ) {
-    const debug = false;
-    if (debug)
-        console.log(`[SERVICE] --  ${KEY} === ${OLD_KEY} === ${NEW_KEY}`);
-    if (OLD_KEY === NEW_KEY) return old_M_value;
+    const debug = true;
 
     const activeTab = use_M_Store.getState().activeTab;
     const activeSubTab = use_M_Store.getState().activeSubTab;
@@ -131,6 +128,7 @@ export async function rename_M_value_KEY_and_fieldname(
         old_M_value,
         OLD_KEY,
         NEW_KEY,
+        debug,
     );
 
     setActiveField(NEW_KEY.toLowerCase());
@@ -147,9 +145,13 @@ function prepare_M_value_for_update_f_s_entities(
     old_M_value,
     OLD_KEY,
     NEW_KEY,
+    debug,
 ) {
     const new_M_value = {};
     for (const KEY of Object.keys(old_M_value)) {
+        if (debug)
+            console.log(`[SERVICE] --  ${KEY} === ${OLD_KEY} === ${NEW_KEY}`);
+        if (OLD_KEY === NEW_KEY) return old_M_value;
         if (KEY === OLD_KEY) {
             const old_field_data = old_M_value[OLD_KEY];
 
@@ -229,6 +231,11 @@ function update_cascade_fieldname_in_entities(OLD_KEY, NEW_KEY, debug) {
     M_value_Service.update(new_M_value_Entities, cascade);
 }
 
+/**
+ * * CALLED by EntitiyField.jsx and Entities_select.jsx
+ * * to update M_value with selected_F_S for current TABLENAME
+ * @param {*} TABLENAME e.g. ORDERS , PRODUCTS
+ */
 export async function update_M_value_with_selected_F_S(TABLENAME) {
     const selected_F_S = use_M_Store.getState().selected_F_S;
     const M_value = use_M_Store.getState().M_value;
@@ -240,7 +247,7 @@ export async function update_M_value_with_selected_F_S(TABLENAME) {
      */
     const new_M_value = {
         ...M_value,
-        [TABLENAME]: selected_F_S[TABLENAME],
+        ["t::" + TABLENAME]: selected_F_S[TABLENAME],
     };
 
     await M_value_Service.update(new_M_value, {

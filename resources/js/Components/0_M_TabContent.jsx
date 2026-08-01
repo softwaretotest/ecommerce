@@ -84,7 +84,7 @@ export default function TabContent() {
                 {activeSubTab === "entities" && (
                     <EntityField
                         f_s_Class_Array={field_data}
-                        tablename={fieldname.replace("t::", "").toUpperCase()}
+                        TABLENAME={fieldname.replace("t::", "").toUpperCase()}
                     />
                 )}
             </div>

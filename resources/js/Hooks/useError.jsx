@@ -39,7 +39,13 @@ export function useError() {
         const M_value = use_M_Store.getState().M_value;
         const activeField = use_M_Store.getState().activeField;
 
-        const isDuplicate = M_value && Object.keys(M_value).includes(FIELDNAME);
+        const check_KEY_for_isDuplicate =
+            activeField && activeField.startsWith("t::") // case ENTITIES, KEY = t::TABLENAME
+                ? "t::" + FIELDNAME
+                : FIELDNAME;
+
+        const isDuplicate =
+            M_value && Object.keys(M_value).includes(check_KEY_for_isDuplicate);
 
         if (isDuplicate) {
             set_error(

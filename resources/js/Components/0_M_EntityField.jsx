@@ -26,17 +26,17 @@ import { setCursor } from "@/utils/setCursor";
  * *     }
  * * }
  */
-export default function EntityField({ f_s_Class_Array, tablename }) {
+export default function EntityField({ f_s_Class_Array, TABLENAME }) {
     const { handle_Fieldname_Change } = useError();
-    const [TABLENAME_State, set_TABLENAME_State] = useState(tablename);
+    const [TABLENAME_State, set_TABLENAME_State] = useState(TABLENAME);
     const selected_F_S = use_M_Store((state) => state.selected_F_S);
     const set_selected_F_S = use_M_Store.getState().set_selected_F_S;
 
     useEffect(() => {
-        if (tablename && f_s_Class_Array) {
-            set_selected_F_S(tablename, f_s_Class_Array);
+        if (TABLENAME && f_s_Class_Array) {
+            set_selected_F_S(TABLENAME, f_s_Class_Array);
         }
-    }, [f_s_Class_Array, tablename]);
+    }, [f_s_Class_Array, TABLENAME]);
 
     function render_TABLENAME_State() {
         return (
@@ -89,9 +89,9 @@ export default function EntityField({ f_s_Class_Array, tablename }) {
     function render_selected_F_S() {
         return (
             <div className="entities-selected-container">
-                {Array.isArray(selected_F_S[tablename]) &&
-                selected_F_S[tablename].length > 0 ? (
-                    selected_F_S[tablename].map((f_s_Class, index) => (
+                {Array.isArray(selected_F_S[TABLENAME]) &&
+                selected_F_S[TABLENAME].length > 0 ? (
+                    selected_F_S[TABLENAME].map((f_s_Class, index) => (
                         <div
                             key={index}
                             className="entities-selected-item"
@@ -99,9 +99,9 @@ export default function EntityField({ f_s_Class_Array, tablename }) {
                                 // remove f::CLASS or s::CLASS from selected_F_S
                                 use_M_Store
                                     .getState()
-                                    .remove_F_S(tablename, f_s_Class);
+                                    .remove_F_S(TABLENAME, f_s_Class);
                                 // TODO : logic to save selected_F_S to new_M_value then to backend
-                                update_M_value_with_selected_F_S(tablename);
+                                update_M_value_with_selected_F_S(TABLENAME);
                             }}
                         >
                             <span className="entities-icon">❌</span>
@@ -121,7 +121,7 @@ export default function EntityField({ f_s_Class_Array, tablename }) {
         <div className="entities-wrapper-box">
             <div className="entities-container">
                 {/* selected_F_S */}
-                <div className="entities-seleted">
+                <div className="entities-seleted_F_S">
                     <label className="entities-label">
                         Table / Selected Fields
                     </label>
@@ -136,7 +136,7 @@ export default function EntityField({ f_s_Class_Array, tablename }) {
                     <label className="entities-label">
                         all existing fields to choose
                     </label>
-                    {render_All_F_S(f_s_Class_Array, tablename)}
+                    {render_All_F_S(f_s_Class_Array, TABLENAME)}
                 </div>
             </div>
         </div>

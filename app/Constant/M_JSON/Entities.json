@@ -25,14 +25,6 @@
             "f::IMAGE",
             "s::EMAIL",
             "f::IS_ACTIVE"
-        ],
-        "ORDERS": [
-            "s::CURRENCY",
-            "f::IMAGE",
-            "f::QUANTITY",
-            "f::STOCK",
-            "f::PRICE",
-            "f::ORDER_NR"
         ]
     }
 }

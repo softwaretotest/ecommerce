@@ -15,10 +15,11 @@ import {
  * @param {Array} f_s_Class_Array - Current table's assigned fields
  * * e.g. ['f::NAME', 'f::IMAGE', 's::EMAIL', 'f::IS_ACTIVE']
  */
-export function render_All_F_S(f_s_Class_Array, tablename) {
+export function render_All_F_S(f_s_Class_Array, TABLENAME) {
     const M_value = use_M_Store((state) => state.M_value);
     const selected_F_S = use_M_Store((state) => state.selected_F_S);
     const set_selected_F_S = use_M_Store.getState().set_selected_F_S;
+    const add_F_S = use_M_Store.getState().add_F_S;
 
     let all_choices = [];
 
@@ -49,7 +50,7 @@ export function render_All_F_S(f_s_Class_Array, tablename) {
      */
     const filtered_all_choices = all_f_s_choices
         .filter((choice) => {
-            const selected_list = selected_F_S[tablename] || [];
+            const selected_list = selected_F_S[TABLENAME] || [];
             const is_F = selected_list.includes("f::" + choice);
             const is_S = selected_list.includes("s::" + choice);
             return !is_F && !is_S;
@@ -89,11 +90,9 @@ export function render_All_F_S(f_s_Class_Array, tablename) {
                             onClick={() => {
                                 // add to choice_F_S selected_F_S
                                 const choice = findout_F_or_S(choice_F_S);
-                                use_M_Store
-                                    .getState()
-                                    .add_F_S(tablename, choice);
-                                // TODO : logic to save selected_F_S to new_M_value then to backend
-                                update_M_value_with_selected_F_S(tablename);
+                                add_F_S(TABLENAME, choice);
+
+                                update_M_value_with_selected_F_S(TABLENAME);
                             }}
                         >
                             {choice_F_S}
