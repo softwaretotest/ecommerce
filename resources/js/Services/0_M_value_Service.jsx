@@ -115,6 +115,8 @@ export async function rename_M_value_KEY_and_fieldname(
     NEW_KEY,
 ) {
     const debug = false;
+    if (debug)
+        console.log(`[SERVICE] --  ${KEY} === ${OLD_KEY} === ${NEW_KEY}`);
     if (OLD_KEY === NEW_KEY) return old_M_value;
 
     const activeTab = use_M_Store.getState().activeTab;
@@ -125,30 +127,56 @@ export async function rename_M_value_KEY_and_fieldname(
     const set_has_Fieldname_Change =
         use_M_Store.getState().set_has_Fieldname_Change;
 
-    const new_M_value = {};
+    const new_M_value = prepare_M_value_for_update_f_s_entities(
+        old_M_value,
+        OLD_KEY,
+        NEW_KEY,
+    );
 
-    for (const KEY of Object.keys(old_M_value)) {
-        if (debug)
-            console.log(`[SERVICE] --  ${KEY} === ${OLD_KEY} === ${NEW_KEY}`);
-        if (KEY === OLD_KEY) {
-            const old_field_data = old_M_value[OLD_KEY];
-            const M_value_with_new_fieldname = change_fieldname_in_field_data(
-                old_field_data,
-                NEW_KEY.toLowerCase(),
-            );
-            new_M_value[NEW_KEY] = M_value_with_new_fieldname;
-        } else {
-            new_M_value[KEY] = old_M_value[KEY];
-        }
-    }
     setActiveField(NEW_KEY.toLowerCase());
     set_NEW_added_fieldname(NEW_KEY.toLowerCase());
     set_has_Fieldname_Change(true);
     await M_value_Service.update(new_M_value);
 
     if (activeTab === "app_data" && activeSubTab === "f") {
-        update_cascade_fieldname_in_entities(OLD_KEY, NEW_KEY);
+        update_cascade_fieldname_in_entities(OLD_KEY, NEW_KEY, debug);
     }
+}
+
+function prepare_M_value_for_update_f_s_entities(
+    old_M_value,
+    OLD_KEY,
+    NEW_KEY,
+) {
+    const new_M_value = {};
+    for (const KEY of Object.keys(old_M_value)) {
+        if (KEY === OLD_KEY) {
+            const old_field_data = old_M_value[OLD_KEY];
+
+            if (OLD_KEY.startsWith("t::") || NEW_KEY.startsWith("t::")) {
+                new_M_value[NEW_KEY] = old_field_data;
+            } else {
+                /**
+                 * * case app_data f::CLASS or s::SPECIAL_FIELD
+                 * * must change fieldname in field_data too
+                 * * M_value_KEY <=> fieldname
+                 * * UPPPERCASE  <=> lowercase
+                 * * e.g.
+                 * * {"IMAGE": [ "image", ["d::STRING" , 255] , "u::FILE"]}
+                 * * {"PRODUCT_IMAGE": [ "product_image", ["d::STRING" , 255] , "u::FILE"]}
+                 */
+                const M_value_with_new_fieldname =
+                    change_fieldname_in_field_data(
+                        old_field_data,
+                        NEW_KEY.toLowerCase(),
+                    );
+                new_M_value[NEW_KEY] = M_value_with_new_fieldname;
+            }
+        } else {
+            new_M_value[KEY] = old_M_value[KEY];
+        }
+    }
+    return new_M_value;
 }
 
 /**
@@ -157,8 +185,7 @@ export async function rename_M_value_KEY_and_fieldname(
  * @param {*} OLD_KEY e.g. IMAGE
  * @param {*} NEW_KEY e.g. PRODUCT_IMAGE
  */
-function update_cascade_fieldname_in_entities(OLD_KEY, NEW_KEY) {
-    const debug = false;
+function update_cascade_fieldname_in_entities(OLD_KEY, NEW_KEY, debug) {
     const entities = GLOBAL_METADATA?.entities?.entities;
 
     if (debug)

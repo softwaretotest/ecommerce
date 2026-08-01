@@ -1,11 +1,11 @@
 // resources/js/Components/0_M_EntityField.jsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { use_M_Store } from "@/Stores/0_M_Store";
 import { useError } from "@/Hooks/useError";
 import { M_value_Service } from "@/Services/0_M_value_Service";
 
 import Field from "@/Components/0_M_Field.jsx";
-import { render_F_S_select } from "@/Components/0_M_Entities_select";
+import { render_All_F_S } from "@/Components/0_M_Entities_select";
 import { setCursor } from "@/utils/setCursor";
 
 /**
@@ -23,20 +23,28 @@ import { setCursor } from "@/utils/setCursor";
  * *     }
  * * }
  */
-export default function EntityField({ f_s_Class_Array, table_name }) {
+export default function EntityField({ f_s_Class_Array, tablename }) {
     const { handle_Fieldname_Change } = useError();
-    const [tablename, set_tablename] = useState(table_name);
+    const [TABLENAME_State, set_TABLENAME_State] = useState(tablename);
+    const selected_F_S = use_M_Store((state) => state.selected_F_S);
+    const set_selected_F_S = use_M_Store.getState().set_selected_F_S;
 
-    function render_tablename() {
+    useEffect(() => {
+        if (tablename && f_s_Class_Array) {
+            set_selected_F_S(tablename, f_s_Class_Array);
+        }
+    }, [f_s_Class_Array, tablename]);
+
+    function render_TABLENAME_State() {
         return (
             <input
                 type="text"
-                value={tablename}
+                value={TABLENAME_State}
                 className="M_value_KEY"
                 onChange={async (event) => {
                     await handle_Fieldname_Change(
                         event.target.value,
-                        set_tablename,
+                        set_TABLENAME_State,
                         {
                             UPDATE: true,
                         },
@@ -48,7 +56,34 @@ export default function EntityField({ f_s_Class_Array, table_name }) {
         );
     }
 
-    function render_entities_selected() {
+    // function render_selected_F_S() {
+    //     return (
+    //         <div className="entities-selected-container">
+    //             {Array.isArray(f_s_Class_Array) &&
+    //             f_s_Class_Array.length > 0 ? (
+    //                 f_s_Class_Array.map((f_s_Class, index) => (
+    //                     <div
+    //                         key={index}
+    //                         className="entities-selected-item"
+    //                         onClick={() => {
+    //                             // TODO : logic to remove back to all choices
+    //                             console.log("Remove selected:", f_s_Class);
+    //                         }}
+    //                     >
+    //                         <span className="entities-icon">❌</span>
+    //                         {f_s_Class.split("::")[1]}
+    //                     </div>
+    //                 ))
+    //             ) : (
+    //                 <div className="entities-label">
+    //                     No fields selected yet.
+    //                 </div>
+    //             )}
+    //         </div>
+    //     );
+    // }
+
+    function render_selected_F_S() {
         return (
             <div className="entities-selected-container">
                 {Array.isArray(f_s_Class_Array) &&
@@ -84,8 +119,8 @@ export default function EntityField({ f_s_Class_Array, table_name }) {
                         Table / Selected Fields
                     </label>
                     <div className="entities-left-column">
-                        {render_tablename()}
-                        {render_entities_selected()}
+                        {render_TABLENAME_State()}
+                        {render_selected_F_S()}
                     </div>
                 </div>
 
@@ -94,7 +129,7 @@ export default function EntityField({ f_s_Class_Array, table_name }) {
                     <label className="entities-label">
                         all existing fields to choose
                     </label>
-                    {render_F_S_select(f_s_Class_Array)}
+                    {render_All_F_S(f_s_Class_Array)}
                 </div>
             </div>
         </div>

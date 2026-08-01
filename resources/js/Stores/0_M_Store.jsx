@@ -144,19 +144,19 @@ export const use_M_Store = create((set) => ({
         }),
 
     selected_F_S: {}, // atomic states
-    set_selected_F_S: (fieldname, selected_F_S_Value) =>
+    set_selected_F_S: (tablename, selected_F_S) =>
         set((state) => {
-            if (!fieldname) return { selected_F_S: {} };
+            if (!tablename) return { selected_F_S: {} };
 
             const NEW_selected_F_S = {
                 ...state.selected_F_S,
-                [fieldname]: selected_F_S_Value,
+                [tablename]: selected_F_S,
             };
 
             if (state.debug || state.debug_selected_F_S) {
                 console.log(
-                    `[M_STORE_DEBUG] NEW_selected_F_S[${fieldname}]:`,
-                    NEW_selected_F_S[fieldname],
+                    `[M_STORE_DEBUG] NEW selected_F_S[${tablename}]:`,
+                    NEW_selected_F_S[tablename],
                 );
                 console.log("------------------------------------");
             }

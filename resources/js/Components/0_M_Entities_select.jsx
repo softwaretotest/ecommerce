@@ -9,7 +9,7 @@ import { get_all_fieldnames } from "@/Providers/0_M_DataProvider";
  * @param {Array} f_s_Class_Array - Current table's assigned fields
  * * e.g. ['f::NAME', 'f::IMAGE', 's::EMAIL', 'f::IS_ACTIVE']
  */
-export function render_F_S_select(f_s_Class_Array) {
+export function render_All_F_S(f_s_Class_Array) {
     const M_value = use_M_Store((state) => state.M_value);
 
     let all_choices = [];
