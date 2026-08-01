@@ -2,7 +2,10 @@
 import { useState, useEffect } from "react";
 import { use_M_Store } from "@/Stores/0_M_Store";
 import { useError } from "@/Hooks/useError";
-import { M_value_Service } from "@/Services/0_M_value_Service";
+import {
+    M_value_Service,
+    update_M_value_with_selected_F_S,
+} from "@/Services/0_M_value_Service";
 
 import Field from "@/Components/0_M_Field.jsx";
 import { render_All_F_S } from "@/Components/0_M_Entities_select";
@@ -97,7 +100,8 @@ export default function EntityField({ f_s_Class_Array, tablename }) {
                                 use_M_Store
                                     .getState()
                                     .remove_F_S(tablename, f_s_Class);
-                                console.log("Remove selected:", f_s_Class);
+                                // TODO : logic to save selected_F_S to new_M_value then to backend
+                                update_M_value_with_selected_F_S(tablename);
                             }}
                         >
                             <span className="entities-icon">❌</span>

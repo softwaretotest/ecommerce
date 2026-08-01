@@ -1,7 +1,10 @@
 // resources/js/Components/0_M_Entities_select.jsx
 import React, { useState } from "react";
 import { use_M_Store } from "@/Stores/0_M_Store";
-import { M_value_Service } from "../Services/0_M_value_Service";
+import {
+    M_value_Service,
+    update_M_value_with_selected_F_S,
+} from "@/Services/0_M_value_Service";
 import {
     get_all_fieldnames,
     findout_F_or_S,
@@ -84,11 +87,13 @@ export function render_All_F_S(f_s_Class_Array, tablename) {
                             key={idx}
                             className="entities-choice-item"
                             onClick={() => {
-                                // add to selected_F_S
+                                // add to choice_F_S selected_F_S
                                 const choice = findout_F_or_S(choice_F_S);
                                 use_M_Store
                                     .getState()
                                     .add_F_S(tablename, choice);
+                                // TODO : logic to save selected_F_S to new_M_value then to backend
+                                update_M_value_with_selected_F_S(tablename);
                             }}
                         >
                             {choice_F_S}

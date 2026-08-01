@@ -228,3 +228,23 @@ function update_cascade_fieldname_in_entities(OLD_KEY, NEW_KEY, debug) {
     };
     M_value_Service.update(new_M_value_Entities, cascade);
 }
+
+export async function update_M_value_with_selected_F_S(TABLENAME) {
+    const selected_F_S = use_M_Store.getState().selected_F_S;
+    const M_value = use_M_Store.getState().M_value;
+
+    /**
+     * clone M_value and overwrite
+     * where M_value_KEY = TABLENAME
+     * with new field_data = selected_F_S
+     */
+    const new_M_value = {
+        ...M_value,
+        [TABLENAME]: selected_F_S[TABLENAME],
+    };
+
+    await M_value_Service.update(new_M_value, {
+        activeTab: "entities",
+        activeSubTab: "entities",
+    });
+}
