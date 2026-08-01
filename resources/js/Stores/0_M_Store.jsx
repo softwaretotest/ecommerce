@@ -164,6 +164,58 @@ export const use_M_Store = create((set) => ({
             return { selected_F_S: NEW_selected_F_S };
         }),
 
+    add_F_S: (tablename, field_item) =>
+        set((state) => {
+            if (!tablename) return state;
+            const current_list = state.selected_F_S[tablename];
+            const NEW_list = [...current_list, field_item];
+            const NEW_selected_F_S = {
+                ...state.selected_F_S,
+                [tablename]: NEW_list,
+            };
+
+            if (state.debug || state.debug_selected_F_S) {
+                console.log(
+                    `[M_STORE_DEBUG] ADDED to selected_F_S[${tablename}]:`,
+                    field_item,
+                );
+
+                console.log(
+                    `[M_STORE_DEBUG] NEW selected_F_S[${tablename}]:`,
+                    NEW_selected_F_S[tablename],
+                );
+                console.log("------------------------------------");
+            }
+
+            return { selected_F_S: NEW_selected_F_S };
+        }),
+
+    remove_F_S: (tablename, field_item) =>
+        set((state) => {
+            if (!tablename) return state;
+            const current_list = state.selected_F_S[tablename];
+            const NEW_list = current_list.filter((item) => item !== field_item);
+            const NEW_selected_F_S = {
+                ...state.selected_F_S,
+                [tablename]: NEW_list,
+            };
+
+            if (state.debug || state.debug_selected_F_S) {
+                console.log(
+                    `[M_STORE_DEBUG] REMOVED from selected_F_S[${tablename}]:`,
+                    field_item,
+                );
+
+                console.log(
+                    `[M_STORE_DEBUG] NEW selected_F_S[${tablename}]:`,
+                    NEW_selected_F_S[tablename],
+                );
+                console.log("------------------------------------");
+            }
+
+            return { selected_F_S: NEW_selected_F_S };
+        }),
+
     selected_U_FOREIGN: {}, // atomic states
     set_selected_U_FOREIGN: (fieldname, selected_U_FOREIGN) =>
         set((state) => {

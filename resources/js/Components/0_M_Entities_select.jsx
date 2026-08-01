@@ -12,6 +12,7 @@ import { get_all_fieldnames } from "@/Providers/0_M_DataProvider";
 export function render_All_F_S(f_s_Class_Array, tablename) {
     const M_value = use_M_Store((state) => state.M_value);
     const selected_F_S = use_M_Store((state) => state.selected_F_S);
+    const set_selected_F_S = use_M_Store.getState().set_selected_F_S;
 
     let all_choices = [];
 
@@ -75,16 +76,18 @@ export function render_All_F_S(f_s_Class_Array, tablename) {
             {/* List of F and S */}
             <div className="entities-choices-list">
                 {filtered_all_choices.length > 0 ? (
-                    filtered_all_choices.map((choice, idx) => (
+                    filtered_all_choices.map((choice_F_S, idx) => (
                         <div
                             key={idx}
                             className="entities-choice-item"
                             onClick={() => {
-                                // TODO : logic to add to selected_F_S
-                                console.log("Selected:", choice);
+                                // add to selected_F_S
+                                use_M_Store
+                                    .getState()
+                                    .add_F_S(tablename, "f::" + choice_F_S);
                             }}
                         >
-                            {choice}
+                            {choice_F_S}
                         </div>
                     ))
                 ) : (

@@ -94,6 +94,9 @@ export default function EntityField({ f_s_Class_Array, tablename }) {
                             className="entities-selected-item"
                             onClick={() => {
                                 // TODO : logic to remove back to all choices
+                                use_M_Store
+                                    .getState()
+                                    .remove_F_S(tablename, f_s_Class);
                                 console.log("Remove selected:", f_s_Class);
                             }}
                         >
