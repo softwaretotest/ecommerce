@@ -517,9 +517,9 @@ body {
     transition: background-color 0.2s ease;
 }
 
-/* เอฟเฟกต์ตอนเอาเมาส์ชี้รายการตัวเลือก */
+.entities-selected-item:hover,
 .entities-choice-item:hover {
-    background-color: #f5f5f5;
+    background-color: #fcfa95;
 }
 
 .entities-no-choice {

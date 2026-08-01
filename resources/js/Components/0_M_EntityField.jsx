@@ -129,7 +129,7 @@ export default function EntityField({ f_s_Class_Array, tablename }) {
                     <label className="entities-label">
                         all existing fields to choose
                     </label>
-                    {render_All_F_S(f_s_Class_Array)}
+                    {render_All_F_S(f_s_Class_Array, tablename)}
                 </div>
             </div>
         </div>

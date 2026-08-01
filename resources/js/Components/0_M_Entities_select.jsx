@@ -9,8 +9,9 @@ import { get_all_fieldnames } from "@/Providers/0_M_DataProvider";
  * @param {Array} f_s_Class_Array - Current table's assigned fields
  * * e.g. ['f::NAME', 'f::IMAGE', 's::EMAIL', 'f::IS_ACTIVE']
  */
-export function render_All_F_S(f_s_Class_Array) {
+export function render_All_F_S(f_s_Class_Array, tablename) {
     const M_value = use_M_Store((state) => state.M_value);
+    const selected_F_S = use_M_Store((state) => state.selected_F_S);
 
     let all_choices = [];
 
@@ -36,9 +37,16 @@ export function render_All_F_S(f_s_Class_Array) {
 
     /**
      * * Get all existing field
+     * * filter out already selected F and S
      * * sort alphanumeric
      */
     const filtered_all_choices = all_f_s_choices
+        .filter((choice) => {
+            const selected_list = selected_F_S[tablename] || [];
+            const is_F = selected_list.includes("f::" + choice);
+            const is_S = selected_list.includes("s::" + choice);
+            return !is_F && !is_S;
+        })
         .filter((choice) =>
             String(choice).toUpperCase().includes(searchTerm_f_s),
         )
