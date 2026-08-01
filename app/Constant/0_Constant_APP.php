@@ -23,12 +23,3 @@ class f
     public const SHOP_ID  = ['shop_id',  cd::FOREIGN];
     public const USER_ID  = ['user_id',  cd::FOREIGN]; //Base
 }
-
-class t
-{
-    // TABLE NAME
-    public const users = 'users';
-    public const products = 'products';
-    public const shops = 'shops';
-    public const orders = 'orders';
-}

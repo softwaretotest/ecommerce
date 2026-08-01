@@ -4,7 +4,7 @@ namespace App\Constant;
 
 class ShopConstant
 {
-    public const TABLE_NAME = t::shops;
+    public const TABLE_NAME = t::SHOPS;
 
     public static function fields(): array
     {

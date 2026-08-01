@@ -4,7 +4,7 @@ namespace App\Constant;
 
 class ProductConstant
 {
-    public const TABLE_NAME = t::products;
+    public const TABLE_NAME = t::PRODUCTS;
 
     public const PRICE_TOTAL = 10;
     public const PRICE_DECIMAL = 2;

@@ -1,15 +1,16 @@
 {
     "_comment": "\/M_JSON\/App-Data.json",
     "f": {
-        "DFAS": [
-            "dfas",
+        "IMAGE": [
+            "image",
             [
                 "d::STRING",
                 255
-            ]
+            ],
+            "u::SELECT"
         ],
-        "NDDDDDDDDDFSA": [
-            "ndddddddddfsa",
+        "NAME": [
+            "name",
             "u::TEXT",
             "cud::REQUIRED",
             [
@@ -17,8 +18,8 @@
                 255
             ]
         ],
-        "PRICEF": [
-            "pricef",
+        "PRICE": [
+            "price",
             [
                 "d::DECIMAL",
                 10,
@@ -97,15 +98,9 @@
             "shop_id",
             "cd::FOREIGN"
         ],
-        "USE": [
-            "use",
+        "USER_ID": [
+            "user_id",
             "cd::FOREIGN"
         ]
-    },
-    "t": {
-        "users": "users",
-        "products": "products",
-        "shops": "shops",
-        "orders": "orders"
     }
 }

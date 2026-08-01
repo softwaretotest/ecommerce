@@ -22,7 +22,7 @@ export const use_M_Store = create((set) => ({
     debug_checked_CU: false,
     debug_checked_CD: false, // e.g. ['INDEX', 'DEFAULT', 'NULLABLE']
 
-    debug_activeField: true,
+    debug_activeField: false,
     debug_activeTab: false,
     debug_activeSubTab: false,
 
@@ -30,7 +30,7 @@ export const use_M_Store = create((set) => ({
 
     debug_NEW_added_fieldname: false,
 
-    debug_has_Fieldname_Change: true,
+    debug_has_Fieldname_Change: false,
 
     debug_D_Params_State: false,
 

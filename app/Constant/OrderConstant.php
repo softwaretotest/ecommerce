@@ -4,7 +4,7 @@ namespace App\Constant;
 
 class OrderConstant
 {
-    public const TABLE_NAME = t::orders;
+    public const TABLE_NAME = t::ORDERS;
 
     public static function fields(): array
     {

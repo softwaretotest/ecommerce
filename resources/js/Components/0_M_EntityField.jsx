@@ -1,4 +1,8 @@
 // resources/js/Components/0_M_EntityField.jsx
+import { useState } from "react";
+
+import { useError } from "@/Hooks/useError";
+import { M_value_Service } from "@/Services/0_M_value_Service";
 
 import Field from "@/Components/0_M_Field.jsx";
 import { render_F_S_select } from "@/Components/0_M_Entities_select";
@@ -19,6 +23,24 @@ import { render_F_S_select } from "@/Components/0_M_Entities_select";
  * * }
  */
 export default function EntityField({ f_s_Class_Array, table_name }) {
+    const { handle_Fieldname_Change } = useError();
+    const [tablename, set_tablename] = useState(table_name);
+
+    function render_tablename() {
+        return (
+            <input
+                type="text"
+                value={tablename}
+                className="tablename"
+                onChange={(event) =>
+                    handle_Fieldname_Change(event.target.value, set_tablename, {
+                        UPDATE: true,
+                    })
+                }
+            />
+        );
+    }
+
     return (
         <div className="entities-wrapper-box">
             <div className="entities-container">
@@ -28,12 +50,7 @@ export default function EntityField({ f_s_Class_Array, table_name }) {
                         Table / Selected Fields
                     </label>
                     <div className="entities-left-column">
-                        <input
-                            type="text"
-                            defaultValue={table_name.replace("t::", "")}
-                            className="tablename"
-                            readOnly
-                        />
+                        {render_tablename()}
                         <div className="entities-selected-container">
                             {Array.isArray(f_s_Class_Array) &&
                             f_s_Class_Array.length > 0 ? (

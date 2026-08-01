@@ -17,7 +17,7 @@ export default function Field({ field_data }) {
 
     const [FIELDNAME, set_FIELDNAME] = useState(fieldname);
 
-    const { Error_FIELDNAME, handle_Fieldname_Change } = useError();
+    const { handle_Fieldname_Change } = useError();
 
     function make_dropdown_D(label, names) {
         return (

@@ -3,6 +3,7 @@ import { use_M_Store } from "@/Stores/0_M_Store.jsx";
 import { API } from "@/Configs/api";
 
 import { change_fieldname_in_field_data } from "@/Components/0_M_Data_Helper";
+import { GLOBAL_METADATA } from "@/Providers/0_M_DataProvider";
 
 /**
  * * EXPLAIN M_value = { Object }
@@ -28,13 +29,15 @@ import { change_fieldname_in_field_data } from "@/Components/0_M_Data_Helper";
  * * ENTITIES   ENTITIES
  */
 export const M_value_Service = {
-    update: async (new_M_value) => {
+    update: async (new_M_value, cascade = null) => {
         const set_M_value = use_M_Store.getState().set_M_value;
         const set_has_M_value_Change =
             use_M_Store.getState().set_has_M_value_Change;
 
         // 0. save M_value to Global States M_Store
-        const result = await set_M_value(new_M_value);
+        if (!cascade) {
+            await set_M_value(new_M_value);
+        }
 
         try {
             /**
@@ -43,19 +46,17 @@ export const M_value_Service = {
              * * and send_POST must 100% finish
              * * before set_has_M_value_Change (to tell JSON_Conten to get Backend data)
              */
-            await send_POST(new_M_value);
+            await send_POST(new_M_value, cascade);
 
             // 2. notify use_M_Data to notify JSON_Content to update it self with Backend
             set_has_M_value_Change(true);
-
-            return result;
         } catch (error) {
             console.error("[SERVICE] Error saving:", error);
         }
     },
 };
 
-async function send_POST(new_M_value) {
+async function send_POST(new_M_value, cascade = null) {
     const activeTab = use_M_Store.getState().activeTab;
     const activeSubTab = use_M_Store.getState().activeSubTab;
     const response = await fetch(API.M_VALUE_ENDPOINT, {
@@ -65,15 +66,13 @@ async function send_POST(new_M_value) {
             "X-XSRF-TOKEN": getCookie("XSRF-TOKEN"),
         },
         body: JSON.stringify({
-            tab: activeTab,
-            subTab: activeSubTab,
+            tab: cascade ? cascade.activeTab : activeTab,
+            subTab: cascade ? cascade.activeSubTab : activeSubTab,
             data: new_M_value,
         }),
     });
 
     if (!response.ok) throw new Error("Server error");
-
-    const result = await response.json();
 
     console.log(`[SERVICE] Saved ${activeTab}/${activeSubTab} successfully!`);
 }
@@ -143,4 +142,40 @@ export async function rename_M_value_KEY_and_fieldname(
     set_NEW_added_fieldname(NEW_KEY.toLowerCase());
     set_has_Fieldname_Change(true);
     await M_value_Service.update(new_M_value);
+
+    update_cascade_fieldname_in_entities(OLD_KEY, NEW_KEY);
+}
+
+/**
+ * * CALLED after app_data f::CLASS fieldname changed
+ * * to update cascade fieldname in Entities.json, if f:: usage exists there
+ * @param {*} OLD_KEY e.g. IMAGE
+ * @param {*} NEW_KEY e.g. PRODUCT_IMAGE
+ */
+function update_cascade_fieldname_in_entities(OLD_KEY, NEW_KEY) {
+    const entities = GLOBAL_METADATA?.entities?.entities;
+
+    const new_M_value_Entities = {};
+
+    for (const table in entities) {
+        const fields = entities[table];
+        const new_fields = fields.map((field) => {
+            // for fields e.g. f::NAME, f::IMAGE, f::USER_ID
+            if (field === "f::" + OLD_KEY) {
+                return "f::" + NEW_KEY;
+            }
+            // for Special fields e.g. s::EMAIL, s::CURRENCY
+            if (field === "s::" + OLD_KEY) {
+                return "s::" + NEW_KEY;
+            }
+            return field;
+        });
+        new_M_value_Entities[table] = new_fields;
+    }
+
+    const cascade = {
+        activeTab: "entities",
+        activeSubTab: "entities",
+    };
+    M_value_Service.update(new_M_value_Entities, cascade);
 }
