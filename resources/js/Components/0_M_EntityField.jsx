@@ -93,7 +93,7 @@ export default function EntityField({ f_s_Class_Array, tablename }) {
                             key={index}
                             className="entities-selected-item"
                             onClick={() => {
-                                // TODO : logic to remove back to all choices
+                                // remove f::CLASS or s::CLASS from selected_F_S
                                 use_M_Store
                                     .getState()
                                     .remove_F_S(tablename, f_s_Class);

@@ -65,3 +65,22 @@ export function get_all_fieldnames() {
 
     return all_fieldnames;
 }
+
+/**
+ * find out if selected choice from f::CLASS or s::CLASS
+ * @param {*} choice_F_S e.g. EMAIL , NAME , IS_ACTIVE
+ * @returns e.g. s::EMAIL , f::NAME , f::IS_ACTIVE
+ */
+export function findout_F_or_S(choice_F_S) {
+    const all_F_KEY = Object.keys(GLOBAL_METADATA.app_data.f);
+    const all_S_KEY = Object.keys(GLOBAL_METADATA?.m_data?.s);
+
+    if (all_F_KEY?.includes(choice_F_S)) {
+        return `f::${choice_F_S}`;
+    }
+    if (all_S_KEY?.includes(choice_F_S)) {
+        return `s::${choice_F_S}`;
+    }
+
+    return choice_F_S;
+}

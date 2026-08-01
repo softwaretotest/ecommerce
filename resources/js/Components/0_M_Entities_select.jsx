@@ -2,7 +2,10 @@
 import React, { useState } from "react";
 import { use_M_Store } from "@/Stores/0_M_Store";
 import { M_value_Service } from "../Services/0_M_value_Service";
-import { get_all_fieldnames } from "@/Providers/0_M_DataProvider";
+import {
+    get_all_fieldnames,
+    findout_F_or_S,
+} from "@/Providers/0_M_DataProvider";
 
 /**
  * * Renders F and S choices/selected items for Entities
@@ -82,9 +85,10 @@ export function render_All_F_S(f_s_Class_Array, tablename) {
                             className="entities-choice-item"
                             onClick={() => {
                                 // add to selected_F_S
+                                const choice = findout_F_or_S(choice_F_S);
                                 use_M_Store
                                     .getState()
-                                    .add_F_S(tablename, "f::" + choice_F_S);
+                                    .add_F_S(tablename, choice);
                             }}
                         >
                             {choice_F_S}
