@@ -101,6 +101,13 @@ export default function TabContent() {
      * @returns
      */
     async function add_field() {
+        if (use_M_Store.getState().activeField.startsWith("t::")) {
+            console.log(
+                `[TabContent] -- add_field() called for ENTITIES = ${use_M_Store.getState().activeField.toUpperCase().replace("T::", "")}`,
+            );
+            return;
+        }
+
         const input_box_fieldname = document.querySelector(".new_field_name");
         const raw_name = input_box_fieldname ? input_box_fieldname.value : "";
 

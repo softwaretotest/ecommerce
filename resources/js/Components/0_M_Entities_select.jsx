@@ -91,7 +91,7 @@ export function render_All_F_S(f_s_Class_Array, TABLENAME) {
                                 // add to choice_F_S selected_F_S
                                 const choice = findout_F_or_S(choice_F_S);
                                 add_F_S(TABLENAME, choice);
-
+                                //save to backend
                                 update_M_value_with_selected_F_S(TABLENAME);
                             }}
                         >

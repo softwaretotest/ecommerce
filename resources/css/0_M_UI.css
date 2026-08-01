@@ -576,3 +576,17 @@ body {
     font-size: small;
     font-weight: bold;
 }
+
+.entities-M_value_KEY-and-delete-button {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+}
+
+.entities-M_value_KEY-and-delete-button .delete-button {
+    height: 100%;
+    padding: 3px;
+    border-radius: 4px;
+    cursor: pointer;
+}

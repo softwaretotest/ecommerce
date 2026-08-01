@@ -10,9 +10,9 @@ import {
 
 export const use_M_Store = create((set) => ({
     debug: false,
-    debug_M_value: true,
+    debug_M_value: false,
 
-    debug_selected_F_S: true,
+    debug_selected_F_S: false,
 
     debug_selected_U: false,
     debug_selected_U_FOREIGN: false,

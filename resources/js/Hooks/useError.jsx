@@ -80,8 +80,23 @@ export function useError() {
         }
     }
 
+    /**
+     * * error blinks
+     * * because of css .error-text (animation)
+     * * and setTimeout to reset error text
+     * * setTimeout is a trick to make
+     * * React see the change and re-render the component
+     * * otherwise, changing same React state immediately
+     * * will not trigger re-render and React will ignore the change
+     * @param {*} error_text
+     */
     function set_error(error_text) {
-        set_Error_FIELDNAME(<span className="error-text">{error_text}</span>);
+        set_Error_FIELDNAME("");
+        setTimeout(() => {
+            set_Error_FIELDNAME(
+                <span className="error-text">{error_text}</span>,
+            );
+        }, 50);
     }
 
     return {

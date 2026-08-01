@@ -38,53 +38,35 @@ export default function EntityField({ f_s_Class_Array, TABLENAME }) {
         }
     }, [f_s_Class_Array, TABLENAME]);
 
-    function render_TABLENAME_State() {
-        return (
-            <input
-                type="text"
-                value={TABLENAME_State}
-                className="M_value_KEY"
-                onChange={async (event) => {
-                    await handle_Fieldname_Change(
-                        event.target.value,
-                        set_TABLENAME_State,
-                        {
-                            UPDATE: true,
-                        },
-                    );
-                    const activeField = use_M_Store.getState().activeField;
-                    setCursor(activeField.toUpperCase().replace("T::", ""));
-                }}
-            />
-        );
+    function delete_field() {
+        console.log(`[EntityField] -- delete_field() called for ${TABLENAME}`);
     }
 
-    // function render_selected_F_S() {
-    //     return (
-    //         <div className="entities-selected-container">
-    //             {Array.isArray(f_s_Class_Array) &&
-    //             f_s_Class_Array.length > 0 ? (
-    //                 f_s_Class_Array.map((f_s_Class, index) => (
-    //                     <div
-    //                         key={index}
-    //                         className="entities-selected-item"
-    //                         onClick={() => {
-    //                             // TODO : logic to remove back to all choices
-    //                             console.log("Remove selected:", f_s_Class);
-    //                         }}
-    //                     >
-    //                         <span className="entities-icon">❌</span>
-    //                         {f_s_Class.split("::")[1]}
-    //                     </div>
-    //                 ))
-    //             ) : (
-    //                 <div className="entities-label">
-    //                     No fields selected yet.
-    //                 </div>
-    //             )}
-    //         </div>
-    //     );
-    // }
+    function render_TABLENAME_State_and_DELETE_Button() {
+        return (
+            <div className="entities-M_value_KEY-and-delete-button">
+                <input
+                    type="text"
+                    value={TABLENAME_State}
+                    className="M_value_KEY"
+                    onChange={async (event) => {
+                        await handle_Fieldname_Change(
+                            event.target.value,
+                            set_TABLENAME_State,
+                            {
+                                UPDATE: true,
+                            },
+                        );
+                        const activeField = use_M_Store.getState().activeField;
+                        setCursor(activeField.toUpperCase().replace("T::", ""));
+                    }}
+                />
+                <button className="delete-button" onClick={delete_field}>
+                    DELETE
+                </button>
+            </div>
+        );
+    }
 
     function render_selected_F_S() {
         return (
@@ -100,7 +82,7 @@ export default function EntityField({ f_s_Class_Array, TABLENAME }) {
                                 use_M_Store
                                     .getState()
                                     .remove_F_S(TABLENAME, f_s_Class);
-                                // TODO : logic to save selected_F_S to new_M_value then to backend
+                                //save to backend
                                 update_M_value_with_selected_F_S(TABLENAME);
                             }}
                         >
@@ -126,7 +108,7 @@ export default function EntityField({ f_s_Class_Array, TABLENAME }) {
                         Table / Selected Fields
                     </label>
                     <div className="entities-left-column">
-                        {render_TABLENAME_State()}
+                        {render_TABLENAME_State_and_DELETE_Button()}
                         {render_selected_F_S()}
                     </div>
                 </div>
