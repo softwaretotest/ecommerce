@@ -4,6 +4,7 @@ import { use_M_Store } from "@/Stores/0_M_Store";
 import { useError } from "@/Hooks/useError";
 import {
     M_value_Service,
+    delete_field,
     update_M_value_with_selected_F_S,
 } from "@/Services/0_M_value_Service";
 
@@ -38,11 +39,11 @@ export default function EntityField({ f_s_Class_Array, TABLENAME }) {
         }
     }, [f_s_Class_Array, TABLENAME]);
 
-    function delete_field() {
-        console.log(
-            `[EntityField] -- delete_field() FDSAFDAS called for ${TABLENAME}`,
-        );
-    }
+    // function delete_field() {
+    //     console.log(
+    //         `[EntityField] -- delete_field() FDSAFDAS called for ${TABLENAME}`,
+    //     );
+    // }
 
     function render_TABLENAME_State_and_DELETE_Button() {
         return (
@@ -63,7 +64,12 @@ export default function EntityField({ f_s_Class_Array, TABLENAME }) {
                         setCursor(activeField.toUpperCase().replace("T::", ""));
                     }}
                 />
-                <button className="delete-button" onClick={delete_field}>
+                <button
+                    className="delete-button"
+                    onClick={() =>
+                        delete_field("t::" + TABLENAME.toLowerCase())
+                    }
+                >
                     DELETE
                 </button>
             </div>

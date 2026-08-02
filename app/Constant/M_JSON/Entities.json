@@ -1,18 +1,4 @@
 {
     "_comment": "\/M_JSON\/Entities.json",
-    "entities": {
-        "t::ORDERS": [
-            "f::ORDER_NR",
-            "f::PRODUCT_ID",
-            "f::USER_ID",
-            "f::QUANTITY",
-            "f::CONFIRM_ORDER"
-        ],
-        "t::USERS": [
-            "f::NAME",
-            "f::IMAGE",
-            "s::EMAIL",
-            "f::IS_ACTIVE"
-        ]
-    }
+    "entities": []
 }

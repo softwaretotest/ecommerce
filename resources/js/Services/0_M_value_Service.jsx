@@ -105,10 +105,16 @@ export async function delete_field(fieldname) {
     const activeField = use_M_Store.getState().activeField;
     const setActiveField = use_M_Store.getState().setActiveField;
     if (activeField !== fieldname) {
+        console.log(`${activeField} === ${fieldname}`);
         setActiveField(fieldname);
         return;
     }
-    const FIELDNAME = activeField.toUpperCase();
+    let FIELDNAME = "";
+    if (fieldname.startsWith("t::")) {
+        FIELDNAME = fieldname.toUpperCase().replace("T", "t"); // e.g. t::orders => t::ORDERS
+    } else {
+        FIELDNAME = activeField.toUpperCase();
+    }
     const isConfirmed = window.confirm(`Are you sure to delete ${FIELDNAME}?`);
     if (isConfirmed) {
         const new_M_value = { ...use_M_Store.getState().M_value };
