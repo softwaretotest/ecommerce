@@ -92,6 +92,35 @@ const getCookie = (name) => {
 };
 
 /**
+ * * CALLED by onClick DELETE-Button of activeField
+ * * ----------------------------------------
+ * 1. setActiveField(fieldname) if activeField !== fieldname
+ * * and return to let hightlightk first for user
+ * * to see, that this field is active
+ * * ----------------------------------------
+ * 2.remove the active field from M_value
+ * * and update JSON Backend
+ */
+export async function delete_field(fieldname) {
+    const activeField = use_M_Store.getState().activeField;
+    const setActiveField = use_M_Store.getState().setActiveField;
+    if (activeField !== fieldname) {
+        setActiveField(fieldname);
+        return;
+    }
+    const FIELDNAME = activeField.toUpperCase();
+    const isConfirmed = window.confirm(`Are you sure to delete ${FIELDNAME}?`);
+    if (isConfirmed) {
+        const new_M_value = { ...use_M_Store.getState().M_value };
+
+        //delete object(M_value)'s item by KEY(FIELDNAME)
+        delete new_M_value[FIELDNAME];
+
+        await M_value_Service.update(new_M_value);
+    }
+}
+
+/**
  * * to rename M_value_KEY and fieldname
  * * and keep same sort-order ,
  * @param {*} old_M_value

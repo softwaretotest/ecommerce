@@ -8,7 +8,7 @@ import { renderCheckboxList } from "@/Components/0_M_CheckBox";
 import { use_M_Option } from "@/Hooks/use_M_Option";
 import { useError } from "@/Hooks/useError";
 
-import { M_value_Service } from "@/Services/0_M_value_Service";
+import { M_value_Service, delete_field } from "@/Services/0_M_value_Service";
 import { use_M_Store } from "@/Stores/0_M_Store";
 
 export default function Field({ field_data }) {
@@ -18,6 +18,8 @@ export default function Field({ field_data }) {
     const [FIELDNAME, set_FIELDNAME] = useState(fieldname);
 
     const { handle_Fieldname_Change } = useError();
+    const activeField = use_M_Store((state) => state.activeField);
+    const setActiveField = use_M_Store.getState().setActiveField;
 
     function make_dropdown_D(label, names) {
         return (
@@ -63,28 +65,6 @@ export default function Field({ field_data }) {
         </div>
     );
 
-    /**
-     * * onClick DELETE-Button of activeField
-     * * remove the active field from M_value
-     * * and update JSON Backend
-     */
-    async function delete_field() {
-        const FIELDNAME = document
-            .querySelector(".M_value_KEY")
-            .value.toUpperCase();
-        const isConfirmed = window.confirm(
-            `Are you sure to delete ${FIELDNAME}?`,
-        );
-        if (isConfirmed) {
-            const new_M_value = { ...use_M_Store.getState().M_value };
-
-            //delete object(M_value)'s item by KEY(FIELDNAME)
-            delete new_M_value[FIELDNAME];
-
-            await M_value_Service.update(new_M_value);
-        }
-    }
-
     function render_fieldname_input(fieldname, className, disabled = false) {
         return (
             <div className="field-input-group">
@@ -119,7 +99,12 @@ export default function Field({ field_data }) {
 
                 {render_fieldname_input(fieldname, "fieldname", true)}
 
-                <button className="delete-button" onClick={delete_field}>
+                <button
+                    className="delete-button"
+                    onClick={() => {
+                        delete_field(fieldname);
+                    }}
+                >
                     DELETE
                 </button>
             </div>

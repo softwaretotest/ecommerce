@@ -29,7 +29,7 @@ class M_Controller extends Controller
         $request->validate([
             'tab' => 'required|string',
             'subTab' => 'required|string',
-            'data' => 'required|array',
+            'data' => 'present|array',      // present = acept empty data
         ]);
 
         $tab = $request->input('tab');
