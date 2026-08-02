@@ -140,9 +140,32 @@ export async function delete_field(fieldname) {
 }
 
 /**
+ * * CALLED after app_data t::CLASS tablename in ENTITIES added
+ * * to add cascade tablename in Entities.json
+ * @param {*} activeField e.g. image123
+ */
+export async function add_cascade_tablename_in_app_data_t(activeField) {
+    const M_value_T = GLOBAL_METADATA?.app_data?.t;
+
+    if (!M_value_T) return;
+
+    const new_M_value_T = { ...M_value_T };
+    new_M_value_T[activeField.toUpperCase()] = activeField;
+
+    console.log(`[SERVICE] -- new_M_value_T:`, new_M_value_T);
+
+    const cascade = {
+        activeTab: "app_data",
+        activeSubTab: "t",
+    };
+
+    await M_value_Service.update(new_M_value_T, cascade);
+}
+
+/**
  * * CALLED after app_data f::CLASS fieldname deleted
  * * to delete cascade fieldname in Entities.json, if f:: usage exists there
- * @param {*} activeField e.g. IMAGE123
+ * @param {*} activeField e.g. image123
  */
 async function delete_cascade_tablename_in_app_data_t(activeField, debug) {
     const M_value_T = GLOBAL_METADATA?.app_data?.t;

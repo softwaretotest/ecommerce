@@ -5,7 +5,10 @@ import { useScrollIntoView } from "@/hooks/useScrollIntoView";
 import { useError } from "@/Hooks/useError";
 
 import { use_M_Store } from "@/Stores/0_M_Store.jsx";
-import { M_value_Service } from "@/Services/0_M_value_Service";
+import {
+    M_value_Service,
+    add_cascade_tablename_in_app_data_t,
+} from "@/Services/0_M_value_Service";
 
 import SpecialField from "@/Components/0_M_SpecialField";
 import Field from "@/Components/0_M_Field";
@@ -18,13 +21,10 @@ export default function TabContent() {
     const { Error_FIELDNAME, handle_Fieldname_Change } = useError();
 
     const M_value = use_M_Store((state) => state.M_value);
-    const NEW_added_fieldname = use_M_Store(
-        (state) => state.NEW_added_fieldname,
-    );
 
-    const set_NEW_added_fieldname = use_M_Store(
-        (state) => state.set_NEW_added_fieldname,
-    );
+    const set_NEW_added_fieldname =
+        use_M_Store.getState().set_NEW_added_fieldname;
+
     const activeTab = use_M_Store((state) => state.activeTab);
     const activeSubTab = use_M_Store((state) => state.activeSubTab);
     const activeField = use_M_Store((state) => state.activeField);
@@ -126,6 +126,10 @@ export default function TabContent() {
         //clear input box , after finish
         if (input_box_fieldname) input_box_fieldname.value = "";
         set_new_FIELDNAME("");
+
+        await add_cascade_tablename_in_app_data_t(
+            use_M_Store.getState().activeField,
+        );
     }
 
     /**

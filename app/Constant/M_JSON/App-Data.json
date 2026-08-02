@@ -1,6 +1,20 @@
 {
     "_comment": "\/M_JSON\/App-Data.json",
     "f": {
+        "FFDS": [
+            "ffds",
+            [
+                "d::STRING",
+                255
+            ]
+        ],
+        "FFDSA": [
+            "ffdsa",
+            [
+                "d::STRING",
+                255
+            ]
+        ],
         "IMAGE": [
             "image",
             "u::FILE",
@@ -103,10 +117,5 @@
             "cd::FOREIGN"
         ]
     },
-    "t": {
-        "USERS": "users",
-        "SHOPS": "shops",
-        "PRODUCTS": "products",
-        "ORDERS": "orders"
-    }
+    "t": []
 }
