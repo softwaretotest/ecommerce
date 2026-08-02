@@ -141,6 +141,7 @@ export default function TabContent() {
      * @returns
      */
     async function add_field_APP_DATA() {
+        console.log("!!!!!!!!!!! add field APP DATA called");
         const input_box_fieldname = document.querySelector(".new_field_name");
         const raw_name = input_box_fieldname ? input_box_fieldname.value : "";
 
@@ -173,7 +174,10 @@ export default function TabContent() {
     }
 
     function add_field() {
-        if (activeTab === "app_data" && activeSubTab === "f") {
+        if (
+            (activeTab === "app_data" && activeSubTab === "f") ||
+            (activeTab === "m_data" && activeSubTab === "s")
+        ) {
             add_field_APP_DATA();
         }
         if (activeTab === "entities" && activeSubTab === "entities") {

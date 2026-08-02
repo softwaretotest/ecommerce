@@ -290,7 +290,10 @@ export async function rename_M_value_KEY_and_fieldname(
     set_has_Fieldname_Change(true);
     await M_value_Service.update(new_M_value);
 
-    if (activeTab === "app_data" && activeSubTab === "f") {
+    if (
+        (activeTab === "app_data" && activeSubTab === "f") ||
+        (activeTab === "m_data" && activeSubTab === "s")
+    ) {
         await update_cascade_fieldname_in_entities(OLD_KEY, NEW_KEY, debug);
     }
 

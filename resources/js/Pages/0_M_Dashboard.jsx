@@ -11,13 +11,14 @@ import "@/../css/0_M_UI.css";
 
 export default function M_Dashboard() {
     const data = use_M_Data();
+    if (!data)
+        return <div>Dashboard Loading... waiting for data from Backend</div>;
+
     const save_All_Data = use_M_Store((state) => state.save_All_Data);
 
     const activeTab = use_M_Store((state) => state.activeTab);
     const setActiveTab = use_M_Store((state) => state.setActiveTab);
     const setActiveField = use_M_Store.getState().setActiveField;
-
-    if (!data) return <div>Loading...</div>;
 
     const tabs = [
         { id: "m_data", label: "M_DATA", key: "m_data" },

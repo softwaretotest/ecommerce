@@ -21,22 +21,41 @@ export const M_DataProvider = ({ children }) => {
     const M_value = use_M_Store.getState().M_value;
 
     useEffect(() => {
-        fetch(API.M_VALUE_ENDPOINT)
-            .then((res) => res.json())
-            .then((data) => {
-                GLOBAL_METADATA = data; // to use data in normal JS not ReactComponent
+        const fetchMetadata = async () => {
+            try {
+                const res = await fetch(API.M_VALUE_ENDPOINT);
+                if (!res.ok)
+                    throw new Error("HTTP error! status: " + res.status);
+                const data = await res.json();
+
+                GLOBAL_METADATA = data;
                 setMetadata(data);
                 setLoading(false);
                 set_hasJSON_Change(true);
                 set_has_M_value_Change(false);
-            })
-            .catch((err) => {
-                console.error("Metadata load error:", err);
-                setLoading(false);
-            });
+            } catch (err) {
+                console.warn(
+                    "Metadata not found or empty. Initializing default structure...",
+                    err.message,
+                );
+
+                // TODO: สร้างฟังก์ชันหรือยิง API ส่ง Initial Default Template ไปที่ Backend เพื่อสร้างไฟล์ขึ้นมาใหม่
+                // หรือกำหนด Default State ชั่วคราวให้หน้าจอเรนเดอร์ต่อได้ทันที
+
+                // setLoading(false);
+            }
+        };
+
+        fetchMetadata();
     }, [has_M_value_Change]);
 
-    if (loading) return <div>Loading Metadata...</div>;
+    if (loading)
+        return (
+            <div>
+                M_DataProvider is loading Metadata... from Backen [SEE ERROR IN
+                DevTool Console]{" "}
+            </div>
+        );
 
     return (
         <MetadataContext.Provider value={metadata}>
