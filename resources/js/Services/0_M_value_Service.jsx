@@ -130,7 +130,11 @@ export async function delete_field(fieldname) {
             (activeTab === "app_data" && activeSubTab === "f") || // Field
             (activeTab === "m_data" && activeSubTab === "s") // SpecialField
         ) {
-            delete_cascade_fieldname_in_entities(activeField, debug);
+            await delete_cascade_fieldname_in_entities(activeField, debug);
+        }
+
+        if (activeTab === "entities" && activeSubTab === "entities") {
+            await delete_cascade_tablename_in_app_data_t(activeField, debug);
         }
     }
 }
@@ -140,7 +144,30 @@ export async function delete_field(fieldname) {
  * * to delete cascade fieldname in Entities.json, if f:: usage exists there
  * @param {*} activeField e.g. IMAGE123
  */
-function delete_cascade_fieldname_in_entities(activeField, debug) {
+async function delete_cascade_tablename_in_app_data_t(activeField, debug) {
+    const M_value_T = GLOBAL_METADATA?.app_data?.t;
+
+    if (!M_value_T) return;
+
+    const new_M_value_T = { ...M_value_T };
+    delete new_M_value_T[activeField.toUpperCase()];
+
+    if (debug) console.log(`[5][SERVICE] -- new_M_value_T:`, new_M_value_T);
+
+    const cascade = {
+        activeTab: "app_data",
+        activeSubTab: "t",
+    };
+
+    await M_value_Service.update(new_M_value_T, cascade);
+}
+
+/**
+ * * CALLED after app_data f::CLASS fieldname deleted
+ * * to delete cascade fieldname in Entities.json, if f:: usage exists there
+ * @param {*} activeField e.g. IMAGE123
+ */
+async function delete_cascade_fieldname_in_entities(activeField, debug) {
     const entities = GLOBAL_METADATA?.entities?.entities;
     const FIELDNAME = activeField.toUpperCase();
     const f_s_CLASS = findout_F_or_S(FIELDNAME); // ได้ค่าตรงฟอร์แมต เช่น "f::IMAGE123" มาทันที
@@ -192,7 +219,7 @@ function delete_cascade_fieldname_in_entities(activeField, debug) {
         activeSubTab: "entities",
     };
 
-    M_value_Service.update(new_M_value_Entities, cascade);
+    await M_value_Service.update(new_M_value_Entities, cascade);
 }
 
 /**
@@ -293,45 +320,6 @@ async function update_cascade_tablename_in_app_data_t(OLD_KEY, NEW_KEY, debug) {
 
     await M_value_Service.update(new_M_value_T, cascade);
 }
-
-// function update_cascade_tablename_in_app_data_t(OLD_KEY, NEW_KEY, debug) {
-//     const M_value_T = GLOBAL_METADATA?.app_data?.t;
-//     if (debug) console.log(`[0][SERVICE] M_value_T:`, M_value_T);
-
-//     if (debug)
-//         console.log(`[1][SERVICE] -- OLD_KEY: ${OLD_KEY}, NEW_KEY: ${NEW_KEY}`);
-
-//     const old_tablename = OLD_KEY.toLowerCase();
-//     const new_tablename = NEW_KEY.toLowerCase();
-
-//     if (debug)
-//         console.log(`[1.1][SERVICE] -- old_tablename : ${old_tablename}`);
-//     if (debug)
-//         console.log(`[1.2][SERVICE] -- new_tablename : ${new_tablename}`);
-
-//     const new_M_value_Entities = {};
-
-//     // for (const TABLENAME in M_value_T) {
-//     for (const KEY of Object.keys(M_value_T)) {
-
-//         const tablename = M_value_T[TABLENAME];
-//         if (debug) console.log(`[2][SERVICE] -- ${TABLENAME}: ${tablename}`);
-//         if(old_tablename = tablename){
-
-//         }
-//     }
-
-//     // if (debug)
-//     //     console.log(
-//     //         `[5][SERVICE] -- new_M_value_Entities:`,
-//     //         new_M_value_Entities,
-//     //     );
-//     // const cascade = {
-//     //     activeTab: "app_data",
-//     //     activeSubTab: "t",
-//     // };
-//     // M_value_Service.update(new_M_value_Entities, cascade);
-// }
 
 function prepare_M_value_for_update_f_s_entities(
     old_M_value,

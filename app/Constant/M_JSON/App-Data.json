@@ -94,10 +94,5 @@
             "cd::FOREIGN"
         ]
     },
-    "t": {
-        "USERS": "users",
-        "SHOPS": "shops",
-        "PRODUCTS": "products",
-        "ORDERS": "orders"
-    }
+    "t": []
 }

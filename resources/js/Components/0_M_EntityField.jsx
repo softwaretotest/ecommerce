@@ -39,12 +39,6 @@ export default function EntityField({ f_s_Class_Array, TABLENAME }) {
         }
     }, [f_s_Class_Array, TABLENAME]);
 
-    // function delete_field() {
-    //     console.log(
-    //         `[EntityField] -- delete_field() FDSAFDAS called for ${TABLENAME}`,
-    //     );
-    // }
-
     function render_TABLENAME_State_and_DELETE_Button() {
         return (
             <div className="entities-M_value_KEY-and-delete-button">
