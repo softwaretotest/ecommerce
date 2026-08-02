@@ -125,7 +125,7 @@ export default function TabContent() {
 
         //clear input box , after finish
         if (input_box_fieldname) input_box_fieldname.value = "";
-        // set_new_FIELDNAME("");
+        set_new_FIELDNAME("");
     }
 
     /**
