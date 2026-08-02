@@ -109,12 +109,9 @@ export async function delete_field(fieldname) {
         setActiveField(fieldname);
         return;
     }
-    let FIELDNAME = "";
-    if (fieldname.startsWith("t::")) {
-        FIELDNAME = fieldname.toUpperCase().replace("T", "t"); // e.g. t::orders => t::ORDERS
-    } else {
-        FIELDNAME = activeField.toUpperCase();
-    }
+
+    const FIELDNAME = activeField.toUpperCase();
+
     const isConfirmed = window.confirm(`Are you sure to delete ${FIELDNAME}?`);
     if (isConfirmed) {
         const new_M_value = { ...use_M_Store.getState().M_value };
@@ -190,7 +187,10 @@ function prepare_M_value_for_update_f_s_entities(
         if (KEY === OLD_KEY) {
             const old_field_data = old_M_value[OLD_KEY];
 
-            if (OLD_KEY.startsWith("t::") || NEW_KEY.startsWith("t::")) {
+            const activeTab = use_M_Store.getState().activeTab;
+            const activeSubTab = use_M_Store.getState().activeSubTab;
+
+            if (activeTab === "entities" && activeSubTab === "entities") {
                 new_M_value[NEW_KEY] = old_field_data;
             } else {
                 /**
@@ -282,7 +282,7 @@ export async function update_M_value_with_selected_F_S(TABLENAME) {
      */
     const new_M_value = {
         ...M_value,
-        ["t::" + TABLENAME]: selected_F_S[TABLENAME],
+        [TABLENAME]: selected_F_S[TABLENAME],
     };
 
     await M_value_Service.update(new_M_value, {

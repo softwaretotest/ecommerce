@@ -39,13 +39,7 @@ export function useError() {
         const M_value = use_M_Store.getState().M_value;
         const activeField = use_M_Store.getState().activeField;
 
-        const check_KEY_for_isDuplicate =
-            activeField && activeField.startsWith("t::") // case ENTITIES, KEY = t::TABLENAME
-                ? "t::" + FIELDNAME
-                : FIELDNAME;
-
-        const isDuplicate =
-            M_value && Object.keys(M_value).includes(check_KEY_for_isDuplicate);
+        const isDuplicate = M_value && Object.keys(M_value).includes(FIELDNAME);
 
         if (isDuplicate) {
             set_error(
@@ -63,19 +57,8 @@ export function useError() {
 
         if (typeof set_fieldname === "function" && options.UPDATE) {
             set_fieldname(FIELDNAME);
-            let OLD_KEY = "";
-            let NEW_KEY = "";
-            if (activeField.startsWith("t::")) {
-                // case TABLENAME of ENTITIES
-                // before e.g. t::orders , after e.g. t::ORDERS
-                OLD_KEY = activeField.toUpperCase().replace("T", "t");
-                NEW_KEY = "t::" + FIELDNAME;
-            } else {
-                // in case M_value_KEY of APP_DATA
-                OLD_KEY = activeField.toUpperCase();
-                NEW_KEY = FIELDNAME;
-            }
-
+            const OLD_KEY = activeField.toUpperCase();
+            const NEW_KEY = FIELDNAME;
             rename_M_value_KEY_and_fieldname(M_value, OLD_KEY, NEW_KEY);
         }
     }

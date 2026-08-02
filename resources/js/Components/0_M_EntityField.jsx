@@ -61,14 +61,12 @@ export default function EntityField({ f_s_Class_Array, TABLENAME }) {
                             },
                         );
                         const activeField = use_M_Store.getState().activeField;
-                        setCursor(activeField.toUpperCase().replace("T::", ""));
+                        setCursor(activeField);
                     }}
                 />
                 <button
                     className="delete-button"
-                    onClick={() =>
-                        delete_field("t::" + TABLENAME.toLowerCase())
-                    }
+                    onClick={() => delete_field(TABLENAME.toLowerCase())}
                 >
                     DELETE
                 </button>

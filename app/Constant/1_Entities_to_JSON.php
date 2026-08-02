@@ -70,7 +70,8 @@ class Entities_to_JSON extends NodeVisitorAbstract
             }
 
             if ($tableName) {
-                $this->entities[$tableName] = $fields;
+                $cleanTableName = str_replace('t::', '', $tableName);
+                $this->entities[$cleanTableName] = $fields;
             }
         }
     }

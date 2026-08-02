@@ -23,3 +23,11 @@ class f
     public const SHOP_ID  = ['shop_id',  cd::FOREIGN];
     public const USER_ID  = ['user_id',  cd::FOREIGN]; //Base
 }
+
+class t
+{
+    public const USERS = "users";
+    public const SHOPS = "shops";
+    public const PRODUCTS = "products";
+    public const ORDERS = "orders";
+}
