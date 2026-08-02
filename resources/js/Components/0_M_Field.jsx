@@ -78,8 +78,8 @@ export default function Field({ field_data }) {
                     }
                     className={className}
                     disabled={disabled}
-                    onChange={(event) =>
-                        handle_Fieldname_Change(
+                    onChange={async (event) =>
+                        await handle_Fieldname_Change(
                             event.target.value,
                             set_FIELDNAME,
                             { UPDATE: true },

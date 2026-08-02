@@ -4,6 +4,7 @@ import { API } from "@/Configs/api";
 
 import { change_fieldname_in_field_data } from "@/Components/0_M_Data_Helper";
 import { GLOBAL_METADATA } from "@/Providers/0_M_DataProvider";
+import { findout_F_or_S } from "@/Providers/0_M_DataProvider";
 
 /**
  * * EXPLAIN M_value = { Object }
@@ -102,6 +103,10 @@ const getCookie = (name) => {
  * * and update JSON Backend
  */
 export async function delete_field(fieldname) {
+    const debug = true;
+
+    const activeTab = use_M_Store.getState().activeTab;
+    const activeSubTab = use_M_Store.getState().activeSubTab;
     const activeField = use_M_Store.getState().activeField;
     const setActiveField = use_M_Store.getState().setActiveField;
     if (activeField !== fieldname) {
@@ -120,7 +125,74 @@ export async function delete_field(fieldname) {
         delete new_M_value[FIELDNAME];
 
         await M_value_Service.update(new_M_value);
+
+        if (
+            (activeTab === "app_data" && activeSubTab === "f") || // Field
+            (activeTab === "m_data" && activeSubTab === "s") // SpecialField
+        ) {
+            delete_cascade_fieldname_in_entities(activeField, debug);
+        }
     }
+}
+
+/**
+ * * CALLED after app_data f::CLASS fieldname deleted
+ * * to delete cascade fieldname in Entities.json, if f:: usage exists there
+ * @param {*} activeField e.g. IMAGE123
+ */
+function delete_cascade_fieldname_in_entities(activeField, debug) {
+    const entities = GLOBAL_METADATA?.entities?.entities;
+    const FIELDNAME = activeField.toUpperCase();
+    const f_s_CLASS = findout_F_or_S(FIELDNAME); // ได้ค่าตรงฟอร์แมต เช่น "f::IMAGE123" มาทันที
+
+    if (debug)
+        console.log(
+            `[1][SERVICE -- delete_cascade] -- activeField: ${activeField}`,
+        );
+    if (debug)
+        console.log(`[2][SERVICE -- delete_cascade] -- entities:`, entities);
+
+    if (!entities) return;
+
+    const new_M_value_Entities = {};
+
+    // LOOP TO find f_CLASS in all entities[TABLENAME]
+    for (const table in entities) {
+        const fields = entities[table];
+        if (debug)
+            console.log(`[2.0][SERVICE -- delete_cascade] -- table: ${table}`);
+
+        // กรองเอา field ที่ตรงกับ f_s_CLASS ออกตรงๆ ได้เลย
+        const new_fields = fields.filter((field) => {
+            const isMatch = field === f_s_CLASS;
+            if (isMatch && debug) {
+                console.log(
+                    `[3.2][SERVICE -- delete_cascade] -- Removed matched field: ${field} from table: ${table}`,
+                );
+            }
+            return !isMatch;
+        });
+
+        if (debug)
+            console.log(
+                `[4][SERVICE -- delete_cascade] -- New fields for ${table}:`,
+                new_fields,
+            );
+        new_M_value_Entities[table] = new_fields;
+    }
+
+    if (debug)
+        console.log(
+            `[5][SERVICE -- delete_cascade] -- new_M_value_Entities:`,
+            new_M_value_Entities,
+        );
+
+    const cascade = {
+        activeTab: "entities",
+        activeSubTab: "entities",
+    };
+
+    M_value_Service.update(new_M_value_Entities, cascade);
 }
 
 /**
@@ -169,20 +241,105 @@ export async function rename_M_value_KEY_and_fieldname(
     await M_value_Service.update(new_M_value);
 
     if (activeTab === "app_data" && activeSubTab === "f") {
-        update_cascade_fieldname_in_entities(OLD_KEY, NEW_KEY, debug);
+        await update_cascade_fieldname_in_entities(OLD_KEY, NEW_KEY, debug);
+    }
+
+    if (activeTab === "entities" && activeSubTab === "entities") {
+        await update_cascade_tablename_in_app_data_t(OLD_KEY, NEW_KEY, debug);
     }
 }
+
+/**
+ * * CALLED after entities TABLENAME changed
+ * * to update cascade tablename in App-Data.json (under 't' subTab)
+ * @param {*} OLD_TABLENAME e.g. "ORDERS"
+ * @param {*} NEW_TABLENAME e.g. "ORDERS_NEW"
+ */
+
+/**
+ * * CALLED after entities TABLENAME changed
+ * * to update cascade tablename in App-Data.json (under 't' subTab)
+ * @param {*} OLD_KEY e.g. "ORDERS"
+ * @param {*} NEW_KEY e.g. "ORDERS_NEW"
+ */
+async function update_cascade_tablename_in_app_data_t(OLD_KEY, NEW_KEY, debug) {
+    const M_value_T = GLOBAL_METADATA?.app_data?.t;
+    if (debug) console.log(`[0][SERVICE] M_value_T:`, M_value_T);
+
+    if (debug)
+        console.log(`[1][SERVICE] -- OLD_KEY: ${OLD_KEY}, NEW_KEY: ${NEW_KEY}`);
+
+    if (!M_value_T) return;
+
+    const new_M_value_T = {};
+
+    for (const KEY of Object.keys(M_value_T)) {
+        const value = M_value_T[KEY];
+        if (debug) console.log(`[2][SERVICE] -- KEY: ${KEY}, value: ${value}`);
+
+        if (KEY === OLD_KEY) {
+            new_M_value_T[NEW_KEY] = NEW_KEY.toLowerCase();
+        } else {
+            new_M_value_T[KEY] = value;
+        }
+    }
+
+    if (debug) console.log(`[5][SERVICE] -- new_M_value_T:`, new_M_value_T);
+
+    const cascade = {
+        activeTab: "app_data",
+        activeSubTab: "t",
+    };
+
+    await M_value_Service.update(new_M_value_T, cascade);
+}
+
+// function update_cascade_tablename_in_app_data_t(OLD_KEY, NEW_KEY, debug) {
+//     const M_value_T = GLOBAL_METADATA?.app_data?.t;
+//     if (debug) console.log(`[0][SERVICE] M_value_T:`, M_value_T);
+
+//     if (debug)
+//         console.log(`[1][SERVICE] -- OLD_KEY: ${OLD_KEY}, NEW_KEY: ${NEW_KEY}`);
+
+//     const old_tablename = OLD_KEY.toLowerCase();
+//     const new_tablename = NEW_KEY.toLowerCase();
+
+//     if (debug)
+//         console.log(`[1.1][SERVICE] -- old_tablename : ${old_tablename}`);
+//     if (debug)
+//         console.log(`[1.2][SERVICE] -- new_tablename : ${new_tablename}`);
+
+//     const new_M_value_Entities = {};
+
+//     // for (const TABLENAME in M_value_T) {
+//     for (const KEY of Object.keys(M_value_T)) {
+
+//         const tablename = M_value_T[TABLENAME];
+//         if (debug) console.log(`[2][SERVICE] -- ${TABLENAME}: ${tablename}`);
+//         if(old_tablename = tablename){
+
+//         }
+//     }
+
+//     // if (debug)
+//     //     console.log(
+//     //         `[5][SERVICE] -- new_M_value_Entities:`,
+//     //         new_M_value_Entities,
+//     //     );
+//     // const cascade = {
+//     //     activeTab: "app_data",
+//     //     activeSubTab: "t",
+//     // };
+//     // M_value_Service.update(new_M_value_Entities, cascade);
+// }
 
 function prepare_M_value_for_update_f_s_entities(
     old_M_value,
     OLD_KEY,
     NEW_KEY,
-    debug,
 ) {
     const new_M_value = {};
     for (const KEY of Object.keys(old_M_value)) {
-        if (debug)
-            console.log(`[SERVICE] --  ${KEY} === ${OLD_KEY} === ${NEW_KEY}`);
         if (OLD_KEY === NEW_KEY) return old_M_value;
         if (KEY === OLD_KEY) {
             const old_field_data = old_M_value[OLD_KEY];
@@ -222,7 +379,7 @@ function prepare_M_value_for_update_f_s_entities(
  * @param {*} OLD_KEY e.g. IMAGE
  * @param {*} NEW_KEY e.g. PRODUCT_IMAGE
  */
-function update_cascade_fieldname_in_entities(OLD_KEY, NEW_KEY, debug) {
+async function update_cascade_fieldname_in_entities(OLD_KEY, NEW_KEY, debug) {
     const entities = GLOBAL_METADATA?.entities?.entities;
 
     if (debug)
@@ -263,7 +420,7 @@ function update_cascade_fieldname_in_entities(OLD_KEY, NEW_KEY, debug) {
         activeTab: "entities",
         activeSubTab: "entities",
     };
-    M_value_Service.update(new_M_value_Entities, cascade);
+    await M_value_Service.update(new_M_value_Entities, cascade);
 }
 
 /**

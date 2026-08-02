@@ -59,7 +59,7 @@ export function useError() {
             set_fieldname(FIELDNAME);
             const OLD_KEY = activeField.toUpperCase();
             const NEW_KEY = FIELDNAME;
-            rename_M_value_KEY_and_fieldname(M_value, OLD_KEY, NEW_KEY);
+            await rename_M_value_KEY_and_fieldname(M_value, OLD_KEY, NEW_KEY);
         }
     }
 

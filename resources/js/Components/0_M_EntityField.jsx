@@ -53,6 +53,7 @@ export default function EntityField({ f_s_Class_Array, TABLENAME }) {
                     value={TABLENAME_State}
                     className="M_value_KEY"
                     onChange={async (event) => {
+                        // this need await , otherwise setCursor doesn't work
                         await handle_Fieldname_Change(
                             event.target.value,
                             set_TABLENAME_State,
