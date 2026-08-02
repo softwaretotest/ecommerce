@@ -71,10 +71,20 @@ export default function JSON_Content() {
 
             //auto scroll , only when new field was added
             if (use_M_Store.getState().is_new_field_added) {
+                // console.log(
+                //     "!!!!!!! useEfect - JSON_Content -- is_new_field_added = ",
+                //     use_M_Store.getState().is_new_field_added,
+                // );
+                // console.log(
+                //     "!!!!!!! useEfect - JSON_Content -- activeField = ",
+                //     use_M_Store.getState().activeField,
+                // );
                 const element =
-                    scrollRefs.current[
-                        use_M_Store.getState().NEW_added_fieldname.toLowerCase()
-                    ];
+                    scrollRefs.current[use_M_Store.getState().activeField];
+                // console.log(
+                //     "!!!!!!! useEfect - JSON_Content -- element = ",
+                //     element,
+                // );
                 if (element) {
                     element.scrollIntoView({
                         behavior: "smooth",

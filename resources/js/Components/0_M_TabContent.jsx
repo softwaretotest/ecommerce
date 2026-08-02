@@ -92,6 +92,7 @@ export default function TabContent() {
     }
 
     const [new_FIELDNAME, set_new_FIELDNAME] = useState("");
+
     /**
      * * get new fieldname from UI
      * * and save to JSON Backend
@@ -100,7 +101,42 @@ export default function TabContent() {
      * * M_value [KEY] , KEY = UPPERCASE
      * @returns
      */
-    async function add_field() {
+    async function add_field_ENTITIES() {
+        const input_box_fieldname = document.querySelector(".new_field_name");
+        const raw_name = input_box_fieldname ? input_box_fieldname.value : "";
+
+        const trimmed_name = raw_name.trim();
+        if (!trimmed_name) return;
+
+        const fieldname = trimmed_name;
+        const M_value_KEY = fieldname.toUpperCase();
+
+        const new_M_value = {
+            [M_value_KEY]: [],
+            ...M_value,
+        };
+
+        await M_value_Service.update(new_M_value);
+
+        if (fieldname) setActiveField(fieldname.toLowerCase()); // for auto scroll, not work
+
+        // this make auto scroll for JSON_Content works if new field added
+        use_M_Store.getState().set_is_new_field_added(true);
+
+        //clear input box , after finish
+        if (input_box_fieldname) input_box_fieldname.value = "";
+        // set_new_FIELDNAME("");
+    }
+
+    /**
+     * * get new fieldname from UI
+     * * and save to JSON Backend
+     * * BE CAREFULL to save convention : always like this
+     * * fieldname = lowercase
+     * * M_value [KEY] , KEY = UPPERCASE
+     * @returns
+     */
+    async function add_field_APP_DATA() {
         const input_box_fieldname = document.querySelector(".new_field_name");
         const raw_name = input_box_fieldname ? input_box_fieldname.value : "";
 
@@ -119,7 +155,9 @@ export default function TabContent() {
         };
 
         await M_value_Service.update(new_M_value);
+
         if (fieldname) await setActiveField(fieldname); // for auto scroll, not work
+
         // this make auto scroll for JSON_Content works if new field added
         use_M_Store.getState().set_is_new_field_added(true);
 
@@ -128,6 +166,15 @@ export default function TabContent() {
         set_new_FIELDNAME("");
 
         set_selected_D_U_FOREIGN(new_field_data);
+    }
+
+    function add_field() {
+        if (activeTab === "app_data" && activeSubTab === "f") {
+            add_field_APP_DATA();
+        }
+        if (activeTab === "entities" && activeSubTab === "entities") {
+            add_field_ENTITIES();
+        }
     }
 
     return (
@@ -155,7 +202,7 @@ export default function TabContent() {
                 <button
                     className="add-button"
                     onClick={() => {
-                        add_field;
+                        add_field();
                     }}
                     disabled={!new_FIELDNAME || Error_FIELDNAME}
                 >
