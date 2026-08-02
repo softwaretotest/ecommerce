@@ -26,13 +26,14 @@ export default function SubTab({ data }) {
     const set_M_value = use_M_Store((state) => state.set_M_value);
 
     const activeField = use_M_Store((state) => state.activeField);
-    const setActiveField = use_M_Store((state) => state.setActiveField);
+    const setActiveField = use_M_Store.getState().setActiveField;
+    const set_Error_FIELDNAME = use_M_Store.getState().set_Error_FIELDNAME;
 
     /**
      * SET SubTab
      */
     const activeSubTab = use_M_Store((state) => state.activeSubTab);
-    const setActiveSubTab = use_M_Store((state) => state.setActiveSubTab);
+    const setActiveSubTab = use_M_Store.getState().setActiveSubTab;
 
     const scrollRefs = useRef({});
     useScrollIntoView(activeField, scrollRefs);
@@ -152,6 +153,7 @@ export default function SubTab({ data }) {
                                 //clear activeField on subTab changed
                                 setActiveField(null);
                                 scrollRefs.current = {};
+                                set_Error_FIELDNAME("");
                             }}
                         >
                             {subtab.toUpperCase()}

@@ -68,15 +68,72 @@ class M_Controller extends Controller
      * * m_data:   Content of M-Data.json
      * * entities: Content of Entities.json
      */
+    // public function getMetadata(): JsonResponse
+    // {
+
+    //     $combinedMetadata = [];
+
+    //     foreach (self::FILES_PATH as $key => $path) {
+    //         $fullPath = base_path($path);
+    //         if (!file_exists($fullPath)) {
+    //             return response()->json(['error' => "Metadata file not found: {$key}"], 404);
+    //         }
+
+    //         $content = file_get_contents($fullPath);
+    //         $jsonData = json_decode($content, true);
+
+    //         if (json_last_error() !== JSON_ERROR_NONE) {
+    //             return response()->json(['error' => "Invalid JSON in {$key}: " . json_last_error_msg()], 500);
+    //         }
+
+    //         $combinedMetadata[$key] = $jsonData;
+    //     }
+
+    //     return response()->json($combinedMetadata);
+    // }
+
+    /**
+     * * get Metadata from MSync in   app/Constant/M_JSON
+     * * if files not exists,get from resources/js/Components/M_JSON
+     * * ----------------------------------------------
+     * * DICTIONARY:
+     * * app_data: Content of App-Data.json
+     * * m_data:   Content of M-Data.json
+     * * entities: Content of Entities.json
+     */
     public function getMetadata(): JsonResponse
     {
-
         $combinedMetadata = [];
 
         foreach (self::FILES_PATH as $key => $path) {
             $fullPath = base_path($path);
+
+            // if JSON files not exist here app/Constant/M_JSON
             if (!file_exists($fullPath)) {
-                return response()->json(['error' => "Metadata file not found: {$key}"], 404);
+                $dir = dirname($fullPath);
+                if (!file_exists($dir)) {
+                    mkdir($dir, 0755, true);
+                }
+
+                // filename from resources/js/Components/M_JSON
+                $templateFilename = '';
+                if ($key === 'm_data') {
+                    $templateFilename = 'M-Data.json';
+                } elseif ($key === 'app_data') {
+                    $templateFilename = 'App-Data.json';
+                } elseif ($key === 'entities') {
+                    $templateFilename = 'Entities.json';
+                }
+
+                $templatePath = base_path("resources/js/Components/M_JSON/{$templateFilename}");
+
+                if (file_exists($templatePath)) {
+                    copy($templatePath, $fullPath);
+                } else {
+                    // Fallback case file not found
+                    $defaultContent = [];
+                    File::put($fullPath, json_encode($defaultContent, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+                }
             }
 
             $content = file_get_contents($fullPath);

@@ -103,7 +103,7 @@ const getCookie = (name) => {
  * * and update JSON Backend
  */
 export async function delete_field(fieldname) {
-    const debug = true;
+    const debug = false;
 
     const activeTab = use_M_Store.getState().activeTab;
     const activeSubTab = use_M_Store.getState().activeSubTab;
@@ -268,7 +268,7 @@ export async function rename_M_value_KEY_and_fieldname(
     OLD_KEY,
     NEW_KEY,
 ) {
-    const debug = true;
+    const debug = false;
 
     const activeTab = use_M_Store.getState().activeTab;
     const activeSubTab = use_M_Store.getState().activeSubTab;

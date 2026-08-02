@@ -187,6 +187,8 @@ export default function TabContent() {
 
     return (
         <>
+            {Error_FIELDNAME}
+
             <div className="tab-content-header">
                 <label className="tch-label">
                     activeSubTab = {activeSubTab}
@@ -205,7 +207,7 @@ export default function TabContent() {
                     }
                 />
 
-                {Error_FIELDNAME}
+                {/* {Error_FIELDNAME} */}
 
                 <button
                     className="add-button"

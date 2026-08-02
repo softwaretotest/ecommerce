@@ -17,3 +17,6 @@ Route::get('/m-value', [M_Controller::class, 'getMetadata']);
 
 // Endpoint for the UI to fetch the metadata JSON
 Route::post('/m-value', [M_Controller::class, 'save']);
+
+// Endpoint for get new template from frontend , if JSON in Backend not exist 404
+Route::post('/m-value/init', [M_Controller::class, 'saveAll']);

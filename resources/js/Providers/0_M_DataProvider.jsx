@@ -42,7 +42,7 @@ export const M_DataProvider = ({ children }) => {
                 // TODO: สร้างฟังก์ชันหรือยิง API ส่ง Initial Default Template ไปที่ Backend เพื่อสร้างไฟล์ขึ้นมาใหม่
                 // หรือกำหนด Default State ชั่วคราวให้หน้าจอเรนเดอร์ต่อได้ทันที
 
-                // setLoading(false);
+                setLoading(false);
             }
         };
 

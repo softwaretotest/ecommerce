@@ -19,6 +19,7 @@ export default function M_Dashboard() {
     const activeTab = use_M_Store((state) => state.activeTab);
     const setActiveTab = use_M_Store((state) => state.setActiveTab);
     const setActiveField = use_M_Store.getState().setActiveField;
+    const set_Error_FIELDNAME = use_M_Store.getState().set_Error_FIELDNAME;
 
     const tabs = [
         { id: "m_data", label: "M_DATA", key: "m_data" },
@@ -38,6 +39,7 @@ export default function M_Dashboard() {
                             setActiveTab(tab.id);
                             //clear activeField on subTab changed
                             setActiveField(null);
+                            set_Error_FIELDNAME("");
                         }}
                         className={`nav-button ${activeTab === tab.id ? "active" : ""}`}
                     >

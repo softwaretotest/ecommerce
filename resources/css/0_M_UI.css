@@ -438,15 +438,22 @@ body {
         opacity: 1;
     }
 }
+
 .error-text {
-    grid-area: error-text;
+    position: absolute;
+    grid-area: unset;
+    z-index: 99;
+    top: 128px;
+    left: 335px;
+
+    padding: 2px 5px;
+
     color: red;
-    font-size: 15px;
+    font-size: 20px;
     font-weight: bold;
-    display: block;
-    margin-top: 4px;
     background-color: white;
     text-align: center;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 
     animation: blink-three-times 0.5s ease-in-out 3;
 }

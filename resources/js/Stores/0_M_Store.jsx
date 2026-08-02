@@ -22,15 +22,19 @@ export const use_M_Store = create((set) => ({
     debug_checked_CU: false,
     debug_checked_CD: false, // e.g. ['INDEX', 'DEFAULT', 'NULLABLE']
 
-    debug_activeField: true,
+    debug_activeField: false,
     debug_activeTab: false,
     debug_activeSubTab: false,
 
     debug_is_new_field_added: false,
 
-    debug_NEW_added_fieldname: true,
+    debug_NEW_added_fieldname: false,
 
     debug_has_Fieldname_Change: false,
+
+    debug_hasJSON_Change: false,
+
+    has_M_value_Change: false,
 
     debug_D_Params_State: false,
 
@@ -88,24 +92,42 @@ export const use_M_Store = create((set) => ({
 
     has_M_value_Change: false,
     set_has_M_value_Change: (has_M_value_Change) =>
-        set({ has_M_value_Change: has_M_value_Change }),
+        // set({ has_M_value_Change: has_M_value_Change }),
+        set((state) => {
+            if (state.debug || state.debug_has_M_value_Change) {
+                console.log(
+                    `[M_STORE_DEBUG] has_M_value_Change :`,
+                    has_M_value_Change,
+                );
+                console.log("------------------------------------");
+            }
+            return { has_M_value_Change: has_M_value_Change };
+        }),
+
+    hasJSON_Change: false,
+    set_hasJSON_Change: (hasJSON_Change) =>
+        // set({ hasJSON_Change: hasJSON_Change }),
+        set((state) => {
+            if (state.debug || state.debug_hasJSON_Change) {
+                console.log(
+                    `[M_STORE_DEBUG] hasJSON_Change : ${hasJSON_Change} === ${state.has_Fieldname_Change} === has_Fieldname_Change`,
+                );
+                console.log("------------------------------------");
+            }
+            return { hasJSON_Change: hasJSON_Change };
+        }),
 
     has_Fieldname_Change: false,
     set_has_Fieldname_Change: (has_Fieldname_Change) =>
         set((state) => {
             if (state.debug || state.debug_has_Fieldname_Change) {
                 console.log(
-                    `[M_STORE_DEBUG] has_Fieldname_Change :`,
-                    has_Fieldname_Change,
+                    `[M_STORE_DEBUG] has_Fieldname_Change : ${has_Fieldname_Change} === ${state.hasJSON_Change} === hasJSON_Change`,
                 );
                 console.log("------------------------------------");
             }
             return { has_Fieldname_Change: has_Fieldname_Change };
         }),
-
-    hasJSON_Change: false,
-    set_hasJSON_Change: (hasJSON_Change) =>
-        set({ hasJSON_Change: hasJSON_Change }),
 
     D_Params_State: {},
     set_D_Params_State: (fieldname, D_Params_State) =>
