@@ -1,16 +1,16 @@
 {
     "_comment": "\/M_JSON\/App-Data.json",
     "f": {
-        "IMAGEFDF": [
-            "imagefdf",
+        "IMAGE": [
+            "image",
             "u::FILE",
             [
                 "d::STRING",
                 255
             ]
         ],
-        "NAME": [
-            "name",
+        "NAME254254": [
+            "name254254",
             "u::TEXT",
             "cud::REQUIRED",
             [

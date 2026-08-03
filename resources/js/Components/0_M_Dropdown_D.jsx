@@ -129,7 +129,7 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
         if (use_M_Store.getState().has_Fieldname_Change) {
             const activeField = use_M_Store.getState().activeField;
 
-            setCursor(activeField);
+            // setCursor(activeField);
 
             use_M_Store.getState().set_has_Fieldname_Change(false);
         }

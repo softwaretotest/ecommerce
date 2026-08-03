@@ -36,9 +36,25 @@ export const use_M_Store = create((set) => ({
 
     has_M_value_Change: false,
 
+    debug_Error_FIELDNAME: true,
+
     debug_D_Params_State: false,
 
     debug_is_auto_uncheck_FOREIGN_by_CU_CD: false,
+
+    debug_is_Editing: true,
+
+    is_Editing: false,
+    set_is_Editing: (is_Editing) =>
+        set((state) => {
+            if (state.debug || state.debug_is_Editing) {
+                console.log(`[M_STORE_DEBUG] is_Editing :`, is_Editing);
+                console.log("------------------------------------");
+            }
+            return {
+                is_Editing: is_Editing,
+            };
+        }),
 
     is_auto_uncheck_FOREIGN_by_CU_CD: false,
     set_is_auto_uncheck_FOREIGN_by_CU_CD: (is_auto_uncheck_FOREIGN_by_CU_CD) =>
@@ -88,11 +104,20 @@ export const use_M_Store = create((set) => ({
 
     Error_FIELDNAME: "",
     set_Error_FIELDNAME: (Error_FIELDNAME) =>
-        set({ Error_FIELDNAME: Error_FIELDNAME }),
+        // set({ Error_FIELDNAME: Error_FIELDNAME }),
+        set((state) => {
+            if (state.debug || state.debug_Error_FIELDNAME) {
+                console.log(
+                    `[M_STORE_DEBUG] Error_FIELDNAME :`,
+                    Error_FIELDNAME,
+                );
+                console.log("------------------------------------");
+            }
+            return { Error_FIELDNAME: Error_FIELDNAME };
+        }),
 
     has_M_value_Change: false,
     set_has_M_value_Change: (has_M_value_Change) =>
-        // set({ has_M_value_Change: has_M_value_Change }),
         set((state) => {
             if (state.debug || state.debug_has_M_value_Change) {
                 console.log(

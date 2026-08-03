@@ -271,6 +271,10 @@ body {
     scrollbar-color: #888 #f1f1f1;
 }
 
+.input-engine-container.lock-scroll {
+    overflow-y: hidden !important;
+}
+
 .content-box {
     display: grid;
     grid-template-columns: min-content var(--cd-col-width) 250px;
@@ -596,11 +600,11 @@ body {
 .field-group-M_value_KEY {
     display: grid;
     /* label(1fr = take rest aria), 3xbuttons(auto) */
-    grid-template-columns: 1fr auto auto auto;
+    grid-template-columns: 1fr auto auto;
 
     grid-template-areas:
-        "label clear-button save-button cancel-button"
-        "M_value_KEY M_value_KEY M_value_KEY M_value_KEY";
+        "label save-button cancel-button"
+        "M_value_KEY M_value_KEY M_value_KEY";
 
     align-items: center;
     gap: 1px;
@@ -643,4 +647,29 @@ input.M_value_KEY {
 
 .fieldname {
     grid-area: fieldname;
+}
+
+/* lock the whole screen except .activeField */
+.backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6); /* กระจกดำโปร่งแสง */
+    backdrop-filter: blur(2px); /* เบลอฉากหลังเล็กน้อยเพื่อให้ดูพรีเมียม */
+    z-index: 99;
+}
+
+/* this must be over the backdrop , when is_Editing = true */
+.activeField,
+/* parent of .activeField must be over the backdrop too*/
+.form-subtab-content-row.is-focused {
+    position: relative;
+    z-index: 100;
+}
+
+/* this lock Scroll if backdrop is showing */
+body.overflow-hidden {
+    overflow: hidden !important;
 }

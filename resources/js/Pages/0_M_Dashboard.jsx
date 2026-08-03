@@ -16,6 +16,7 @@ export default function M_Dashboard() {
 
     const save_All_Data = use_M_Store((state) => state.save_All_Data);
 
+    const is_Editing = use_M_Store((state) => state.is_Editing);
     const activeTab = use_M_Store((state) => state.activeTab);
     const setActiveTab = use_M_Store((state) => state.setActiveTab);
     const setActiveField = use_M_Store.getState().setActiveField;
@@ -28,31 +29,37 @@ export default function M_Dashboard() {
     ];
 
     return (
-        <div className="dashboard-wrapper">
-            <h1 className="dashboard-header">Project M Dashboard</h1>
+        <>
+            <div className="dashboard-wrapper">
+                <h1 className="dashboard-header">Project M Dashboard</h1>
 
-            <div className="tab-switcher-container">
-                {tabs.map((tab) => (
-                    <button
-                        key={tab.id}
-                        onClick={() => {
-                            setActiveTab(tab.id);
-                            //clear activeField on subTab changed
-                            setActiveField(null);
-                            set_Error_FIELDNAME("");
-                        }}
-                        className={`nav-button ${activeTab === tab.id ? "active" : ""}`}
-                    >
-                        {tab.label}
-                    </button>
-                ))}
-            </div>
+                <div className="tab-switcher-container">
+                    {tabs.map((tab) => (
+                        <button
+                            key={tab.id}
+                            onClick={() => {
+                                setActiveTab(tab.id);
+                                //clear activeField on subTab changed
+                                setActiveField(null);
+                                set_Error_FIELDNAME("");
+                            }}
+                            className={`nav-button ${activeTab === tab.id ? "active" : ""}`}
+                        >
+                            {tab.label}
+                        </button>
+                    ))}
+                </div>
 
-            <div className="dashboard-main-box">
-                {activeTab === "m_data" && <SubTab data={data.m_data} />}
-                {activeTab === "app_data" && <SubTab data={data.app_data} />}
-                {activeTab === "entities" && <SubTab data={data.entities} />}
+                <div className="dashboard-main-box">
+                    {activeTab === "m_data" && <SubTab data={data.m_data} />}
+                    {activeTab === "app_data" && (
+                        <SubTab data={data.app_data} />
+                    )}
+                    {activeTab === "entities" && (
+                        <SubTab data={data.entities} />
+                    )}
+                </div>
             </div>
-        </div>
+        </>
     );
 }

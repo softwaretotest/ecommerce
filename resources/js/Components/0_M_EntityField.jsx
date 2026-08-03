@@ -56,7 +56,7 @@ export default function EntityField({ f_s_Class_Array, TABLENAME }) {
                             },
                         );
                         const activeField = use_M_Store.getState().activeField;
-                        setCursor(activeField);
+                        // setCursor(activeField);
                     }}
                 />
                 <button

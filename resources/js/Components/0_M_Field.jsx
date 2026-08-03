@@ -1,15 +1,20 @@
 // resources/js/Components/0_M_Field.jsx
-import { useState } from "react";
-
-import { renderDropdown_D } from "@/Components/0_M_Dropdown_D";
-import { renderDropdown_U } from "@/Components/0_M_Dropdown_U";
-import { renderCheckboxList } from "@/Components/0_M_CheckBox";
+import { useState, useEffect } from "react";
 
 import { use_M_Option } from "@/Hooks/use_M_Option";
 import { useError } from "@/Hooks/useError";
 
-import { M_value_Service, delete_field } from "@/Services/0_M_value_Service";
 import { use_M_Store } from "@/Stores/0_M_Store";
+
+import {
+    M_value_Service,
+    delete_field,
+    rename_M_value_KEY_and_fieldname,
+} from "@/Services/0_M_value_Service";
+
+import { renderDropdown_D } from "@/Components/0_M_Dropdown_D";
+import { renderDropdown_U } from "@/Components/0_M_Dropdown_U";
+import { renderCheckboxList } from "@/Components/0_M_CheckBox";
 
 export default function Field({ field_data }) {
     const fieldname = field_data[0];
@@ -17,7 +22,12 @@ export default function Field({ field_data }) {
 
     const [FIELDNAME, set_FIELDNAME] = useState(fieldname);
 
-    const { handle_Fieldname_Change } = useError();
+    /**
+     * State to open / close Backdrop (lock UI during editig)
+     */
+    const { is_Editing, set_is_Editing } = use_M_Store();
+
+    const { Error_FIELDNAME, handle_Fieldname_Change } = useError();
     const activeField = use_M_Store((state) => state.activeField);
     const setActiveField = use_M_Store.getState().setActiveField;
 
@@ -65,13 +75,35 @@ export default function Field({ field_data }) {
         </div>
     );
 
+    // ในคอมโพเนนต์ของคุณ (เช่น หน้า Dashboard หรือ Layout หลักที่มี Backdrop)
+    // const { is_Editing } = use_M_Store();
+
+    useEffect(() => {
+        if (is_Editing) {
+            document.body.classList.add("overflow-hidden");
+        } else {
+            document.body.classList.remove("overflow-hidden");
+        }
+
+        // Cleanup function ป้องกันค้างเวลาคอมโพเนนต์ถูก unmount
+        return () => {
+            document.body.classList.remove("overflow-hidden");
+        };
+    }, [is_Editing]);
+
     function render_fieldname_input(fieldname, className, disabled = false) {
         const show_CRUD_BTN =
             className === "M_value_KEY" &&
             fieldname.toLowerCase() === activeField;
 
+        const className_activeField =
+            fieldname.toLowerCase() === activeField ? " activeField" : "";
         return (
-            <div className={"field-group-" + className}>
+            <div
+                className={
+                    "field-group-" + className + " " + className_activeField
+                }
+            >
                 <a className="label">{className}</a>
 
                 <input
@@ -82,40 +114,62 @@ export default function Field({ field_data }) {
                             : FIELDNAME.toUpperCase()
                     }
                     className={className}
-                    disabled={disabled}
-                    onChange={
-                        async (event) => {}
-                        // await handle_Fieldname_Change(
-                        //     event.target.value,
-                        //     set_FIELDNAME,
-                        //     { UPDATE: true },
-                        // )
+                    disabled={className !== "M_value_KEY"}
+                    onFocus={() => {
+                        if (
+                            !activeField ||
+                            activeField !== fieldname.toLowerCase()
+                        ) {
+                            setActiveField(fieldname.toLowerCase());
+                        }
+                        /* * make overlay backdrop cover all screen locked UI 
+                         * * except input.M_value_KEY, save- and cancel-button
+                         * * and Error_FIELDNAME(
+                                <span className="error-text">{error_text}</span>,
+                            );      
+                         */
+                        // setTimeout(() => {
+                        set_is_Editing(true);
+                        // }, 50);
+                    }}
+                    // onBlur={() => {
+                    //     set_FIELDNAME(activeField.toUpperCase());
+                    // }}
+                    onChange={async (event) =>
+                        await handle_Fieldname_Change(
+                            event.target.value,
+                            set_FIELDNAME,
+                            // { UPDATE: true },
+                        )
                     }
                 />
 
                 {show_CRUD_BTN && (
                     <>
                         <button
-                            className="clear-button"
-                            onClick={() => {
-                                set_FIELDNAME("");
-                            }}
-                        >
-                            ❌
-                        </button>
-                        <button
-                            className="save-button"
-                            onClick={() => {
-                                // update_field(fieldname);
+                            className={"save-button"}
+                            //no continue, if no data , or data invalide
+                            disabled={!FIELDNAME}
+                            onClick={async () => {
+                                await rename_M_value_KEY_and_fieldname(
+                                    FIELDNAME,
+                                );
+                                // setActiveField(null);
+                                // setTimeout(() => {
+                                setActiveField(FIELDNAME.toLowerCase());
+                                // }, 50);
+                                set_is_Editing(false);
                             }}
                         >
                             💾
                         </button>
                         <button
-                            className="cancel-button"
+                            className={"cancel-button"}
                             onClick={() => {
                                 //reset FIELDNAME
                                 set_FIELDNAME(activeField.toUpperCase());
+                                set_is_Editing(false);
+                                setActiveField(null);
                             }}
                         >
                             ↩️
@@ -127,7 +181,8 @@ export default function Field({ field_data }) {
     }
 
     return (
-        <div className="field-wrapper-box">
+        // <div className="field-wrapper-box">
+        <>
             <div className="field-header-container">
                 {render_fieldname_input(fieldname.toUpperCase(), "M_value_KEY")}
 
@@ -145,6 +200,7 @@ export default function Field({ field_data }) {
                 </button>
             </div>
             {CHECKBOX_and_DROPDOWN}
-        </div>
+        </>
+        // </div>
     );
 }

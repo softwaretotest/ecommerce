@@ -202,7 +202,7 @@ export default function TabContent() {
                         handle_Fieldname_Change(
                             event.target.value,
                             set_new_FIELDNAME,
-                            { ADD: true },
+                            // { ADD: true },
                         )
                     }
                 />
@@ -214,13 +214,19 @@ export default function TabContent() {
                     onClick={() => {
                         add_field();
                     }}
-                    disabled={!new_FIELDNAME || Error_FIELDNAME}
+                    //no continue, if no data , or data invalide
+                    disabled={!new_FIELDNAME}
                 >
                     ADD FIELD
                 </button>
             </div>
 
-            <div className="input-engine-container">
+            <div
+                className={`input-engine-container ${use_M_Store.getState().is_Editing ? "lock-scroll" : ""}`}
+            >
+                {use_M_Store.getState().is_Editing && (
+                    <div className="backdrop" />
+                )}
                 {Object.entries(M_value).map(
                     ([M_value_KEY, field_data], index) => {
                         // SAVE TO Javascript GLOBAL Variable
