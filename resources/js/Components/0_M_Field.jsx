@@ -66,9 +66,14 @@ export default function Field({ field_data }) {
     );
 
     function render_fieldname_input(fieldname, className, disabled = false) {
+        const show_CRUD_BTN =
+            className === "M_value_KEY" &&
+            fieldname.toLowerCase() === activeField;
+
         return (
-            <div className="field-input-group">
-                <a>{className}</a>
+            <div className={"field-group-" + className}>
+                <a className="label">{className}</a>
+
                 <input
                     type="text"
                     value={
@@ -78,14 +83,45 @@ export default function Field({ field_data }) {
                     }
                     className={className}
                     disabled={disabled}
-                    onChange={async (event) =>
-                        await handle_Fieldname_Change(
-                            event.target.value,
-                            set_FIELDNAME,
-                            { UPDATE: true },
-                        )
+                    onChange={
+                        async (event) => {}
+                        // await handle_Fieldname_Change(
+                        //     event.target.value,
+                        //     set_FIELDNAME,
+                        //     { UPDATE: true },
+                        // )
                     }
                 />
+
+                {show_CRUD_BTN && (
+                    <>
+                        <button
+                            className="clear-button"
+                            onClick={() => {
+                                set_FIELDNAME("");
+                            }}
+                        >
+                            ❌
+                        </button>
+                        <button
+                            className="save-button"
+                            onClick={() => {
+                                // update_field(fieldname);
+                            }}
+                        >
+                            💾
+                        </button>
+                        <button
+                            className="cancel-button"
+                            onClick={() => {
+                                //reset FIELDNAME
+                                set_FIELDNAME(activeField.toUpperCase());
+                            }}
+                        >
+                            ↩️
+                        </button>
+                    </>
+                )}
             </div>
         );
     }

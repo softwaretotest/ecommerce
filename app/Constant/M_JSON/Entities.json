@@ -10,19 +10,19 @@
         ],
         "PRODUCTS": [
             "f::NAME",
-            "f::IMAGE",
+            "f::IMAGEFDF",
             "f::SHOP_ID",
             "f::PRICE",
             "f::STOCK"
         ],
         "SHOPS": [
             "f::NAME",
-            "f::IMAGE",
+            "f::IMAGEFDF",
             "f::USER_ID"
         ],
         "USERS": [
             "f::NAME",
-            "f::IMAGE",
+            "f::IMAGEFDF",
             "s::EMAIL",
             "f::IS_ACTIVE"
         ]

@@ -209,6 +209,7 @@ body {
     font-size: xx-large;
     font-weight: bold;
     text-align: center;
+    align-self: end;
 }
 .field-dropdown-grid {
     display: grid;
@@ -573,17 +574,6 @@ body {
     box-sizing: border-box;
 }
 
-.field-input-group {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.field-input-group a {
-    font-size: small;
-    font-weight: bold;
-}
-
 .entities-M_value_KEY-and-delete-button {
     display: flex;
     flex-direction: row;
@@ -596,4 +586,61 @@ body {
     padding: 3px;
     border-radius: 4px;
     cursor: pointer;
+}
+
+/* reusable input buttons group */
+.field-group-M_value_KEY button {
+    margin: 0;
+    padding: 0;
+}
+.field-group-M_value_KEY {
+    display: grid;
+    /* label(1fr = take rest aria), 3xbuttons(auto) */
+    grid-template-columns: 1fr auto auto auto;
+
+    grid-template-areas:
+        "label clear-button save-button cancel-button"
+        "M_value_KEY M_value_KEY M_value_KEY M_value_KEY";
+
+    align-items: center;
+    gap: 1px;
+}
+
+.label {
+    grid-area: label;
+    font-size: small;
+    font-weight: bold;
+}
+
+.clear-button {
+    grid-area: clear-button;
+}
+
+.save-button {
+    grid-area: save-button;
+}
+
+.cancel-button {
+    grid-area: cancel-button;
+}
+
+input.M_value_KEY {
+    grid-area: M_value_KEY;
+}
+
+.field-group-fieldname {
+    display: grid;
+    /* 1 column , 2 rows */
+    grid-template-columns: 1fr;
+
+    grid-template-areas:
+        "label"
+        "fieldname";
+
+    align-items: center;
+    gap: 1px;
+}
+
+.fieldname {
+    grid-area: fieldname;
 }
