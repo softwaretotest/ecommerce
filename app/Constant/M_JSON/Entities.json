@@ -9,19 +9,19 @@
             "f::CONFIRM_ORDER"
         ],
         "PRODUCTS": [
-            "f::NAME254254",
+            "f::NAME",
             "f::IMAGE",
             "f::SHOP_ID",
             "f::PRICE",
             "f::STOCK"
         ],
         "SHOPS": [
-            "f::NAME254254",
+            "f::NAME",
             "f::IMAGE",
             "f::USER_ID"
         ],
         "USERS": [
-            "f::NAME254254",
+            "f::NAME",
             "f::IMAGE",
             "s::EMAIL",
             "f::IS_ACTIVE"

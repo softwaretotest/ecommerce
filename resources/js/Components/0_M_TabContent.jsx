@@ -20,15 +20,17 @@ import { set_selected_D_U_FOREIGN } from "@/Components/0_M_Data_Helper";
 export default function TabContent() {
     const { Error_FIELDNAME, handle_Fieldname_Change } = useError();
 
+    const { FIELDNAME_to_add, set_FIELDNAME_to_add } = use_M_Store();
+
     const M_value = use_M_Store((state) => state.M_value);
-
-    const set_NEW_added_fieldname =
-        use_M_Store.getState().set_NEW_added_fieldname;
-
     const activeTab = use_M_Store((state) => state.activeTab);
     const activeSubTab = use_M_Store((state) => state.activeSubTab);
     const activeField = use_M_Store((state) => state.activeField);
     const setActiveField = use_M_Store((state) => state.setActiveField);
+    const is_Editing = use_M_Store((state) => state.is_Editing);
+
+    const set_NEW_added_fieldname =
+        use_M_Store.getState().set_NEW_added_fieldname;
 
     if (!M_value)
         return <div className="ui-placeholder">No UI for {activeSubTab}</div>;
@@ -51,6 +53,7 @@ export default function TabContent() {
                     // fieldname = null , when field deleted
                     if (fieldname) setActiveField(fieldname);
                 }}
+                // for update fielname , user must select a field first
                 disabled={!activeField}
             >
                 {["d", "u", "cd", "cu", "cud"].includes(activeSubTab) && (
@@ -91,8 +94,6 @@ export default function TabContent() {
         );
     }
 
-    const [new_FIELDNAME, set_new_FIELDNAME] = useState("");
-
     /**
      * * get new fieldname from UI
      * * and save to JSON Backend
@@ -125,7 +126,7 @@ export default function TabContent() {
 
         //clear input box , after finish
         if (input_box_fieldname) input_box_fieldname.value = "";
-        set_new_FIELDNAME("");
+        set_FIELDNAME_to_add("");
 
         await add_cascade_tablename_in_app_data_t(
             use_M_Store.getState().activeField,
@@ -141,7 +142,6 @@ export default function TabContent() {
      * @returns
      */
     async function add_field_APP_DATA() {
-        console.log("!!!!!!!!!!! add field APP DATA called");
         const input_box_fieldname = document.querySelector(".new_field_name");
         const raw_name = input_box_fieldname ? input_box_fieldname.value : "";
 
@@ -168,7 +168,7 @@ export default function TabContent() {
 
         //clear input box , after finish
         if (input_box_fieldname) input_box_fieldname.value = "";
-        set_new_FIELDNAME("");
+        set_FIELDNAME_to_add("");
 
         set_selected_D_U_FOREIGN(new_field_data);
     }
@@ -185,6 +185,17 @@ export default function TabContent() {
         }
     }
 
+    /**
+     * remove scroll to lock UI during editing
+     */
+    useEffect(() => {
+        if (is_Editing) {
+            document.body.classList.add("overflow-hidden");
+        } else {
+            document.body.classList.remove("overflow-hidden");
+        }
+    }, [is_Editing]);
+
     return (
         <>
             {Error_FIELDNAME}
@@ -195,19 +206,12 @@ export default function TabContent() {
                 </label>
                 <input
                     type="text"
-                    className={`new_field_name ${new_FIELDNAME ? "justify-items-center" : ""}`}
+                    className={`new_field_name ${FIELDNAME_to_add ? "justify-items-center" : ""}`}
                     placeholder="new field name"
-                    value={new_FIELDNAME}
-                    onChange={(event) =>
-                        handle_Fieldname_Change(
-                            event.target.value,
-                            set_new_FIELDNAME,
-                            // { ADD: true },
-                        )
-                    }
+                    value={FIELDNAME_to_add}
+                    onFocus={() => set_FIELDNAME_to_add("")}
+                    onChange={(event) => handle_Fieldname_Change(event)}
                 />
-
-                {/* {Error_FIELDNAME} */}
 
                 <button
                     className="add-button"
@@ -215,7 +219,7 @@ export default function TabContent() {
                         add_field();
                     }}
                     //no continue, if no data , or data invalide
-                    disabled={!new_FIELDNAME}
+                    disabled={!FIELDNAME_to_add}
                 >
                     ADD FIELD
                 </button>

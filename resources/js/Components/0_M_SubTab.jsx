@@ -34,6 +34,7 @@ export default function SubTab({ data }) {
      */
     const activeSubTab = use_M_Store((state) => state.activeSubTab);
     const setActiveSubTab = use_M_Store.getState().setActiveSubTab;
+    const set_FIELDNAME_to_add = use_M_Store.getState().set_FIELDNAME_to_add;
 
     const scrollRefs = useRef({});
     useScrollIntoView(activeField, scrollRefs);
@@ -100,6 +101,7 @@ export default function SubTab({ data }) {
          * * activeSubTab from store: d
          */
         set_can_render_TabContent(true);
+        set_FIELDNAME_to_add("");
     }, [activeSubTab]); // Reason for Dependency : user klicks tab , data changes
 
     /**

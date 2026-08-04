@@ -448,8 +448,6 @@ body {
     position: absolute;
     grid-area: unset;
     z-index: 99;
-    top: 128px;
-    left: 335px;
 
     padding: 2px 5px;
 
@@ -663,6 +661,7 @@ input.M_value_KEY {
 
 /* this must be over the backdrop , when is_Editing = true */
 .activeField,
+.error-text,
 /* parent of .activeField must be over the backdrop too*/
 .form-subtab-content-row.is-focused {
     position: relative;

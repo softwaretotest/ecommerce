@@ -8,6 +8,8 @@ import {
     update_M_value_with_selected_F_S,
 } from "@/Services/0_M_value_Service";
 
+import { render_fieldname_input } from "@/Components/0_M_Input_Group";
+
 import Field from "@/Components/0_M_Field.jsx";
 import { render_All_F_S } from "@/Components/0_M_Entities_select";
 import { setCursor } from "@/utils/setCursor";
@@ -28,8 +30,13 @@ import { setCursor } from "@/utils/setCursor";
  * * }
  */
 export default function EntityField({ f_s_Class_Array, TABLENAME }) {
+    /**
+     * State to open / close Backdrop (lock UI during editig)
+     */
+    const { is_Editing, set_is_Editing } = use_M_Store();
+
     const { handle_Fieldname_Change } = useError();
-    const [TABLENAME_State, set_TABLENAME_State] = useState(TABLENAME);
+
     const selected_F_S = use_M_Store((state) => state.selected_F_S);
     const set_selected_F_S = use_M_Store.getState().set_selected_F_S;
 
@@ -39,29 +46,27 @@ export default function EntityField({ f_s_Class_Array, TABLENAME }) {
         }
     }, [f_s_Class_Array, TABLENAME]);
 
+    // const [TABLENAME_State, set_TABLENAME_State] = useState(TABLENAME);
+    const { FIELDNAME_to_update, set_FIELDNAME_to_update } = use_M_Store();
+    const tablename = TABLENAME.toLowerCase();
+
+    /**
+     * useEffect to set input.M_value_KEY in ENTITIES
+     */
+    useEffect(() => {
+        set_FIELDNAME_to_update(tablename, tablename);
+    }, [f_s_Class_Array]);
+
     function render_TABLENAME_State_and_DELETE_Button() {
         return (
             <div className="entities-M_value_KEY-and-delete-button">
-                <input
-                    type="text"
-                    value={TABLENAME_State}
-                    className="M_value_KEY"
-                    onChange={async (event) => {
-                        // this need await , otherwise setCursor doesn't work
-                        await handle_Fieldname_Change(
-                            event.target.value,
-                            set_TABLENAME_State,
-                            {
-                                UPDATE: true,
-                            },
-                        );
-                        const activeField = use_M_Store.getState().activeField;
-                        // setCursor(activeField);
-                    }}
-                />
+                {render_fieldname_input(TABLENAME.toLowerCase(), "M_value_KEY")}
                 <button
                     className="delete-button"
-                    onClick={() => delete_field(TABLENAME.toLowerCase())}
+                    onClick={() => {
+                        delete_field(TABLENAME.toLowerCase());
+                        set_is_Editing(false);
+                    }}
                 >
                     DELETE
                 </button>

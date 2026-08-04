@@ -16,11 +16,18 @@ export function useError() {
      * @param {*} event = value of fieldname input onChange
      * @returns
      */
-    async function handle_Fieldname_Change(
-        fieldname,
-        set_fieldname = null,
-        // options = {},
-    ) {
+    async function handle_Fieldname_Change(event) {
+        const fieldname = event.target.value;
+        const classNames = event.target.className;
+
+        const is_ADD = classNames.includes("new_field_name");
+        const is_UPDATE = classNames.includes("M_value_KEY");
+
+        const set_FIELDNAME_to_add =
+            use_M_Store.getState().set_FIELDNAME_to_add;
+        const set_FIELDNAME_to_update =
+            use_M_Store.getState().set_FIELDNAME_to_update;
+
         let FIELDNAME = fieldname.toUpperCase().replace(/\s+/g, "_");
         FIELDNAME = FIELDNAME.trim();
 
@@ -31,6 +38,7 @@ export function useError() {
             return;
         }
 
+        // code for useError_v2.js
         // if (typeof set_fieldname === "function" && options.ADD) {
         // set_fieldname(FIELDNAME);
         // }
@@ -52,6 +60,7 @@ export function useError() {
             return;
         }
 
+        // code for useError_v2.js
         // if (typeof set_fieldname === "function" && options.UPDATE) {
         //     set_fieldname(FIELDNAME);
         //     const OLD_KEY = activeField.toUpperCase();
@@ -59,8 +68,17 @@ export function useError() {
         //     await rename_M_value_KEY_and_fieldname(M_value, OLD_KEY, NEW_KEY);
         // }
 
-        set_fieldname(FIELDNAME);
         set_Error_FIELDNAME("");
+
+        // Case add_field()
+        if (is_ADD) {
+            set_FIELDNAME_to_add(FIELDNAME);
+        }
+
+        // Case update_field()
+        if (is_UPDATE && activeField) {
+            set_FIELDNAME_to_update(activeField, FIELDNAME);
+        }
     }
 
     /**

@@ -1,0 +1,119 @@
+// \resources\js\Components\0_M_Input_Group.jsx
+
+import { use_M_Store } from "@/Stores/0_M_Store";
+import { useError } from "@/Hooks/useError";
+import { rename_M_value_KEY_and_fieldname } from "@/Services/0_M_value_Service";
+
+/**
+ * * render an input + save - cancel - buttons
+ * * CALLED by EntityField.jsx or Field.jsx
+ * * to edit and update fieldname or tablename
+ * @param {*} fieldname for app_data = e.g. name , email , price  || for entities = tablename
+ * @param {*} className
+ * * M_value_KEY (for UPDATE)    in APP DATA and ENTITIES
+ * * new_field_name : (for ADD)  in APP DATA and ENTITIES
+ * * fieldname ( to show , not editable) in APP DATA
+ * @returns
+ */
+export function render_fieldname_input(fieldname, className) {
+    const activeField = use_M_Store((state) => state.activeField);
+
+    const setActiveField = use_M_Store.getState().setActiveField;
+    const set_Error_FIELDNAME = use_M_Store.getState().set_Error_FIELDNAME;
+
+    const { FIELDNAME_to_update, set_FIELDNAME_to_update } = use_M_Store();
+    const { FIELDNAME_to_add, set_FIELDNAME_to_add } = use_M_Store();
+
+    const { handle_Fieldname_Change } = useError();
+
+    const disabled = className !== "M_value_KEY";
+    /**
+     * State to open / close Backdrop (lock UI during editig)
+     */
+    const { is_Editing, set_is_Editing } = use_M_Store();
+
+    const is_ADD = className === "new_field_name";
+    const is_UPDATE = className === "M_value_KEY";
+    const is_fieldname = className === "fieldname";
+
+    let FIELDNAME = "";
+    if (is_ADD) FIELDNAME = FIELDNAME_to_add;
+    if (is_UPDATE) FIELDNAME = FIELDNAME_to_update[fieldname];
+
+    //Case for app_data.f only to show, not editable
+    if (is_fieldname) FIELDNAME = FIELDNAME_to_update[fieldname];
+
+    const show_CRUD_BTN =
+        className === "M_value_KEY" && fieldname.toLowerCase() === activeField;
+
+    const className_activeField =
+        fieldname.toLowerCase() === activeField ? " activeField" : "";
+    return (
+        <div
+            className={"field-group-" + className + " " + className_activeField}
+        >
+            <a className="label">{className}</a>
+
+            <input
+                type="text"
+                value={
+                    is_fieldname
+                        ? (FIELDNAME ?? "").toLowerCase()
+                        : (FIELDNAME ?? "").toUpperCase()
+                }
+                className={className}
+                disabled={disabled}
+                onFocus={() => {
+                    set_FIELDNAME_to_add("");
+                    set_Error_FIELDNAME(""); // clear error at beginning
+                    if (
+                        !activeField ||
+                        activeField !== fieldname.toLowerCase()
+                    ) {
+                        setActiveField(fieldname.toLowerCase());
+                    }
+
+                    set_is_Editing(true);
+                }}
+                onChange={async (event) => await handle_Fieldname_Change(event)}
+            />
+
+            {show_CRUD_BTN && (
+                <>
+                    <button
+                        className={"save-button"}
+                        //no continue, if no data , or data invalide
+                        disabled={!FIELDNAME}
+                        onClick={async () => {
+                            await rename_M_value_KEY_and_fieldname(FIELDNAME);
+
+                            setActiveField(
+                                FIELDNAME_to_update[fieldname].toLowerCase(),
+                            );
+
+                            set_is_Editing(false);
+                        }}
+                    >
+                        💾
+                    </button>
+                    <button
+                        className={"cancel-button"}
+                        onClick={() => {
+                            //reset FIELDNAME_to_update
+
+                            set_FIELDNAME_to_update(
+                                fieldname,
+                                activeField.toUpperCase(),
+                            );
+
+                            set_is_Editing(false);
+                            setActiveField(null);
+                        }}
+                    >
+                        ↩️
+                    </button>
+                </>
+            )}
+        </div>
+    );
+}

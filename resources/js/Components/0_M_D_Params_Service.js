@@ -48,6 +48,11 @@ export function find_D_Params_in_GLOBAL_METADATA(D_Name_UPPERCASE, fieldname) {
         GLOBAL_METADATA?.m_data?.s?.[fieldname.toUpperCase()];
     if (debug)
         console.log(
+            "OPOPOPOPOPOOPO -- find_D_Params_in_GLOBAL_METADATA -- GLOBAL_METADATA = ",
+            GLOBAL_METADATA,
+        );
+    if (debug)
+        console.log(
             "OPOPOPOPOPOOPO -- find_D_Params_in_GLOBAL_METADATA -- D_Name_UPPERCASE = ",
             D_Name_UPPERCASE,
         );

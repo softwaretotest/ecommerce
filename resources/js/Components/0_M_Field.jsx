@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 
 import { use_M_Option } from "@/Hooks/use_M_Option";
-import { useError } from "@/Hooks/useError";
 
 import { use_M_Store } from "@/Stores/0_M_Store";
 
@@ -15,19 +14,27 @@ import {
 import { renderDropdown_D } from "@/Components/0_M_Dropdown_D";
 import { renderDropdown_U } from "@/Components/0_M_Dropdown_U";
 import { renderCheckboxList } from "@/Components/0_M_CheckBox";
+import { render_fieldname_input } from "@/Components/0_M_Input_Group.jsx";
 
 export default function Field({ field_data }) {
     const fieldname = field_data[0];
     const is_CURRENCY = field_data[0].toLowerCase() === "currency";
 
-    const [FIELDNAME, set_FIELDNAME] = useState(fieldname);
+    // const [FIELDNAME_to_update, set_FIELDNAME_to_update] = useState(fieldname);
+    const { FIELDNAME_to_update, set_FIELDNAME_to_update } = use_M_Store();
+
+    /**
+     * useEffect to set input.M_value_KEY in APP DATA
+     */
+    useEffect(() => {
+        set_FIELDNAME_to_update(fieldname, fieldname);
+    }, [field_data]);
 
     /**
      * State to open / close Backdrop (lock UI during editig)
      */
     const { is_Editing, set_is_Editing } = use_M_Store();
 
-    const { Error_FIELDNAME, handle_Fieldname_Change } = useError();
     const activeField = use_M_Store((state) => state.activeField);
     const setActiveField = use_M_Store.getState().setActiveField;
 
@@ -75,125 +82,21 @@ export default function Field({ field_data }) {
         </div>
     );
 
-    // ในคอมโพเนนต์ของคุณ (เช่น หน้า Dashboard หรือ Layout หลักที่มี Backdrop)
-    // const { is_Editing } = use_M_Store();
-
-    useEffect(() => {
-        if (is_Editing) {
-            document.body.classList.add("overflow-hidden");
-        } else {
-            document.body.classList.remove("overflow-hidden");
-        }
-
-        // Cleanup function ป้องกันค้างเวลาคอมโพเนนต์ถูก unmount
-        return () => {
-            document.body.classList.remove("overflow-hidden");
-        };
-    }, [is_Editing]);
-
-    function render_fieldname_input(fieldname, className, disabled = false) {
-        const show_CRUD_BTN =
-            className === "M_value_KEY" &&
-            fieldname.toLowerCase() === activeField;
-
-        const className_activeField =
-            fieldname.toLowerCase() === activeField ? " activeField" : "";
-        return (
-            <div
-                className={
-                    "field-group-" + className + " " + className_activeField
-                }
-            >
-                <a className="label">{className}</a>
-
-                <input
-                    type="text"
-                    value={
-                        disabled
-                            ? FIELDNAME.toLowerCase()
-                            : FIELDNAME.toUpperCase()
-                    }
-                    className={className}
-                    disabled={className !== "M_value_KEY"}
-                    onFocus={() => {
-                        if (
-                            !activeField ||
-                            activeField !== fieldname.toLowerCase()
-                        ) {
-                            setActiveField(fieldname.toLowerCase());
-                        }
-                        /* * make overlay backdrop cover all screen locked UI 
-                         * * except input.M_value_KEY, save- and cancel-button
-                         * * and Error_FIELDNAME(
-                                <span className="error-text">{error_text}</span>,
-                            );      
-                         */
-                        // setTimeout(() => {
-                        set_is_Editing(true);
-                        // }, 50);
-                    }}
-                    // onBlur={() => {
-                    //     set_FIELDNAME(activeField.toUpperCase());
-                    // }}
-                    onChange={async (event) =>
-                        await handle_Fieldname_Change(
-                            event.target.value,
-                            set_FIELDNAME,
-                            // { UPDATE: true },
-                        )
-                    }
-                />
-
-                {show_CRUD_BTN && (
-                    <>
-                        <button
-                            className={"save-button"}
-                            //no continue, if no data , or data invalide
-                            disabled={!FIELDNAME}
-                            onClick={async () => {
-                                await rename_M_value_KEY_and_fieldname(
-                                    FIELDNAME,
-                                );
-                                // setActiveField(null);
-                                // setTimeout(() => {
-                                setActiveField(FIELDNAME.toLowerCase());
-                                // }, 50);
-                                set_is_Editing(false);
-                            }}
-                        >
-                            💾
-                        </button>
-                        <button
-                            className={"cancel-button"}
-                            onClick={() => {
-                                //reset FIELDNAME
-                                set_FIELDNAME(activeField.toUpperCase());
-                                set_is_Editing(false);
-                                setActiveField(null);
-                            }}
-                        >
-                            ↩️
-                        </button>
-                    </>
-                )}
-            </div>
-        );
-    }
-
     return (
         // <div className="field-wrapper-box">
         <>
             <div className="field-header-container">
-                {render_fieldname_input(fieldname.toUpperCase(), "M_value_KEY")}
+                {render_fieldname_input(fieldname, "M_value_KEY")}
 
                 <span className="field-separator-colon">:</span>
 
-                {render_fieldname_input(fieldname, "fieldname", true)}
+                {render_fieldname_input(fieldname, "fieldname")}
 
                 <button
                     className="delete-button"
                     onClick={() => {
                         delete_field(fieldname);
+                        set_is_Editing(false);
                     }}
                 >
                     DELETE

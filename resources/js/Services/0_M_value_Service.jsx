@@ -263,7 +263,7 @@ async function delete_cascade_fieldname_in_entities(activeField, debug) {
  * * we have 2026 , but GEMINI said :
  * * " JS still has no better solution to change object key "
  */
-export async function rename_M_value_KEY_and_fieldname(FIELDNAME) {
+export async function rename_M_value_KEY_and_fieldname(fieldname) {
     const debug = false;
 
     const activeTab = use_M_Store.getState().activeTab;
@@ -272,7 +272,7 @@ export async function rename_M_value_KEY_and_fieldname(FIELDNAME) {
     const setActiveField = use_M_Store.getState().setActiveField;
     const old_M_value = use_M_Store.getState().M_value;
     const OLD_KEY = activeField.toUpperCase();
-    const NEW_KEY = FIELDNAME;
+    const NEW_KEY = fieldname.toUpperCase();
 
     const set_NEW_added_fieldname =
         use_M_Store.getState().set_NEW_added_fieldname;

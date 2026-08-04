@@ -36,17 +36,56 @@ export const use_M_Store = create((set) => ({
 
     has_M_value_Change: false,
 
-    debug_Error_FIELDNAME: true,
+    debug_Error_FIELDNAME: false,
 
     debug_D_Params_State: false,
 
     debug_is_auto_uncheck_FOREIGN_by_CU_CD: false,
 
-    debug_is_Editing: true,
+    debug_is_Editing: false,
+
+    debug_FIELDNAME_to_update: false,
+
+    debug_FIELDNAME_to_add: false,
+
+    FIELDNAME_to_update: {}, // atomic states
+    set_FIELDNAME_to_update: (fieldname, FIELDNAME_to_update) =>
+        set((state) => {
+            const NEW_FIELDNAME_to_update = {
+                ...state.FIELDNAME_to_update,
+                [fieldname]: FIELDNAME_to_update,
+            };
+
+            if (state.debug || state.debug_FIELDNAME_to_update) {
+                console.log(
+                    `[M_STORE_DEBUG] NEW_FIELDNAME_to_update[${fieldname}] :`,
+                    NEW_FIELDNAME_to_update[fieldname],
+                );
+                console.log("------------------------------------");
+            }
+            return {
+                FIELDNAME_to_update: NEW_FIELDNAME_to_update,
+            };
+        }),
+
+    FIELDNAME_to_add: "",
+    set_FIELDNAME_to_add: (FIELDNAME_to_add) =>
+        set((state) => {
+            if (state.debug || state.debug_FIELDNAME_to_add) {
+                console.log(
+                    `[M_STORE_DEBUG] FIELDNAME_to_add : ${FIELDNAME_to_add}`,
+                );
+                console.log("------------------------------------");
+            }
+            return { FIELDNAME_to_add: FIELDNAME_to_add };
+        }),
 
     is_Editing: false,
     set_is_Editing: (is_Editing) =>
         set((state) => {
+            if (is_Editing === false) {
+                state.set_Error_FIELDNAME(""); // clear Errors
+            }
             if (state.debug || state.debug_is_Editing) {
                 console.log(`[M_STORE_DEBUG] is_Editing :`, is_Editing);
                 console.log("------------------------------------");
@@ -279,7 +318,7 @@ export const use_M_Store = create((set) => ({
 
             if (state.debug || state.debug_selected_U_FOREIGN) {
                 console.log(
-                    `[M_STORE_DEBUG] NEW_selected_U_FOREIGN[${fieldname}]:`,
+                    `[M_STORE_DEBUG] NEW selected_U_FOREIGN[${fieldname}]:`,
                     NEW_selected_U_FOREIGN[fieldname],
                 );
                 console.log("------------------------------------");

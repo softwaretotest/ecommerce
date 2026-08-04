@@ -129,7 +129,7 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
         if (use_M_Store.getState().has_Fieldname_Change) {
             const activeField = use_M_Store.getState().activeField;
 
-            // setCursor(activeField);
+            // setCursor(activeField);  // for useError_v2.js
 
             use_M_Store.getState().set_has_Fieldname_Change(false);
         }
@@ -141,7 +141,8 @@ export function renderDropdown_D(M_Class_Name_List, field_data) {
             );
         if (!selected_D_to_show) return;
 
-        const checked_CD_values = use_M_Store.getState().checked_CD[fieldname];
+        const checked_CD_values =
+            use_M_Store.getState().checked_CD[fieldname] || [];
 
         if (debug)
             console.log(
