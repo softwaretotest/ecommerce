@@ -48,26 +48,10 @@ export const use_M_Store = create((set) => ({
 
     debug_FIELDNAME_to_add: false,
 
-    FIELDNAME_to_update: {}, // atomic states
-    set_FIELDNAME_to_update: (fieldname, FIELDNAME_to_update) =>
-        set((state) => {
-            const NEW_FIELDNAME_to_update = {
-                ...state.FIELDNAME_to_update,
-                [fieldname]: FIELDNAME_to_update,
-            };
-
-            if (state.debug || state.debug_FIELDNAME_to_update) {
-                console.log(
-                    `[M_STORE_DEBUG] NEW_FIELDNAME_to_update[${fieldname}] :`,
-                    NEW_FIELDNAME_to_update[fieldname],
-                );
-                console.log("------------------------------------");
-            }
-            return {
-                FIELDNAME_to_update: NEW_FIELDNAME_to_update,
-            };
-        }),
-
+    /**
+     * * CALLED by TabContent.add_field()
+     * * to handle add new fieldname or new tablename
+     */
     FIELDNAME_to_add: "",
     set_FIELDNAME_to_add: (FIELDNAME_to_add) =>
         set((state) => {
@@ -193,7 +177,36 @@ export const use_M_Store = create((set) => ({
             return { has_Fieldname_Change: has_Fieldname_Change };
         }),
 
-    D_Params_State: {},
+    /* * ------------------
+     * * ATOMIC STATES
+     * * ------------------
+     */
+
+    /**
+     * * CALLED by render_fieldname_input
+     * * to handle update fieldname and tablename
+     */
+    FIELDNAME_to_update: {}, // atomic states
+    set_FIELDNAME_to_update: (fieldname, FIELDNAME_to_update) =>
+        set((state) => {
+            const NEW_FIELDNAME_to_update = {
+                ...state.FIELDNAME_to_update,
+                [fieldname]: FIELDNAME_to_update,
+            };
+
+            if (state.debug || state.debug_FIELDNAME_to_update) {
+                console.log(
+                    `[M_STORE_DEBUG] NEW_FIELDNAME_to_update[${fieldname}] :`,
+                    NEW_FIELDNAME_to_update[fieldname],
+                );
+                console.log("------------------------------------");
+            }
+            return {
+                FIELDNAME_to_update: NEW_FIELDNAME_to_update,
+            };
+        }),
+
+    D_Params_State: {}, // atomic states
     set_D_Params_State: (fieldname, D_Params_State) =>
         set((state) => {
             if (!fieldname) return { D_Params_State: {} };
@@ -254,7 +267,10 @@ export const use_M_Store = create((set) => ({
             return { selected_F_S: NEW_selected_F_S };
         }),
 
-    add_F_S: (tablename, field_item) =>
+    add_F_S: (
+        tablename,
+        field_item, // function of atomic states
+    ) =>
         set((state) => {
             if (!tablename) return state;
             const current_list = state.selected_F_S[tablename];
@@ -280,7 +296,10 @@ export const use_M_Store = create((set) => ({
             return { selected_F_S: NEW_selected_F_S };
         }),
 
-    remove_F_S: (tablename, field_item) =>
+    remove_F_S: (
+        tablename,
+        field_item, // function atomic states
+    ) =>
         set((state) => {
             if (!tablename) return state;
             const current_list = state.selected_F_S[tablename];
@@ -440,6 +459,10 @@ export const use_M_Store = create((set) => ({
             return { checked_CU: NEW_checked_CU };
         }),
 
+    /* * ------------------
+     * * MOST IN USE STATES
+     * * ------------------
+     */
     activeTab: "m_data", //default on refresh
     setActiveTab: (tab) =>
         set((state) => {

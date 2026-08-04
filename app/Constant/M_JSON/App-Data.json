@@ -97,7 +97,6 @@
     "t": {
         "USERS": "users",
         "SHOPS": "shops",
-        "PRODUCTS": "products",
-        "ORDERS": "orders"
+        "PRODUCTS": "products"
     }
 }
