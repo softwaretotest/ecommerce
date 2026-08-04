@@ -56,7 +56,7 @@ class M_Controller extends Controller
 
         if (File::put($path, json_encode($jsonData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE))) {
             // answer success to Frontend 
-            return response()->json(['message' => 'Metadata updated successfully', 'status' => 'success']);
+            return response()->json(['message' => 'Metadata updated successfully ✅', 'status' => 'success']);
         }
 
         return response()->json(['error' => 'Failed to write file'], 500);

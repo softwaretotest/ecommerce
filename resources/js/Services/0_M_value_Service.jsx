@@ -75,7 +75,9 @@ async function send_POST(new_M_value, cascade = null) {
 
     if (!response.ok) throw new Error("Server error");
 
-    console.log(`[SERVICE] Saved ${activeTab}/${activeSubTab} successfully!`);
+    console.log(
+        `[SERVICE] Saved ${activeTab}/${activeSubTab} successfully ✅!`,
+    );
 }
 
 /**

@@ -36,7 +36,7 @@ class MakeSchema
 
         foreach ($field as $item) {
             $val = is_array($item) ? $item[0] : $item;
-            if (SpecialField::successfully_added($item, $schema)) {
+            if (SpecialField::successfully ✅_added($item, $schema)) {
                 continue;
             }
 

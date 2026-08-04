@@ -24,7 +24,7 @@ class ProductApiController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Product list retrieved successfully',
+            'message' => 'Product list retrieved successfully ✅',
             'data' => $products
         ], 200);
     }

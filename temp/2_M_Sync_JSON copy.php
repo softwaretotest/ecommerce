@@ -11,7 +11,7 @@ use PhpParser\NodeTraverser;
 /**
  * sync JSON to PHP
  */
-class M_Sync_JSON
+class M_Sync_JSON_COPY
 {
     const M_JSON = '/M_JSON';
 

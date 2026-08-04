@@ -832,7 +832,7 @@ class MakeSchema
 
         foreach ($field as $item) {
             $val = is_array($item) ? $item[0] : $item;
-            if (SpecialField::successfully_added($item, $schema)) {
+            if (SpecialField::successfully ✅_added($item, $schema)) {
                 continue;
             }
 
@@ -1035,7 +1035,7 @@ class SpecialField
      * s::EMAIL[0]
      * s::CURRENCY[0]
      */
-    public static function successfully_added($item, &$schema): bool
+    public static function successfully ✅_added($item, &$schema): bool
     {
         $isSpecial = false;
         $fieldName = is_array($item) ? $item[0] : $item;
@@ -1715,7 +1715,7 @@ class ProductApiController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Product list retrieved successfully',
+            'message' => 'Product list retrieved successfully ✅',
             'data' => $products
         ], 200);
     }
@@ -1796,7 +1796,7 @@ class M_Controller extends Controller
 
         if (File::put($path, json_encode($jsonData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE))) {
             // answer success to Frontend 
-            return response()->json(['message' => 'Metadata updated successfully', 'status' => 'success']);
+            return response()->json(['message' => 'Metadata updated successfully ✅', 'status' => 'success']);
         }
 
         return response()->json(['error' => 'Failed to write file'], 500);
@@ -7501,7 +7501,7 @@ async function send_POST(new_M_value, cascade = null) {
 
     if (!response.ok) throw new Error("Server error");
 
-    console.log(`[SERVICE] Saved ${activeTab}/${activeSubTab} successfully!`);
+    console.log(`[SERVICE] Saved ${activeTab}/${activeSubTab} successfully ✅!`);
 }
 
 /**
