@@ -29,13 +29,6 @@
         "REQUIRED": "required"
     },
     "s": {
-        "JKGHKJ": [
-            "jkghkj",
-            [
-                "d::STRING",
-                255
-            ]
-        ],
         "EMAIL": [
             "email",
             "d::STRING",

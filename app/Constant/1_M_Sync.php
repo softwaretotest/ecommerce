@@ -7,6 +7,9 @@ require __DIR__ . '/../../vendor/autoload.php';
 use PhpParser\ParserFactory;
 use PhpParser\NodeTraverser;
 
+/**
+ * sync PHP to JSON
+ */
 class M_Sync
 {
     const M_JSON = '/M_JSON';
@@ -14,14 +17,14 @@ class M_Sync
     public static function syncAll(): void
     {
         // Generate M-Data and App-Data
-        self::runPHPToJSON('0_Constant_M.php', self::M_JSON . '/M-Data.json');
-        self::runPHPToJSON('0_Constant_APP.php', self::M_JSON . '/App-Data.json');
+        self::run_PHP_to_JSON('0_Constant_M.php', self::M_JSON . '/M-Data.json');
+        self::run_PHP_to_JSON('0_Constant_APP.php', self::M_JSON . '/App-Data.json');
 
         // Generate Entities data
-        self::runEntitiesSync(self::M_JSON . '/Entities.json');
+        self::run_Entities_to_JSON(self::M_JSON . '/Entities.json');
     }
 
-    private static function runPHPToJSON($sourceFile, $jsonFile): void
+    private static function run_PHP_to_JSON($sourceFile, $jsonFile): void
     {
         // กำหนด Path เต็มสำหรับโฟลเดอร์ M_JSON
         $directory = __DIR__ . self::M_JSON;
@@ -45,7 +48,7 @@ class M_Sync
         echo "--- M_Sync: Created {$jsonFile} ---\n";
     }
 
-    private static function runEntitiesSync($jsonFile): void
+    private static function run_Entities_to_JSON($jsonFile): void
     {
         $parser = (new ParserFactory)->createForNewestSupportedVersion();
         $scanner = new Entities_to_JSON();
