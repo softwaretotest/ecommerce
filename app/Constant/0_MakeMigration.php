@@ -24,20 +24,19 @@ class MakeMigration
         // Search for the migration file dynamically based on tableName
         $files = glob(__DIR__ . "/../../database/migrations/*_create_{$tableName}_table.php");
 
-        if (!empty($files) && is_string($files[0]) && $tableName === 'users') {
-            // delete *_create_users_table.php
+        /**
+         * * * SPECIAL CASE users table in Laravel : 
+         * * we must remove old *_create_{$tableName}_table.php  , before continue
+         * * update existing file *_create_{$tableName}_table.php
+         * * take to much effort and lead to bugs
+         */
+        if (!empty($files) && is_string($files[0])) {
+            // delete *_create_{$tableName}_table.php
             @unlink($files[0]); // delete file from system like rm of CMD 
         }
-        /**
-         * this guard validate *_create_users_table.php exists
-         */
-        // if (!empty($files) && is_string($files[0]) && $tableName === 'users') {
-        //     echo "--- Maker: Found existing migration for [{$tableName}]. Preparing to analyze... ---\n\n";
-        //     self::replaceExisting($files[0], $tableName);
-        // } else {
-        echo "--- Maker: No migration found for [{$tableName}]. Preparing to create new one... ---\n\n";
+
+        echo "--- Maker: Preparing to create migration file for [{$tableName}]. ---\n\n";
         MigrationFile::createNew($tableName);
-        // }
     }
 
     /**

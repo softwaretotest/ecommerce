@@ -4,7 +4,7 @@ namespace App\Constant;
 
 class f
 {
-    public const IMAGE = ['image', [d::STRING, 255], u::FILE, cd::NULLABLE];
+    public const IMAGE = ['image', [d::STRING, 255], u::FILE];
     public const NAME = ['name', [d::STRING, 255], u::TEXT, cud::REQUIRED];
     public const PRICE = ['price', [d::DECIMAL, 10, 2], u::NUMBER, [cd::DEFAULT, 0], s::CURRENCY];
     public const STOCK = ['stock', [d::DECIMAL, 10, 10], u::NUMBER, [cd::DEFAULT, 0], cud::REQUIRED];

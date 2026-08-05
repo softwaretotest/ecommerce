@@ -7,15 +7,29 @@ class DBOption
 {
     /**
      * * Main entry to process all lines in a migration file.
-     * * VERY IMPORTAINT !!! 
+     * 1. Update existing lines 
+     * 2. Add missing lines
+     * * ----------------------------------------------------
+     * * VERY IMPORTAINT NOTE !!! 
      * * &$processedFields ( & = passed by Ref ) 
      * * So, processedFields must be handled by both functions updateLines() and addMissingLines() 
      * * no matter if ($tableName === 'users') or not
      * * to complete the make Lines Process correctly
+     * * without this line :
+     * *    $lines = self::updateLines($lines, $processedFields, $tableName, $dbSchema);
+     * * 0_Runner.php will add multiple same line like this:
+     * * 
+            $table->string('name');                     // from original Laravel migration
+            $table->string('name', 255)->required();    // from M_Project UserConstant.php
+     * *
      */
     public static function makeLines(array $lines, array &$processedFields, string $tableName, array $dbSchema): array
     {
-        // 1. Update existing lines 
+        /**
+         * * * SPECIAL CASE users table in Laravel : 
+         * * do not remove this, even the code look unnecessary
+         * * 1. Update existing lines 
+         **/
         $lines = self::updateLines($lines, $processedFields, $tableName, $dbSchema);
 
         // 2. Add missing lines
@@ -48,7 +62,25 @@ class DBOption
             if ($inTable) {
                 foreach ($dbSchema as $fieldName => $dbOptions) {
                     if (strpos($line, "'{$fieldName}'") !== false) {
+                        /**
+                         * * * SPECIAL CASE users table in Laravel : 
+                         * * this line overwrite existing Laravel migration methode 
+                         * * e.g. 
+                         * *    $table->string('name');
+                         * *    $table->string('email')->unique();
+                         * *    ... etc. 
+                         * * So, this must be commented out // $lines[$index] = ....
+                         */
                         // $lines[$index] = "            " . self::makeLine($fieldName, $dbOptions) . ";";
+
+                        /**
+                         * * but, we still need to set 
+                            $processedFields[] = $fieldName;
+                         * * to make to make function makeLines() works correctly
+                         * * otherwise it can overwrite laravel methode
+                         * * e.g. from $table->string('name', 255) to $table->decimal('name', 10, 2);
+                         * * and can cause error
+                         */
                         $processedFields[] = $fieldName;
                     }
                 }

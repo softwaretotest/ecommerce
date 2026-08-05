@@ -23,8 +23,8 @@
         "USERS": [
             "f::NAME",
             "f::IMAGE",
-            "f::IS_ACTIVE",
-            "f::PRICE"
+            "s::EMAIL",
+            "f::IS_ACTIVE"
         ]
     }
 }

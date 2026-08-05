@@ -2,17 +2,16 @@
 
 namespace App\Constant;
 
-class UserConstant
+class ShopConstant
 {
-    public const TABLE_NAME = t::USERS;
+    public const TABLE_NAME = t::SHOPS;
 
     public static function fields(): array
     {
         return [
             f::NAME,
             f::IMAGE,
-            s::EMAIL,
-            f::IS_ACTIVE,
+            f::USER_ID,
         ];
     }
 }

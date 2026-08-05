@@ -7,7 +7,8 @@
                 "d::STRING",
                 255
             ],
-            "u::FILE"
+            "u::FILE",
+            "cd::NULLABLE"
         ],
         "NAME": [
             "name",
@@ -36,8 +37,8 @@
             "stock",
             [
                 "d::DECIMAL",
-                7,
-                3
+                10,
+                10
             ],
             "u::NUMBER",
             [
@@ -48,13 +49,12 @@
         ],
         "IS_ACTIVE": [
             "is_active",
-            "d::INTEGER",
+            "d::BOOLEAN",
             "u::SELECT",
             [
                 "cd::DEFAULT",
-                0
-            ],
-            "cd::NULLABLE"
+                true
+            ]
         ],
         "QUANTITY": [
             "quantity",
