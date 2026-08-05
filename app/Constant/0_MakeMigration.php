@@ -19,18 +19,24 @@ class MakeMigration
             self::$dbSchema[$fieldName] = $data['db'];
         }
 
-        // echo "--- Maker: Current DB Schema Config ---\n\n";
-        // print_r(self::$dbSchema);
-        // echo "--------------------------------------\n\n";
-
         echo "--- Maker: Starting Migration Generation for [{$tableName}] ---\n\n";
 
         // Search for the migration file dynamically based on tableName
         $files = glob(__DIR__ . "/../../database/migrations/*_create_{$tableName}_table.php");
 
         if (!empty($files) && is_string($files[0]) && $tableName === 'users') {
-            echo "--- Maker: Found existing migration for [{$tableName}]. Preparing to analyze... ---\n\n";
-            self::replaceExisting($files[0], $tableName);
+            // echo "--- Maker: Found existing migration for [{$tableName}]. Preparing to analyze... ---\n\n";
+            echo "--- Maker: Skipping modification for protected table [{$tableName}]. ---\n\n";
+            return;  // skip making change in laravel users migration
+            /**
+             * * we comment out self::replaceExisting($files[0], $tableName); 
+             * * to avoid our change in Laravel User Migration
+             * * in original 0001_01_01_000000_create_users_table.php 
+             * * but, if we have to do change in user migration,
+             * * we must better add new table 'user_details' with user_id
+             * * we can add the logic here
+             */
+            // self::replaceExisting($files[0], $tableName);
         } else {
             echo "--- Maker: No migration found for [{$tableName}]. Preparing to create new one... ---\n\n";
             MigrationFile::createNew($tableName);

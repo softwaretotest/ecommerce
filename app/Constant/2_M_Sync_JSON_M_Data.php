@@ -2,7 +2,7 @@
 
 namespace App\Constant;
 
-class M_Sync_M_Data
+class M_Sync_JSON_M_Data
 {
     public static function generate(): void
     {

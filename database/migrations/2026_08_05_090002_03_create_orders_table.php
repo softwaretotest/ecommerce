@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->string('order_nr');
-            $table->decimal('quantity')->default(1)->required();
+            $table->string('order_nr', 255);
+            $table->decimal('quantity', 10, 2)->default(1)->required();
             $table->boolean('confirm_order')->default(false);
             $table->foreignId('product_id')->constrained('products')->onDelete('restrict');
             $table->foreignId('user_id')->constrained('users')->onDelete('restrict');

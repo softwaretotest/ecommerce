@@ -2,7 +2,7 @@
 
 namespace App\Constant;
 
-class M_Sync_App_Data
+class M_Sync_JSON_App_Data
 {
     public static function generate(): void
     {
@@ -27,7 +27,7 @@ class M_Sync_App_Data
     private static function formatArray($arr): string
     {
         if (!is_array($arr)) {
-            // ถ้าเป็นรูปแบบ constant เช่น d::STRING, u::FILE ให้ถอดเครื่องหมาย string ออก
+            // if constant e.g. 'd::STRING', 'u::FILE' remove ' 
             if (is_string($arr) && preg_match('/^[a-z]+::[A-Z_]+$/', $arr)) {
                 return $arr;
             }

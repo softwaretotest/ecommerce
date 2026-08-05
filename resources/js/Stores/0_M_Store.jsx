@@ -8,6 +8,8 @@ import {
     get_U_NAME_by_FIELDNAME,
 } from "@/Components/0_M_Data_Helper";
 
+import { move_d_to_2nd_position } from "@/Services/0_M_value_Service";
+
 export const use_M_Store = create((set) => ({
     debug: false,
     debug_M_value: false,
@@ -514,7 +516,8 @@ export const use_M_Store = create((set) => ({
      * * e.g. M_DATA, APP_DATA, ENTITIES
      */
     M_value: {},
-    set_M_value: (new_M_value) =>
+    set_M_value: (new_M_value) => {
+        let corrected_M_value = null;
         set((state) => {
             // // this sort alphanummeric M_value by KEY DOES NOT WORK
             // // 1. ดึง Key ทั้งหมดมาเรียงลำดับตามตัวอักษร (A-Z)
@@ -531,10 +534,18 @@ export const use_M_Store = create((set) => ({
             //     sorted_M_value[key] = new_M_value[key];
             // });
 
+            corrected_M_value = move_d_to_2nd_position(new_M_value);
+
             if (state.debug || state.debug_M_value) {
                 console.log(`[M_STORE_DEBUG] New M_value:`, new_M_value);
+                console.log(
+                    `[M_STORE_DEBUG] corrected_M_value:`,
+                    corrected_M_value,
+                );
                 console.log("------------------------------------");
             }
-            return { M_value: new_M_value };
-        }),
+            return { M_value: corrected_M_value };
+        });
+        return corrected_M_value;
+    },
 }));

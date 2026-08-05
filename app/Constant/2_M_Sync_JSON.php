@@ -33,8 +33,8 @@ class M_Sync_JSON
         echo "----------------------------------------------------------------------\n";
         echo "[4] Processing JSON to PHP generation for {$sourceFile} using {$jsonFile}\n";
         echo "----------------------------------------------------------------------\n\n";
-        M_Sync_App_Data::generate();
-        M_Sync_M_Data::generate();
+        M_Sync_JSON_App_Data::generate();
+        M_Sync_JSON_M_Data::generate();
     }
 
     private static function run_JSON_to_Entities($jsonFile): void
@@ -42,6 +42,7 @@ class M_Sync_JSON
         echo "----------------------------------------------------------------------\n";
         echo "[5] Processing Entities JSON to PHP generation using {$jsonFile}\n";
         echo "----------------------------------------------------------------------\n\n";
+        M_Sync_JSON_Entities::generate();
     }
 }
 

@@ -41,7 +41,7 @@ class MigrationFile
         self::dieSameMigration($isUser);
 
         // Execution Zone
-        self::makeFile();
+        self::makeFile($isUser);
     }
 
     private static function dieSameMigration(bool $isUser): void
@@ -60,14 +60,16 @@ class MigrationFile
         }
     }
 
-    private static function makeFile(): void
+    private static function makeFile($isUser): void
     {
         echo "--- Maker: Found draft file. Copying to migrations directory... ---\n\n";
 
         if (copy(self::$draftPath, self::$destinationPath)) {
             echo "--- Maker: Successfully created new migration: " . self::$fileName . " ---\n\n";
-            MakeMigration::replaceExisting(self::$destinationPath, self::$tableName);
-            // แสดงกรอบความสำเร็จ
+            if (!$isUser) {
+                MakeMigration::replaceExisting(self::$destinationPath, self::$tableName);
+            }
+            // output successful
             echo "\n";
             echo "╔" . str_repeat("═", 48) . "╗\n";
             echo "║" . str_pad("SUCCESSFUL", 48, " ", STR_PAD_BOTH) . "║\n";

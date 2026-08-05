@@ -35,9 +35,15 @@ export const M_value_Service = {
         const set_has_M_value_Change =
             use_M_Store.getState().set_has_M_value_Change;
 
-        // 0. save M_value to Global States M_Store
+        /**
+         * 0. save M_value to Global States M_Store
+         * * and get corrected_M_value after save
+         */
+        let corrected_M_value = null;
         if (!cascade) {
-            await set_M_value(new_M_value);
+            corrected_M_value = await set_M_value(new_M_value);
+        } else {
+            corrected_M_value = new_M_value;
         }
 
         try {
@@ -46,8 +52,10 @@ export const M_value_Service = {
              * * need await for try-catch
              * * and send_POST must 100% finish
              * * before set_has_M_value_Change (to tell JSON_Conten to get Backend data)
+             * * we must get snapshot after set_M_value (corrected d:: to 2nd positon)
              */
-            await send_POST(new_M_value, cascade);
+            const M_value = use_M_Store.getState().M_value;
+            await send_POST(corrected_M_value, cascade);
 
             // 2. notify use_M_Data to notify JSON_Content to update it self with Backend
             set_has_M_value_Change(true);
@@ -57,7 +65,7 @@ export const M_value_Service = {
     },
 };
 
-async function send_POST(new_M_value, cascade = null) {
+async function send_POST(corrected_M_value, cascade = null) {
     const activeTab = use_M_Store.getState().activeTab;
     const activeSubTab = use_M_Store.getState().activeSubTab;
     const response = await fetch(API.M_VALUE_ENDPOINT, {
@@ -69,7 +77,7 @@ async function send_POST(new_M_value, cascade = null) {
         body: JSON.stringify({
             tab: cascade ? cascade.activeTab : activeTab,
             subTab: cascade ? cascade.activeSubTab : activeSubTab,
-            data: new_M_value,
+            data: corrected_M_value,
         }),
     });
 
@@ -463,4 +471,68 @@ export async function update_M_value_with_selected_F_S(TABLENAME) {
         activeTab: "entities",
         activeSubTab: "entities",
     });
+}
+
+/**
+ * * CALLED by set_M_value to validate field_data convention
+ * * -------------------------------------------------------
+ * 1. check if M_value = app_data.f or s
+ * * -------------------------------------------------------
+ * 2. check bevor set_M_value
+ * * if d:: exist in field_data
+ * * -------------------------------------------------------
+ * 3. move d:: to 2nd position of the field_data
+ * @param {*} M_value
+ */
+export function move_d_to_2nd_position(M_value) {
+    const state = use_M_Store.getState();
+    // 1. do nothing to M_value if not app_data
+    let is_app_data = false;
+    if (
+        (state.activeTab === "app_data" && state.activeSubTab === "f") ||
+        (state.activeTab === "m_data" && state.activeSubTab === "s")
+    ) {
+        is_app_data = true;
+    }
+    if (!is_app_data) return M_value;
+
+    // if M_value = app_data.f or s , begin correction
+    const corrected_M_value = { ...M_value };
+    Object.keys(M_value).forEach((M_value_KEY) => {
+        const field_data = M_value[M_value_KEY];
+        // Loop in field_data and do 2. 3.
+        corrected_M_value[M_value_KEY] = sanitize_field_data(field_data);
+    });
+    return corrected_M_value;
+}
+
+/**
+ * * Helper function to reorder 'd::' to the 2nd position in a single field_data array
+ * @param {Array} field_data e.g.
+ * * [ "name" , "u::TEXT" , "cud::REQUIRED" , ["d::STRING",255] ]
+ * @returns {Array} reordered field_data e.g.
+ * * [ "name" , ["d::STRING",255] ,"u::TEXT" , "cud::REQUIRED"  ]
+ */
+function sanitize_field_data(field_data) {
+    if (!Array.isArray(field_data) || field_data.length <= 1) return field_data;
+
+    const fieldName = field_data[0];
+    const attributes = field_data.slice(1);
+
+    // Find index of data type (d::)
+    const dIndex = attributes.findIndex(
+        (attr) =>
+            (typeof attr === "string" && attr.startsWith("d::")) ||
+            (Array.isArray(attr) &&
+                typeof attr[0] === "string" &&
+                attr[0].startsWith("d::")),
+    );
+
+    // If found, move it to the front of attributes (making it 2nd overall)
+    if (dIndex !== -1) {
+        const [dataTypeItem] = attributes.splice(dIndex, 1);
+        attributes.unshift(dataTypeItem);
+    }
+
+    return [fieldName, ...attributes];
 }
