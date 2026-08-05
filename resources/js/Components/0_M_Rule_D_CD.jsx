@@ -28,10 +28,7 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
      * * DROPDOWN - Handling
      * * -----------------
      */
-    // const { activeSubTab, selected_D, selected_U } = use_M_Store();
     const activeSubTab = use_M_Store((state) => state.activeSubTab);
-    // const selected_D = use_M_Store((state) => state.selected_D);
-    // const selected_U = use_M_Store((state) => state.selected_U);
 
     const set_selected_D_FOREIGN =
         use_M_Store.getState().set_selected_D_FOREIGN;
@@ -158,27 +155,9 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
             {ALL_DB_options.map((option) => {
                 const D_NAME = get_D_NAME(field_data);
 
-                // /** logic to correct checkbox DEFAULT UI to match JSON Backend */
-                const last_selected_D =
-                    use_M_Store.getState().selected_D_FOREIGN[fieldname];
-
-                const is_last_D_Empty =
-                    !last_selected_D || last_selected_D[fieldname] === "";
-
-                // We will use this to clean too complicate logic of is_show_DEFAULT_Panel
-                // if (fieldname === "image")
-                //     if(debug) console.log(
-                //         `return LOOP CD_Rule ---- D_NAME = ${D_NAME}`,
-                //         `is_last_D_Empty = ${is_last_D_Empty}`,
-                //         `option = ${option}`,
-                //         `( option === "DEFAULT )" = ${option === "DEFAULT"}`,
-                //         `checked_CD.includes(${option}) = ${checked_CD.includes(option)}`,
-                //     );
-
                 /** checked logic for showing DEFAULT_Panel */
                 const is_show_DEFAULT_Panel =
                     D_NAME &&
-                    // is_last_D_Empty &&
                     option === "DEFAULT" &&
                     checked_CD.includes(option);
 

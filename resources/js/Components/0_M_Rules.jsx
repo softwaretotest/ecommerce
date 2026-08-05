@@ -6,22 +6,19 @@ import {
     remove_D_U_from_Backend,
     update_D_U_SAVE_Backend,
 } from "@/Components/0_M_Data_Helper";
+
+/**
+ * * CALLED by Rule_D_CD or Rule_U_CU
+ * * validate divers Checkbox actions
+ * * when check or uncheck
+ * @param {*} checkbox_group_name CD or CU
+ * @param {*} event
+ */
 export async function validate_UI(checkbox_group_name, event) {
     const debug = false;
     const store = use_M_Store.getState();
     const activeField = use_M_Store.getState().activeField;
     const fieldname = activeField.toLowerCase();
-
-    /**
-     * * this local state cause error:
-     * * react-dom-DZQ9hRBr.js?v=b745d579:9605 Uncaught (in promise)
-     * * Error: Invalid hook call.
-     * * Hooks can only be called inside of the body of a function component
-     */
-    // const [
-    //     is_auto_uncheck_FOREIGN_by_CU_CD,
-    //     set_is_auto_uncheck_FOREIGN_by_CU_CD,
-    // ] = useState(false);
 
     const set_is_auto_uncheck_FOREIGN_by_CU_CD =
         use_M_Store.getState().set_is_auto_uncheck_FOREIGN_by_CU_CD;
@@ -40,13 +37,17 @@ export async function validate_UI(checkbox_group_name, event) {
 
     const setChecked_CU = use_M_Store.getState().setChecked_CU;
 
+    await update_CD_FOREIGN(event);
+
+    /** -------------------------
+     * CHECK event.target.value
+        ------------------------- */
     // Rules for CD , CU Actions
     if (checkbox_group_name === "CD") {
-        await update_CD_FOREIGN(event);
         if (event.target.value === "REQUIRED") update_CU_REQUIRED();
+        if (event.target.value === "NULLABLE") update_CU_CD_REQUIRED();
     }
     if (checkbox_group_name === "CU") {
-        await update_CD_FOREIGN(event);
         if (event.target.value === "REQUIRED") update_CD_REQUIRED();
     }
 
@@ -55,10 +56,29 @@ export async function validate_UI(checkbox_group_name, event) {
     await restore_previous_selected_D_U_if_FOREIGN(event);
 
     /**
+     * * remove REQUIRED from currentCU, currentCD
+     * * if NULLABLE is checked
+     */
+    function update_CU_CD_REQUIRED() {
+        const currentCU = store.checked_CU[fieldname] || [];
+        const currentCD = store.checked_CD[fieldname] || [];
+        const is_NULLABLE = currentCD.includes("NULLABLE");
+        if (is_NULLABLE) {
+            // remove "REQUIRED" from currentCD and currentCU if NULLABLE is active
+            const updatedCD = currentCD.filter((item) => item !== "REQUIRED");
+            setChecked_CD(fieldname, updatedCD);
+
+            const updatedCU = currentCU.filter((item) => item !== "REQUIRED");
+            setChecked_CU(fieldname, updatedCU);
+        }
+    }
+
+    /**
      * * logic for cud::REQUIRED
      * * check and uncheck REQUIRED of CD and CU same time
+     * * remove NULLABLE if is_REQUIRED checked
      */
-    async function update_CD_REQUIRED() {
+    function update_CD_REQUIRED() {
         const currentCU = store.checked_CU[fieldname] || [];
         const is_REQUIRED = currentCU.includes("REQUIRED");
         const currentCD = store.checked_CD[fieldname] || [];
@@ -67,29 +87,35 @@ export async function validate_UI(checkbox_group_name, event) {
             newCD = currentCD.includes("REQUIRED")
                 ? currentCD
                 : [...currentCD, "REQUIRED"];
+            newCD = newCD.filter((item) => item !== "NULLABLE");
         } else {
             newCD = currentCD.filter((item) => item !== "REQUIRED");
         }
-        await setChecked_CD(fieldname, newCD);
+
+        setChecked_CD(fieldname, newCD);
     }
 
     /**
      * * logic for cud::REQUIRED
      * * check and uncheck REQUIRED of CD and CU same time
+     * * remove NULLABLE if is_REQUIRED checked
      */
-    async function update_CU_REQUIRED() {
+    function update_CU_REQUIRED() {
         const currentCD = store.checked_CD[fieldname] || [];
         const is_REQUIRED = currentCD.includes("REQUIRED");
         const currentCU = store.checked_CU[fieldname] || [];
         let newCU;
+        let newCD;
         if (is_REQUIRED) {
             newCU = currentCU.includes("REQUIRED")
                 ? currentCU
                 : [...currentCU, "REQUIRED"];
+            newCD = currentCD.filter((item) => item !== "NULLABLE");
+            setChecked_CD(fieldname, newCD);
         } else {
             newCU = currentCU.filter((item) => item !== "REQUIRED");
         }
-        await setChecked_CU(fieldname, newCU);
+        if (newCU) setChecked_CU(fieldname, newCU);
     }
 
     /**

@@ -7,8 +7,7 @@
                 "d::STRING",
                 255
             ],
-            "u::FILE",
-            "cd::NULLABLE"
+            "cud::REQUIRED"
         ],
         "NAME": [
             "name",
