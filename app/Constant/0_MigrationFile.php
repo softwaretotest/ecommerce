@@ -66,9 +66,9 @@ class MigrationFile
 
         if (copy(self::$draftPath, self::$destinationPath)) {
             echo "--- Maker: Successfully created new migration: " . self::$fileName . " ---\n\n";
-            if (!$isUser) {
-                MakeMigration::replaceExisting(self::$destinationPath, self::$tableName);
-            }
+            // if (!$isUser) {
+            MakeMigration::replaceExisting(self::$destinationPath, self::$tableName);
+            // }
             // output successful
             echo "\n";
             echo "╔" . str_repeat("═", 48) . "╗\n";

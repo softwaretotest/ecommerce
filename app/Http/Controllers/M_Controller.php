@@ -62,7 +62,7 @@ class M_Controller extends Controller
         return response()->json(['error' => 'Failed to write file'], 500);
     }
 
-    /**
+    /** 
      * * DICTIONARY:
      * * app_data: Content of App-Data.json
      * * m_data:   Content of M-Data.json

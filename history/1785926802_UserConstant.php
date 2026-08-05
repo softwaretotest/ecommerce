@@ -11,8 +11,8 @@ class UserConstant
         return [
             f::NAME,
             f::IMAGE,
+            s::EMAIL,
             f::IS_ACTIVE,
-            f::PRICE,
         ];
     }
 }

@@ -6,11 +6,16 @@ namespace App\Constant;
 class DBOption
 {
     /**
-     * Main entry to process all lines in a migration file.
+     * * Main entry to process all lines in a migration file.
+     * * VERY IMPORTAINT !!! 
+     * * &$processedFields ( & = passed by Ref ) 
+     * * So, processedFields must be handled by both functions updateLines() and addMissingLines() 
+     * * no matter if ($tableName === 'users') or not
+     * * to complete the make Lines Process correctly
      */
     public static function makeLines(array $lines, array &$processedFields, string $tableName, array $dbSchema): array
     {
-        // 1. Update existing lines
+        // 1. Update existing lines 
         $lines = self::updateLines($lines, $processedFields, $tableName, $dbSchema);
 
         // 2. Add missing lines
@@ -19,10 +24,20 @@ class DBOption
         return $lines;
     }
 
+    /**
+     * * [BEHAVIOR: Overwrite / Replace Existing Fields]
+     * * Loop all lines of Migration file and replace if matches DBOption found
+     */
     private static function updateLines(array $lines, array &$processedFields, string $tableName, array $dbSchema): array
     {
         $inTable = false;
         foreach ($lines as $index => $line) {
+            /**
+             * * this if check if we are still in 
+             * *    Schema::create('tablename', function (Blueprint $table) { 
+             * *       ..........content...............
+             * *    });
+             */
             if (strpos($line, "Schema::create('{$tableName}'") !== false) {
                 $inTable = true;
             }
@@ -33,7 +48,7 @@ class DBOption
             if ($inTable) {
                 foreach ($dbSchema as $fieldName => $dbOptions) {
                     if (strpos($line, "'{$fieldName}'") !== false) {
-                        $lines[$index] = "            " . self::makeLine($fieldName, $dbOptions) . ";";
+                        // $lines[$index] = "            " . self::makeLine($fieldName, $dbOptions) . ";";
                         $processedFields[] = $fieldName;
                     }
                 }
@@ -42,12 +57,33 @@ class DBOption
         return $lines;
     }
 
+    /**
+     * 1. make new migration line if not exits , separate foreign key
+     * 2. order foreing key to the end
+     * 3. place $allNewLines over $table->timestamps();
+     */
     private static function addMissingLines(array &$lines, array $processedFields, array $dbSchema): void
     {
         $normalLines = [];
         $foreignLines = [];
 
+        /** 1. make new migration line if not exits , separate foreign key
+         fieldName = confirm_order ,  =>
+         dbOption = Array
+         (
+             [0] => boolean
+             [1] => Array
+                 (
+                     [0] => default
+                     [1] => true
+                 )
+        ) 
+         */
         foreach ($dbSchema as $fieldName => $dbOptions) {
+            // echo "  fieldName = $fieldName ,  =>  \n\n";
+            // echo "  dbOption = ";
+            // echo print_r($dbOptions);
+            // echo "\n-------END-----------\n\n";
             if (!in_array($fieldName, $processedFields)) {
                 $newLine = self::makeLine($fieldName, $dbOptions);
                 if ($dbOptions[0] === 'foreign') {
@@ -58,11 +94,38 @@ class DBOption
             }
         }
 
+        // 2. order foreing key to the end
         $allNewLines = array_merge($normalLines, $foreignLines);
+
+        // 3. place $allNewLines over $table->timestamps();
         if (!empty($allNewLines)) {
             foreach ($lines as $index => $line) {
                 if (strpos($line, '$table->timestamps();') !== false) {
+                    /**
+                     * splice add lines before $table->timestamps(); // index, 0 
+                     * e.g. before splice :
+                        Schema::create('tablename', function (Blueprint $table) {
+                            $table->id();
+                            $table->timestamps();
+                        });
+                     * e.g. after splice :
+                        Schema::create('tablename', function (Blueprint $table) {
+                            $table->id();
+                            $table->string('name');
+                            $table->decimal('price', 10, 2);
+                            $table->integer('stock');
+                            $table->timestamps();
+                        });
+                     */
                     array_splice($lines, $index, 0, $allNewLines);
+                    /**
+                     * example of splice :
+                     $letters = ['A', 'B', 'E'];
+                     array_splice($letters, 2, 0, ['C', 'D']);   
+                            // 2 = position to add , 
+                            // 0 = count of item to delete
+                     $letters = ['A', 'B', 'C', 'D', 'E'];
+                     */
                     break;
                 }
             }
@@ -71,7 +134,20 @@ class DBOption
 
     /**
      * @param string $fieldName
-     * @param array $dbOptions (e.g., [[d::DECIMAL, 10, 2], [cd::DEFAULT, 0], cd::NULLABLE])
+     * @param array $dbOptions 
+     * * from JSON = e.g., ['d::BOOLEAN', [cd::DEFAULT, true] )
+     * *-------------------------------------------------------------------------
+     * * from PHP = e.g. 
+        fieldName = confirm_order ,  =>
+         dbOption = Array
+         (
+             [0] => boolean
+             [1] => Array
+                 (
+                     [0] => default
+                     [1] => true
+                 )
+        ) 
      */
     public static function makeLine(string $fieldName, array $dbOptions): string
     {
@@ -111,6 +187,7 @@ class DBOption
     }
 
     /**
+     * * format to laravel migration methode
      * @example ->nullable()
      * @example ->default(0)
      * @example ->decimal(10, 2)
