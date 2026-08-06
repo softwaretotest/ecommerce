@@ -1,6 +1,7 @@
 {
     "_comment": "\/M_JSON\/Entities.json",
     "entities": {
+        "USERS": [],
         "ORDERS": [
             "f::ORDER_NR",
             "f::PRODUCT_ID",
@@ -18,12 +19,6 @@
             "f::NAME",
             "f::IMAGE",
             "f::USER_ID"
-        ],
-        "USERS": [
-            "s::EMAIL",
-            "f::IS_ACTIVE",
-            "f::NAME",
-            "f::IMAGE"
         ]
     }
 }

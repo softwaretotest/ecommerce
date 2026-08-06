@@ -103,46 +103,6 @@ export default function TabContent() {
      * * M_value [KEY] , KEY = UPPERCASE
      * @returns
      */
-    // async function add_field_ENTITIES({ isUser }) {
-    //     const set_selected_F_S = use_M_Store.getState().set_selected_F_S;
-
-    //     const input_box_fieldname = document.querySelector(".new_field_name");
-    //     const raw_name = input_box_fieldname ? input_box_fieldname.value : "";
-
-    //     const trimmed_name = raw_name.trim();
-    //     if (!trimmed_name) return;
-
-    //     const fieldname = trimmed_name;
-    //     const M_value_KEY = fieldname.toUpperCase();
-
-    //     // add empty place for new seleted_F_S
-    //     set_selected_F_S(M_value_KEY, []);
-    //     const new_M_value = make_M_value_by_selected_F_S();
-
-    //     await M_value_Service.update(new_M_value);
-
-    //     if (fieldname) setActiveField(fieldname.toLowerCase()); // for auto scroll, not work
-
-    //     // this make auto scroll for JSON_Content works if new field added
-    //     use_M_Store.getState().set_is_new_field_added(true);
-
-    //     //clear input box , after finish
-    //     if (input_box_fieldname) input_box_fieldname.value = "";
-    //     set_FIELDNAME_to_add("");
-
-    //     await add_cascade_tablename_in_app_data_t(
-    //         use_M_Store.getState().activeField,
-    //     );
-    // }
-
-    /**
-     * * get new fieldname from UI
-     * * and save to JSON Backend
-     * * BE CAREFULL to save convention : always like this
-     * * fieldname = lowercase
-     * * M_value [KEY] , KEY = UPPERCASE
-     * @returns
-     */
     async function add_field_APP_DATA() {
         const input_box_fieldname = document.querySelector(".new_field_name");
         const raw_name = input_box_fieldname ? input_box_fieldname.value : "";

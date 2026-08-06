@@ -253,10 +253,20 @@ export const use_M_Store = create((set) => ({
         set((state) => {
             if (!tablename) return { selected_F_S: {} };
 
-            const NEW_selected_F_S = {
-                ...state.selected_F_S,
-                [tablename]: selected_F_S,
-            };
+            let NEW_selected_F_S = {};
+
+            // USERS = first table in Laravel Migration
+            if (tablename === "USERS") {
+                NEW_selected_F_S = {
+                    [tablename]: selected_F_S,
+                    ...state.selected_F_S,
+                };
+            } else {
+                NEW_selected_F_S = {
+                    ...state.selected_F_S,
+                    [tablename]: selected_F_S,
+                };
+            }
 
             if (state.debug || state.debug_selected_F_S) {
                 console.log(

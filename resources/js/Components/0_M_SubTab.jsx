@@ -2,8 +2,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useScrollIntoView } from "@/hooks/useScrollIntoView";
 
-import { use_M_Store } from "@/Stores/0_M_Store.jsx";
+import { use_M_Store } from "@/Stores/0_M_Store";
 
+import Sidebar from "@/Components/0_M_Sidebar";
 import TabContent from "@/Components/0_M_TabContent";
 import JSON_Content from "@/Components/0_M_JSON_Content";
 
@@ -162,29 +163,11 @@ export default function SubTab({ data }) {
                         </button>
                     ))}
             </div>
+
             {/* SIDEBAR , TabContent , JSON_Content */}
             <div className="content-box content-grid">
                 {/* SIDEBAR */}
-                <nav className="field-sidebar">
-                    {Object.keys(M_value).map((M_value_KEY) => (
-                        <button
-                            key={M_value_KEY.toLowerCase()}
-                            ref={(DOM_Node) =>
-                                (scrollRefs.current[M_value_KEY.toLowerCase()] =
-                                    DOM_Node)
-                            }
-                            className={`field-nav-link ${activeField === M_value_KEY.toLowerCase() ? "active" : ""}`}
-                            onClick={() => {
-                                // M_value_KEY = null , when field deleted
-                                if (M_value_KEY)
-                                    setActiveField(M_value_KEY.toLowerCase());
-                            }}
-                        >
-                            {/* if Class t (DB_Tablename) remove T:: */}
-                            {M_value_KEY.toUpperCase().replaceAll("T::", "")}
-                        </button>
-                    ))}
-                </nav>
+                <Sidebar />
 
                 {/* left column = Input Boxes */}
                 <div className="column-flex-form">
