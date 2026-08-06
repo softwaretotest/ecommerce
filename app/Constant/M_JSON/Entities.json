@@ -19,12 +19,6 @@
             "f::NAME",
             "f::IMAGE",
             "f::USER_ID"
-        ],
-        "USERS": [
-            "f::NAME",
-            "f::IMAGE",
-            "s::EMAIL",
-            "f::IS_ACTIVE"
         ]
     }
 }

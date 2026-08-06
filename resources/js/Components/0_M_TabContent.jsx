@@ -8,6 +8,7 @@ import { use_M_Store } from "@/Stores/0_M_Store.jsx";
 import {
     M_value_Service,
     add_cascade_tablename_in_app_data_t,
+    make_M_value_by_selected_F_S,
 } from "@/Services/0_M_value_Service";
 
 import SpecialField from "@/Components/0_M_SpecialField";
@@ -123,50 +124,9 @@ export default function TabContent() {
             use_M_Store.getState().M_value,
         );
 
-        // // this add empty []  -- OLD Solution without Loop -------NOT WORK -------------
-        // const new_M_value = {
-        //     [M_value_KEY]: [],
-        //     ...use_M_Store.getState().M_value,
-        // };
-
         // add empty place for new seleted_F_S
         set_selected_F_S(M_value_KEY, []);
-
-        // const new_M_value = { ...use_M_Store.getState().M_value };
-        const new_M_value = {};
-        console.log(
-            "[5] !!!!!!!!!!! -- TabContent -- update_M_value_with_selected_F_S -- new_M_value = ",
-            new_M_value,
-        );
-
-        console.log(
-            `[6] !!!!!!!!!!! -- TabContent -- update_M_value_with_selected_F_S -- selected_F_S[${M_value_KEY}] = `,
-            use_M_Store.getState().selected_F_S[M_value_KEY],
-        );
-
-        /**
-         * * WORKAROUND : BUG M_value[M_VALUE_KEY] = undefined
-         * * we Loop to build new_M_value by copy content from selected_F_S ,
-         * * because if we use clone ...M_value ,
-         * * M_value[M_value_KEY] it has alle M empty content ,
-         * * BUG = empty content of all table
-         * * -------------------------------
-         * * SOLUTION : seleted_F_S = Entities on UI
-         * * we keep seleted_F_S correct on the whole CRUD - Flow
-         * * so seleted_F_S can be save backend as M_value anytime
-         */
-        for (const TABLENAME of Object.keys(
-            use_M_Store.getState().selected_F_S,
-        )) {
-            // get current data before save
-            new_M_value[TABLENAME] =
-                use_M_Store.getState().selected_F_S[TABLENAME];
-        }
-
-        console.log(
-            "[7] !!!!!!!!!!! -- TabContent -- update_M_value_with_selected_F_S -- new_M_value = ",
-            new_M_value,
-        );
+        const new_M_value = make_M_value_by_selected_F_S();
 
         await M_value_Service.update(new_M_value);
 

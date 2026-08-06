@@ -22,6 +22,8 @@ export default function M_Dashboard() {
     const setActiveField = use_M_Store.getState().setActiveField;
     const set_Error_FIELDNAME = use_M_Store.getState().set_Error_FIELDNAME;
     const set_FIELDNAME_to_add = use_M_Store.getState().set_FIELDNAME_to_add;
+    const selected_F_S = use_M_Store((state) => state.selected_F_S);
+    const show_add_USERS = !selected_F_S["USERS"];
 
     const tabs = [
         { id: "m_data", label: "M_DATA", key: "m_data" },
@@ -32,8 +34,19 @@ export default function M_Dashboard() {
     return (
         <>
             <div className="dashboard-wrapper">
-                <h1 className="dashboard-header">Project M Dashboard</h1>
-
+                <h1 className="dashboard-header">
+                    Project M Dashboard
+                    {show_add_USERS && (
+                        <button
+                            className="add-button"
+                            onClick={() => {
+                                // add_field();
+                            }}
+                        >
+                            ADD USERS TABLE
+                        </button>
+                    )}
+                </h1>
                 <div className="tab-switcher-container">
                     {tabs.map((tab) => (
                         <button

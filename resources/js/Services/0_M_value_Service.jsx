@@ -151,28 +151,11 @@ export async function delete_field(fieldname) {
         }
 
         if (activeTab === "entities" && activeSubTab === "entities") {
-            const new_M_value = {};
-
             //delete tablename from selected_F_S
             delete use_M_Store.getState().selected_F_S[FIELDNAME];
-            /**
-             * * WORKAROUND : BUG M_value[M_VALUE_KEY] = undefined
-             * * we Loop to build new_M_value by copy content from selected_F_S ,
-             * * because if we use clone ...M_value ,
-             * * M_value[M_value_KEY] it has alle M empty content ,
-             * * BUG = empty content of all table
-             * * -------------------------------
-             * * SOLUTION : seleted_F_S = Entities on UI
-             * * we keep seleted_F_S correct on the whole CRUD - Flow
-             * * so seleted_F_S can be save backend as M_value anytime
-             */
-            for (const TABLENAME of Object.keys(
-                use_M_Store.getState().selected_F_S,
-            )) {
-                // get current data before save
-                new_M_value[TABLENAME] =
-                    use_M_Store.getState().selected_F_S[TABLENAME];
-            }
+
+            const new_M_value = make_M_value_by_selected_F_S();
+
             await M_value_Service.update(new_M_value);
 
             await delete_cascade_tablename_in_app_data_t(activeField, debug);
@@ -626,4 +609,24 @@ function sanitize_field_data(field_data) {
     }
 
     return [fieldName, ...attributes];
+}
+
+/**
+ * * WORKAROUND : BUG M_value[M_VALUE_KEY] = undefined
+ * * we Loop to build new_M_value by copy content from selected_F_S ,
+ * * because if we use clone ...M_value ,
+ * * M_value[M_value_KEY] it has alle M empty content ,
+ * * BUG = empty content of all table
+ * * -------------------------------
+ * * SOLUTION : seleted_F_S = Entities on UI
+ * * we keep seleted_F_S correct on the whole CRUD - Flow
+ * * so seleted_F_S can be save backend as M_value anytime
+ */
+export function make_M_value_by_selected_F_S() {
+    const new_M_value = {};
+    for (const TABLENAME of Object.keys(use_M_Store.getState().selected_F_S)) {
+        // get current data before save
+        new_M_value[TABLENAME] = use_M_Store.getState().selected_F_S[TABLENAME];
+    }
+    return new_M_value;
 }

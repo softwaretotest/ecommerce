@@ -97,7 +97,8 @@ body {
     font-family: Arial;
 }
 .dashboard-header {
-    margin: 5px;
+    margin: 0px;
+    gap: 2px;
 }
 .tab-switcher-container {
     display: flex;
