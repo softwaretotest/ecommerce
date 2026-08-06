@@ -150,6 +150,7 @@ export async function delete_field(fieldname) {
             await delete_cascade_fieldname_in_entities(activeField, debug);
         }
 
+        // DB Table
         if (activeTab === "entities" && activeSubTab === "entities") {
             //delete tablename from selected_F_S
             delete use_M_Store.getState().selected_F_S[FIELDNAME];
@@ -612,10 +613,10 @@ function sanitize_field_data(field_data) {
 }
 
 /**
+ * * CALLED by add_field_ENTITIES() and delete_field()
  * * WORKAROUND : BUG M_value[M_VALUE_KEY] = undefined
  * * we Loop to build new_M_value by copy content from selected_F_S ,
- * * because if we use clone ...M_value ,
- * * M_value[M_value_KEY] it has alle M empty content ,
+ * * because if we use clone ...M_value , it makes
  * * BUG = empty content of all table
  * * -------------------------------
  * * SOLUTION : seleted_F_S = Entities on UI
@@ -629,4 +630,55 @@ export function make_M_value_by_selected_F_S() {
         new_M_value[TABLENAME] = use_M_Store.getState().selected_F_S[TABLENAME];
     }
     return new_M_value;
+}
+
+/**
+ * * get new fieldname from UI
+ * * and save to JSON Backend
+ * * BE CAREFULL to save convention : always like this
+ * * fieldname = lowercase
+ * * M_value [KEY] , KEY = UPPERCASE
+ */
+export async function add_field_ENTITIES({ isUser = false } = {}) {
+    const set_selected_F_S = use_M_Store.getState().set_selected_F_S;
+    const setActiveField = use_M_Store.getState().setActiveField;
+    const set_NEW_added_fieldname =
+        use_M_Store.getState().set_NEW_added_fieldname;
+    const set_FIELDNAME_to_add = use_M_Store.getState().set_FIELDNAME_to_add;
+
+    // Case called by TabContent
+    let fieldname = "";
+    let input_box_fieldname = null;
+    if (!isUser) {
+        input_box_fieldname = document.querySelector(".new_field_name");
+        const raw_name = input_box_fieldname ? input_box_fieldname.value : "";
+        const trimmed_name = raw_name.trim();
+        if (!trimmed_name) return;
+        fieldname = trimmed_name;
+    }
+
+    // Case called by ADD USERS TABLE (Dashboards)
+    if (isUser) fieldname = "users";
+    const M_value_KEY = fieldname.toUpperCase();
+
+    // add empty place for new seleted_F_S
+    if (isUser) set_selected_F_S("USERS", []);
+    else set_selected_F_S(M_value_KEY, []);
+
+    const new_M_value = make_M_value_by_selected_F_S();
+
+    await M_value_Service.update(new_M_value);
+
+    if (fieldname) setActiveField(fieldname.toLowerCase()); // for auto scroll, not work
+
+    // this make auto scroll for JSON_Content works if new field added
+    use_M_Store.getState().set_is_new_field_added(true);
+
+    //clear input box , after finish
+    if (input_box_fieldname) input_box_fieldname.value = "";
+    set_FIELDNAME_to_add("");
+
+    await add_cascade_tablename_in_app_data_t(
+        use_M_Store.getState().activeField,
+    );
 }

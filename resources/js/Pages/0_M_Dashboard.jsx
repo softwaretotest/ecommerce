@@ -5,6 +5,8 @@ import React, { useState, useEffect } from "react";
 import { use_M_Data } from "@/Providers/0_M_DataProvider";
 import { use_M_Store } from "@/Stores/0_M_Store.jsx";
 
+import { add_field_ENTITIES } from "@/Services/0_M_value_Service";
+
 import SubTab from "@/Components/0_M_SubTab.jsx";
 
 import "@/../css/0_M_UI.css";
@@ -23,7 +25,7 @@ export default function M_Dashboard() {
     const set_Error_FIELDNAME = use_M_Store.getState().set_Error_FIELDNAME;
     const set_FIELDNAME_to_add = use_M_Store.getState().set_FIELDNAME_to_add;
     const selected_F_S = use_M_Store((state) => state.selected_F_S);
-    const show_add_USERS = !selected_F_S["USERS"];
+    const show_add_USERS = !selected_F_S["USERS"] && activeTab === "entities";
 
     const tabs = [
         { id: "m_data", label: "M_DATA", key: "m_data" },
@@ -40,7 +42,7 @@ export default function M_Dashboard() {
                         <button
                             className="add-button"
                             onClick={() => {
-                                // add_field();
+                                add_field_ENTITIES({ isUser: true });
                             }}
                         >
                             ADD USERS TABLE

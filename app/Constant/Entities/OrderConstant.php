@@ -11,7 +11,6 @@ class OrderConstant
         return [
             f::ORDER_NR,
             f::PRODUCT_ID,
-            f::USER_ID,
             f::QUANTITY,
             f::CONFIRM_ORDER,
         ];

@@ -4,7 +4,6 @@
         "ORDERS": [
             "f::ORDER_NR",
             "f::PRODUCT_ID",
-            "f::USER_ID",
             "f::QUANTITY",
             "f::CONFIRM_ORDER"
         ],
@@ -19,6 +18,12 @@
             "f::NAME",
             "f::IMAGE",
             "f::USER_ID"
+        ],
+        "USERS": [
+            "s::EMAIL",
+            "f::IS_ACTIVE",
+            "f::NAME",
+            "f::IMAGE"
         ]
     }
 }

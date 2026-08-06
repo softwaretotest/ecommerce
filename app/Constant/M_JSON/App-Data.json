@@ -3,12 +3,18 @@
     "f": {
         "IMAGE": [
             "image",
-            "d::STRING",
+            [
+                "d::STRING",
+                255
+            ],
             "u::FILE"
         ],
         "NAME": [
             "name",
-            "d::STRING",
+            [
+                "d::STRING",
+                255
+            ],
             "u::TEXT",
             "cud::REQUIRED"
         ],
@@ -74,7 +80,10 @@
         ],
         "ORDER_NR": [
             "order_nr",
-            "d::STRING",
+            [
+                "d::STRING",
+                255
+            ],
             "u::TEXT"
         ],
         "ORDER_ID": [
@@ -95,9 +104,9 @@
         ]
     },
     "t": {
-        "USERS": "users",
         "SHOPS": "shops",
         "PRODUCTS": "products",
-        "ORDERS": "orders"
+        "ORDERS": "orders",
+        "USERS": "users"
     }
 }
