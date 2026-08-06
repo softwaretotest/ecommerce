@@ -31,17 +31,9 @@
     "s": {
         "EMAIL": [
             "email",
-            "d::INTEGER",
+            "d::STRING",
             "u::TEXT",
-            "cu::READONLY",
-            "cu::DISABLED",
-            "cd::UNIQUE",
-            [
-                "cd::DEFAULT",
-                0
-            ],
-            "cd::INDEX",
-            "cd::NULLABLE"
+            "cd::UNIQUE"
         ],
         "CURRENCY": [
             "currency",

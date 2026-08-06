@@ -15,6 +15,9 @@ import { render_All_F_S } from "@/Components/0_M_Entities_select";
 import { setCursor } from "@/utils/setCursor";
 
 /**
+ * @param f_s_Class_Array = e.g.
+ * * ['f::NAME', 'f::IMAGE', 's::EMAIL', 'f::IS_ACTIVE']
+ * @param TABLENAME = e.g. PRODUCTS , ORDERS , USERS
  * * DB Table with DB Column in it
  * * {
  * *     "_comment": "\/M_JSON\/Entities.json",

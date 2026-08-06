@@ -12,9 +12,9 @@ import { move_d_to_2nd_position } from "@/Services/0_M_value_Service";
 
 export const use_M_Store = create((set) => ({
     debug: false,
-    debug_M_value: false,
+    debug_M_value: true,
 
-    debug_selected_F_S: false,
+    debug_selected_F_S: true,
 
     debug_selected_U: false,
     debug_selected_U_FOREIGN: false,
@@ -24,7 +24,7 @@ export const use_M_Store = create((set) => ({
     debug_checked_CU: false,
     debug_checked_CD: false, // e.g. ['INDEX', 'DEFAULT', 'NULLABLE']
 
-    debug_activeField: false,
+    debug_activeField: true,
     debug_activeTab: false,
     debug_activeSubTab: false,
 
@@ -263,6 +263,10 @@ export const use_M_Store = create((set) => ({
                     `[M_STORE_DEBUG] NEW selected_F_S[${tablename}]:`,
                     NEW_selected_F_S[tablename],
                 );
+                console.log(
+                    `[M_STORE_DEBUG] ALL selected_F_S]:`,
+                    state.selected_F_S,
+                );
                 console.log("------------------------------------");
             }
 
@@ -292,6 +296,10 @@ export const use_M_Store = create((set) => ({
                     `[M_STORE_DEBUG] NEW selected_F_S[${tablename}]:`,
                     NEW_selected_F_S[tablename],
                 );
+                console.log(
+                    `[M_STORE_DEBUG] ALL selected_F_S]:`,
+                    state.selected_F_S,
+                );
                 console.log("------------------------------------");
             }
 
@@ -320,6 +328,10 @@ export const use_M_Store = create((set) => ({
                 console.log(
                     `[M_STORE_DEBUG] NEW selected_F_S[${tablename}]:`,
                     NEW_selected_F_S[tablename],
+                );
+                console.log(
+                    `[M_STORE_DEBUG] ALL selected_F_S]:`,
+                    state.selected_F_S,
                 );
                 console.log("------------------------------------");
             }

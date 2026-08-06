@@ -129,10 +129,49 @@ export async function delete_field(fieldname) {
 
     const isConfirmed = window.confirm(`Are you sure to delete ${FIELDNAME}?`);
     if (isConfirmed) {
-        const new_M_value = { ...use_M_Store.getState().M_value };
+        console.log(
+            `[1] [ M_value_Service -- delete_field() ] !!!!!!!!!!!!!!! - M_value = `,
+            use_M_Store.getState().M_value,
+        );
+        // const new_M_value = { ...use_M_Store.getState().M_value };
+        const new_M_value = {};
+
+        console.log(
+            `[2] [ M_value_Service -- delete_field() ] !!!!!!!!!!!!!!! BEFORE delete Table - new_M_value = `,
+            JSON.parse(JSON.stringify(new_M_value)),
+        );
 
         //delete object(M_value)'s item by KEY(FIELDNAME)
-        delete new_M_value[FIELDNAME];
+        // delete new_M_value[FIELDNAME];
+
+        /**
+         * * WORKAROUND : BUG M_value[M_VALUE_KEY] = undefined
+         * * we Loop to build new_M_value by copy content from selected_F_S ,
+         * * because if we use clone ...M_value ,
+         * * M_value[M_value_KEY] it has alle M empty content ,
+         * * BUG = empty content of all table
+         * * -------------------------------
+         * * SOLUTION : seleted_F_S = Entities on UI
+         * * we keep seleted_F_S correct on the whole CRUD - Flow
+         * * so seleted_F_S can be save backend as M_value anytime
+         */
+        for (const TABLENAME of Object.keys(
+            use_M_Store.getState().selected_F_S,
+        )) {
+            // get current data before save
+            new_M_value[TABLENAME] =
+                use_M_Store.getState().selected_F_S[TABLENAME];
+        }
+
+        console.log(
+            `[3] [ M_value_Service -- delete_field() ] !!!!!!!!!!!!!!! AFTER delete Table - new_M_value = `,
+            new_M_value,
+        );
+
+        console.log(
+            `[4] [ M_value_Service -- delete_field() ] !!!!!!!!!!!!!!! - selected_F_S = `,
+            use_M_Store.getState().selected_F_S,
+        );
 
         await M_value_Service.update(new_M_value);
 
@@ -144,6 +183,26 @@ export async function delete_field(fieldname) {
         }
 
         if (activeTab === "entities" && activeSubTab === "entities") {
+            //delete tablename from selected_F_S
+            delete use_M_Store.getState().selected_F_S[FIELDNAME];
+            /**
+             * * WORKAROUND : BUG M_value[M_VALUE_KEY] = undefined
+             * * we Loop to build new_M_value by copy content from selected_F_S ,
+             * * because if we use clone ...M_value ,
+             * * M_value[M_value_KEY] it has alle M empty content ,
+             * * BUG = empty content of all table
+             * * -------------------------------
+             * * SOLUTION : seleted_F_S = Entities on UI
+             * * we keep seleted_F_S correct on the whole CRUD - Flow
+             * * so seleted_F_S can be save backend as M_value anytime
+             */
+            for (const TABLENAME of Object.keys(
+                use_M_Store.getState().selected_F_S,
+            )) {
+                // get current data before save
+                new_M_value[TABLENAME] =
+                    use_M_Store.getState().selected_F_S[TABLENAME];
+            }
             await delete_cascade_tablename_in_app_data_t(activeField, debug);
         }
     }
@@ -162,7 +221,7 @@ export async function add_cascade_tablename_in_app_data_t(activeField) {
     const new_M_value_T = { ...M_value_T };
     new_M_value_T[activeField.toUpperCase()] = activeField;
 
-    console.log(`[SERVICE] -- new_M_value_T:`, new_M_value_T);
+    // console.log(`[SERVICE] -- new_M_value_T:`, new_M_value_T);
 
     const cascade = {
         activeTab: "app_data",
@@ -453,19 +512,83 @@ async function update_cascade_fieldname_in_entities(OLD_KEY, NEW_KEY, debug) {
  * * to update M_value with selected_F_S for current TABLENAME
  * @param {*} TABLENAME e.g. ORDERS , PRODUCTS
  */
-export async function update_M_value_with_selected_F_S(TABLENAME) {
+// export async function update_M_value_with_selected_F_S(TABLENAME) {
+//     const selected_F_S = use_M_Store.getState().selected_F_S;
+//     const M_value = use_M_Store.getState().M_value;
+//     console.log(
+//         "!!!!!!!!!!! -- M_value_Service -- update_M_value_with_selected_F_S -- TABLENAME = ",
+//         TABLENAME,
+//     );
+//     console.log(
+//         `!!!!!!!!!!! -- M_value_Service -- update_M_value_with_selected_F_S -- selected_F_S[${TABLENAME}] = `,
+//         selected_F_S[TABLENAME],
+//     );
+//     console.log(
+//         `!!!!!!!!!!! -- M_value_Service -- update_M_value_with_selected_F_S -- ALL selected_F_S = `,
+//         selected_F_S,
+//     );
+//     /**
+//      * clone M_value and overwrite
+//      * where M_value_KEY = TABLENAME
+//      * with new field_data = selected_F_S
+//      */
+//     const new_M_value = {
+//         ...M_value,
+//         [TABLENAME]: selected_F_S[TABLENAME],
+//     };
+//     console.log(
+//         "!!!!!!!!!!! -- M_value_Service -- update_M_value_with_selected_F_S -- M_value -- ",
+//         M_value,
+//     );
+
+//     await M_value_Service.update(new_M_value, {
+//         activeTab: "entities",
+//         activeSubTab: "entities",
+//     });
+// }
+
+export async function update_M_value_with_selected_F_S() {
     const selected_F_S = use_M_Store.getState().selected_F_S;
     const M_value = use_M_Store.getState().M_value;
 
+    console.log(
+        "[1] !!!!!!!!!!! -- M_value_Service -- update_M_value_with_selected_F_S -- M_value = ",
+        M_value,
+    );
+
+    console.log(
+        `[2] !!!!!!!!!!! -- M_value_Service -- update_M_value_with_selected_F_S -- ALL selected_F_S = `,
+        selected_F_S,
+    );
+
     /**
-     * clone M_value and overwrite
-     * where M_value_KEY = TABLENAME
-     * with new field_data = selected_F_S
+     * * Loop for updated M_value only ,
+     * * if same KEY TABLENAME exist in both M_value and seleted_F_S
      */
-    const new_M_value = {
-        ...M_value,
-        [TABLENAME]: selected_F_S[TABLENAME],
-    };
+    const new_M_value = { ...M_value };
+
+    for (const TABLENAME of Object.keys(selected_F_S)) {
+        console.log(
+            `[3][LOOP] !!!!!!!!!!! -- M_value_Service -- update_M_value_with_selected_F_S -- TABLENAME = `,
+            TABLENAME,
+        );
+        console.log(
+            `[4][LOOP] !!!!!!!!!!! -- M_value_Service -- update_M_value_with_selected_F_S -- Object.keys(selected_F_S) = `,
+            Object.keys(selected_F_S),
+        );
+
+        /**
+         * update only , when TABLENAME exists in M_value
+         */
+        if (selected_F_S[TABLENAME] !== undefined) {
+            new_M_value[TABLENAME] = selected_F_S[TABLENAME];
+        }
+    }
+
+    console.log(
+        "[5] !!!!!!!!!!! -- M_value_Service -- update_M_value_with_selected_F_S -- new_M_value = ",
+        new_M_value,
+    );
 
     await M_value_Service.update(new_M_value, {
         activeTab: "entities",

@@ -7,7 +7,8 @@
                 "d::STRING",
                 255
             ],
-            "cud::REQUIRED"
+            "u::FILE",
+            "cd::NULLABLE"
         ],
         "NAME": [
             "name",
@@ -104,9 +105,8 @@
         ]
     },
     "t": {
-        "USERS": "users",
-        "SHOPS": "shops",
-        "PRODUCTS": "products",
-        "ORDERS": "orders"
+        "FSAD": "fsad",
+        "FDS": "fds",
+        "NEW": "new"
     }
 }

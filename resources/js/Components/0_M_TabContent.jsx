@@ -22,7 +22,8 @@ export default function TabContent() {
 
     const { FIELDNAME_to_add, set_FIELDNAME_to_add } = use_M_Store();
 
-    const M_value = use_M_Store((state) => state.M_value);
+    // const M_value = use_M_Store((state) => state.M_value);
+    const M_value = use_M_Store.getState().M_value;
     const activeTab = use_M_Store((state) => state.activeTab);
     const activeSubTab = use_M_Store((state) => state.activeSubTab);
     const activeField = use_M_Store((state) => state.activeField);
@@ -103,6 +104,8 @@ export default function TabContent() {
      * @returns
      */
     async function add_field_ENTITIES() {
+        const set_selected_F_S = use_M_Store.getState().set_selected_F_S;
+
         const input_box_fieldname = document.querySelector(".new_field_name");
         const raw_name = input_box_fieldname ? input_box_fieldname.value : "";
 
@@ -111,11 +114,59 @@ export default function TabContent() {
 
         const fieldname = trimmed_name;
         const M_value_KEY = fieldname.toUpperCase();
+        console.log(
+            "[A] !!!!!!!! TabContent -- add_field_ENTITIES --- M_value_KEY = ",
+            M_value_KEY,
+        );
+        console.log(
+            "[B] !!!!!!!! TabContent -- add_field_ENTITIES --- old M_value = ",
+            use_M_Store.getState().M_value,
+        );
 
-        const new_M_value = {
-            [M_value_KEY]: [],
-            ...M_value,
-        };
+        // // this add empty []  -- OLD Solution without Loop -------NOT WORK -------------
+        // const new_M_value = {
+        //     [M_value_KEY]: [],
+        //     ...use_M_Store.getState().M_value,
+        // };
+
+        // add empty place for new seleted_F_S
+        set_selected_F_S(M_value_KEY, []);
+
+        // const new_M_value = { ...use_M_Store.getState().M_value };
+        const new_M_value = {};
+        console.log(
+            "[5] !!!!!!!!!!! -- TabContent -- update_M_value_with_selected_F_S -- new_M_value = ",
+            new_M_value,
+        );
+
+        console.log(
+            `[6] !!!!!!!!!!! -- TabContent -- update_M_value_with_selected_F_S -- selected_F_S[${M_value_KEY}] = `,
+            use_M_Store.getState().selected_F_S[M_value_KEY],
+        );
+
+        /**
+         * * WORKAROUND : BUG M_value[M_VALUE_KEY] = undefined
+         * * we Loop to build new_M_value by copy content from selected_F_S ,
+         * * because if we use clone ...M_value ,
+         * * M_value[M_value_KEY] it has alle M empty content ,
+         * * BUG = empty content of all table
+         * * -------------------------------
+         * * SOLUTION : seleted_F_S = Entities on UI
+         * * we keep seleted_F_S correct on the whole CRUD - Flow
+         * * so seleted_F_S can be save backend as M_value anytime
+         */
+        for (const TABLENAME of Object.keys(
+            use_M_Store.getState().selected_F_S,
+        )) {
+            // get current data before save
+            new_M_value[TABLENAME] =
+                use_M_Store.getState().selected_F_S[TABLENAME];
+        }
+
+        console.log(
+            "[7] !!!!!!!!!!! -- TabContent -- update_M_value_with_selected_F_S -- new_M_value = ",
+            new_M_value,
+        );
 
         await M_value_Service.update(new_M_value);
 
