@@ -119,6 +119,9 @@ export async function delete_field(fieldname) {
     const activeSubTab = use_M_Store.getState().activeSubTab;
     const activeField = use_M_Store.getState().activeField;
     const setActiveField = use_M_Store.getState().setActiveField;
+    const set_FIELDNAME_to_update =
+        use_M_Store.getState().set_FIELDNAME_to_update;
+
     if (activeField !== fieldname) {
         console.log(`${activeField} === ${fieldname}`);
         setActiveField(fieldname);
@@ -128,6 +131,10 @@ export async function delete_field(fieldname) {
     const FIELDNAME = activeField.toUpperCase();
 
     const isConfirmed = window.confirm(`Are you sure to delete ${FIELDNAME}?`);
+    if (!isConfirmed) {
+        set_FIELDNAME_to_update(fieldname, activeField.toUpperCase());
+        return;
+    }
     if (isConfirmed) {
         if (
             (activeTab === "app_data" && activeSubTab === "f") || // Field
@@ -304,7 +311,36 @@ export async function rename_M_value_KEY_and_fieldname(fieldname) {
     const activeSubTab = use_M_Store.getState().activeSubTab;
     const activeField = use_M_Store.getState().activeField;
     const setActiveField = use_M_Store.getState().setActiveField;
-    const old_M_value = use_M_Store.getState().M_value;
+
+    const is_F_or_S =
+        (activeTab === "app_data" && activeSubTab === "f") ||
+        (activeTab === "m_data" && activeSubTab === "s");
+
+    const is_ENTITIES = activeTab === "entities" && activeSubTab === "entities";
+
+    let old_M_value = {};
+    if (is_F_or_S) old_M_value = use_M_Store.getState().M_value;
+    if (is_ENTITIES) {
+        /**
+         * * WORKAROUND : BUG M_value[M_VALUE_KEY] = undefined
+         * * we Loop to build new_M_value by copy content from selected_F_S ,
+         * * because if we use clone ...M_value ,
+         * * M_value[M_value_KEY] it has alle M empty content ,
+         * * BUG = empty content of all table
+         * * -------------------------------
+         * * SOLUTION : seleted_F_S = Entities on UI
+         * * we keep seleted_F_S correct on the whole CRUD - Flow
+         * * so seleted_F_S can be save backend as M_value anytime
+         */
+        for (const TABLENAME of Object.keys(
+            use_M_Store.getState().selected_F_S,
+        )) {
+            // get current data before save
+            old_M_value[TABLENAME] =
+                use_M_Store.getState().selected_F_S[TABLENAME];
+        }
+    }
+
     const OLD_KEY = activeField.toUpperCase();
     const NEW_KEY = fieldname.toUpperCase();
 
@@ -325,14 +361,11 @@ export async function rename_M_value_KEY_and_fieldname(fieldname) {
     set_has_Fieldname_Change(true);
     await M_value_Service.update(new_M_value);
 
-    if (
-        (activeTab === "app_data" && activeSubTab === "f") ||
-        (activeTab === "m_data" && activeSubTab === "s")
-    ) {
+    if (is_F_or_S) {
         await update_cascade_fieldname_in_entities(OLD_KEY, NEW_KEY, debug);
     }
 
-    if (activeTab === "entities" && activeSubTab === "entities") {
+    if (is_ENTITIES) {
         await update_cascade_tablename_in_app_data_t(OLD_KEY, NEW_KEY, debug);
     }
 }
@@ -388,6 +421,10 @@ function prepare_M_value_for_update_f_s_entities(
     NEW_KEY,
 ) {
     const new_M_value = {};
+    console.log(
+        `[DEBUG - M_value_Service] -- prepare_M_value_for_update_f_s_entities -- old_M_value = `,
+        old_M_value,
+    );
     for (const KEY of Object.keys(old_M_value)) {
         if (OLD_KEY === NEW_KEY) return old_M_value;
         if (KEY === OLD_KEY) {
@@ -397,6 +434,7 @@ function prepare_M_value_for_update_f_s_entities(
             const activeSubTab = use_M_Store.getState().activeSubTab;
 
             if (activeTab === "entities" && activeSubTab === "entities") {
+                delete use_M_Store.getState().selected_F_S[OLD_KEY];
                 new_M_value[NEW_KEY] = old_field_data;
             } else {
                 /**
@@ -405,8 +443,8 @@ function prepare_M_value_for_update_f_s_entities(
                  * * M_value_KEY <=> fieldname
                  * * UPPPERCASE  <=> lowercase
                  * * e.g.
-                 * * {"IMAGE": [ "image", ["d::STRING" , 255] , "u::FILE"]}
-                 * * {"PRODUCT_IMAGE": [ "product_image", ["d::STRING" , 255] , "u::FILE"]}
+                 * * { "IMAGE": [ "image", ["d::STRING" , 255] , "u::FILE"]}
+                 * * { "PRODUCT_IMAGE": [ "product_image", ["d::STRING" , 255] , "u::FILE"] }
                  */
                 const M_value_with_new_fieldname =
                     change_fieldname_in_field_data(
@@ -477,41 +515,6 @@ async function update_cascade_fieldname_in_entities(OLD_KEY, NEW_KEY, debug) {
  * * to update M_value with selected_F_S for current TABLENAME
  * @param {*} TABLENAME e.g. ORDERS , PRODUCTS
  */
-// export async function update_M_value_with_selected_F_S(TABLENAME) {
-//     const selected_F_S = use_M_Store.getState().selected_F_S;
-//     const M_value = use_M_Store.getState().M_value;
-//     console.log(
-//         "!!!!!!!!!!! -- M_value_Service -- update_M_value_with_selected_F_S -- TABLENAME = ",
-//         TABLENAME,
-//     );
-//     console.log(
-//         `!!!!!!!!!!! -- M_value_Service -- update_M_value_with_selected_F_S -- selected_F_S[${TABLENAME}] = `,
-//         selected_F_S[TABLENAME],
-//     );
-//     console.log(
-//         `!!!!!!!!!!! -- M_value_Service -- update_M_value_with_selected_F_S -- ALL selected_F_S = `,
-//         selected_F_S,
-//     );
-//     /**
-//      * clone M_value and overwrite
-//      * where M_value_KEY = TABLENAME
-//      * with new field_data = selected_F_S
-//      */
-//     const new_M_value = {
-//         ...M_value,
-//         [TABLENAME]: selected_F_S[TABLENAME],
-//     };
-//     console.log(
-//         "!!!!!!!!!!! -- M_value_Service -- update_M_value_with_selected_F_S -- M_value -- ",
-//         M_value,
-//     );
-
-//     await M_value_Service.update(new_M_value, {
-//         activeTab: "entities",
-//         activeSubTab: "entities",
-//     });
-// }
-
 export async function update_M_value_with_selected_F_S() {
     const selected_F_S = use_M_Store.getState().selected_F_S;
     const M_value = use_M_Store.getState().M_value;

@@ -4,7 +4,6 @@ namespace App\Constant;
 
 class f
 {
-    public const GFVDF__342 = ['gfvdf__342', [d::STRING, 255], [cd::DEFAULT, 'fee3'], u::NUMBER];
     public const IMAGE = ['image', [d::STRING, 255], u::FILE, cd::NULLABLE];
     public const NAME = ['name', [d::STRING, 255], u::TEXT, cud::REQUIRED];
     public const PRICE = ['price', [d::DECIMAL, 10, 2], u::NUMBER, [cd::DEFAULT, 0], s::CURRENCY];
@@ -21,8 +20,8 @@ class f
 
 class t
 {
-    public const 3424 = '3424';
-    public const NEW_5 = 'new_5';
-    public const OBGU324_O_ = 'obgu324_o_';
-    public const GHF4_E = 'ghf4_e';
+    public const USERS = 'users';
+    public const SHOPS = 'shops';
+    public const PRODUCTS = 'products';
+    public const ORDERS = 'orders';
 }

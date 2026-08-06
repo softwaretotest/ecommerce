@@ -1,6 +1,18 @@
 {
     "_comment": "\/M_JSON\/App-Data.json",
     "f": {
+        "GFVDF__342": [
+            "gfvdf__342",
+            [
+                "d::STRING",
+                255
+            ],
+            [
+                "cd::DEFAULT",
+                "fee3"
+            ],
+            "u::NUMBER"
+        ],
         "IMAGE": [
             "image",
             [
@@ -105,9 +117,9 @@
         ]
     },
     "t": {
-        "FSAD": "fsad",
-        "FDS": "fds",
-        "FDSAF": "fdsaf",
-        "NEW": "new"
+        "3424": "3424",
+        "NEW_5": "new_5",
+        "OBGU324_O_": "obgu324_o_",
+        "GHF4_E": "ghf4_e"
     }
 }
