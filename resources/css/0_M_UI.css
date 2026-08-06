@@ -292,6 +292,24 @@ body {
     flex-direction: column;
     max-width: 250px;
 }
+
+/*
+    drag able for sidebar
+    to sort entities
+*/
+.field-nav-link {
+    cursor: grab; /* change arrow to hand */
+    user-select: none; /* prevent highlight text while dragging */
+}
+
+.field-nav-link:active {
+    cursor: grabbing; /* change arrow to hand , while dragging */
+}
+
+.field-nav-link.dragging {
+    opacity: 0.4;
+}
+
 .add-button,
 .delete-button,
 .field-nav-link {
@@ -305,6 +323,7 @@ body {
 
     white-space: nowrap;
 }
+
 .add-button:hover,
 .delete-button:hover,
 .field-nav-link:hover {

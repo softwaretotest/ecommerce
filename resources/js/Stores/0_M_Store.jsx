@@ -253,34 +253,65 @@ export const use_M_Store = create((set) => ({
         set((state) => {
             if (!tablename) return { selected_F_S: {} };
 
-            let NEW_selected_F_S = {};
+            const NEW_selected_F_S = {
+                ...state.selected_F_S,
+                [tablename]: selected_F_S,
+            };
 
-            // USERS = first table in Laravel Migration
-            if (tablename === "USERS") {
-                NEW_selected_F_S = {
-                    [tablename]: selected_F_S,
-                    ...state.selected_F_S,
-                };
-            } else {
-                NEW_selected_F_S = {
-                    ...state.selected_F_S,
-                    [tablename]: selected_F_S,
-                };
-            }
+            const sorted_selected_F_S = sort_selected_F_S(NEW_selected_F_S);
 
             if (state.debug || state.debug_selected_F_S) {
                 console.log(
                     `[M_STORE_DEBUG] NEW selected_F_S[${tablename}]:`,
-                    NEW_selected_F_S[tablename],
+                    sorted_selected_F_S[tablename],
                 );
                 console.log(
                     `[M_STORE_DEBUG] ALL selected_F_S]:`,
-                    state.selected_F_S,
+                    sorted_selected_F_S,
                 );
                 console.log("------------------------------------");
             }
 
-            return { selected_F_S: NEW_selected_F_S };
+            return { selected_F_S: sorted_selected_F_S };
+        }),
+
+    /**
+     * * CALLED by Sidebar
+     * * when drag-drop = re-order sidebar buttons
+     * * correctly like real order in selected_F_S
+     * * USERS always at the top
+     * @param {*} reorderedKeys
+     * @returns
+     */
+    reorder_selected_F_S: (reorderedKeys) =>
+        set((state) => {
+            const currentData = state.selected_F_S;
+            const new_selected_F_S = {};
+
+            // USERS always at the top
+            let keysToProcess = [...reorderedKeys];
+            if (keysToProcess.includes("USERS")) {
+                keysToProcess = [
+                    "USERS",
+                    ...keysToProcess.filter((k) => k !== "USERS"),
+                ];
+            }
+
+            keysToProcess.forEach((TABLENAME) => {
+                if (currentData[TABLENAME] !== undefined) {
+                    new_selected_F_S[TABLENAME] = currentData[TABLENAME];
+                }
+            });
+
+            if (state.debug || state.debug_selected_F_S) {
+                console.log(
+                    `[M_STORE_DEBUG] ALL selected_F_S]:`,
+                    new_selected_F_S,
+                );
+                console.log("------------------------------------");
+            }
+
+            return { selected_F_S: new_selected_F_S };
         }),
 
     add_F_S: (
@@ -308,7 +339,7 @@ export const use_M_Store = create((set) => ({
                 );
                 console.log(
                     `[M_STORE_DEBUG] ALL selected_F_S]:`,
-                    state.selected_F_S,
+                    NEW_selected_F_S,
                 );
                 console.log("------------------------------------");
             }
@@ -341,7 +372,7 @@ export const use_M_Store = create((set) => ({
                 );
                 console.log(
                     `[M_STORE_DEBUG] ALL selected_F_S]:`,
-                    state.selected_F_S,
+                    NEW_selected_F_S,
                 );
                 console.log("------------------------------------");
             }
@@ -541,21 +572,6 @@ export const use_M_Store = create((set) => ({
     set_M_value: (new_M_value) => {
         let corrected_M_value = null;
         set((state) => {
-            // // this sort alphanummeric M_value by KEY DOES NOT WORK
-            // // 1. ดึง Key ทั้งหมดมาเรียงลำดับตามตัวอักษร (A-Z)
-            // const sortedKeys = Object.keys(new_M_value).sort((a, b) =>
-            //     a.localeCompare(b, undefined, {
-            //         numeric: true,
-            //         sensitivity: "base",
-            //     }),
-            // );
-
-            // // 2. สร้าง Object ใหม่ที่เรียง Key ตามที่จัดระเบียบแล้ว
-            // const sorted_M_value = {};
-            // sortedKeys.forEach((key) => {
-            //     sorted_M_value[key] = new_M_value[key];
-            // });
-
             corrected_M_value = move_d_to_2nd_position(new_M_value);
 
             if (state.debug || state.debug_M_value) {
@@ -571,3 +587,28 @@ export const use_M_Store = create((set) => ({
         return corrected_M_value;
     },
 }));
+
+/**
+ * * CALLED by set_selected_F_S[TABLENAME]
+ * * when TABLENAME === USERS
+ * * this function always move USERS to top
+ */
+function sort_selected_F_S(NEW_selected_F_S) {
+    if (!NEW_selected_F_S || typeof NEW_selected_F_S !== "object") return {};
+
+    const TABLENAMES = Object.keys(NEW_selected_F_S);
+
+    if (!TABLENAMES.includes("USERS")) return NEW_selected_F_S;
+
+    // take out USERS
+    const OTHER_TABLENAME = TABLENAMES.filter((NAME) => NAME !== "USERS");
+    // put back USERS at the first place
+    const sorted_TABLENAMES = ["USERS", ...OTHER_TABLENAME];
+
+    const sorted_selected_F_S = {};
+    sorted_TABLENAMES.forEach((TABLENAME) => {
+        sorted_selected_F_S[TABLENAME] = NEW_selected_F_S[TABLENAME];
+    });
+
+    return sorted_selected_F_S;
+}
