@@ -29,12 +29,17 @@ class Runner
          * * but we can add table user_details instead, 
          * * if user specific info. needed
          */
+
+        // these classes for test ecommerce app
         $entities = [
             UserConstant::class,
             ShopConstant::class,
             ProductConstant::class,
             OrderConstant::class
         ];
+
+        // // dynamicly get app/Constant/EntityContant.php 
+        // $entities = (array) self::get_Entities();
 
         $count = count($entities);
         if ($count > self::MAX_MIGRATIONS) {
@@ -56,6 +61,30 @@ class Runner
 
             Maker::run($entity);
         }
+    }
+
+    /**
+     * * get all Classes with file subfix = *Constant.php
+     * @return $entities = e.g. [ UserConstant::class, ShopConstant::class ]
+     */
+    private static function get_Entities(): array
+    {
+        $entities = [];
+        // 1. ค้นหาไฟล์ทั้งหมดที่ลงท้ายด้วย Constant.php ในโฟลเดอร์เดียวกัน
+        $files = glob(__DIR__ . "/*Constant.php");
+
+        foreach ($files as $file) {
+            $filename = basename($file, ".php");
+            $className = "App\\Constant\\" . $filename;
+
+            // ตรวจสอบว่าคลาสมีอยู่จริง และสามารถเรียกใช้งานได้
+            if (class_exists($className)) {
+                // ใช้ตัวแทนคลาสตรงๆ แบบเดียวกับ UserConstant::class
+                $entities[] = $className;
+            }
+        }
+
+        return $entities;
     }
 }
 

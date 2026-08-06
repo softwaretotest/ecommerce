@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('shops', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 255)->required();
-            $table->string('image', 255)->nullable();
+            $table->string('name')->required();
+            $table->string('image');
             $table->foreignId('user_id')->constrained('users')->onDelete('restrict');
             $table->timestamps();
         });

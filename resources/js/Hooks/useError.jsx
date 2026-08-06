@@ -38,6 +38,26 @@ export function useError() {
             return;
         }
 
+        /**
+         * * prevent Case t::12345 ,
+         * * because of PHP static syntax not allow only number as static call
+         */
+        const pure_numeric_regex = /^\d+$/;
+        if (pure_numeric_regex.test(FIELDNAME)) {
+            set_error(`Fieldname ${FIELDNAME} cannot be purely numeric.`);
+            return;
+        }
+
+        /**
+         * * php does not allow variable starts with number
+         * * e.g. not t::123_ , but t::_123
+         */
+        const starts_with_number_regex = /^\d/;
+        if (starts_with_number_regex.test(FIELDNAME)) {
+            set_error(`Fieldname ${FIELDNAME} cannot start with a number.`);
+            return;
+        }
+
         // code for useError_v2.js
         // if (typeof set_fieldname === "function" && options.ADD) {
         // set_fieldname(FIELDNAME);

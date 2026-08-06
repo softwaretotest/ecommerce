@@ -2,18 +2,17 @@
 
 namespace App\Constant;
 
-class ProductConstant
+class 3424_Constant
 {
-    public const TABLE_NAME = t::PRODUCTS;
+    public const TABLE_NAME = t::3424_;
 
     public static function fields(): array
     {
         return [
-            f::NAME,
+            s::CURRENCY,
             f::IMAGE,
-            f::SHOP_ID,
             f::PRICE,
-            f::STOCK,
+            f::ORDER_NR,
         ];
     }
 }
