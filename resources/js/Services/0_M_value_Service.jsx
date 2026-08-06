@@ -129,60 +129,23 @@ export async function delete_field(fieldname) {
 
     const isConfirmed = window.confirm(`Are you sure to delete ${FIELDNAME}?`);
     if (isConfirmed) {
-        console.log(
-            `[1] [ M_value_Service -- delete_field() ] !!!!!!!!!!!!!!! - M_value = `,
-            use_M_Store.getState().M_value,
-        );
-        // const new_M_value = { ...use_M_Store.getState().M_value };
-        const new_M_value = {};
-
-        console.log(
-            `[2] [ M_value_Service -- delete_field() ] !!!!!!!!!!!!!!! BEFORE delete Table - new_M_value = `,
-            JSON.parse(JSON.stringify(new_M_value)),
-        );
-
-        //delete object(M_value)'s item by KEY(FIELDNAME)
-        // delete new_M_value[FIELDNAME];
-
-        /**
-         * * WORKAROUND : BUG M_value[M_VALUE_KEY] = undefined
-         * * we Loop to build new_M_value by copy content from selected_F_S ,
-         * * because if we use clone ...M_value ,
-         * * M_value[M_value_KEY] it has alle M empty content ,
-         * * BUG = empty content of all table
-         * * -------------------------------
-         * * SOLUTION : seleted_F_S = Entities on UI
-         * * we keep seleted_F_S correct on the whole CRUD - Flow
-         * * so seleted_F_S can be save backend as M_value anytime
-         */
-        for (const TABLENAME of Object.keys(
-            use_M_Store.getState().selected_F_S,
-        )) {
-            // get current data before save
-            new_M_value[TABLENAME] =
-                use_M_Store.getState().selected_F_S[TABLENAME];
-        }
-
-        console.log(
-            `[3] [ M_value_Service -- delete_field() ] !!!!!!!!!!!!!!! AFTER delete Table - new_M_value = `,
-            new_M_value,
-        );
-
-        console.log(
-            `[4] [ M_value_Service -- delete_field() ] !!!!!!!!!!!!!!! - selected_F_S = `,
-            use_M_Store.getState().selected_F_S,
-        );
-
-        await M_value_Service.update(new_M_value);
-
         if (
             (activeTab === "app_data" && activeSubTab === "f") || // Field
             (activeTab === "m_data" && activeSubTab === "s") // SpecialField
         ) {
+            const new_M_value = { ...use_M_Store.getState().M_value };
+
+            //delete object(M_value)'s item by KEY(FIELDNAME)
+            delete new_M_value[FIELDNAME];
+
+            await M_value_Service.update(new_M_value);
+
             await delete_cascade_fieldname_in_entities(activeField, debug);
         }
 
         if (activeTab === "entities" && activeSubTab === "entities") {
+            const new_M_value = {};
+
             //delete tablename from selected_F_S
             delete use_M_Store.getState().selected_F_S[FIELDNAME];
             /**
@@ -203,6 +166,8 @@ export async function delete_field(fieldname) {
                 new_M_value[TABLENAME] =
                     use_M_Store.getState().selected_F_S[TABLENAME];
             }
+            await M_value_Service.update(new_M_value);
+
             await delete_cascade_tablename_in_app_data_t(activeField, debug);
         }
     }

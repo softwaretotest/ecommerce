@@ -1,17 +1,31 @@
 {
     "_comment": "\/M_JSON\/Entities.json",
     "entities": {
-        "FDAS": [
-            "s::EMAIL",
-            "f::IMAGE",
-            "s::CURRENCY",
-            "f::NAME"
-        ],
-        "NEW": [
+        "FDSAF": [
             "s::EMAIL",
             "f::IS_ACTIVE",
             "f::NAME",
+            "f::ORDER_ID",
+            "f::ORDER_NR"
+        ],
+        "NEW": [
+            "s::CURRENCY",
+            "f::IS_ACTIVE",
+            "s::EMAIL",
             "f::IMAGE"
+        ],
+        "FDSA": [
+            "s::EMAIL",
+            "f::IMAGE",
+            "f::ORDER_ID",
+            "f::IS_ACTIVE",
+            "f::NAME",
+            "f::ORDER_NR"
+        ],
+        "FDSAE": [
+            "s::CURRENCY",
+            "f::IMAGE",
+            "f::IS_ACTIVE"
         ]
     }
 }
