@@ -71,11 +71,11 @@ class Runner
     {
         $entities = [];
         // 1. ค้นหาไฟล์ทั้งหมดที่ลงท้ายด้วย Constant.php ในโฟลเดอร์เดียวกัน
-        $files = glob(__DIR__ . "/*Constant.php");
+        $files = glob(__DIR__ . "/Entities/*Constant.php");
 
         foreach ($files as $file) {
             $filename = basename($file, ".php");
-            $className = "App\\Constant\\" . $filename;
+            $className = "App\\Constant\\Entities\\" . $filename;
 
             // ตรวจสอบว่าคลาสมีอยู่จริง และสามารถเรียกใช้งานได้
             if (class_exists($className)) {
