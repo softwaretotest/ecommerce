@@ -22,16 +22,20 @@ export default function TabContent() {
 
     const { FIELDNAME_to_add, set_FIELDNAME_to_add } = use_M_Store();
 
-    // const M_value = use_M_Store((state) => state.M_value);
-    const M_value = use_M_Store.getState().M_value;
+    const M_value = use_M_Store((state) => state.M_value);
+    // const M_value = use_M_Store.getState().M_value;
     const activeTab = use_M_Store((state) => state.activeTab);
     const activeSubTab = use_M_Store((state) => state.activeSubTab);
+    const is_ENTITIES = activeTab === "entities" && activeSubTab === "entities";
+
     const activeField = use_M_Store((state) => state.activeField);
     const is_Editing = use_M_Store((state) => state.is_Editing);
 
     const setActiveField = use_M_Store.getState().setActiveField;
     const set_NEW_added_fieldname =
         use_M_Store.getState().set_NEW_added_fieldname;
+    const set_selected_F_S_by_M_value_T =
+        use_M_Store.getState().set_selected_F_S_by_M_value_T;
 
     if (!M_value)
         return <div className="ui-placeholder">No UI for {activeSubTab}</div>;
@@ -43,6 +47,17 @@ export default function TabContent() {
     if (typeof window !== "undefined" && !window.D_HEAL) {
         window.D_HEAL = { isLastField: false, total: 0, collected: {} };
     }
+
+    /**
+     * * useEffect for:
+     * * void infinit loop on refresh
+     * * set all table at once
+     */
+    useEffect(() => {
+        if (is_ENTITIES && M_value && Object.keys(M_value).length > 0) {
+            set_selected_F_S_by_M_value_T(M_value);
+        }
+    }, [activeSubTab]); // set only when user click SubTab = "entities"
 
     function render_TabContent_DOM(fieldname, field_data) {
         return (

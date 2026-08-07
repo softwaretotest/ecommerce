@@ -10,6 +10,8 @@ import {
 
 import { move_d_to_2nd_position } from "@/Services/0_M_value_Service";
 
+import { M_value_Service } from "@/Services/0_M_value_Service";
+
 export const use_M_Store = create((set) => ({
     debug: false,
     debug_M_value: true,
@@ -301,6 +303,34 @@ export const use_M_Store = create((set) => ({
 
             return { selected_F_S: sorted_selected_F_S };
         }),
+
+    /**
+     * * CALLED by useEffect - TabContent
+     * * when activeSubTab = "entities"
+     * * set all table in selected_F_S at once
+     * * update backend
+     */
+    set_selected_F_S_by_M_value_T: async (M_value_T) => {
+        if (!M_value_T || typeof M_value_T !== "object") {
+            set({ selected_F_S: {} });
+            return;
+        }
+
+        const sorted_selected_F_S = sort_selected_F_S(M_value_T);
+
+        set((state) => {
+            if (state.debug || state.debug_selected_F_S) {
+                console.log(
+                    "[M_STORE_DEBUG] SET ALL selected_F_S:",
+                    sorted_selected_F_S,
+                );
+                console.log("------------------------------------");
+            }
+            return { selected_F_S: sorted_selected_F_S };
+        });
+
+        await M_value_Service.update(sorted_selected_F_S);
+    },
 
     /**
      * * CALLED by Sidebar
