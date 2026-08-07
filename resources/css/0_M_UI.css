@@ -310,6 +310,25 @@ body {
     opacity: 0.4;
 }
 
+/* --- Drag and Drop Target Highlight --- */
+.field-nav-link.drag-over {
+    /* same color as JSON Highlight  */
+    background-color: #38f5e8b9 !important;
+    border: 2px dashed #0056b3 !important;
+    color: #000 !important;
+
+    /* expand item size to see more blink effect */
+    transform: scale(1.2);
+    transition: all 0.15s ease-in-out;
+}
+
+/* --- Drop Success Blink Effect --- */
+.dropped-blink {
+    animation: blink-frequenz 0.7s ease-in-out 4;
+    background-color: #38f5e8b9 !important;
+    border-color: #0056b3 !important;
+}
+
 .add-button,
 .delete-button,
 .field-nav-link {
@@ -452,7 +471,7 @@ body {
     grid-area: add-button;
 }
 
-@keyframes blink-three-times {
+@keyframes blink-frequenz {
     0% {
         opacity: 1;
     }
@@ -478,7 +497,7 @@ body {
     text-align: center;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 
-    animation: blink-three-times 0.5s ease-in-out 3;
+    animation: blink-frequenz 0.5s ease-in-out 4;
 }
 
 /* CSS for ENTITIES TAB */

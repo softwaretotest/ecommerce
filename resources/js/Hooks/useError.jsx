@@ -7,6 +7,7 @@ import { rename_M_value_KEY_and_fieldname } from "@/Services/0_M_value_Service";
 
 export function useError() {
     const { Error_FIELDNAME, set_Error_FIELDNAME } = use_M_Store();
+    const set_error = use_M_Store.getState().set_error;
 
     /**
      * * validate fieldname and show error if exists
@@ -99,25 +100,6 @@ export function useError() {
         if (is_UPDATE && activeField) {
             set_FIELDNAME_to_update(activeField, FIELDNAME);
         }
-    }
-
-    /**
-     * * error blinks
-     * * because of css .error-text (animation)
-     * * and setTimeout to reset error text
-     * * setTimeout is a trick to make
-     * * React see the change and re-render the component
-     * * otherwise, changing same React state immediately
-     * * will not trigger re-render and React will ignore the change
-     * @param {*} error_text
-     */
-    function set_error(error_text) {
-        set_Error_FIELDNAME("");
-        setTimeout(() => {
-            set_Error_FIELDNAME(
-                <span className="error-text">{error_text}</span>,
-            );
-        }, 50);
     }
 
     return {

@@ -43,6 +43,19 @@ export default function EntityField({ f_s_Class_Array, TABLENAME }) {
     const selected_F_S = use_M_Store((state) => state.selected_F_S);
     const set_selected_F_S = use_M_Store.getState().set_selected_F_S;
 
+    /**
+     * * useEffect help :
+     * * void infinit loop on refresh
+     * * But, it looped and called to much,
+     * * e.g. if 50 tables , then 50 x set_seleted_F_S
+     *
+     * * TODO:
+     * 1. make function set_all_selected_F_S(M_value_T),
+     * *  to set all table at once
+     * *
+     * 2. move this useEffect to TabContent
+     * * and let it have only 1 dependency = activeSubTab
+     */
     useEffect(() => {
         if (TABLENAME && f_s_Class_Array) {
             set_selected_F_S(TABLENAME, f_s_Class_Array);

@@ -31,15 +31,15 @@ class Runner
          */
 
         // these classes for test ecommerce app
-        $entities = [
-            UserConstant::class,
-            ShopConstant::class,
-            ProductConstant::class,
-            OrderConstant::class
-        ];
+        // $entities = [
+        //     UserConstant::class,
+        //     ShopConstant::class,
+        //     ProductConstant::class,
+        //     OrderConstant::class
+        // ];
 
         // // dynamicly get app/Constant/EntityContant.php 
-        // $entities = (array) self::get_Entities();
+        $entities = (array) self::get_Entities();
 
         $count = count($entities);
         if ($count > self::MAX_MIGRATIONS) {
@@ -64,23 +64,32 @@ class Runner
     }
 
     /**
-     * * get all Classes with file subfix = *Constant.php
-     * @return $entities = e.g. [ UserConstant::class, ShopConstant::class ]
+     * get all Classes from Entities.json (sorted from UI)
+     * @return array $entities = e.g. [ UserConstant::class, ShopConstant::class ]
      */
     private static function get_Entities(): array
     {
         $entities = [];
-        // 1. ค้นหาไฟล์ทั้งหมดที่ลงท้ายด้วย Constant.php ในโฟลเดอร์เดียวกัน
-        $files = glob(__DIR__ . "/Entities/*Constant.php");
 
-        foreach ($files as $file) {
-            $filename = basename($file, ".php");
-            $className = "App\\Constant\\Entities\\" . $filename;
+        // ใช้ path เดิมตามโครงสร้างโปรเจกต์ของคุณ
+        $jsonFilePath = __DIR__ . '/M_JSON/Entities.json';
 
-            // ตรวจสอบว่าคลาสมีอยู่จริง และสามารถเรียกใช้งานได้
-            if (class_exists($className)) {
-                // ใช้ตัวแทนคลาสตรงๆ แบบเดียวกับ UserConstant::class
-                $entities[] = $className;
+        if (!file_exists($jsonFilePath)) {
+            return $entities;
+        }
+
+        $jsonContent = file_get_contents($jsonFilePath);
+        $json = json_decode($jsonContent, true);
+
+        // Loop sorted entities in JSON to make classes
+        if (isset($json['entities']) && is_array($json['entities'])) {
+            foreach ($json['entities'] as $entityName => $fields) {
+                $singularName = rtrim($entityName, 'S');
+                $className = "App\\Constant\\" . ucfirst(strtolower($singularName)) . 'Constant';
+
+                if (class_exists($className)) {
+                    $entities[] = $className;
+                }
             }
         }
 

@@ -140,6 +140,33 @@ export const use_M_Store = create((set) => ({
             }
             return { Error_FIELDNAME: Error_FIELDNAME };
         }),
+    /**
+     * * error blinks
+     * * because of css .error-text (animation)
+     * * and setTimeout to reset error text
+     * * setTimeout is a trick to make
+     * * React see the change and re-render the component
+     * * otherwise, changing same React state immediately
+     * * will not trigger re-render and React will ignore the change
+     * @param {*} error_text = Error to show in DOM
+     * @param {*} clear_in_ms = reset error timeout
+     */
+    set_error: (error_text, { clear_in_ms = null } = {}) => {
+        set({ Error_FIELDNAME: "" });
+        setTimeout(() => {
+            set({
+                Error_FIELDNAME: (
+                    <span className="error-text">{error_text}</span>
+                ),
+            });
+        }, 50);
+        if (clear_in_ms) {
+            setTimeout(() => {
+                // syntax for call set_Error_FIELDNAME in M_Store
+                set({ Error_FIELDNAME: "" });
+            }, clear_in_ms);
+        }
+    },
 
     has_M_value_Change: false,
     set_has_M_value_Change: (has_M_value_Change) =>
@@ -314,6 +341,14 @@ export const use_M_Store = create((set) => ({
             return { selected_F_S: new_selected_F_S };
         }),
 
+    /**
+     * * CALLED by Entities_select to add
+     * *    new f::Field ,
+     * *    s::SpecialField to selected_F_S
+     * @param {*} tablename
+     * @param {*} field_item
+     * @returns
+     */
     add_F_S: (
         tablename,
         field_item, // function of atomic states
@@ -347,6 +382,14 @@ export const use_M_Store = create((set) => ({
             return { selected_F_S: NEW_selected_F_S };
         }),
 
+    /**
+     * * CALLED by EntityField to remove
+     * *    new f::Field ,
+     * *    s::SpecialField to selected_F_S
+     * @param {*} tablename
+     * @param {*} field_item
+     * @returns
+     */
     remove_F_S: (
         tablename,
         field_item, // function atomic states

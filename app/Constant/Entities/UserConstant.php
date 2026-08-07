@@ -9,10 +9,6 @@ class UserConstant
     public static function fields(): array
     {
         return [
-            s::EMAIL,
-            f::IS_ACTIVE,
-            f::NAME,
-            f::IMAGE,
         ];
     }
 }
