@@ -26,10 +26,10 @@ class M_Sync
 
     private static function run_PHP_to_JSON($sourceFile, $jsonFile): void
     {
-        // กำหนด Path เต็มสำหรับโฟลเดอร์ M_JSON
+        // full Path of M_JSON folder
         $directory = __DIR__ . self::M_JSON;
 
-        // เช็คว่ามีโฟลเดอร์ไหม ถ้าไม่มีให้สร้าง
+        // create folder if not exists
         if (!file_exists($directory)) {
             mkdir($directory, 0755, true);
         }
@@ -48,12 +48,42 @@ class M_Sync
         echo "--- M_Sync: Created {$jsonFile} ---\n";
     }
 
+    /**
+     * * Convert *Constant.php to Entities.json 
+     * * using the Technic "JSON - Master Order"
+     * * CASES:
+     * 1. CASE : all tables exists on PHP and JSON  
+     * *    => ordered by Entities.json
+     * 2. CASE : There is a new table in PHP , but not exists in JSON
+     * *    => put the new table at the end of JSON
+     * 3. CASE : table not exist in JSON , but in JSON exists
+     * *    => remove this trash table from JSON
+     * 4. CASE : Mixing CASES 1 2 3 , e.g. :
+     *           JSON has A B C
+     *           PHP has A B C D
+     *      => Union + Preserve Order , that means CASES 1 2 3
+     *          1. keep JSON order
+     *          2. put new PHP table at the end of JSON
+     *          3. cut out none existing table from JSON
+     *          4. alway overwrite JSON table content by PHP Source table
+     * * ------------------------------------------------
+     * * JSON - Master Order :
+     * * --------------------
+     * * add new order with more intelligent , 
+     * * to keep order from Entities.json if json file exists, 
+     * * and replace json table content by *Constant.php
+     * * -------------------------------------------------
+     * * FLOW :
+     * 1. scan data from *Constant.php and keep in $php_entities
+     * 2. check if old Entitites.json exist to use JSON - Master Order
+     * 3. save Entities.json , keeping Master Order done by UI 
+     */
     private static function run_Entities_to_JSON($jsonFile): void
     {
         $parser = (new ParserFactory)->createForNewestSupportedVersion();
         $scanner = new Entities_to_JSON();
 
-        // 1. สแกนหาข้อมูลสดๆ จากไฟล์ PHP Constants ทั้งหมดเก็บไว้ใน $php_entities
+        // 1. scan data from *Constant.php and keep in $php_entities
         foreach (glob(__DIR__ . '/Entities/*Constant.php') as $file) {
             if (str_contains($file, 'Entities_to_JSON')) continue;
 
@@ -64,65 +94,57 @@ class M_Sync
             $traverser->traverse($ast);
         }
 
-        // ตัวแปรข้อมูลดิบที่ได้จาก PHP สแกนมา
+        // data from *Constant.php
         $php_entities = $scanner->entities;
         $final_entities = [];
 
-        // กำหนด Path เต็มของไฟล์ JSON เป้าหมาย
+        // full Path of Entities.json
         $jsonFilePath = __DIR__ . '/' . $jsonFile;
 
-        // 2. ตรวจสอบว่ามีไฟล์ JSON เก่าอยู่แล้วหรือไม่ เพื่อใช้เป็น Master Order
+        // 2. check if old Entitites.json exist to use JSON - Master Order
         if (file_exists($jsonFilePath)) {
             $json_data = json_decode(file_get_contents($jsonFilePath), true);
             $json_entities = $json_data['entities'] ?? [];
 
-            // Case 1 & Case 3: วิ่งตาม "Master Order" จาก JSON เก่า
+            // Case 1 & Case 3 : go through "Master Order" from old Entities.json
             foreach ($json_entities as $table_name => $fields) {
+                // Case 1 : table exists on PHP and JSON
                 if (isset($php_entities[$table_name])) {
-                    // ตารางยังมีอยู่ -> ยึดลำดับเดิม แต่เอา Fields ใหม่จาก PHP มาทับ
+                    /** 
+                     * * if table_name exists -> use JSON-order for table,
+                     * * but overwrite JSON 
+                     * * with the table content (Fields) of *Constant.php
+                     * */
                     $final_entities[$table_name] = $php_entities[$table_name];
-                    unset($php_entities[$table_name]); // Mark ว่าจัดการแล้ว
+                    // Case 3 : Mark that table_name is done the loop
+                    unset($php_entities[$table_name]);
                 }
-                // ถ้าตารางไหนถูกลบจาก PHP ไปแล้ว ลูปนี้จะข้ามไปเองอัตโนมัติ (Case 3)
+                // if some *Constant.php was deleted, then skip this loop (Case 3)
             }
 
-            // Case 2: ตารางไหนที่เหลืออยู่ใน $php_entities แสดงว่าเป็น "ตารางใหม่"
+            /**
+             * * Case 2 : if there are some tables left in $php_entities ,
+             * * those are new tables
+             */
             if (!empty($php_entities)) {
                 foreach ($php_entities as $new_table_name => $new_fields) {
-                    // นำตารางใหม่ไปต่อท้ายสุด
+                    // put the new table at the end
                     $final_entities[$new_table_name] = $new_fields;
                 }
             }
         } else {
-            // ถ้ายังไม่เคยมีไฟล์ JSON เลย ให้ใช้ลำดับจาก PHP ไปก่อนรอบแรก
+            /**
+             * * if there is no Entities.json, 
+             * * then order by app/Constant/Entities/*Constant.php  
+             * */
             $final_entities = $php_entities;
         }
 
-        // 3. บันทึกผลลัพธ์ลงไฟล์ JSON โดยรักษา Master Order ฝั่ง UI ไว้สมบูรณ์
+        // 3. save Entities.json , keeping Master Order done by UI 
         $outputData = ["_comment" => $jsonFile, "entities" => $final_entities];
         file_put_contents($jsonFilePath, json_encode($outputData, JSON_PRETTY_PRINT));
         echo "--- M_Sync: Created {$jsonFile} ---\n";
     }
-
-    // private static function run_Entities_to_JSON($jsonFile): void
-    // {
-    //     $parser = (new ParserFactory)->createForNewestSupportedVersion();
-    //     $scanner = new Entities_to_JSON();
-
-    //     foreach (glob(__DIR__ . '/Entities/*Constant.php') as $file) {
-    //         if (str_contains($file, 'Entities_to_JSON')) continue;
-
-    //         $code = file_get_contents($file);
-    //         $ast = $parser->parse($code);
-    //         $traverser = new NodeTraverser();
-    //         $traverser->addVisitor($scanner);
-    //         $traverser->traverse($ast);
-    //     }
-
-    //     $outputData = ["_comment" => $jsonFile, "entities" => $scanner->entities];
-    //     file_put_contents(__DIR__ . '/' . $jsonFile, json_encode($outputData, JSON_PRETTY_PRINT));
-    //     echo "--- M_Sync: Created {$jsonFile} ---\n";
-    // }
 }
 
 // Trigger sync
