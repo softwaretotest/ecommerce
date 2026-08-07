@@ -14,11 +14,6 @@
             "f::SHOP_ID",
             "f::PRICE",
             "f::STOCK"
-        ],
-        "SHOPS": [
-            "f::NAME",
-            "f::IMAGE",
-            "f::USER_ID"
         ]
     }
 }
