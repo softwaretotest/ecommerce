@@ -2,98 +2,6 @@
 --- FOLDER: app/Constant ---
 
 
-[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\Entities\OrderConstant.php]
-
-<?php
-
-namespace App\Constant;
-
-class OrderConstant
-{
-    public const TABLE_NAME = t::ORDERS;
-
-    public static function fields(): array
-    {
-        return [
-            f::ORDER_NR,
-            f::PRODUCT_ID,
-            f::QUANTITY,
-            f::CONFIRM_ORDER,
-        ];
-    }
-}
-
-
-
-[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\Entities\ProductConstant.php]
-
-<?php
-
-namespace App\Constant;
-
-class ProductConstant
-{
-    public const TABLE_NAME = t::PRODUCTS;
-
-    public static function fields(): array
-    {
-        return [
-            f::NAME,
-            f::IMAGE,
-            f::SHOP_ID,
-            f::PRICE,
-            f::STOCK,
-        ];
-    }
-}
-
-
-
-[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\Entities\ShopConstant.php]
-
-<?php
-
-namespace App\Constant;
-
-class ShopConstant
-{
-    public const TABLE_NAME = t::SHOPS;
-
-    public static function fields(): array
-    {
-        return [
-            f::NAME,
-            f::IMAGE,
-            f::USER_ID,
-        ];
-    }
-}
-
-
-
-[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\Entities\UserConstant.php]
-
-<?php
-
-namespace App\Constant;
-
-class UserConstant
-{
-    public const TABLE_NAME = t::USERS;
-
-    public static function fields(): array
-    {
-        return [
-            f::NAME,
-            f::IMAGE,
-            s::EMAIL,
-            f::IS_ACTIVE,
-        ];
-    }
-}
-
-
-
 [FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\tests\0_TestClass.php]
 
 <?php
@@ -1194,7 +1102,6 @@ class Runner
     {
         $entities = [];
 
-        // ใช้ path เดิมตามโครงสร้างโปรเจกต์ของคุณ
         $jsonFilePath = __DIR__ . '/M_JSON/Entities.json';
 
         if (!file_exists($jsonFilePath)) {
@@ -1219,6 +1126,19 @@ class Runner
         return $entities;
     }
 }
+
+Runner::run();
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\0_Runner_run.php]
+
+<?php
+// Runner_run.php
+// แก้บรรทัดที่ 3 เป็นแบบนี้ครับ
+require_once __DIR__ . '/../../vendor/autoload.php';
+
+use App\Constant\Runner;
 
 Runner::run();
 
@@ -1811,7 +1731,8 @@ class M_Sync_JSON_Entities
             self::add_folder_Entities();
 
             // save Entity into folder app/Constant
-            file_put_contents(__DIR__ . '/Entities/' . $fileName, $code);
+            // file_put_contents(__DIR__ . '/Entities/' . $fileName, $code);
+            file_put_contents(__DIR__ . '/' . $fileName, $code);
             echo "[ ✅ ] {$fileName} generated successfully.\n";
         }
     }
@@ -2034,7 +1955,127 @@ class M_Sync_PHP_Historizer
 
 
 
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\OrderConstant.php]
+
+<?php
+
+namespace App\Constant;
+
+class OrderConstant
+{
+    public const TABLE_NAME = t::ORDERS;
+
+    public static function fields(): array
+    {
+        return [
+            f::ORDER_NR,
+            f::PRODUCT_ID,
+            f::QUANTITY,
+            f::CONFIRM_ORDER,
+        ];
+    }
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\ProductConstant.php]
+
+<?php
+
+namespace App\Constant;
+
+class ProductConstant
+{
+    public const TABLE_NAME = t::PRODUCTS;
+
+    public static function fields(): array
+    {
+        return [
+            f::NAME,
+            f::IMAGE,
+            f::SHOP_ID,
+            f::PRICE,
+            f::STOCK,
+        ];
+    }
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\ShopConstant.php]
+
+<?php
+
+namespace App\Constant;
+
+class ShopConstant
+{
+    public const TABLE_NAME = t::SHOPS;
+
+    public static function fields(): array
+    {
+        return [
+            f::NAME,
+            f::IMAGE,
+            f::USER_ID,
+        ];
+    }
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\UserConstant.php]
+
+<?php
+
+namespace App\Constant;
+
+class UserConstant
+{
+    public const TABLE_NAME = t::USERS;
+
+    public static function fields(): array
+    {
+        return [
+            f::NAME,
+            f::IMAGE,
+            s::EMAIL,
+            f::IS_ACTIVE,
+        ];
+    }
+}
+
+
+
 --- FOLDER: app/DTOs ---
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\DTOs\OrderDTO.php]
+
+<?php
+
+namespace App\DTOs;
+
+class OrderDTO
+{
+    public $order_nr = null;
+    public $product_id = null;
+    public $quantity = null;
+    public $confirm_order = null;
+
+
+    public static function fromArray(array $data)
+    {
+        return new self([
+            'order_nr' => $data['order_nr'] ?? null,
+            'product_id' => $data['product_id'] ?? null,
+            'quantity' => $data['quantity'] ?? null,
+            'confirm_order' => $data['confirm_order'] ?? null,
+
+        ]);
+    }
+}
+
 
 
 [FILE: C:\Users\o\.vscode\react\ecommerce\app\DTOs\ProductDTO.php]
@@ -2043,47 +2084,85 @@ class M_Sync_PHP_Historizer
 
 namespace App\DTOs;
 
-readonly class ProductDTO
+class ProductDTO
 {
-     public function __construct(
-          public string $name,
-          public ?string $image_url = null,
-     ) {}
+    public $name = null;
+    public $image = null;
+    public $shop_id = null;
+    public $price = null;
+    public $stock = null;
+
+
+    public static function fromArray(array $data)
+    {
+        return new self([
+            'name' => $data['name'] ?? null,
+            'image' => $data['image'] ?? null,
+            'shop_id' => $data['shop_id'] ?? null,
+            'price' => $data['price'] ?? null,
+            'stock' => $data['stock'] ?? null,
+
+        ]);
+    }
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\DTOs\ShopDTO.php]
+
+<?php
+
+namespace App\DTOs;
+
+class ShopDTO
+{
+    public $name = null;
+    public $image = null;
+    public $user_id = null;
+
+
+    public static function fromArray(array $data)
+    {
+        return new self([
+            'name' => $data['name'] ?? null,
+            'image' => $data['image'] ?? null,
+            'user_id' => $data['user_id'] ?? null,
+
+        ]);
+    }
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\DTOs\UserDTO.php]
+
+<?php
+
+namespace App\DTOs;
+
+class UserDTO
+{
+    public $name = null;
+    public $image = null;
+    public $email = null;
+    public $is_active = null;
+
+
+    public static function fromArray(array $data)
+    {
+        return new self([
+            'name' => $data['name'] ?? null,
+            'image' => $data['image'] ?? null,
+            'email' => $data['email'] ?? null,
+            'is_active' => $data['is_active'] ?? null,
+
+        ]);
+    }
 }
 
 
 
 --- FOLDER: app/Models ---
-
-
-[FILE: C:\Users\o\.vscode\react\ecommerce\app\Models\BaseModel.php]
-
-<?php
-
-namespace App\Models;
-
-use Illuminate\Database\Eloquent\Model;
-
-
-/**
- * Base entity for all records.
- * there is no db table names "records"
- */
-abstract class BaseModel extends Model
-{
-    // protected $guarded = []; // opposite of fillable
-
-    public function getName(): ?string
-    {
-        return $this->name ?? null;
-    }
-
-    public function hasName(): bool
-    {
-        return !empty($this->name);
-    }
-}
-
 
 
 [FILE: C:\Users\o\.vscode\react\ecommerce\app\Models\Order.php]
@@ -2092,23 +2171,16 @@ abstract class BaseModel extends Model
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    use HasFactory;
-    protected $fillable = ['user_id', 'product_id', 'order_nr'];
 
-    protected static function boot()
+    public function product(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        parent::boot();
-        static::created(function ($order) {
-
-            $order->order_nr = $order->id . '_' . $order->user_id . '_' . $order->product_id . '_' . time();
-            $order->saveQuietly();
-        });
+        return $this->belongsTo(\App\Models\Product::class);
     }
+
 }
 
 
@@ -2119,20 +2191,36 @@ class Order extends Model
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
-class Product extends BaseModel
+class Product extends Model
 {
-    use HasFactory;
 
-    // app/Models/Product.php
+    public function shop(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(\App\Models\Shop::class);
+    }
 
-    protected $fillable = [
-        'name',
-        'image_url',
-        'price',
-        'stock',
-    ];
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Models\Shop.php]
+
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Shop extends Model
+{
+
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(\App\Models\User::class);
+    }
+
 }
 
 
@@ -2143,35 +2231,11 @@ class Product extends BaseModel
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Attributes\Hidden;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Model;
 
-#[Fillable(['name', 'email', 'password'])]
-#[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Model
 {
-    /** @use HasFactory<UserFactory> */
-    use HasFactory;
-    use Notifiable;
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
 }
 
 
@@ -2194,35 +2258,16 @@ export const getMetadata = async () => {
 
 
 
-[FILE: C:\Users\o\.vscode\react\ecommerce\app\Services\BaseService.php]
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Services\OrderService.php]
 
 <?php
 
 namespace App\Services;
 
-abstract class BaseService
+use App\Models\Order;
+
+class OrderService
 {
-     protected string $modelClass;
-
-     public function create(array $data)
-     {
-          return ($this->modelClass)::create($data);
-     }
-
-     public function getById($id)
-     {
-          return ($this->modelClass)::find($id);
-     }
-
-     public function getAll()
-     {
-          return ($this->modelClass)::all();
-     }
-
-     public function delete($id)
-     {
-          return ($this->modelClass)::findOrFail($id)->delete();
-     }
 }
 
 
@@ -2235,9 +2280,36 @@ namespace App\Services;
 
 use App\Models\Product;
 
-class ProductService extends BaseService
+class ProductService
 {
-     protected string $modelClass = Product::class;
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Services\ShopService.php]
+
+<?php
+
+namespace App\Services;
+
+use App\Models\Shop;
+
+class ShopService
+{
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Services\UserService.php]
+
+<?php
+
+namespace App\Services;
+
+use App\Models\User;
+
+class UserService
+{
 }
 
 
@@ -2450,6 +2522,30 @@ class M_Controller extends Controller
 
 
 
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Http\Controllers\OrderController.php]
+
+<?php
+
+namespace App\Http\Controllers;
+
+class OrderController extends Controller
+{
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Http\Controllers\ProductController.php]
+
+<?php
+
+namespace App\Http\Controllers;
+
+class ProductController extends Controller
+{
+}
+
+
+
 [FILE: C:\Users\o\.vscode\react\ecommerce\app\Http\Controllers\ProfileController.php]
 
 <?php
@@ -2514,6 +2610,30 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Http\Controllers\ShopController.php]
+
+<?php
+
+namespace App\Http\Controllers;
+
+class ShopController extends Controller
+{
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Http\Controllers\UserController.php]
+
+<?php
+
+namespace App\Http\Controllers;
+
+class UserController extends Controller
+{
 }
 
 

@@ -95,5 +95,3 @@ class Runner
         return $entities;
     }
 }
-
-Runner::run();
