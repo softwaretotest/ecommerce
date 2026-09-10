@@ -1,5 +1,5 @@
 <?php
-
+// 0_Constant_M.php
 namespace App\Constant;
 
 class d
@@ -45,4 +45,3 @@ class s
     public const EMAIL = ['email', d::STRING, u::TEXT, cd::UNIQUE];
     public const CURRENCY = ['currency', u::TEL];
 }
-

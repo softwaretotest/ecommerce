@@ -1,0 +1,15 @@
+<?php
+
+namespace App\DTOs;
+
+class DummyDTO
+{
+    //PROPERTIES
+
+    public static function fromArray(array $data)
+    {
+        return new self([
+            //MAPPING
+        ]);
+    }
+}

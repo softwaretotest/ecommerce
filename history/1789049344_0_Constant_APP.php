@@ -1,5 +1,5 @@
 <?php
-
+// 0_Constant_APP.php
 namespace App\Constant;
 
 class f

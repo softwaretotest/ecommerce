@@ -44,7 +44,8 @@ class M_Sync_JSON_Entities
             self::add_folder_Entities();
 
             // save Entity into folder app/Constant
-            file_put_contents(__DIR__ . '/Entities/' . $fileName, $code);
+            // file_put_contents(__DIR__ . '/Entities/' . $fileName, $code);
+            file_put_contents(__DIR__ . '/' . $fileName, $code);
             echo "[ ✅ ] {$fileName} generated successfully.\n";
         }
     }

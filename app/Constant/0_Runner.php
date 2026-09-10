@@ -71,7 +71,6 @@ class Runner
     {
         $entities = [];
 
-        // ใช้ path เดิมตามโครงสร้างโปรเจกต์ของคุณ
         $jsonFilePath = __DIR__ . '/M_JSON/Entities.json';
 
         if (!file_exists($jsonFilePath)) {

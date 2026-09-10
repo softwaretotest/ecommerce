@@ -2,13 +2,11 @@
 
 namespace App\DTOs;
 
-class ProductDTO
+class ShopDTO
 {
     public $name = null;
     public $image = null;
-    public $shop_id = null;
-    public $price = null;
-    public $stock = null;
+    public $user_id = null;
 
 
     public static function fromArray(array $data)
@@ -16,9 +14,7 @@ class ProductDTO
         return new self([
             'name' => $data['name'] ?? null,
             'image' => $data['image'] ?? null,
-            'shop_id' => $data['shop_id'] ?? null,
-            'price' => $data['price'] ?? null,
-            'stock' => $data['stock'] ?? null,
+            'user_id' => $data['user_id'] ?? null,
 
         ]);
     }
