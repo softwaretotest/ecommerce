@@ -1,5 +1,5 @@
 # กำหนดโฟลเดอร์ที่ต้องการดึงข้อมูล (เพิ่ม resources/js เข้าไป)
-$folders = @("app/Constant", "app/DTOs", "app/Models", "app/Services", "app/Http/Controllers", "resources")
+$folders = @("app/Constant", "/database/migrations", "app/DTOs", "app/Models", "app/Services", "app/Http/Controllers", "app/Geners", "app/Geners/Stub", "resources")
 $outputFile = "ProjectSourceCode.txt"
 
 # ล้างไฟล์เดิมถ้ามี

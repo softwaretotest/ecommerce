@@ -1127,8 +1127,6 @@ class Runner
     }
 }
 
-Runner::run();
-
 
 
 [FILE: C:\Users\o\.vscode\react\ecommerce\app\Constant\0_Runner_run.php]
@@ -2636,6 +2634,258 @@ class UserController extends Controller
 {
 }
 
+
+
+--- FOLDER: app/Geners ---
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Geners\EntityGenerator.php]
+
+<?php
+
+namespace App\Geners;
+
+// เปลี่ยนฟังก์ชันเป็นชื่อนี้
+function gen_path($path = '')
+{
+    return dirname(__DIR__, 2) . '/app/' . ltrim($path, '/');
+}
+
+
+class EntityGenerator
+{
+    public static function runAll()
+    {
+        $directory = dirname(__DIR__, 2) . '/app/Constant';
+        // กรองเอาเฉพาะไฟล์ที่ลงท้ายด้วย Constant.php
+        $files = glob($directory . '/*Constant.php');
+
+        foreach ($files as $file) {
+            $className = basename($file, '.php');
+            // เปลี่ยน Namespace ให้ตรงกับที่ไฟล์นั้นอยู่จริงๆ
+            $fullClassName = "App\\Constant\\" . $className;
+
+            if (class_exists($fullClassName)) {
+                // เช็คก่อนว่ามีเมธอด fields() จริงไหม เพื่อป้องกัน Error
+                if (method_exists($fullClassName, 'fields')) {
+                    $tableName = $fullClassName::TABLE_NAME;
+                    $fields = $fullClassName::fields();
+                    $entityName = str_replace('Constant', '', $className);
+
+                    echo "Generating: {$entityName} (Table: {$tableName})\n";
+                    self::generate($entityName, $fields);
+                }
+            }
+        }
+
+        echo "Generated successfully!";
+    }
+
+    public static function generate($entityName, $fields)
+    {
+        // 1. Generate Model
+        self::generateModel($entityName, $fields);
+
+        // 2. Generate DTO
+        self::generateDTO($entityName, $fields);
+    }
+
+    private static function generateModel($entityName, $fields)
+    {
+        $stub = file_get_contents(gen_path('Geners/Stub/model.stub'));
+        $methods = "";
+
+        foreach ($fields as $field) {
+            // if it's a Foreign Key , then let gen Method Relation
+            if (is_array($field) && in_array(\App\Constant\cd::FOREIGN, $field)) {
+
+                echo "  - Generating relation method for foreign key: {$field[0]}\n";
+
+                $relationName = str_replace('_id', '', $field[0]);
+                $relatedClass = ucfirst($relationName);
+                $methods .= "\n    public function {$relationName}(): \Illuminate\Database\Eloquent\Relations\BelongsTo\n    {\n";
+                $methods .= "        return \$this->belongsTo(\App\Models\\{$relatedClass}::class);\n    }\n";
+            }
+        }
+
+        $output = str_replace('class Dummy', "class {$entityName}", $stub);
+        $output = str_replace('}', $methods . "\n}", $output);
+
+        file_put_contents(gen_path("Models/{$entityName}.php"), $output);
+    }
+
+    private static function generateDTO($entityName, $fields)
+    {
+        $stub = file_get_contents(gen_path('Geners/Stub/dto.stub'));
+        $properties = "";
+        $arrayMapping = "";
+
+        $is_first_line = true;
+        foreach ($fields as $field) {
+            $name = is_array($field) ? $field[0] : $field;
+
+            // สำหรับ Properties: ใส่ย่อหน้า 4 spaces เสมอ
+            if ($is_first_line) {
+                $properties .= "public \${$name} = null;\n";
+                $arrayMapping .= "'{$name}' => \$data['{$name}'] ?? null,\n";
+            } else {
+                $properties .= "    public \${$name} = null;\n";
+                $arrayMapping .= "            '{$name}' => \$data['{$name}'] ?? null,\n";
+            }
+
+            $is_first_line = false;
+        }
+
+
+        // replace DummyDTO with actual entity name
+        $output = str_replace('DummyDTO', "{$entityName}DTO", $stub);
+
+        // REPLACE PROPERTIES AND MAPPING
+        $output = str_replace('//PROPERTIES', $properties, $output);
+        $output = str_replace('//MAPPING', $arrayMapping, $output);
+
+        file_put_contents(gen_path("DTOs/{$entityName}DTO.php"), $output);
+    }
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Geners\EntityGenerator_JSON.php]
+
+<?php
+
+namespace App\Geners;
+
+/**
+ * make dto, model, service, controller
+ * according to the entity name of Entities.json
+ */
+class EntityGenerator_JSON
+{
+    public static function runAll()
+
+    {
+
+        // 1. read SSOT
+
+        $jsonPath = app_path('Constant/M_JSON/Entities.json');
+
+        if (!file_exists($jsonPath)) {
+
+            throw new \Exception("ไม่พบไฟล์ SSOT ที่: {$jsonPath}");
+        }
+
+
+        $data = json_decode(file_get_contents($jsonPath), true);
+
+        $entities = $data['entities'] ?? [];
+
+
+        // 2. loop through Entity
+
+        foreach ($entities as $tableName => $fields) {
+
+            // change TABLENAME e.g. ORDERS to Order
+
+            $entityName = ucfirst(strtolower(rtrim($tableName, 'S')));
+
+            self::generate($entityName);
+        }
+    }
+    public static function generate(string $entityName)
+    {
+        $stubs = [
+            'dto.stub'        => app_path("DTOs/{$entityName}DTO.php"),
+            'model.stub'      => app_path("Models/{$entityName}.php"),
+            'service.stub'    => app_path("Services/{$entityName}Service.php"),
+            'controller.stub' => app_path("Http/Controllers/{$entityName}Controller.php"),
+        ];
+
+        foreach ($stubs as $stubFile => $outputPath) {
+            $stubContent = file_get_contents(app_path("Geners/Stub/{$stubFile}"));
+
+            // replace Dummy by Entity
+            $content = str_replace('Dummy', $entityName, $stubContent);
+
+            // make Directory
+            if (!file_exists(dirname($outputPath))) {
+                mkdir(dirname($outputPath), 0755, true);
+            }
+
+            file_put_contents($outputPath, $content);
+            echo "Generated: {$outputPath}\n";
+        }
+    }
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Geners\test_gen.php]
+
+<?php
+
+require_once __DIR__ . '/../../vendor/autoload.php';
+
+use App\Geners\EntityGenerator;
+
+EntityGenerator::runAll();
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\app\Geners\test_scan.php]
+
+<?php
+// app/Geners/test_scan.php
+
+require_once __DIR__ . '/../../vendor/autoload.php';
+$app = require_once __DIR__ . '/../../bootstrap/app.php';
+$app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+
+use App\Constant\f;
+
+$directory = app_path('Constant');
+$files = glob($directory . '/*.php');
+
+echo "--- Start Scanning Entities ---\n";
+
+foreach ($files as $file) {
+    $fileName = basename($file);
+
+    // filter: filename ends with 'Constant.php' and does not start with a number
+    if (!str_ends_with($fileName, 'Constant.php') || is_numeric($fileName[0])) {
+        continue;
+    }
+
+    $className = basename($file, '.php');
+    $fullClassName = "App\\Constant\\" . $className; // ปรับ Namespace ให้ตรงกับตำแหน่งปัจจุบัน
+
+    echo "  - Full Class Name: {$fullClassName}\n";
+
+    if (class_exists($fullClassName)) {
+
+        echo "  - Class Found: {$fullClassName}\n";
+
+        $tableName = $fullClassName::TABLE_NAME;
+        $fields = $fullClassName::fields();
+        $entityName = str_replace('Constant', '', $className);
+
+        echo "\n[Entity]: {$entityName}\n";
+        echo "  - Table: {$tableName}\n";
+        echo "  - Fields Found: " . count($fields) . "\n";
+
+        foreach ($fields as $field) {
+            // check if it's a Foreign Key
+            $isForeign = in_array('cd::FOREIGN', $field, true) || in_array(\App\Constant\cd::FOREIGN, $field, true);
+            $fieldName = $field[0];
+            echo "    * {$fieldName} " . ($isForeign ? "[FOREIGN KEY]" : "") . "\n";
+        }
+    }
+}
+echo "\n--- Scanning Complete ---\n";
+
+
+
+--- FOLDER: app/Geners/Stub ---
 
 
 --- FOLDER: resources ---

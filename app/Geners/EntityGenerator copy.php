@@ -2,27 +2,28 @@
 
 namespace App\Geners;
 
-use App\Constant\Constant_APP_Reader;
-
+// เปลี่ยนฟังก์ชันเป็นชื่อนี้
 function gen_path($path = '')
 {
     return dirname(__DIR__, 2) . '/app/' . ltrim($path, '/');
 }
+
 
 class EntityGenerator
 {
     public static function runAll()
     {
         $directory = dirname(__DIR__, 2) . '/app/Constant';
-
+        // กรองเอาเฉพาะไฟล์ที่ลงท้ายด้วย Constant.php
         $files = glob($directory . '/*Constant.php');
 
         foreach ($files as $file) {
             $className = basename($file, '.php');
-
+            // เปลี่ยน Namespace ให้ตรงกับที่ไฟล์นั้นอยู่จริงๆ
             $fullClassName = "App\\Constant\\" . $className;
 
             if (class_exists($fullClassName)) {
+                // เช็คก่อนว่ามีเมธอด fields() จริงไหม เพื่อป้องกัน Error
                 if (method_exists($fullClassName, 'fields')) {
                     $tableName = $fullClassName::TABLE_NAME;
                     $fields = $fullClassName::fields();
@@ -70,38 +71,35 @@ class EntityGenerator
         file_put_contents(gen_path("Models/{$entityName}.php"), $output);
     }
 
-    /**
-     * $fields = e.g. [name , image , email , is_active]
-     */
     private static function generateDTO($entityName, $fields)
     {
         $stub = file_get_contents(gen_path('Geners/Stub/dto.stub'));
         $properties = "";
         $arrayMapping = "";
-        $arrayMap = "";
 
         $is_first_line = true;
         foreach ($fields as $field) {
             $name = is_array($field) ? $field[0] : $field;
-            $contract = Constant_APP_Reader::getContract($name);
 
+            // สำหรับ Properties: ใส่ย่อหน้า 4 spaces เสมอ
             if ($is_first_line) {
-                $properties .= "public {$contract}\${$name} = null,";
-                $arrayMapping .= "{$name}: \$data['{$name}'] ?? null,";
-                $arrayMap .= "'{$name}' => \$this->{$name},";
+                $properties .= "public \${$name} = null;\n";
+                $arrayMapping .= "'{$name}' => \$data['{$name}'] ?? null,\n";
             } else {
-                $properties .= "\n        public {$contract}\${$name} = null,";
-                $arrayMapping .= "\n            {$name}: \$data['{$name}'] ?? null,";
-                $arrayMap .= "\n            '{$name}' => \$this->{$name},";
+                $properties .= "    public \${$name} = null;\n";
+                $arrayMapping .= "            '{$name}' => \$data['{$name}'] ?? null,\n";
             }
 
             $is_first_line = false;
         }
 
+
+        // replace DummyDTO with actual entity name
         $output = str_replace('DummyDTO', "{$entityName}DTO", $stub);
+
+        // REPLACE PROPERTIES AND MAPPING
         $output = str_replace('//PROPERTIES', $properties, $output);
         $output = str_replace('//MAPPING', $arrayMapping, $output);
-        $output = str_replace('//ARRAY_MAP', $arrayMap, $output);
 
         file_put_contents(gen_path("DTOs/{$entityName}DTO.php"), $output);
     }

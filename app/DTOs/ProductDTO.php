@@ -2,24 +2,35 @@
 
 namespace App\DTOs;
 
-class ProductDTO
+final class ProductDTO
 {
-    public $name = null;
-    public $image = null;
-    public $shop_id = null;
-    public $price = null;
-    public $stock = null;
+    public function __construct(
+        public readonly ?string $name = null,
+        public readonly ?string $image = null,
+        public readonly ?int $shop_id = null,
+        public readonly ?string $price = null,
+        public readonly ?string $stock = null,
+    ) {}
 
-
-    public static function fromArray(array $data)
+    public static function fromArray(array $data): self
     {
-        return new self([
-            'name' => $data['name'] ?? null,
-            'image' => $data['image'] ?? null,
-            'shop_id' => $data['shop_id'] ?? null,
-            'price' => $data['price'] ?? null,
-            'stock' => $data['stock'] ?? null,
+        return new self(
+            name: $data['name'] ?? null,
+            image: $data['image'] ?? null,
+            shop_id: $data['shop_id'] ?? null,
+            price: $data['price'] ?? null,
+            stock: $data['stock'] ?? null,
+        );
+    }
 
-        ]);
+    public function toArray(): array
+    {
+        return [
+            'name' => $this->name,
+            'image' => $this->image,
+            'shop_id' => $this->shop_id,
+            'price' => $this->price,
+            'stock' => $this->stock,
+        ];
     }
 }

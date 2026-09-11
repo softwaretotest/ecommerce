@@ -5,6 +5,8 @@ namespace App\Geners;
 /**
  * make dto, model, service, controller
  * according to the entity name of Entities.json
+ * we keep this in case, we change SSOT to JSON
+ * Now we use SSOT from EntityConstant.php
  */
 class EntityGenerator_JSON
 {

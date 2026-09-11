@@ -2,14 +2,23 @@
 
 namespace App\DTOs;
 
-class DummyDTO
+final class DummyDTO
 {
-    //PROPERTIES
+    public function __construct(
+        //PROPERTIES
+    ) {}
 
-    public static function fromArray(array $data)
+    public static function fromArray(array $data): self
     {
-        return new self([
+        return new self(
             //MAPPING
-        ]);
+        );
+    }
+
+    public function toArray(): array
+    {
+        return [
+            //ARRAY_MAP
+        ];
     }
 }

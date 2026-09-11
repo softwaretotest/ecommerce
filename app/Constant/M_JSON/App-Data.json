@@ -7,7 +7,11 @@
                 "d::STRING",
                 255
             ],
-            "u::FILE"
+            "u::FILE",
+            [
+                "cd::DEFAULT",
+                ""
+            ]
         ],
         "NAME": [
             "name",
