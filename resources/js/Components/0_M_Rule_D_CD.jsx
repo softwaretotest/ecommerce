@@ -18,7 +18,7 @@ import { get_D_NAME, has_d_in_field_data } from "@/Components/0_M_Data_Helper";
  * @param {*} ALL_DB_options e.g. ["NULLABLE", "PRIMARY", ...] (all allow options)
  */
 export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
-    const debug = false;
+    const debug = true && field_data[0] === "price";
     /**
      * field_data[] first element is fieldname
      */
@@ -28,12 +28,12 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
      * * DROPDOWN - Handling
      * * -----------------
      */
-    const activeSubTab = use_M_Store((state) => state.activeSubTab);
-
     const set_selected_D_FOREIGN =
         use_M_Store.getState().set_selected_D_FOREIGN;
     const set_selected_U_FOREIGN =
         use_M_Store.getState().set_selected_U_FOREIGN;
+    const set_selected_UF_FOREIGN =
+        use_M_Store.getState().set_selected_UF_FOREIGN;
 
     /**
      * * CHECKBOX - Handling
@@ -123,6 +123,7 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
     function set_FOREIGN_Actions(event) {
         const selected_D = use_M_Store.getState().selected_D;
         const selected_U = use_M_Store.getState().selected_U;
+        const selected_UF = use_M_Store.getState().selected_UF;
         if (event.target.value === "FOREIGN" && event.target.checked) {
             if (debug)
                 console.log(
@@ -145,8 +146,14 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
                     `[5] NBNBNBNBNBNB! CALLED --- set_FOREIGN_Actions -- selected_U[${fieldname}] = `,
                     selected_U[fieldname],
                 );
+            if (debug)
+                console.log(
+                    `[6] NBNBNBNBNBNB! CALLED --- set_FOREIGN_Actions -- selected_UF[${fieldname}] = `,
+                    selected_UF[fieldname],
+                );
             set_selected_D_FOREIGN(fieldname, selected_D[fieldname]);
             set_selected_U_FOREIGN(fieldname, selected_U[fieldname]);
+            set_selected_UF_FOREIGN(fieldname, selected_UF[fieldname]);
         }
     }
 

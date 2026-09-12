@@ -2,10 +2,9 @@
 
 import { create } from "zustand";
 import {
-    get_D_NAME,
     get_D_NAME_by_FIELDNAME,
-    get_U_NAME,
     get_U_NAME_by_FIELDNAME,
+    get_UF_NAME_by_FIELDNAME,
 } from "@/Components/0_M_Data_Helper";
 
 import { move_d_to_2nd_position } from "@/Services/0_M_value_Service";
@@ -16,16 +15,19 @@ export const use_M_Store = create((set) => ({
     debug: false,
     debug_M_value: true,
 
-    debug_selected_F_S: true,
+    debug_selected_F_S: false,
 
-    debug_selected_U: false,
-    debug_selected_U_FOREIGN: false,
+    debug_selected_U: true,
+    debug_selected_U_FOREIGN: true,
+
     debug_selected_UF: true,
-    debug_selected_D: false, // e.g. INTEGER , STRING
-    debug_selected_D_FOREIGN: false,
+    debug_selected_UF_FOREIGN: true,
+
+    debug_selected_D: true,
+    debug_selected_D_FOREIGN: true,
 
     debug_checked_CU: false,
-    debug_checked_CD: false, // e.g. ['INDEX', 'DEFAULT', 'NULLABLE']
+    debug_checked_CD: false,
 
     debug_activeField: true,
     debug_activeTab: false,
@@ -454,6 +456,27 @@ export const use_M_Store = create((set) => ({
             return { selected_F_S: NEW_selected_F_S };
         }),
 
+    selected_UF_FOREIGN: {}, // atomic states
+    set_selected_UF_FOREIGN: (fieldname, selected_UF_FOREIGN) =>
+        set((state) => {
+            if (!fieldname) return { selected_UF_FOREIGN: {} };
+
+            const NEW_selected_UF_FOREIGN = {
+                ...state.selected_UF_FOREIGN,
+                [fieldname]: selected_UF_FOREIGN,
+            };
+
+            if (state.debug || state.debug_selected_UF_FOREIGN) {
+                console.log(
+                    `[M_STORE_DEBUG] NEW selected_UF_FOREIGN[${fieldname}]:`,
+                    NEW_selected_UF_FOREIGN[fieldname],
+                );
+                console.log("------------------------------------");
+            }
+
+            return { selected_UF_FOREIGN: NEW_selected_UF_FOREIGN };
+        }),
+
     selected_U_FOREIGN: {}, // atomic states
     set_selected_U_FOREIGN: (fieldname, selected_U_FOREIGN) =>
         set((state) => {
@@ -654,6 +677,10 @@ export const use_M_Store = create((set) => ({
             // selected_D can be save to prepare for the case, if FOREIGN clicked
             const U_NAME = get_U_NAME_by_FIELDNAME(fieldname?.toUpperCase());
             state.set_selected_U(fieldname, U_NAME);
+
+            // selected_D can be save to prepare for the case, if FOREIGN clicked
+            const UF_NAME = get_UF_NAME_by_FIELDNAME(fieldname?.toUpperCase());
+            state.set_selected_UF(fieldname, UF_NAME);
 
             return { activeField: fieldname };
         }),

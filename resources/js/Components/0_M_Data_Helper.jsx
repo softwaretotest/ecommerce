@@ -94,7 +94,7 @@ export function get_U_NAME(field_data) {
 
 /**
  * * function for pull D Class from field_data
- * * e.g. ['image', 'd::INTEGER'] -> 'INTEGER'
+ * * e.g. ['price', ['d::DECIMAL',10,2] ,  'u::NUMBER', 'uf::CURRENCY'] -> 'CURRENCY'
  */
 export function get_UF_NAME(field_data) {
     const uf_item = find_uf_item(field_data);
@@ -127,7 +127,7 @@ export function remove_cd(field_data) {
  * * e.g. ['image', 'd::STRING' , 'u::TEXT'] -> ['image', 'u::TEXT']
  * * e.g. ['image', ['d::STRING',255] ] -> ['image']
  */
-export function remove_d_u(field_data) {
+export function remove_d_u_uf(field_data) {
     if (!Array.isArray(field_data)) return [];
     return field_data.filter((item) => {
         const targetString = Array.isArray(item) ? item[0] : item;
@@ -135,7 +135,9 @@ export function remove_d_u(field_data) {
             typeof targetString === "string" && targetString.startsWith("d::");
         const isU =
             typeof targetString === "string" && targetString.startsWith("u::");
-        return !isD && !isU;
+        const isUF =
+            typeof targetString === "string" && targetString.startsWith("uf::");
+        return !isD && !isU && !isUF;
     });
 }
 
@@ -150,10 +152,11 @@ export function remove_d_u(field_data) {
  * * D_NAME = "INTEGER" :
  * * in case user wanna change a Foreign Key field
  */
-export function add_NEW_d_u(
+export function add_NEW_d_u_uf(
     field_data_without_d_u,
     D_NAME = "INTEGER",
     U_NAME,
+    UF_NAME,
 ) {
     // ADD NEW D
     if (!Array.isArray(field_data_without_d_u)) return [];
@@ -176,7 +179,18 @@ export function add_NEW_d_u(
         field_data_with_NEW_d_u = [...field_data_with_NEW_d];
     }
 
-    return field_data_with_NEW_d_u;
+    // ADD NEW U (could be undefined by user)
+    let field_data_with_NEW_d_u_uf = null;
+    if (U_NAME) {
+        field_data_with_NEW_d_u_uf = [
+            ...field_data_with_NEW_d_u,
+            `uf::${UF_NAME}`,
+        ];
+    } else {
+        field_data_with_NEW_d_u_uf = [...field_data_with_NEW_d_u];
+    }
+
+    return field_data_with_NEW_d_u_uf;
 }
 
 /**
@@ -200,31 +214,32 @@ export function has_d_in_field_data(field_data) {
  * * before calling value_updater_CD, where cd::FOREIGN
  * * will be added to M_value Backend like any other CDs
  */
-export async function remove_D_U_from_Backend() {
+export async function remove_D_U_UF_from_Backend() {
     const store = use_M_Store.getState();
     const activeField = use_M_Store.getState().activeField;
     const fieldname = activeField.toLowerCase();
     const new_M_value = { ...store.M_value };
     const field_data = new_M_value[fieldname.toUpperCase()];
-    const field_data_without_d_u = remove_d_u(field_data);
-    new_M_value[fieldname.toUpperCase()] = field_data_without_d_u;
+    const field_data_without_d_u_uf = remove_d_u_uf(field_data);
+    new_M_value[fieldname.toUpperCase()] = field_data_without_d_u_uf;
     await M_value_Service.update(new_M_value);
 }
 
-export async function update_D_U_SAVE_Backend(D_NAME, U_NAME) {
+export async function update_D_U_UF_SAVE_Backend(D_NAME, U_NAME, UF_NAME) {
     const store = use_M_Store.getState();
     const activeField = use_M_Store.getState().activeField;
     const fieldname = activeField.toLowerCase();
     const new_M_value = { ...store.M_value };
     const field_data = new_M_value[fieldname.toUpperCase()];
-    const field_data_without_d_u = remove_d_u(field_data);
+    const field_data_without_d_u_uf = remove_d_u_uf(field_data);
 
-    const field_data_with_NEW_d_u = add_NEW_d_u(
-        field_data_without_d_u,
+    const field_data_with_NEW_d_u_uf = add_NEW_d_u_uf(
+        field_data_without_d_u_uf,
         D_NAME,
         U_NAME,
+        UF_NAME,
     );
-    new_M_value[fieldname.toUpperCase()] = field_data_with_NEW_d_u;
+    new_M_value[fieldname.toUpperCase()] = field_data_with_NEW_d_u_uf;
     await M_value_Service.update(new_M_value);
 }
 
@@ -251,29 +266,47 @@ export function get_U_NAME_by_FIELDNAME(FIELDNAME) {
 }
 
 /**
+ *
+ * @param {*} FIELDNAME e.g PRICE
+ * @returns e.g. CURRENCY
+ */
+export function get_UF_NAME_by_FIELDNAME(FIELDNAME) {
+    const store = use_M_Store.getState();
+    const fiel_data = store.M_value[FIELDNAME];
+    return get_UF_NAME(fiel_data);
+}
+
+/**
  * set seleted_D and selected_U and selected_*_FOREIGN by field_data
  * @param {*} field_data
  */
-export function set_selected_D_U_FOREIGN(field_data) {
+export function set_selected_D_U_UF_FOREIGN(field_data) {
     const fieldname = field_data[0];
 
     const selected_D = use_M_Store.getState().selected_D;
     const selected_U = use_M_Store.getState().selected_U;
+    const selected_UF = use_M_Store.getState().selected_UF;
     const set_selected_D = use_M_Store.getState().set_selected_D;
     const set_selected_U = use_M_Store.getState().set_selected_U;
+    const set_selected_UF = use_M_Store.getState().set_selected_UF;
     const set_selected_D_FOREIGN =
         use_M_Store.getState().set_selected_D_FOREIGN;
     const set_selected_U_FOREIGN =
         use_M_Store.getState().set_selected_U_FOREIGN;
+    const set_selected_UF_FOREIGN =
+        use_M_Store.getState().set_selected_UF_FOREIGN;
 
     const D_NAME = get_D_NAME(field_data);
     const U_NAME = get_U_NAME(field_data);
+    const UF_NAME = get_UF_NAME(field_data);
 
     if (D_NAME) set_selected_D(fieldname, D_NAME);
     if (U_NAME) set_selected_U(fieldname, U_NAME);
+    if (UF_NAME) set_selected_UF(fieldname, UF_NAME);
 
     set_selected_D_FOREIGN(fieldname, selected_D[fieldname]);
     set_selected_U_FOREIGN(fieldname, selected_U[fieldname]);
+    set_selected_UF_FOREIGN(fieldname, selected_UF[fieldname]);
 }
 
 /**

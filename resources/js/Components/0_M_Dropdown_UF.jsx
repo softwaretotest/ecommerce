@@ -1,9 +1,8 @@
 // resources/js/Components/0_M_Dropdown_U.jsx
 
-import { useState, useEffect } from "react";
-
 import { M_Option } from "@/Components/0_M_Option";
 import { prepare_new_M_value_for_Update_UF } from "@/Components/0_M_value_Updater_UF";
+import { find_u_item } from "@/Components/0_M_Data_Helper";
 
 import { use_M_Store } from "@/Stores/0_M_Store";
 import { M_value_Service } from "@/Services/0_M_value_Service";
@@ -92,14 +91,17 @@ export function renderDropdown_UF(M_Class_Name_List, field_data) {
         await M_value_Service.update(new_M_value);
     }
 
+    const has_U = Boolean(find_u_item(field_data));
     return (
         <>
             <select
                 className="U_Dropdown"
                 value={selected_UF_to_show}
-                disabled={use_M_Store
-                    .getState()
-                    .checked_CD[fieldname]?.includes("FOREIGN")}
+                disabled={
+                    use_M_Store
+                        .getState()
+                        .checked_CD[fieldname]?.includes("FOREIGN") || !has_U
+                }
                 onChange={(event) => {
                     set_UF_Actions(event);
                 }}

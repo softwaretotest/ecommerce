@@ -14,7 +14,7 @@ import SpecialField from "@/Components/0_M_SpecialField";
 import Field from "@/Components/0_M_Field";
 import EntityField from "@/Components/0_M_EntityField";
 import DB_Tablename from "@/Components/0_M_DB_Tablename";
-import { set_selected_D_U_FOREIGN } from "@/Components/0_M_Data_Helper";
+import { set_selected_D_U_UF_FOREIGN } from "@/Components/0_M_Data_Helper";
 
 export default function TabContent() {
     const { Error_FIELDNAME, handle_Fieldname_Change } = useError();
@@ -142,7 +142,7 @@ export default function TabContent() {
         if (input_box_fieldname) input_box_fieldname.value = "";
         set_FIELDNAME_to_add("");
 
-        set_selected_D_U_FOREIGN(new_field_data);
+        set_selected_D_U_UF_FOREIGN(new_field_data);
     }
 
     function add_field() {

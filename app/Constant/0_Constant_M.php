@@ -48,5 +48,4 @@ class cud
 class s
 {
     public const EMAIL = ['email', d::STRING, u::TEXT, cd::UNIQUE];
-    public const CURRENCY = ['currency', u::TEL];
 }

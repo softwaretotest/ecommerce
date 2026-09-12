@@ -6,7 +6,7 @@ class f
 {
     public const IMAGE = ['image', [d::STRING, 255], u::FILE];
     public const NAME = ['name', [d::STRING, 255], u::TEXT, cud::REQUIRED];
-    public const PRICE = ['price', [d::DECIMAL, 10, 2], u::NUMBER, [cd::DEFAULT, 0], s::CURRENCY];
+    public const PRICE = ['price', [d::DECIMAL, 10, 2], u::NUMBER, [cd::DEFAULT, 0], uf::CURRENCY];
     public const STOCK = ['stock', [d::DECIMAL, 10, 10], u::NUMBER, [cd::DEFAULT, 0], cud::REQUIRED];
     public const IS_ACTIVE = ['is_active', d::BOOLEAN, u::SELECT, [cd::DEFAULT, true]];
     public const QUANTITY = ['quantity', [d::DECIMAL, 10, 2], u::NUMBER, [cd::DEFAULT, 1], cud::REQUIRED];

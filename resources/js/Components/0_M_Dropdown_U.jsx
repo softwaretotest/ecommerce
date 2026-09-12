@@ -23,6 +23,7 @@ import { M_value_Service } from "@/Services/0_M_value_Service";
  */
 export function renderDropdown_U(M_Class_Name_List, field_data) {
     const { M_value } = use_M_Store();
+    const set_selected_UF = use_M_Store.getState().set_selected_UF;
 
     const fieldname = field_data[0];
     const fieldDataList = field_data ? field_data.slice(1) : [];
@@ -80,6 +81,11 @@ export function renderDropdown_U(M_Class_Name_List, field_data) {
         // update UI
         set_selected_U(fieldname, new_selected_U);
 
+        // Removing U also clears its formatter UI state.
+        if (!new_selected_U) {
+            set_selected_UF(fieldname, "");
+        }
+
         // prepare new data
         const new_M_value = prepare_new_M_value_for_Update_U(
             new_selected_U,
@@ -102,6 +108,8 @@ export function renderDropdown_U(M_Class_Name_List, field_data) {
                 }
                 onChange={(event) => {
                     set_U_Actions(event);
+                    // Reset the formatter when U changes
+                    set_selected_UF(fieldname, "");
                 }}
             >
                 <option value="">--</option>

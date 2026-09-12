@@ -37,10 +37,6 @@
             "d::STRING",
             "u::TEXT",
             "cd::UNIQUE"
-        ],
-        "CURRENCY": [
-            "currency",
-            "u::TEL"
         ]
     }
 }

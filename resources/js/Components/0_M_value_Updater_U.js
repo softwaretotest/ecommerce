@@ -20,7 +20,7 @@ import { use_M_Store } from "@/Stores/0_M_Store";
  */
 export function prepare_new_M_value_for_Update_U(U_NAME, old_M_value) {
     const activeField = use_M_Store.getState().activeField;
-    const debug = false;
+    const debug = true;
     if (debug)
         console.log(
             " UUUU-Class  0. - prepare_new_M_value_for_Update_U - U_NAME = ",
@@ -69,36 +69,38 @@ export function prepare_new_M_value_for_Update_U(U_NAME, old_M_value) {
      * * Filter out all existing u::
      * * ['image', 'd::STRING', 'cd::REQUIRED', null, 'cu::READONLY']
      */
-    const field_data_without_u_with_null = field_data.filter((item) => {
+    const field_data_without_u_uf_with_null = field_data.filter((item) => {
         // if Array the first item[0] is always String (App Convention)
         const targetString = Array.isArray(item) ? item[0] : item;
 
         const isU = targetString.startsWith("u::");
 
+        const isUF = targetString.startsWith("uf::");
+
         // remove u
-        return !isU;
+        return !isU && !isUF;
     });
 
     /**
      * * Filter out null items
-     * * ['image', 'u::TEXT', 'u::FILE']
+     * * ['image', 'u::FILE']
      */
-    const field_data_without_u = field_data_without_u_with_null.filter(
+    const field_data_without_u_uf = field_data_without_u_uf_with_null.filter(
         (item) => item != null,
     );
     if (debug)
         console.log(
-            " UUUU-Class  4.1 field_data_without_u :",
-            field_data_without_u,
+            " UUUU-Class  4.1 field_data_without_u_uf :",
+            field_data_without_u_uf,
         );
 
     if (U_NAME) {
         new_M_value[fieldname_UPPERCASE] = [
-            ...field_data_without_u,
+            ...field_data_without_u_uf,
             u_Class_UPPERCASE,
         ];
     } else {
-        new_M_value[fieldname_UPPERCASE] = [...field_data_without_u];
+        new_M_value[fieldname_UPPERCASE] = [...field_data_without_u_uf];
     }
     if (debug) console.log(" UUUU-Class  5. new_M_value :", new_M_value);
 

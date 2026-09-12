@@ -1,11 +1,9 @@
 // resources/js/Components/0_M_Field.jsx
-import { useState, useEffect } from "react";
-
-import { use_M_Option } from "@/Hooks/use_M_Option";
+import { useEffect } from "react";
 
 import { use_M_Store } from "@/Stores/0_M_Store";
 
-import { M_value_Service, delete_field } from "@/Services/0_M_value_Service";
+import { delete_field } from "@/Services/0_M_value_Service";
 
 import { renderDropdown_D } from "@/Components/0_M_Dropdown_D";
 import { renderDropdown_U } from "@/Components/0_M_Dropdown_U";
@@ -30,10 +28,7 @@ export default function Field({ field_data }) {
     /**
      * State to open / close Backdrop (lock UI during editig)
      */
-    const { is_Editing, set_is_Editing } = use_M_Store();
-
-    const activeField = use_M_Store((state) => state.activeField);
-    const setActiveField = use_M_Store.getState().setActiveField;
+    const { set_is_Editing } = use_M_Store();
 
     function make_dropdown_D(label, names) {
         return (
@@ -75,9 +70,10 @@ export default function Field({ field_data }) {
      * * for now to make M_Project_UI works
      * * we prevent user from edit CURRENCY field
      * * xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-     * * TODO: move s::CURRENCY to bm::CURRENCY (Behavior + Modifier)
-     * * which is neither DB nor UI property ,
-     * * bm::CLASS will have separate logic e.g. function validata currency
+     * * uf::CURRENCY (UI Formatter) which is neither DB nor UI property ,
+     * * uf::CLASS has separate logic e.g. function validata currency
+     * * xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+     * * if has_U = true , then render dropdown U and dropdown UF
      */
     const CHECKBOX_and_DROPDOWN = !is_CURRENCY && (
         <div className="field-dropdown-grid">
@@ -85,6 +81,7 @@ export default function Field({ field_data }) {
             {make_checkbox("CD", ["cd", "cud"])}
             <div className="u-uf">
                 {make_dropdown_U("U", ["u"])}
+                <br />
                 {make_dropdown_UF("UF", ["uf"])}
             </div>
             {make_checkbox("CU", ["cu", "cud"])}

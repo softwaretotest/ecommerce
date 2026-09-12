@@ -99,7 +99,7 @@ export function prepare_new_M_value_for_Update_UF(UF_NAME, old_M_value) {
             uf_Class_UPPERCASE,
         ];
     } else {
-        new_M_value[fieldname_UPPERCASE] = [...field_data_without_u];
+        new_M_value[fieldname_UPPERCASE] = [...field_data_without_uf];
     }
     if (debug) console.log(" UUUU-Class  5. new_M_value :", new_M_value);
 
