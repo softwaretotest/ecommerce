@@ -26,6 +26,10 @@
                 2
             ],
             "u::NUMBER",
+            [
+                "cd::DEFAULT",
+                0
+            ],
             "uf::CURRENCY"
         ],
         "STOCK": [

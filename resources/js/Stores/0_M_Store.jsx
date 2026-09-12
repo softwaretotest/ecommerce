@@ -17,14 +17,14 @@ export const use_M_Store = create((set) => ({
 
     debug_selected_F_S: false,
 
-    debug_selected_U: true,
-    debug_selected_U_FOREIGN: true,
+    debug_selected_U: false,
+    debug_selected_U_FOREIGN: false,
 
-    debug_selected_UF: true,
-    debug_selected_UF_FOREIGN: true,
+    debug_selected_UF: false,
+    debug_selected_UF_FOREIGN: false,
 
-    debug_selected_D: true,
-    debug_selected_D_FOREIGN: true,
+    debug_selected_D: false,
+    debug_selected_D_FOREIGN: false,
 
     debug_checked_CU: false,
     debug_checked_CD: false,

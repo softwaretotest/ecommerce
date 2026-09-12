@@ -74,9 +74,6 @@ export function renderDropdown_UF(M_Class_Name_List, field_data) {
      * * update JSON View (JSON_Content.jsx)
      */
     async function set_UF_Actions(event) {
-        console.log(
-            "!!!!!!!!!!!! jklöjklöjklöjklö  Dropdown_UF - set_UF_Actions - event.target.value CALLED",
-        );
         const new_selected_UF = event.target.value;
 
         // update UI

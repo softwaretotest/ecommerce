@@ -181,7 +181,7 @@ export function add_NEW_d_u_uf(
 
     // ADD NEW U (could be undefined by user)
     let field_data_with_NEW_d_u_uf = null;
-    if (U_NAME) {
+    if (UF_NAME) {
         field_data_with_NEW_d_u_uf = [
             ...field_data_with_NEW_d_u,
             `uf::${UF_NAME}`,
