@@ -20,6 +20,11 @@ class u
     public const TEL = 'tel';
 }
 
+class uf
+{
+    public const CURRENCY = 'uf::CURRENCY';
+}
+
 class cd
 {
     public const NULLABLE = 'nullable';
@@ -45,4 +50,3 @@ class s
     public const EMAIL = ['email', d::STRING, u::TEXT, cd::UNIQUE];
     public const CURRENCY = ['currency', u::TEL];
 }
-

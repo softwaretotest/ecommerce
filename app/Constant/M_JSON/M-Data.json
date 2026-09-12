@@ -14,6 +14,9 @@
         "FILE": "file",
         "TEL": "tel"
     },
+    "uf": {
+        "CURRENCY": "currency"
+    },
     "cd": {
         "NULLABLE": "nullable",
         "DEFAULT": "default",
@@ -29,15 +32,7 @@
         "REQUIRED": "required"
     },
     "s": {
-        "EMAIL": [
-            "email",
-            "d::STRING",
-            "u::TEXT",
-            "cd::UNIQUE"
-        ],
-        "CURRENCY": [
-            "currency",
-            "u::TEL"
-        ]
+        "EMAIL": ["email", "d::STRING", "u::TEXT", "cd::UNIQUE"],
+        "CURRENCY": ["currency", "u::TEL"]
     }
 }

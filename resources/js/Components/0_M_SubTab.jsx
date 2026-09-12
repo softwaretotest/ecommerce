@@ -23,7 +23,6 @@ export default function SubTab({ data }) {
     /**
      * ONLY 1 state to focus 3 Components with same click
      */
-    const M_value = use_M_Store((state) => state.M_value);
     const set_M_value = use_M_Store((state) => state.set_M_value);
 
     const activeField = use_M_Store((state) => state.activeField);
@@ -126,7 +125,7 @@ export default function SubTab({ data }) {
     return (
         <>
             {/* Tab        SubTab */}
-            {/* M-DATA     S CD D U CU CUD */}
+            {/* M-DATA     S CD D U UF CU CUD */}
             {/* APP-DATA   F T */}
             {/* ENTITIES   ENTITIES*/}
             <div className="subtab-container">

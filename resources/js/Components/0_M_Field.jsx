@@ -9,6 +9,7 @@ import { M_value_Service, delete_field } from "@/Services/0_M_value_Service";
 
 import { renderDropdown_D } from "@/Components/0_M_Dropdown_D";
 import { renderDropdown_U } from "@/Components/0_M_Dropdown_U";
+import { renderDropdown_UF } from "@/Components/0_M_Dropdown_UF";
 import { renderCheckboxList } from "@/Components/0_M_CheckBox";
 import { render_fieldname_input } from "@/Components/0_M_Input_Group.jsx";
 
@@ -52,6 +53,15 @@ export default function Field({ field_data }) {
         );
     }
 
+    function make_dropdown_UF(label, names) {
+        return (
+            <div className="field-column">
+                <div className="field-label">{label}</div>
+                {renderDropdown_U(names, field_data)}
+            </div>
+        );
+    }
+
     function make_checkbox(label, names) {
         return (
             <div className="field-column">
@@ -73,7 +83,10 @@ export default function Field({ field_data }) {
         <div className="field-dropdown-grid">
             {make_dropdown_D("D", ["d"])}
             {make_checkbox("CD", ["cd", "cud"])}
-            {make_dropdown_U("U", ["u"])}
+            <div className="u-uf">
+                {make_dropdown_U("U", ["u"])}
+                {make_dropdown_UF("UF", ["uf"])}
+            </div>
             {make_checkbox("CU", ["cu", "cud"])}
         </div>
     );

@@ -14,7 +14,6 @@ import SpecialField from "@/Components/0_M_SpecialField";
 import Field from "@/Components/0_M_Field";
 import EntityField from "@/Components/0_M_EntityField";
 import DB_Tablename from "@/Components/0_M_DB_Tablename";
-import { get_D_NAME, get_U_NAME } from "@/Components/0_M_Data_Helper";
 import { set_selected_D_U_FOREIGN } from "@/Components/0_M_Data_Helper";
 
 export default function TabContent() {
@@ -72,15 +71,11 @@ export default function TabContent() {
                 // for update fielname , user must select a field first
                 disabled={!activeField}
             >
-                {["d", "u", "cd", "cu", "cud"].includes(activeSubTab) && (
+                {["d", "u", "uf", "cd", "cu", "cud"].includes(activeSubTab) && (
                     <>
                         <input
                             className="M_value_KEY"
-                            defaultValue={
-                                activeSubTab === "t"
-                                    ? fieldname
-                                    : fieldname.toUpperCase()
-                            }
+                            defaultValue={fieldname.toUpperCase()}
                         />
                         <span className="field-separator-colon">:</span>
                         <input
