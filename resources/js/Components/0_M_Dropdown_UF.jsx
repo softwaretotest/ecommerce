@@ -3,27 +3,23 @@
 import { useState, useEffect } from "react";
 
 import { M_Option } from "@/Components/0_M_Option";
-import { D_Params } from "@/Components/0_M_D_Params";
-import { D_PARAMS_MAP } from "@/Components/0_M_MAP";
-import { prepare_new_M_value_for_Update_U } from "@/Components/0_M_value_Updater_U";
-import JSON_Content from "@/Components/0_M_JSON_Content";
+import { prepare_new_M_value_for_Update_UF } from "@/Components/0_M_value_Updater_UF";
 
 import { use_M_Store } from "@/Stores/0_M_Store";
 import { M_value_Service } from "@/Services/0_M_value_Service";
-import { GLOBAL_METADATA } from "@/Providers/0_M_DataProvider";
 
 /**
  * Renders a dropdown select element
  * *
  * * Example usage:
- * * M_Class_Name_List: e.g. ['u']  ['cu']
- * * field_data = e.g. ['image', 'd::STRING', 'u::FILE']
+ * * M_Class_Name_List: e.g. ['uf']
+ * * field_data = e.g. ['price', ['d::DECIMAL',10,2], 'uf::NUMBER', 'uf::CURRENCY']
  * *
- * * selected_U_of_field_data = only for refresh e.g.
- * * <select selected_U_of_field_data="NUMBER"> ... </select>
+ * * selected_UF_of_field_data = only for refresh e.g.
+ * * <select selected_UF_of_field_data="NUMBER"> ... </select>
  * *
  * * Params:
- * * selected_U_of_field_data = fieldname , e.g. NUMBER , FILE , TEXT
+ * * selected_UF_of_field_data = fieldname , e.g. NUMBER , FILE , TEXT
  */
 export function renderDropdown_UF(M_Class_Name_List, field_data) {
     const { M_value } = use_M_Store();
@@ -32,61 +28,64 @@ export function renderDropdown_UF(M_Class_Name_List, field_data) {
     const fieldDataList = field_data ? field_data.slice(1) : [];
 
     /**
-     * U_String = e.g. u::NUMBER , u::FILE , u::TEXT
+     * UF_String = e.g. uf::NUMBER , uf::FILE , uf::TEXT
      */
-    const U_String = fieldDataList.find((item) => {
+    const UF_String = fieldDataList.find((item) => {
         let valueToTest = Array.isArray(item) ? item[0] : item;
 
         let isMatch =
-            typeof valueToTest === "string" && valueToTest.startsWith("u::");
+            typeof valueToTest === "string" && valueToTest.startsWith("uf::");
 
         return isMatch;
     });
 
-    let selected_U_of_field_data = "";
+    let selected_UF_of_field_data = "";
     /**
-     * * U_String = e.g. u::TEXT , [d:DECIMAL,10,2]
+     * * UF_String = e.g. u::NUMBER, uf::CURRENCY , [d:DECIMAL,10,2]
      * */
-    if (U_String && U_String.startsWith("u::")) {
-        //case string e.g. u:: and  u::
-        selected_U_of_field_data = U_String.split("::")[1];
+    if (UF_String && UF_String.startsWith("uf::")) {
+        //case string e.g. uf:: and  uf::
+        selected_UF_of_field_data = UF_String.split("::")[1];
     }
 
     // console.log(
     //     ")=)=)=)=)=)=) Dropdown_U fieldname =",
     //     fieldname.padEnd(13),
-    //     "\t\t U_String =",
-    //     U_String,
+    //     "\t\t UF_String =",
+    //     UF_String,
     // );
 
     /**
      * * selected_U: state from dropdown e.g. STRING , DECIMAL , INTEGER
      * * handle_Change: update state when option change
      */
-    const selected_U = use_M_Store((state) => state.selected_U);
-    const set_selected_U = use_M_Store.getState().set_selected_U;
+    const selected_UF = use_M_Store((state) => state.selected_UF);
+    const set_selected_UF = use_M_Store.getState().set_selected_UF;
 
-    const selected_U_to_show =
-        selected_U[fieldname] !== undefined
-            ? selected_U[fieldname]
-            : selected_U_of_field_data;
+    const selected_UF_to_show =
+        selected_UF[fieldname] !== undefined
+            ? selected_UF[fieldname]
+            : selected_UF_of_field_data;
 
     /**
-     * * set_selected_U
-     * * prepare_new_M_value_for_Update_U
+     * * set_selected_UF
+     * * prepare_new_M_value_for_Update_UF
      * * set_M_value
      * * update JSON file (App-Data.json , M-Data.json , Entities.json)
      * * update JSON View (JSON_Content.jsx)
      */
-    async function set_U_Actions(event) {
-        const new_selected_U = event.target.value;
+    async function set_UF_Actions(event) {
+        console.log(
+            "!!!!!!!!!!!! jklöjklöjklöjklö  Dropdown_UF - set_UF_Actions - event.target.value CALLED",
+        );
+        const new_selected_UF = event.target.value;
 
         // update UI
-        set_selected_U(fieldname, new_selected_U);
+        set_selected_UF(fieldname, new_selected_UF);
 
         // prepare new data
-        const new_M_value = prepare_new_M_value_for_Update_U(
-            new_selected_U,
+        const new_M_value = prepare_new_M_value_for_Update_UF(
+            new_selected_UF,
             M_value,
         );
 
@@ -97,15 +96,12 @@ export function renderDropdown_UF(M_Class_Name_List, field_data) {
         <>
             <select
                 className="U_Dropdown"
-                value={selected_U_to_show}
-                disabled={
-                    // !activeField ||
-                    use_M_Store
-                        .getState()
-                        .checked_CD[fieldname]?.includes("FOREIGN")
-                }
+                value={selected_UF_to_show}
+                disabled={use_M_Store
+                    .getState()
+                    .checked_CD[fieldname]?.includes("FOREIGN")}
                 onChange={(event) => {
-                    set_U_Actions(event);
+                    set_UF_Actions(event);
                 }}
             >
                 <option value="">--</option>

@@ -20,6 +20,7 @@ export const use_M_Store = create((set) => ({
 
     debug_selected_U: false,
     debug_selected_U_FOREIGN: false,
+    debug_selected_UF: true,
     debug_selected_D: false, // e.g. INTEGER , STRING
     debug_selected_D_FOREIGN: false,
 
@@ -535,6 +536,27 @@ export const use_M_Store = create((set) => ({
             }
 
             return { selected_U: NEW_selected_U };
+        }),
+
+    selected_UF: {}, // atomic states
+    set_selected_UF: (fieldname, selected_UF_Value) =>
+        set((state) => {
+            if (!fieldname) return { selected_UF: {} };
+
+            const NEW_selected_UF = {
+                ...state.selected_UF,
+                [fieldname]: selected_UF_Value,
+            };
+
+            if (state.debug || state.debug_selected_UF) {
+                console.log(
+                    `[M_STORE_DEBUG] NEW_selected_UF[${fieldname}]:`,
+                    NEW_selected_UF[fieldname],
+                );
+                console.log("------------------------------------");
+            }
+
+            return { selected_UF: NEW_selected_UF };
         }),
 
     checked_CD: {}, // atomic states

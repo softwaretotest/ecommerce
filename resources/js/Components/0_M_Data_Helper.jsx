@@ -28,6 +28,21 @@ export function find_d_item(field_data) {
 
 /**
  * @param {*} field_data = e.g.
+ * * ['price', 'u::NUMBER', 'uf::CURRENCY', ['d::DECIMAL',10,2] ,  ['cd::DEFAULT', 0] ]
+ * @returns uf_items[0] = 'uf::CURRENCY'
+ * * there is always only one d:: in field_data
+ */
+export function find_uf_item(field_data) {
+    if (!Array.isArray(field_data)) return;
+
+    const uf_item = field_data.find((item) => {
+        return typeof item === "string" && item.startsWith("uf::");
+    });
+    return uf_item;
+}
+
+/**
+ * @param {*} field_data = e.g.
  * * ['image', 'u::FILE', 'd::INTEGER',  ['cd::DEFAULT', 0] ]
  * * ['price', 'u::NUMBER', ['d::DECIMAL',10,2] ,  ['cd::DEFAULT', 0] ]
  * @returns u_items[0] = 'u::FILE' , 'u::NUMBER'
@@ -75,6 +90,21 @@ export function get_U_NAME(field_data) {
     const base_u_value = Array.isArray(u_item) ? u_item[0] : u_item;
 
     return base_u_value.replace("u::", "");
+}
+
+/**
+ * * function for pull D Class from field_data
+ * * e.g. ['image', 'd::INTEGER'] -> 'INTEGER'
+ */
+export function get_UF_NAME(field_data) {
+    const uf_item = find_uf_item(field_data);
+
+    if (!uf_item) return;
+
+    // pull String
+    const base_uf_value = Array.isArray(uf_item) ? uf_item[0] : uf_item;
+
+    return base_uf_value.replace("uf::", "");
 }
 
 /**

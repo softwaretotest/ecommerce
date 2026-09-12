@@ -57,7 +57,7 @@ export default function Field({ field_data }) {
         return (
             <div className="field-column">
                 <div className="field-label">{label}</div>
-                {renderDropdown_U(names, field_data)}
+                {renderDropdown_UF(names, field_data)}
             </div>
         );
     }

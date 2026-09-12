@@ -15,7 +15,7 @@
         "TEL": "tel"
     },
     "uf": {
-        "CURRENCY": "currency"
+        "CURRENCY": "uf::CURRENCY"
     },
     "cd": {
         "NULLABLE": "nullable",
@@ -32,7 +32,15 @@
         "REQUIRED": "required"
     },
     "s": {
-        "EMAIL": ["email", "d::STRING", "u::TEXT", "cd::UNIQUE"],
-        "CURRENCY": ["currency", "u::TEL"]
+        "EMAIL": [
+            "email",
+            "d::STRING",
+            "u::TEXT",
+            "cd::UNIQUE"
+        ],
+        "CURRENCY": [
+            "currency",
+            "u::TEL"
+        ]
     }
 }
