@@ -1,5 +1,5 @@
 <?php
-// 0_Constant_M.php
+
 namespace App\Constant;
 
 class d
@@ -18,6 +18,11 @@ class u
     public const SELECT = 'select';
     public const FILE = 'file';
     public const TEL = 'tel';
+}
+
+class uf
+{
+    public const CURRENCY = 'currency';
 }
 
 class cd
@@ -43,5 +48,4 @@ class cud
 class s
 {
     public const EMAIL = ['email', d::STRING, u::TEXT, cd::UNIQUE];
-    public const CURRENCY = ['currency', u::TEL];
 }

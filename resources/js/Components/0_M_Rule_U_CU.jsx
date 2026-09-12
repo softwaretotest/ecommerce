@@ -1,8 +1,7 @@
 // resources/js/Components/0_M_Rule_U_CU.jsx
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
 import { use_M_Store } from "@/Stores/0_M_Store";
-import { M_value_Service } from "../Services/0_M_value_Service";
 
 import { update_M_value_for_checked_CD_CU } from "@/Components/0_M_Rules_M_value_Updater";
 import { validate_UI } from "@/Components/0_M_Rules";
@@ -82,15 +81,6 @@ export function CU_Rule({ UI_options, ALL_UI_options, field_data }) {
                                     ) &&
                                     selected_U[fieldname] != ""
                                 ) {
-                                    // console.log(
-                                    //     `FOREIGN CLICKED -- selected_U = `,
-                                    //     selected_U,
-                                    // );
-                                    // console.log(
-                                    //     `FOREIGN CLICKED -- selected_U[${fieldname}] = `,
-                                    //     selected_U[fieldname],
-                                    // );
-
                                     set_selected_U_FOREIGN(
                                         fieldname,
                                         selected_U[fieldname],

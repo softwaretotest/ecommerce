@@ -7,7 +7,7 @@ final class UserDTO
     public function __construct(
         public readonly ?string $name = null,
         public readonly ?string $image = null,
-        public readonly ? $email = null,
+        public readonly ?string $email = null,
         public readonly ?bool $is_active = null,
     ) {}
 

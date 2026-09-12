@@ -1,5 +1,5 @@
 // resources/js/Components/0_M_Rule_D_CD.jsx
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
 import { use_M_Store } from "@/Stores/0_M_Store";
 
@@ -8,7 +8,7 @@ import { validate_UI } from "@/Components/0_M_Rules";
 
 import { DEFAULT_Panel } from "@/Components/0_M_DEFAULT_Panel";
 
-import { get_D_NAME, has_d_in_field_data } from "@/Components/0_M_Data_Helper";
+import { get_D_NAME } from "@/Components/0_M_Data_Helper";
 
 /**
  * Rule Fabric for onChange of CD Checkboxes (not done yet)
@@ -18,7 +18,7 @@ import { get_D_NAME, has_d_in_field_data } from "@/Components/0_M_Data_Helper";
  * @param {*} ALL_DB_options e.g. ["NULLABLE", "PRIMARY", ...] (all allow options)
  */
 export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
-    const debug = true && field_data[0] === "price";
+    const debug = false;
     /**
      * field_data[] first element is fieldname
      */
@@ -49,13 +49,8 @@ export function CD_Rule({ DB_options, ALL_DB_options, field_data }) {
      */
     const checked_CD =
         use_M_Store((state) => state.checked_CD?.[fieldname]) || [];
-    const checked_CU =
-        use_M_Store((state) => state.checked_CU?.[fieldname]) || [];
 
     const setChecked_CD = use_M_Store.getState().setChecked_CD;
-    const setChecked_CU = use_M_Store.getState().setChecked_CU;
-    const set_is_FOREIGN_changed =
-        use_M_Store.getState().set_is_FOREIGN_changed;
 
     /**
      * checked_CD Hydration in case global state

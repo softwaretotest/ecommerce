@@ -49,3 +49,4 @@ class s
 {
     public const EMAIL = ['email', d::STRING, u::TEXT, cd::UNIQUE];
 }
+

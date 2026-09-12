@@ -7,30 +7,47 @@ use ReflectionClass;
 class Constant_APP_Reader
 {
     /**
-     * ดึงค่า type จาก $field โดยใช้ Reflection เพื่ออ่านค่า d:: จากไฟล์ Constant
+     * get d::NAME from f::CLASS or s::CLASS
+     * @param string $fieldName = e.g. 'price' , 'image' etc.
      */
     public static function getContract($fieldName): ?string
     {
-        echo "Constant_APP_Reader - getContract ====== " . $fieldName . "\n\n";
-
-        // แปลงเป็น UpperCase เพื่อให้ตรงกับชื่อ Const ใน class f
+        // e.g. 'price' -> 'PRICE'
         $constName = strtoupper($fieldName);
 
-        // ใช้ ReflectionClass เข้าไปดึงค่าจาก class f
-        $reflection = new \ReflectionClass(\App\Constant\f::class);
+        $field_data = null;
 
-        $d_NAME = null;
-        if ($reflection->hasConstant($constName)) {
-            echo "Found constant: {$constName}\n";
+        $reflection_F = new \ReflectionClass(\App\Constant\f::class);
+        $reflection_S = new \ReflectionClass(\App\Constant\s::class);
 
-            // ได้ข้อมูล Array ของฟิลด์นั้นมา เช่น ['name', [d::STRING, 255], ...]
-            $field_data = $reflection->getConstant($constName);
-            $d_NAME = self::get_d_NAME($field_data[1]);
+        if ($reflection_F->hasConstant($constName)) {
+            $field_data = $reflection_F->getConstant($constName);
+        } else if ($reflection_S->hasConstant($constName)) {
+            $field_data = $reflection_S->getConstant($constName);
+        } else {
+            return null;
         }
 
+        /** somehow getConstant lowercase all content
+         field_data = Array
+            (
+                [0] => confirm_order
+                [1] => boolean
+                [2] => select
+                [3] => Array
+                    (
+                        [0] => default
+                        [1] =>
+                    )
+
+            )
+         */
+
+        $d_name = self::get_d_name($field_data[1]);
+
         $type = null;
-        if ($d_NAME) {
-            $type = match ($d_NAME) {
+        if ($d_name) {
+            $type = match ($d_name) {
 
                 'string'  => 'string',
 
@@ -38,26 +55,30 @@ class Constant_APP_Reader
 
                 'boolean' => 'bool',
 
-                'decimal' => 'string',
+                'decimal' => 'string',  //to keep Precision & Rounding , prevent data loss during transfer
 
                 default => 'int', // for foreign key, default to int
             };
-            echo "Mapped d_NAME: {$d_NAME} to type: {$type}\n";
         }
         return "readonly ?{$type} ";
     }
 
-    public static function get_d_NAME($d_Item): ?string
+    /**
+     * Extract the d_name from a field item
+     * @param mixed $d_Item = e.g. ['d::DECIMAL', 10, 2] , 'd::BOOLEAN' etc.
+     * @return $d_name = e.g. 'decimal', 'boolean' etc.
+     */
+    public static function get_d_name($d_Item): ?string
     {
-        $d_NAME = null;
+        $d_name = null;
         if (is_array($d_Item)) {
-            $d_NAME = $d_Item[0];
+            $d_name = $d_Item[0];
         } elseif (is_string($d_Item)) {
-            $d_NAME = $d_Item;
+            $d_name = $d_Item;
         }
-        if ($d_NAME && str_starts_with($d_NAME, 'd::')) {
-            $d_NAME = substr($d_NAME, 3); // cut out 'd::'
+        if ($d_name && str_starts_with($d_name, 'd::')) {
+            $d_name = substr($d_name, 3); // cut out 'd::'
         }
-        return $d_NAME;
+        return $d_name;
     }
 }
