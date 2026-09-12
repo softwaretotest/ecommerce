@@ -15,7 +15,7 @@
         "TEL": "tel"
     },
     "uf": {
-        "CURRENCY": "uf::CURRENCY"
+        "CURRENCY": "currency"
     },
     "cd": {
         "NULLABLE": "nullable",

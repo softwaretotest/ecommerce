@@ -30,7 +30,6 @@ export function CU_Rule({ UI_options, ALL_UI_options, field_data }) {
         (use_M_Store.getState().checked_CU &&
             use_M_Store.getState().checked_CU[fieldname]) ||
         [];
-    const setChecked_CD = use_M_Store.getState().setChecked_CD;
     const setChecked_CU = use_M_Store.getState().setChecked_CU;
 
     useEffect(() => {

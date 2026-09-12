@@ -22,7 +22,7 @@ class u
 
 class uf
 {
-    public const CURRENCY = 'uf::CURRENCY';
+    public const CURRENCY = 'currency';
 }
 
 class cd
