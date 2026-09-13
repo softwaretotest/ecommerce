@@ -84,7 +84,7 @@ class M_Sync
         $scanner = new Entities_to_JSON();
 
         // 1. scan data from *Constant.php and keep in $php_entities
-        foreach (glob(__DIR__ . '/Entities/*Constant.php') as $file) {
+        foreach (glob(__DIR__ . '/*Constant.php') as $file) {
             if (str_contains($file, 'Entities_to_JSON')) continue;
 
             $code = file_get_contents($file);

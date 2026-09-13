@@ -8,22 +8,22 @@ class Constant_APP_Reader
 {
     /**
      * get d::NAME from f::CLASS or s::CLASS
-     * @param string $fieldName = e.g. 'price' , 'image' etc.
+     * @param string $fieldname = e.g. 'price' , 'image' etc.
      */
-    public static function getContract($fieldName): ?string
+    public static function getContract($fieldname): ?string
     {
         // e.g. 'price' -> 'PRICE'
-        $constName = strtoupper($fieldName);
+        $FIELDNAME = strtoupper($fieldname);
 
         $field_data = null;
 
         $reflection_F = new \ReflectionClass(\App\Constant\f::class);
         $reflection_S = new \ReflectionClass(\App\Constant\s::class);
 
-        if ($reflection_F->hasConstant($constName)) {
-            $field_data = $reflection_F->getConstant($constName);
-        } else if ($reflection_S->hasConstant($constName)) {
-            $field_data = $reflection_S->getConstant($constName);
+        if ($reflection_F->hasConstant($FIELDNAME)) {
+            $field_data = $reflection_F->getConstant($FIELDNAME);
+        } else if ($reflection_S->hasConstant($FIELDNAME)) {
+            $field_data = $reflection_S->getConstant($FIELDNAME);
         } else {
             return null;
         }

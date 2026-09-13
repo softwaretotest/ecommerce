@@ -145,6 +145,46 @@ export default function TabContent() {
         set_selected_D_U_UF_FOREIGN(new_field_data);
     }
 
+    /**
+     * * get new fieldname from UI
+     * * and save to JSON Backend
+     * * BE CAREFULL to save convention : always like this
+     * * fieldname = lowercase
+     * * M_value [KEY] , KEY = UPPERCASE
+     * @returns
+     */
+    async function add_field_M_DATA() {
+        const input_box_fieldname = document.querySelector(".new_field_name");
+        const raw_name = input_box_fieldname ? input_box_fieldname.value : "";
+
+        const trimmed_name = raw_name.trim();
+        if (!trimmed_name) return;
+
+        await set_NEW_added_fieldname(trimmed_name.toLowerCase()); //set flag for useEffect in Dropdown_D.jsx
+
+        const new_field_data = [trimmed_name.toLowerCase(), ["d::STRING", 255]];
+        const fieldname = new_field_data[0];
+        const M_value_KEY = new_field_data[0].toUpperCase();
+
+        const new_M_value = {
+            [M_value_KEY]: new_field_data,
+            ...M_value,
+        };
+
+        await M_value_Service.update(new_M_value);
+
+        if (fieldname) await setActiveField(fieldname); // for auto scroll, not work
+
+        // this make auto scroll for JSON_Content works if new field added
+        use_M_Store.getState().set_is_new_field_added(true);
+
+        //clear input box , after finish
+        if (input_box_fieldname) input_box_fieldname.value = "";
+        set_FIELDNAME_to_add("");
+
+        set_selected_D_U_UF_FOREIGN(new_field_data);
+    }
+
     function add_field() {
         if (
             (activeTab === "app_data" && activeSubTab === "f") ||
@@ -155,8 +195,13 @@ export default function TabContent() {
         if (activeTab === "entities" && activeSubTab === "entities") {
             add_field_ENTITIES();
         }
+        if (
+            activeTab === "m_data" &&
+            ["d", "u", "uf", "cd", "cu", "cud"].includes(activeSubTab)
+        ) {
+            add_field_M_DATA();
+        }
     }
-
     /**
      * remove scroll to lock UI during editing
      */
