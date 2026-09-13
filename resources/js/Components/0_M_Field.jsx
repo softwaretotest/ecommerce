@@ -9,13 +9,12 @@ import { renderDropdown_D } from "@/Components/0_M_Dropdown_D";
 import { renderDropdown_U } from "@/Components/0_M_Dropdown_U";
 import { renderDropdown_UF } from "@/Components/0_M_Dropdown_UF";
 import { renderCheckboxList } from "@/Components/0_M_CheckBox";
-import { render_fieldname_input } from "@/Components/0_M_Input_Group.jsx";
+import { Render_fieldname_input } from "@/Components/0_M_Input_Group.jsx";
 
 export default function Field({ field_data }) {
     const fieldname = field_data[0];
     const is_CURRENCY = field_data[0].toLowerCase() === "currency";
 
-    // const [FIELDNAME_to_update, set_FIELDNAME_to_update] = useState(fieldname);
     const { FIELDNAME_to_update, set_FIELDNAME_to_update } = use_M_Store();
 
     /**
@@ -89,14 +88,19 @@ export default function Field({ field_data }) {
     );
 
     return (
-        // <div className="field-wrapper-box">
         <>
             <div className="field-header-container">
-                {render_fieldname_input(fieldname, "M_value_KEY")}
+                <Render_fieldname_input
+                    fieldname={fieldname}
+                    className="M_value_KEY"
+                />
 
                 <span className="field-separator-colon">:</span>
 
-                {render_fieldname_input(fieldname, "fieldname")}
+                <Render_fieldname_input
+                    fieldname={fieldname}
+                    className="fieldname"
+                />
 
                 <button
                     className="delete-button"
@@ -110,6 +114,5 @@ export default function Field({ field_data }) {
             </div>
             {CHECKBOX_and_DROPDOWN}
         </>
-        // </div>
     );
 }

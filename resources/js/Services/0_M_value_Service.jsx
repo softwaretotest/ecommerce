@@ -141,10 +141,7 @@ export async function delete_field(fieldname) {
             (activeTab === "m_data" && activeSubTab === "s") // SpecialField
         ) {
             const new_M_value = { ...use_M_Store.getState().M_value };
-
-            //delete object(M_value)'s item by KEY(FIELDNAME)
             delete new_M_value[FIELDNAME];
-
             await M_value_Service.update(new_M_value);
 
             await delete_cascade_fieldname_in_entities(activeField, debug);
@@ -156,11 +153,18 @@ export async function delete_field(fieldname) {
             delete use_M_Store.getState().selected_F_S[FIELDNAME];
 
             const new_M_value = make_M_value_by_selected_F_S();
-
             await M_value_Service.update(new_M_value);
 
             await delete_cascade_tablename_in_app_data_t(activeField, debug);
         }
+    }
+    if (
+        activeTab === "m_data" &&
+        ["d", "u", "uf", "cd", "cu", "cud"].includes(activeSubTab)
+    ) {
+        const new_M_value = { ...use_M_Store.getState().M_value };
+        delete new_M_value[FIELDNAME];
+        await M_value_Service.update(new_M_value);
     }
 }
 
@@ -302,14 +306,19 @@ export async function rename_M_value_KEY_and_fieldname(fieldname) {
 
     const is_ENTITIES = activeTab === "entities" && activeSubTab === "entities";
 
+    const is_M_DATA_simple =
+        activeTab === "m_data" &&
+        ["d", "u", "uf", "cd", "cu", "cud"].includes(activeSubTab);
+
     let old_M_value = {};
-    if (is_F_or_S) old_M_value = use_M_Store.getState().M_value;
+    if (is_F_or_S || is_M_DATA_simple)
+        old_M_value = use_M_Store.getState().M_value;
     if (is_ENTITIES) {
         /**
          * * WORKAROUND : BUG M_value[M_VALUE_KEY] = undefined
          * * we Loop to build new_M_value by copy content from selected_F_S ,
          * * because if we use clone ...M_value ,
-         * * M_value[M_value_KEY] it has alle M empty content ,
+         * * M_value[M_value_KEY] it has all empty content ,
          * * BUG = empty content of all table
          * * -------------------------------
          * * SOLUTION : seleted_F_S = Entities on UI
@@ -333,12 +342,25 @@ export async function rename_M_value_KEY_and_fieldname(fieldname) {
     const set_has_Fieldname_Change =
         use_M_Store.getState().set_has_Fieldname_Change;
 
-    const new_M_value = prepare_M_value_for_update_f_s_entities(
-        old_M_value,
-        OLD_KEY,
-        NEW_KEY,
-        debug,
-    );
+    let new_M_value;
+
+    if (is_M_DATA_simple) {
+        new_M_value = {};
+        for (const KEY of Object.keys(old_M_value)) {
+            if (KEY === OLD_KEY) {
+                new_M_value[NEW_KEY] = NEW_KEY.toLowerCase();
+            } else {
+                new_M_value[KEY] = old_M_value[KEY];
+            }
+        }
+    } else {
+        new_M_value = prepare_M_value_for_update_f_s_entities(
+            old_M_value,
+            OLD_KEY,
+            NEW_KEY,
+            debug,
+        );
+    }
 
     setActiveField(NEW_KEY.toLowerCase());
     set_NEW_added_fieldname(NEW_KEY.toLowerCase());
@@ -353,13 +375,6 @@ export async function rename_M_value_KEY_and_fieldname(fieldname) {
         await update_cascade_tablename_in_app_data_t(OLD_KEY, NEW_KEY, debug);
     }
 }
-
-/**
- * * CALLED after entities TABLENAME changed
- * * to update cascade tablename in App-Data.json (under 't' subTab)
- * @param {*} OLD_TABLENAME e.g. "ORDERS"
- * @param {*} NEW_TABLENAME e.g. "ORDERS_NEW"
- */
 
 /**
  * * CALLED after entities TABLENAME changed

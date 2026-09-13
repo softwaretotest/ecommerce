@@ -217,7 +217,7 @@ export const use_M_Store = create((set) => ({
      */
 
     /**
-     * * CALLED by render_fieldname_input
+     * * CALLED by Render_fieldname_input
      * * to handle update fieldname and tablename
      */
     FIELDNAME_to_update: {}, // atomic states

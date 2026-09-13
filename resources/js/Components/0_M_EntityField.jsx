@@ -8,7 +8,7 @@ import {
     update_M_value_with_selected_F_S,
 } from "@/Services/0_M_value_Service";
 
-import { render_fieldname_input } from "@/Components/0_M_Input_Group";
+import { Render_fieldname_input } from "@/Components/0_M_Input_Group";
 
 import Field from "@/Components/0_M_Field.jsx";
 import { render_All_F_S } from "@/Components/0_M_Entities_select";
@@ -56,7 +56,7 @@ export default function EntityField({ f_s_Class_Array, TABLENAME }) {
     function render_TABLENAME_State_and_DELETE_Button() {
         return (
             <div className="entities-M_value_KEY-and-delete-button">
-                {render_fieldname_input(TABLENAME.toLowerCase(), "M_value_KEY")}
+                {Render_fieldname_input(TABLENAME.toLowerCase(), "M_value_KEY")}
                 <button
                     className="delete-button"
                     onClick={() => {

@@ -15,8 +15,10 @@ import { rename_M_value_KEY_and_fieldname } from "@/Services/0_M_value_Service";
  * * fieldname ( to show , not editable) in APP DATA
  * @returns
  */
-export function render_fieldname_input(fieldname, className) {
+export function Render_fieldname_input({ fieldname, className }) {
+    if (!fieldname) return null;
     const activeField = use_M_Store((state) => state.activeField);
+    // const activeSubTab = use_M_Store((state) => state.activeSubTab);
 
     const setActiveField = use_M_Store.getState().setActiveField;
     const set_Error_FIELDNAME = use_M_Store.getState().set_Error_FIELDNAME;
@@ -26,22 +28,17 @@ export function render_fieldname_input(fieldname, className) {
 
     const { handle_Fieldname_Change } = useError();
 
-    const disabled = className !== "M_value_KEY";
     /**
      * State to open / close Backdrop (lock UI during editig)
      */
-    const { is_Editing, set_is_Editing } = use_M_Store();
+    const set_is_Editing = use_M_Store.getState().set_is_Editing;
 
     const is_ADD = className === "new_field_name";
-    const is_UPDATE = className === "M_value_KEY";
     const is_fieldname = className === "fieldname";
 
-    let FIELDNAME = "";
-    if (is_ADD) FIELDNAME = FIELDNAME_to_add;
-    if (is_UPDATE) FIELDNAME = FIELDNAME_to_update[fieldname];
-
-    //Case for app_data.f only to show, not editable
-    if (is_fieldname) FIELDNAME = FIELDNAME_to_update[fieldname];
+    const FIELDNAME = is_ADD
+        ? FIELDNAME_to_add
+        : (FIELDNAME_to_update[fieldname] ?? fieldname);
 
     const show_CRUD_BTN =
         className === "M_value_KEY" && fieldname.toLowerCase() === activeField;
@@ -56,13 +53,14 @@ export function render_fieldname_input(fieldname, className) {
 
             <input
                 type="text"
+                key={fieldname}
                 value={
                     is_fieldname
                         ? (FIELDNAME ?? "").toLowerCase()
                         : (FIELDNAME ?? "").toUpperCase()
                 }
                 className={className}
-                disabled={disabled}
+                disabled={className !== "M_value_KEY"}
                 onFocus={() => {
                     set_FIELDNAME_to_add("");
                     set_Error_FIELDNAME(""); // clear error at beginning
@@ -87,9 +85,7 @@ export function render_fieldname_input(fieldname, className) {
                         onClick={async () => {
                             await rename_M_value_KEY_and_fieldname(FIELDNAME);
 
-                            setActiveField(
-                                FIELDNAME_to_update[fieldname].toLowerCase(),
-                            );
+                            setActiveField((FIELDNAME ?? "").toLowerCase());
 
                             set_is_Editing(false);
                         }}
@@ -103,7 +99,7 @@ export function render_fieldname_input(fieldname, className) {
 
                             set_FIELDNAME_to_update(
                                 fieldname,
-                                activeField.toUpperCase(),
+                                (activeField ?? fieldname).toUpperCase(),
                             );
 
                             set_is_Editing(false);

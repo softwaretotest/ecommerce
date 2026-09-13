@@ -6,6 +6,7 @@ import { useError } from "@/Hooks/useError";
 
 import { use_M_Store } from "@/Stores/0_M_Store.jsx";
 import {
+    delete_field,
     M_value_Service,
     add_field_ENTITIES,
 } from "@/Services/0_M_value_Service";
@@ -15,6 +16,7 @@ import Field from "@/Components/0_M_Field";
 import EntityField from "@/Components/0_M_EntityField";
 import DB_Tablename from "@/Components/0_M_DB_Tablename";
 import { set_selected_D_U_UF_FOREIGN } from "@/Components/0_M_Data_Helper";
+import { Render_fieldname_input } from "@/Components/0_M_Input_Group.jsx";
 
 export default function TabContent() {
     const { Error_FIELDNAME, handle_Fieldname_Change } = useError();
@@ -35,6 +37,11 @@ export default function TabContent() {
         use_M_Store.getState().set_NEW_added_fieldname;
     const set_selected_F_S_by_M_value_T =
         use_M_Store.getState().set_selected_F_S_by_M_value_T;
+
+    /**
+     * State to open / close Backdrop (lock UI during editig)
+     */
+    const { set_is_Editing } = use_M_Store();
 
     if (!M_value)
         return <div className="ui-placeholder">No UI for {activeSubTab}</div>;
@@ -72,18 +79,29 @@ export default function TabContent() {
                 disabled={!activeField}
             >
                 {["d", "u", "uf", "cd", "cu", "cud"].includes(activeSubTab) && (
-                    <>
-                        <input
+                    <div className="field-header-container">
+                        <Render_fieldname_input
+                            fieldname={fieldname}
                             className="M_value_KEY"
-                            defaultValue={fieldname.toUpperCase()}
                         />
+
                         <span className="field-separator-colon">:</span>
-                        <input
-                            type="text"
+
+                        <Render_fieldname_input
+                            fieldname={fieldname}
                             className="fieldname"
-                            defaultValue={field_data}
                         />
-                    </>
+
+                        <button
+                            className="delete-button"
+                            onClick={() => {
+                                delete_field(fieldname);
+                                set_is_Editing(false);
+                            }}
+                        >
+                            DELETE
+                        </button>
+                    </div>
                 )}
 
                 {activeSubTab === "s" && Array.isArray(field_data) && (
@@ -146,12 +164,8 @@ export default function TabContent() {
     }
 
     /**
-     * * get new fieldname from UI
-     * * and save to JSON Backend
-     * * BE CAREFULL to save convention : always like this
-     * * fieldname = lowercase
-     * * M_value [KEY] , KEY = UPPERCASE
-     * @returns
+     * * M_DATA = Simple Data (KEY: value)
+     * * value = lowercase string
      */
     async function add_field_M_DATA() {
         const input_box_fieldname = document.querySelector(".new_field_name");
@@ -160,11 +174,13 @@ export default function TabContent() {
         const trimmed_name = raw_name.trim();
         if (!trimmed_name) return;
 
-        await set_NEW_added_fieldname(trimmed_name.toLowerCase()); //set flag for useEffect in Dropdown_D.jsx
+        await set_NEW_added_fieldname(trimmed_name.toLowerCase());
 
-        const new_field_data = [trimmed_name.toLowerCase(), ["d::STRING", 255]];
-        const fieldname = new_field_data[0];
-        const M_value_KEY = new_field_data[0].toUpperCase();
+        // เปลี่ยนจาก Array Complex เป็น String ธรรมดา
+        const new_field_data = trimmed_name.toLowerCase();
+
+        // Key ต้องเป็น UPPERCASE ตาม Convention ของคุณ
+        const M_value_KEY = trimmed_name.toUpperCase();
 
         const new_M_value = {
             [M_value_KEY]: new_field_data,
@@ -173,16 +189,14 @@ export default function TabContent() {
 
         await M_value_Service.update(new_M_value);
 
-        if (fieldname) await setActiveField(fieldname); // for auto scroll, not work
+        if (trimmed_name) await setActiveField(trimmed_name.toLowerCase());
 
-        // this make auto scroll for JSON_Content works if new field added
         use_M_Store.getState().set_is_new_field_added(true);
 
-        //clear input box , after finish
         if (input_box_fieldname) input_box_fieldname.value = "";
         set_FIELDNAME_to_add("");
 
-        set_selected_D_U_UF_FOREIGN(new_field_data);
+        // ไม่ต้องเรียก set_selected_D_U_UF_FOREIGN เพราะ M_DATA ไม่มีฟิลด์พวกนี้
     }
 
     function add_field() {
