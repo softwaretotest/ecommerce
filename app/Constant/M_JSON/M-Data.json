@@ -1,7 +1,6 @@
 {
     "_comment": "\/M_JSON\/M-Data.json",
     "d": {
-        "DFAS": "dfas",
         "BOOLEAN": "boolean",
         "INTEGER": "integer",
         "DECIMAL": "decimal",

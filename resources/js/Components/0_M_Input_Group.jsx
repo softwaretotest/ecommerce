@@ -2,6 +2,7 @@
 
 import { use_M_Store } from "@/Stores/0_M_Store";
 import { useError } from "@/Hooks/useError";
+import { use_Enter_Esc_Key } from "@/Hooks/use_Enter_Esc_Key";
 import { rename_M_value_KEY_and_fieldname } from "@/Services/0_M_value_Service";
 
 /**
@@ -16,9 +17,7 @@ import { rename_M_value_KEY_and_fieldname } from "@/Services/0_M_value_Service";
  * @returns
  */
 export function Render_fieldname_input({ fieldname, className }) {
-    if (!fieldname) return null;
     const activeField = use_M_Store((state) => state.activeField);
-    // const activeSubTab = use_M_Store((state) => state.activeSubTab);
 
     const setActiveField = use_M_Store.getState().setActiveField;
     const set_Error_FIELDNAME = use_M_Store.getState().set_Error_FIELDNAME;
@@ -27,6 +26,39 @@ export function Render_fieldname_input({ fieldname, className }) {
     const { FIELDNAME_to_add, set_FIELDNAME_to_add } = use_M_Store();
 
     const { handle_Fieldname_Change } = useError();
+
+    const handleSave = async () => {
+        // fix bug , prevent to put old value in the input
+        const current_value_in_store =
+            use_M_Store.getState().FIELDNAME_to_update[fieldname];
+        const value_to_save = current_value_in_store ?? FIELDNAME;
+
+        await rename_M_value_KEY_and_fieldname(value_to_save);
+
+        setActiveField((value_to_save ?? "").toLowerCase());
+        set_is_Editing(false);
+    };
+
+    const handleCancel = () => {
+        set_FIELDNAME_to_update(
+            fieldname,
+            (activeField ?? fieldname).toUpperCase(),
+        );
+        set_is_Editing(false);
+        setActiveField(null);
+    };
+
+    use_Enter_Esc_Key(
+        fieldname.toLowerCase() === activeField,
+        handleSave,
+        handleCancel,
+    );
+
+    /**
+     * GUARD CLAUSE must be called after Hook,
+     * because Hook must be called in the same order
+     */
+    if (!fieldname) return null;
 
     /**
      * State to open / close Backdrop (lock UI during editig)
@@ -83,11 +115,7 @@ export function Render_fieldname_input({ fieldname, className }) {
                         //no continue, if no data , or data invalide
                         disabled={!FIELDNAME}
                         onClick={async () => {
-                            await rename_M_value_KEY_and_fieldname(FIELDNAME);
-
-                            setActiveField((FIELDNAME ?? "").toLowerCase());
-
-                            set_is_Editing(false);
+                            handleSave();
                         }}
                     >
                         💾
@@ -95,15 +123,7 @@ export function Render_fieldname_input({ fieldname, className }) {
                     <button
                         className={"cancel-button"}
                         onClick={() => {
-                            //reset FIELDNAME_to_update
-
-                            set_FIELDNAME_to_update(
-                                fieldname,
-                                (activeField ?? fieldname).toUpperCase(),
-                            );
-
-                            set_is_Editing(false);
-                            setActiveField(null);
+                            handleCancel();
                         }}
                     >
                         ↩️
