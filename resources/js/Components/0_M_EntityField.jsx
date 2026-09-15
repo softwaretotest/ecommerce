@@ -66,6 +66,7 @@ export default function EntityField({ f_s_Class_Array, TABLENAME }) {
                 >
                     DELETE
                 </button>
+                <label className="tch-label">{TABLENAME}</label>
             </div>
         );
     }

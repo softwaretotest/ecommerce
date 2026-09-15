@@ -29,6 +29,7 @@ class MakeSchema
         $map_d_u_cd_cu_cud = [
             'd' => ['db' => true],
             'u' => ['ui' => true],
+            'uf' => ['ui' => true],
             'cd' => ['db' => true],
             'cu' => ['ui' => true],
             'cud' => ['db' => true, 'ui' => true]

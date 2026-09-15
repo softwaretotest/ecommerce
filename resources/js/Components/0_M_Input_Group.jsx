@@ -17,6 +17,12 @@ import { rename_M_value_KEY_and_fieldname } from "@/Services/0_M_value_Service";
  * @returns
  */
 export function Render_fieldname_input({ fieldname, className }) {
+    /**
+     * Guard clause for Hooks (first refresh) to prevent error,
+     * when fieldname is null or undefined
+     **/
+    const safeFieldname = fieldname ? fieldname.toLowerCase() : "";
+
     const activeField = use_M_Store((state) => state.activeField);
 
     const setActiveField = use_M_Store.getState().setActiveField;
@@ -48,11 +54,7 @@ export function Render_fieldname_input({ fieldname, className }) {
         setActiveField(null);
     };
 
-    use_Enter_Esc_Key(
-        fieldname.toLowerCase() === activeField,
-        handleSave,
-        handleCancel,
-    );
+    use_Enter_Esc_Key(safeFieldname === activeField, handleSave, handleCancel);
 
     /**
      * GUARD CLAUSE must be called after Hook,

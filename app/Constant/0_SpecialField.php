@@ -24,7 +24,7 @@ class SpecialField
             $isSpecial = true;
         }
 
-        if ($fieldName === s::CURRENCY[0]) {
+        if ($fieldName === uf::CURRENCY[0]) {
             echo $fieldName . " UI field, SPECIAL\n";
             $schema['ui'][] = $item;
             $isSpecial = true;

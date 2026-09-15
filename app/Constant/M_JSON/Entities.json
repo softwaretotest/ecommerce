@@ -7,11 +7,10 @@
             "s::EMAIL",
             "f::IS_ACTIVE"
         ],
-        "ORDERS": [
-            "f::ORDER_NR",
-            "f::PRODUCT_ID",
-            "f::QUANTITY",
-            "f::CONFIRM_ORDER"
+        "SHOPS": [
+            "f::NAME",
+            "f::IMAGE",
+            "f::USER_ID"
         ],
         "PRODUCTS": [
             "f::NAME",
@@ -20,10 +19,11 @@
             "f::PRICE",
             "f::STOCK"
         ],
-        "SHOPS": [
-            "f::NAME",
-            "f::IMAGE",
-            "f::USER_ID"
+        "ORDERS": [
+            "f::ORDER_NR",
+            "f::PRODUCT_ID",
+            "f::QUANTITY",
+            "f::CONFIRM_ORDER"
         ]
     }
 }
