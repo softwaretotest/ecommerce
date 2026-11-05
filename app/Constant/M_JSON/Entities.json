@@ -1,0 +1,27 @@
+{
+    "_comment": "Entities.json",
+    "entities": {
+        "USERS": [
+            "f::IS_ACTIVE",
+            "f::IMAGE"
+        ],
+        "SHOPS": [
+            "f::NAME",
+            "f::IMAGE",
+            "f::USER_ID"
+        ],
+        "PRODUCTS": [
+            "f::NAME",
+            "f::IMAGE",
+            "f::SHOP_ID",
+            "f::PRICE",
+            "f::STOCK"
+        ],
+        "ORDERS": [
+            "f::ORDER_NR",
+            "f::PRODUCT_ID",
+            "f::QUANTITY",
+            "f::CONFIRM_ORDER"
+        ]
+    }
+}

@@ -1,0 +1,113 @@
+/* sidebar.css  button[class^="sidebar-btn-"] { */
+button[class^="sidebar-btn-"] {
+    height: var(--sidebar-showSidebar);
+    font-size: xx-large;
+}
+
+button[class^="sidebar-btn-"]:not(.sidebar-btn-menu) {
+    color: black;
+}
+
+.sidebar-btn-menu {
+    align-items: center;
+    aspect-ratio: 1/1;
+    color: white;
+    background-color: var(--color-sidebar-menu-bg);
+    background-image: var(--image-sidebar-menu-bg);
+}
+
+.sidebar-btn-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1/1;
+    direction: ltr; /* icon and word beginn left */
+    background-color: var(--color-sidebar-item-bg);
+    background-image: var(--image-sidebar-item-bg);
+}
+
+button[class^="sidebar-btn-"] {
+    width: 100%;
+}
+
+.sidebar-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 10px 0 0 0;
+}
+
+.sidebar {
+    width: 240px; /* scrollbar buttons show */
+    z-index: var(--z-sidebar);
+    direction: rtl; /* scrollbar left*/
+    overflow-y: auto;
+
+    /* รองรับขนาดสกรอลบาร์หนาแบบดั้งเดิมบน Firefox */
+    scrollbar-width: thick;
+}
+
+.sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+
+    background-color: var(--color-backdrop-bg);
+
+    pointer-events: auto; /*backdrop prevent all click*/
+    z-index: var(--z-sidebar-backdrop);
+}
+
+.sidebar.showSidebar {
+    width: var(--sidebar-showSidebar);
+}
+
+/* ========================================================
+   🏆 [SIDEBAR LUXURY SCROLLBAR] เพิ่มระบบรางทองคำและหัวจับเงิน
+   ======================================================== */
+
+/* กำหนดความกว้างแถวสกรอลบาร์ไซด์บาร์ให้หนาเท่าแอปหลัก (20px) */
+.sidebar::-webkit-scrollbar {
+    width: 20px;
+}
+
+/* 🥇 คืนชีพรางทองคำไดนามิก (ธีมปกติ = สีพื้นม่วง / ธีมลักชัวรี = รางทองคำเฉดสี 180 องศา) */
+.sidebar::-webkit-scrollbar-track {
+    background: var(--color-scrollbar-track);
+
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    /* ใส่กรอบขอบเงินล้อมรอบเพิ่มมิติหรูหรา */
+    border-top: var(--border-silver-top);
+    border-left: var(--border-silver-left);
+    border-right: var(--border-silver-right);
+    border-bottom: var(--border-silver-bottom);
+    border-radius: var(--radius-theme);
+}
+
+/* 🥈 ตัวจับดึงแถบเลื่อน (Thumb) โลหะเหล็กเงิน */
+.sidebar::-webkit-scrollbar-thumb {
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    border-top: var(--border-silver-top);
+    border-left: var(--border-silver-left);
+    border-right: var(--border-silver-right);
+    border-bottom: var(--border-silver-bottom);
+    border-radius: var(--radius-theme);
+
+    background-color: var(--color-scrollbar-thumb-bg);
+    background-image: var(
+        --image-scrollbar-thumb-bg
+    ); /* ดึงภาพ bg-metal-silver.webp มาโชว์ในโหมดลักชัวรี */
+}
+
+/* 🥉 เอฟเฟกต์สะท้อนแสงเรืองประกายทองคำเมื่อเมาส์ชี้หรือนิ้วสัมผัสโดน */
+.sidebar::-webkit-scrollbar-thumb:hover {
+    filter: var(--filter-scrollbar-thumb-hover);
+    background-color: var(--color-scrollbar-thumb-hover);
+    box-shadow: var(--shadow-scrollbar-thumb-hover);
+}

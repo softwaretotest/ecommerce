@@ -1,26 +1,98 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import { useState, useEffect, useRef } from "react";
+import svgCode from "../../../public/favicon.svg?raw";
+import "./Dashboard.css";
 
+const SHAPES = "path, circle, rect, ellipse, line, polygon, polyline";
+
+/**
+ * This is only test to make svg interactive with react
+ * @returns
+ */
 export default function Dashboard() {
-    return (
-        <AuthenticatedLayout
-            header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                    Dashboard
-                </h2>
-            }
-        >
-            <Head title="Dashboard" />
+    const boxRef = useRef(null); // referenc of SVG
+    const [selected, setSelected] = useState(null); // id of clicked item on logo
+    const [data, setData] = useState(null); // data from Laravel
 
-            <div className="py-12">
-                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-                        <div className="p-6 text-gray-900">
-                            You're logged in!
-                        </div>
-                    </div>
+    // get data from laravel only once
+    useEffect(() => {
+        fetch("/dashboard-data")
+            .then((res) => (res.ok ? res.json() : null))
+            .then(setData)
+            .catch(() => setData(null));
+    }, []);
+
+    // if selected changed: put class is-active on selected item
+    useEffect(() => {
+        const box = boxRef.current;
+        box.querySelectorAll(".is-active").forEach((el) =>
+            el.classList.remove("is-active"),
+        );
+        if (selected) {
+            box.querySelector(`#${CSS.escape(selected)}`)?.classList.add(
+                "is-active",
+            );
+        }
+    }, [selected]);
+
+    // findout which part of the logo was clicked
+    function handleClick(e) {
+        const shape = e.target.closest(SHAPES);
+        setSelected(shape?.id || null);
+    }
+
+    /**
+     * ```text
+     * fix favicon <svg> tag
+     * from
+     * <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill="none">
+     * to
+     * <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+     * @param {*} raw
+     * @returns
+     */
+    function fixSvg(raw) {
+        const doc = new DOMParser().parseFromString(raw, "image/svg+xml");
+        const svg = doc.documentElement;
+
+        // ถ้าไม่มี viewBox ให้สร้างจาก width/height (เช่น 24 x 24 → "0 0 24 24")
+        const w = parseFloat(svg.getAttribute("width")) || 24;
+        const h = parseFloat(svg.getAttribute("height")) || 24;
+        if (!svg.hasAttribute("viewBox")) {
+            svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+        }
+
+        // ลบขนาดตายตัวออก ให้ CSS เป็นคนคุมขนาด
+        svg.removeAttribute("width");
+        svg.removeAttribute("height");
+
+        // ถ้าไม่มี fill ให้ใส่ fill="none"
+        if (!svg.hasAttribute("fill")) {
+            svg.setAttribute("fill", "none");
+        }
+
+        return new XMLSerializer().serializeToString(svg);
+    }
+
+    const svgHtml = fixSvg(svgCode);
+
+    return (
+        <div className="logo-screen">
+            <div
+                ref={boxRef}
+                className="logo-box"
+                onClick={handleClick}
+                dangerouslySetInnerHTML={{ __html: svgHtml }}
+            />
+
+            {selected && (
+                <div className="info-panel">
+                    <p>
+                        คลิกชิ้น: <b>{selected}</b>
+                    </p>
+                    {data && <p>ยอดขาย: {data.sales}</p>}
+                    <button onClick={() => setSelected(null)}>ปิด</button>
                 </div>
-            </div>
-        </AuthenticatedLayout>
+            )}
+        </div>
     );
 }

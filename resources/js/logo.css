@@ -1,0 +1,28 @@
+html, body, #root {
+    margin: 0;
+    height: 100%;
+    overflow: hidden;
+}
+
+.logo-screen {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-screen svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.logo-screen svg {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(0.9); }
+    50%      { transform: scale(1); }
+}

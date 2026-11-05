@@ -1,0 +1,90 @@
+/* =========================
+   BUTTON SETTING
+   ========================= */
+/* PARENT */
+.setting {
+    position: relative; /* parent is anchor , childern = absolute will not overlay parent*/
+    grid-area: setting;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+    height: 100%;
+
+    margin-left: auto;
+
+    z-index: var(--z-setting);
+}
+
+/* CHILD */
+.setting-container {
+    position: absolute;
+    /* 100% ของความสูง parent (.setting) = same height like parent */
+    top: 100%; /* position: absolute จะวัด % จาก parent ที่เป็น positioned element (เช่น position: relative) */
+    right: 0; /* child flush (bündig) to parent right side */
+
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.btn-setting-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 6px 10px;
+    width: 100%;
+
+    font-size: xx-large;
+
+    background-color: var(--color-sidebar-item-bg);
+    background-image: var(--image-sidebar-item-bg);
+
+    cursor: pointer;
+}
+
+.btn-setting {
+    flex: 0; /* prevent flex squeeze */
+    height: 100%; /* high full of header */
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+    transition: 0.2s ease;
+    cursor: pointer;
+    transform: scale(1);
+
+    /* make to square */
+    aspect-ratio: 1 / 1;
+
+    border-radius: 0;
+    background-color: var(--color-btn-setting-bg);
+    background-image: var(--image-btn-setting-bg);
+}
+
+/* Display Icon visibility toggle for button rendering modes.
+   In icon-only UI, visibility depends on
+  whether a background-image already represents the icon. */
+.btn-setting .display-icon {
+    display: var(--display-icon);
+}
+
+.btn-setting.is-active {
+    transform: scale(0.85);
+    filter: invert(1);
+}
+
+.setting-backdrop {
+    position: fixed;
+    inset: 0;
+
+    background-color: var(--color-backdrop-bg);
+
+    pointer-events: auto;
+    z-index: var(--z-setting-backdrop);
+}

@@ -1,0 +1,103 @@
+/* =========================
+   MODAL / OVERLAY (CRITICAL LAYER)
+   ========================= */
+/* Full-screen overlay (blocks interaction behind) */
+.modal-overlay {
+    z-index: var(--z-modal);
+}
+
+.preview-overlay {
+    z-index: var(--z-preview);
+}
+
+.preview-overlay,
+.modal-overlay {
+    display: flex;
+    position: fixed;
+    inset: 0;
+
+    background-color: var(--color-backdrop-bg);
+
+    justify-content: center;
+    padding: 10px;
+}
+
+.modal-overlay {
+    overflow-y: auto; /* make scroll bar for mobile vertical*/
+}
+
+/* 4. ป้องกันรูปภาพโดนระบบ Flex ของตัวแม่ขืนรูป */
+.preview-overlay img {
+    max-width: 100%;
+    max-height: 100vh;
+    object-fit: contain;
+
+    /* เคลียร์คลาสจัดตำแหน่งอื่นๆ ออก ให้ระบบ justifyContent/alignItems คุมแทน */
+    margin: auto;
+}
+
+/*  🎯
+    3.
+    จัดการโครงสร้างกล่องพรีวิวรูปใหญ่
+    (ให้รูปอยู่กลางจอ 100%)
+    */
+.preview-overlay {
+    display: flex;
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-preview);
+    background-color: var(--color-backdrop-bg);
+
+    /* สั่งจัดโครงสร้างให้ของข้างใน (ซึ่งก็คือรูปภาพ) อยู่กึ่งกลางจอเป๊ะๆ */
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+
+.ifm-container .preview-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    z-index: var(--z-ifm-overlay);
+}
+
+.preview-close:hover {
+    transform: scale(1.1);
+}
+
+.btn-modal-close {
+    top: 57px;
+    right: 0;
+    z-index: var(--z-btn-modal-close);
+}
+
+.btn-preview-close {
+    position: absolute;
+    top: 65px;
+    left: 1px;
+    z-index: var(--z-btn-preview-close);
+}
+
+.btn-modal-close,
+.btn-preview-close {
+    align-self: auto;
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: var(--radius-preview-close);
+    background-color: var(--color-preview-close-bg);
+    color: var(--color-preview-close-text);
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.2s ease;
+}

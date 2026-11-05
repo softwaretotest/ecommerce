@@ -1,0 +1,93 @@
+/* =========================
+   ifm = Image Component Form
+   TOGGLE BUTTON , INPUT GROUP
+   NOTE: background & Button
+   styling should be provided 
+   by host app css theme
+========================= */
+.ifm-container-wrapper {
+    position: relative;
+}
+
+.ifm-cross-overlay {
+    position: absolute;
+    inset: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 80px;
+    pointer-events: none;
+}
+
+.ifm-body {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+
+    justify-content: center;
+    align-items: center;
+
+    margin: 0;
+}
+
+.ifm-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    width: fit-content;
+    margin: 0 auto;
+}
+
+.ifm-icon-only {
+    margin: 0;
+
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: xx-large;
+    background-color: rgba(0, 0, 0, 0.15);
+
+    text-shadow: 0 0 3px rgba(255, 255, 255, 0.9);
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.7),
+        0 1px 2px rgba(0, 0, 0, 0.15);
+
+    background: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.95),
+        rgba(210, 235, 255, 0.92)
+    );
+}
+
+/* =========================
+   format for no image
+   ========================= */
+.ifm-img {
+    object-fit: cover;
+    width: 100px;
+    height: 100px;
+
+    border-radius: 8px;
+    border-color: grey;
+    padding: 3px;
+    background: linear-gradient(200deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.2));
+}
+
+.ifm-no-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.ifm-no-image span {
+    text-align: center;
+    font-size: 16px;
+}

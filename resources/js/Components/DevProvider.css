@@ -1,0 +1,65 @@
+/* container floating */
+.dev-switch {
+    position: fixed;
+    top: 100px;
+    right: 50px;
+    z-index: 99999;
+    cursor: pointer;
+}
+
+/* pill background */
+.track {
+    width: 64px;
+    height: 34px;
+    border-radius: 999px;
+    position: absolute;
+    transition: all 0.25s ease;
+
+    border: 2px solid #ccc;
+    background: #f2f2f2;
+}
+
+/* ON state = red + glow */
+.track.on {
+    background: rgba(255, 59, 59, 0.15);
+    border-color: #ff3b3b;
+    box-shadow: 0 0 12px rgba(255, 59, 59, 0.4);
+}
+
+/* OFF state = gray */
+.track.off {
+    background: #eee;
+    border-color: #bbb;
+}
+
+/* sliding knob */
+.thumb {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: white;
+
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 4px;
+
+    transition: all 0.25s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+/* move right when ON */
+.track {
+    left: -40px;
+    top: 50px;
+}
+
+.track.on .thumb {
+    left: 30px;
+    background: #ff3b3b;
+}
+
+/* OFF look */
+.track.off .thumb {
+    background: #999;
+}

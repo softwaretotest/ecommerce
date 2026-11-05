@@ -3,8 +3,10 @@
     "private": true,
     "type": "module",
     "scripts": {
+        "dev": "vite",
+        "clear": "vite --force",
         "build": "vite build",
-        "dev": "vite"
+        "preview": "vite preview"
     },
     "devDependencies": {
         "@headlessui/react": "^2.0.0",
@@ -23,5 +25,9 @@
     },
     "optionalDependencies": {
         "@laravel/multiplex": "^0.4.1"
+    },
+    "dependencies": {
+        "firebase": "^13.2.0",
+        "zustand": "^5.0.16"
     }
 }

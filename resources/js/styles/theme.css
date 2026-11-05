@@ -1,0 +1,285 @@
+:root {
+    /* =========================
+       APP
+       ========================= */
+
+    --color-app-bg: #fff3b0;
+    --image-app-bg: none;
+
+    /* =========================
+       BODY
+       ========================= */
+
+    --color-body-bg: #f5f7fa;
+    --color-body-text: #111;
+
+    /* =========================
+   SCROLLBAR
+   ========================= */
+
+    --color-scrollbar-track: #988ba8;
+
+    --color-scrollbar-thumb-bg: purple;
+
+    --color-scrollbar-thumb-hover: #442066;
+
+    --image-scrollbar-thumb-bg: none;
+
+    --shadow-scrollbar-thumb-hover:
+        0 0 0 2px rgba(255, 255, 255, 0.15), 0 0 10px rgba(95, 59, 140, 0.45);
+
+    --filter-scrollbar-thumb-hover: none;
+
+    /* =========================
+       HEADER
+   ========================= */
+
+    --color-header-bg: silver;
+    --image-header-bg: none;
+    --color-btn-setting-bg: darkviolet;
+
+    /* =========================
+       CRUD BUTTONS
+   ========================= */
+    --color-btn-add-bg: #0ca145;
+    --image-btn-add-bg: none;
+
+    --color-btn-cancel-bg: #dd6a05;
+    --image-btn-cancel-bg: none;
+
+    --color-btn-edit-bg-mobile: #78b9ff;
+    --image-btn-edit-bg-mobile: none;
+
+    --color-btn-delete-bg-mobile: #edcdcd;
+    --image-btn-delete-bg-mobile: none;
+
+    --color-btn-add-bg-desktop: #3c8e23;
+    --image-btn-add-bg-desktop: none;
+
+    --color-btn-edit-bg-desktop: #3b82f6;
+    --image-btn-edit-bg-desktop: none;
+
+    --color-btn-delete-bg-desktop: #ef4444;
+    --image-btn-delete-bg-desktop: none;
+
+    --color-btn-openshopprod-bg-desktop: #ffb020;
+    --image-btn-openshopprod-bg-desktop: none;
+
+    --color-btn-gold-bg: #ffb020;
+    --image-btn-gold-bg: none;
+
+    /* =========================
+       INPUT / FOCUS
+       ========================= */
+
+    --color-input-focus-border: #ff7a00;
+    --shadow-input-focus: 0 0 0 5px rgba(255, 122, 0, 0.45);
+
+    --shadow-input-error: 0 0 0 2px red;
+
+    /* =========================
+       TEXT BG
+       ========================= */
+
+    --gradient-text-bg: linear-gradient(
+        145deg,
+        rgba(255, 255, 255, 0.5),
+        rgba(255, 255, 255, 0.5)
+    );
+
+    --border-text-bg: 1px solid rgba(255, 255, 255, 0.35);
+
+    --shadow-text-bg:
+        inset 0 1px 1px rgba(255, 255, 255, 0.45),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.18);
+
+    /* =========================
+       GLOBAL BORDER SYSTEM
+       ========================= */
+
+    --border-light-top: 5px solid rgba(255, 255, 255, 0.6);
+
+    --border-light-left: 5px solid rgba(255, 255, 255, 0.6);
+
+    --border-dark-right: 5px solid rgba(0, 0, 0, 0.08);
+
+    --border-dark-bottom: 5px solid rgba(0, 0, 0, 0.12);
+
+    --border-silver-top: 5px solid rgba(255, 255, 255, 0.95);
+
+    --border-silver-left: 5px solid rgba(245, 245, 245, 0.9);
+
+    --border-silver-right: 5px solid rgba(150, 150, 150, 0.95);
+
+    --border-silver-bottom: 5px solid rgba(150, 150, 150, 0.85);
+
+    /* =========================
+       BORDER RADIUS
+       ========================= */
+
+    --radius-theme: 5px;
+    --radius-text-bg: 8px;
+
+    /* =========================
+       LAYOUT
+       ========================= */
+
+    --sidebar-showSidebar: 70px;
+
+    /* =========================
+       CARD FORM 
+       ========================= */
+
+    /* FORM */
+
+    --color-form-add-bg: #38c9a9;
+    --image-form-add-bg: none;
+
+    --color-form-edit-bg: #537fd7;
+    --image-form-edit-bg: none;
+
+    /* CARD */
+
+    --color-card-edit-bg: silver;
+    --image-card-bg: none;
+
+    /* HEADER */
+
+    --color-header-container-bg: silver;
+    --image-header-container-bg: none;
+
+    /* =========================
+       SIDEBAR
+       ========================= */
+
+    --color-sidebar-menu-bg: purple;
+    --image-sidebar-menu-bg: none;
+
+    --radius-sidebar-menu: 6px;
+
+    --color-sidebar-item-bg: lightseagreen;
+    --image-sidebar-item-bg: none;
+
+    /* =========================
+       BACKDROP BACKGROUND COLOR
+       ========================= */
+
+    --color-backdrop-bg: rgba(0, 0, 0, 0.5);
+
+    /* =========================
+       MODAL / OVERLAY
+       ========================= */
+
+    --color-preview-close-bg: rgba(255, 0, 0, 0.85);
+
+    --color-preview-close-text: white;
+
+    --radius-preview-close: 50%;
+}
+
+/* =========================================================
+   METAL LUXURY THEME
+   ========================================================= */
+
+:root[data-theme="luxury"] {
+    /* =========================
+       APP
+       ========================= */
+
+    --image-app-bg: url("/app-img/bg-gold-sheet.webp");
+
+    /* =========================
+       SCROLLBAR
+       ========================= */
+
+    --image-scrollbar-thumb-bg: url("/app-img/bg-metal-silver.webp");
+
+    /* =========================
+       HEADER
+       ========================= */
+
+    --image-header-bg: url("/app-img/bg-metal-silver.webp");
+
+    --image-btn-setting-bg: url("/app-img/setting.webp");
+
+    /* Display Icon visibility toggle for button rendering modes.
+      In icon-only UI, visibility depends on
+   whether a background-image already represents the icon. */
+    --display-icon: none;
+    /* =========================
+       CRUD BUTTONS
+       ========================= */
+
+    --image-btn-add-bg: url("/app-img/bg-dark-green.webp");
+
+    --image-btn-save-bg: url("/app-img/bg-dark-green.webp");
+
+    --image-btn-cancel-bg: url("/app-img/bg-dark-orange.webp");
+
+    --image-btn-gold-bg: url("/app-img/bg-metal-gold.webp");
+
+    --image-btn-save-bg-mobile: url("/app-img/bg-dark-green.webp");
+
+    --image-btn-add-bg-mobile: url("/app-img/bg-metal-gold.webp");
+
+    --image-btn-edit-bg-mobile: url("/app-img/bg-metal-blue.webp");
+
+    --image-btn-delete-bg-mobile: url("/app-img/bg-metal-red.webp");
+
+    --image-btn-add-bg-desktop: url("/app-img/bg-dark-blue.webp");
+
+    --image-btn-edit-bg-desktop: url("/app-img/bg-dark-blue.webp");
+
+    --image-btn-delete-bg-desktop: url("/app-img/bg-dark-red.webp");
+
+    --image-btn-openshopprod-bg-desktop: url("/app-img/bg-metal-gold.webp");
+
+    /* =========================
+       CARD FORM
+       ========================= */
+
+    /* FORM */
+
+    --image-form-add-bg: url("/app-img/bg-metal-green.webp");
+
+    --image-form-edit-bg: url("/app-img/bg-metal-blue.webp");
+
+    /* CARD */
+
+    --image-card-bg: url("/app-img/bg-metal-silver.webp");
+
+    /* HEADER */
+
+    --image-header-container-bg: url("/app-img/bg-metal-silver.webp");
+
+    /* =========================
+       SIDEBAR
+       ========================= */
+
+    --image-sidebar-menu-bg: url("/app-img/bg-amethyst.webp");
+
+    --image-sidebar-item-bg: url("/app-img/bg-metal-green.webp");
+
+    /* =========================
+       SCROLLBAR
+       ========================= */
+
+    --color-scrollbar-track: linear-gradient(
+        180deg,
+        #5c3b00 0%,
+        #b8860b 18%,
+        #ffd95a 38%,
+        #fff4b0 50%,
+        #ffd95a 62%,
+        #c28c00 82%,
+        #6e4a00 100%
+    );
+
+    --image-scrollbar-thumb-bg: url("/app-img/bg-metal-silver.webp");
+
+    --shadow-scrollbar-thumb-hover:
+        inset 0 2px 6px rgba(255, 255, 255, 0.95),
+        inset 0 -4px 8px rgba(0, 0, 0, 0.85), 0 0 16px rgba(255, 215, 0, 0.9);
+
+    --filter-scrollbar-thumb-hover: brightness(1.9) contrast(1.9);
+}

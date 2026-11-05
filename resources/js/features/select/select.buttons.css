@@ -1,0 +1,64 @@
+/* =========================
+   BUTTON OPEN PRODUCT OF A SHOP
+   ========================= */
+
+.btn-open-shop-product {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-column: 2;
+    grid-row: 1 / span 2; /*begin 1.row , eat 2 rows*/
+
+    white-space: pre-line; /* make newline when \n in text */
+
+    grid-template-areas: "icon-in-btn text-in-btn";
+
+    color: black;
+
+    padding: 0;
+    margin: 0;
+
+    background-color: var(--color-btn-openshopprod-bg-desktop);
+    background-image: var(--image-btn-openshopprod-bg-desktop);
+}
+
+.btn-select-products {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1/1;
+
+    /* ปุ่มตะกร้า (ลูกคนแรก อยู่ซ้ายสุดตามปกติ) */
+    flex-shrink: 0;
+
+    direction: ltr; /* icon and word beginn left */
+    background-color: var(--color-sidebar-item-bg);
+    background-image: var(--image-sidebar-item-bg);
+}
+
+.sp-total-amount {
+    position: absolute;
+
+    top: -6px;
+    right: -6px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    min-width: 22px;
+    height: 22px;
+
+    padding: 0 6px;
+
+    border-radius: 999px;
+
+    background: red;
+    color: white;
+
+    font-size: 12px;
+    font-weight: bold;
+
+    line-height: 1;
+
+    pointer-events: none;
+}

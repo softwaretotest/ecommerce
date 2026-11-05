@@ -1,0 +1,75 @@
+/* =========================
+   BADGE + ANIMATION (UI FEEDBACK)
+   ========================= */
+
+/* "New" badge (position depends on parent relative) */
+.badge-new {
+    border-radius: 6px;
+    font-weight: bold;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background-color: red;
+    color: white;
+    padding: 2px 6px;
+    font-size: 15px;
+    animation: blink 1s infinite;
+    z-index: var(--z-badge-new);
+}
+
+/* Highlight effect (combined animations) */
+.highlight {
+    position: relative;
+    overflow: hidden;
+    animation:
+        glowPulse 1s ease-in-out infinite alternate,
+        zoomIn 0.4s ease;
+}
+
+/* highlight inner border */
+.highlight::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border: 5px solid transparent;
+    animation: edgeBlink 1s ease-in-out 10;
+}
+
+/* Animation definitions */
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+@keyframes glowPulse {
+    from {
+        box-shadow: 0 0 5px rgba(0, 255, 0, 0.4);
+    }
+    to {
+        box-shadow: 0 0 20px rgba(0, 255, 0, 1);
+    }
+}
+
+@keyframes zoomIn {
+    from {
+        transform: scale(0.95);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+/* กระพริบขอบ */
+@keyframes edgeBlink {
+    0% {
+        border-color: rgba(0, 255, 0, 0);
+    }
+    50% {
+        border-color: rgba(0, 255, 0, 1);
+    }
+    100% {
+        border-color: rgba(0, 255, 0, 0);
+    }
+}

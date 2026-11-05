@@ -1,0 +1,29 @@
+/* =========================
+       OVERLAY PRIORITY
+       ========================= */
+:root {
+    --z-baseline: 0;
+    --z-badge-new: 50;
+
+    --z-setting: 150;
+    /* must set zu 0 , else backdrop of setting overlay everything */
+    /* --z-setting-backdrop: 120; */
+
+    /*this should solve backdrop problem , but not working */
+    /* --z-backdrop: 110;  */
+
+    --z-sidebar: 100;
+    --z-sidebar-backdrop: 90;
+
+    --z-modal: 200;
+    --z-btn-modal-close: 300;
+
+    --z-preview: 400;
+    --z-btn-preview-close: 500;
+
+    --z-ifm-overlay: 999999;
+}
+
+.backdrop {
+    z-index: var(--z-backdrop);
+}

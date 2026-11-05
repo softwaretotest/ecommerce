@@ -1,0 +1,116 @@
+/* ========================================================
+   [OWNER BADGE] แคปซูลระบบคลิกสะดวกรวดเร็ว (Enhanced UX)
+   ======================================================== */
+
+.card-owner {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    width: 72px; /* เพิ่มความกว้างตั้งต้นขึ้นเล็กน้อยเพื่อรองรับไอคอนที่ใหญ่ขึ้น */
+    height: 38px;
+    padding: 4px 6px;
+
+    border-radius: 999px;
+    backdrop-filter: blur(4px);
+    background: rgba(0, 0, 0, 0.45);
+    overflow: hidden;
+    flex-shrink: 0;
+    cursor: pointer; /* เคลียร์เพื่อให้รู้ว่ากดเพื่อโต้ตอบได้ทั่งกรอบ */
+
+    transition:
+        width 0.25s ease-in-out,
+        background-color 0.2s ease-in-out;
+}
+
+.card-owner.sp-owner-open {
+    width: 210px; /* เพิ่มความกว้างยาวขึ้นเพื่อให้รองรับการกดปิดในพื้นที่ข้อความ */
+    background: rgba(0, 0, 0, 0.85);
+}
+
+/* =========================
+   IMAGE OF OWNER
+   ========================= */
+
+.card-owner-img {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    transition: transform 0.1s ease;
+}
+
+.card-owner-img:active {
+    transform: scale(0.9);
+}
+
+/* ========================================================
+   🎯 ปรับขนาดปุ่มเปิดให้ใหญ่และกดง่ายขึ้นแบบสัมผัสมือ
+   ======================================================== */
+.card-owner-toggle-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+
+    /* ขยายฟอนต์เพิ่มขึ้น และเคลียร์พื้นที่ให้ปุ่มกดติดนิ้วง่าย */
+    font-size: 15px;
+    padding: 0 4px;
+    width: 24px;
+    height: 28px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    opacity: 0.85;
+    transition:
+        opacity 0.2s,
+        transform 0.1s;
+}
+
+.card-owner-toggle-btn:active {
+    transform: scale(0.85);
+}
+
+/* ========================================================
+   [TEXT CONTROL] ข้อความแสดงผลในลิ้นชัก
+   ======================================================== */
+.card-owner-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 100px;
+    flex: 1;
+
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease-in-out;
+}
+
+.card-owner.sp-owner-open .card-owner-info {
+    opacity: 1;
+    pointer-events: auto; /* ยอมให้สัมผัสโดนตัวหนังสือเพื่อกระตุ้นฟังก์ชันคลิกปิด */
+    transition-delay: 0.08s;
+}
+
+.card-owner-shop {
+    margin: 0;
+    color: #fff;
+    font-weight: bold;
+    font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-owner-name {
+    margin: 0;
+    color: #ccc;
+    font-size: 9px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

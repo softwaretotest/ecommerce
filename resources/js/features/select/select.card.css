@@ -1,0 +1,126 @@
+.btn-plus,
+.btn-minus {
+    aspect-ratio: 1/1;
+    font-size: large;
+    align-content: center;
+    text-align: center;
+    background-color: var(--color-btn-gold-bg);
+    background-image: var(--image-btn-gold-bg);
+}
+
+.sp-card-container {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+        "sp-card-header"
+        "sp-card-body";
+
+    gap: 4px;
+
+    padding: 0;
+
+    /*background-image*/
+    background-color: var(--color-card-edit-bg);
+    background-image: var(--image-card-bg);
+
+    min-width: 0;
+    width: 100%;
+}
+
+.sp-card-body {
+    display: grid;
+    grid-template-columns: 100px minmax(0, 1fr);
+    grid-template-rows: 1fr auto;
+
+    grid-template-areas:
+        "sp-img-card sp-card-description"
+        "sp-img-card sp-card-action";
+
+    gap: 4px;
+
+    align-items: stretch;
+}
+
+.sp-card-body > * {
+    min-width: 0;
+}
+
+.sp-img-card {
+    grid-area: sp-img-card;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    min-width: 100px;
+
+    object-fit: cover;
+    display: block;
+
+    align-items: stretch;
+}
+
+.sp-card-header {
+    grid-area: sp-card-header;
+    max-height: 100%;
+
+    display: flex;
+    justify-content: space-between; /*left-child ------space------right-child */
+    width: 100%;
+    margin: 0;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    font-size: x-large;
+    font-weight: bold;
+    align-items: center;
+}
+
+.sp-card-action {
+    display: flex;
+    width: 100%;
+    gap: 4px;
+}
+
+.sp-input-amount {
+    flex: 1;
+    width: 100%;
+
+    text-align: center;
+
+    padding: 0;
+    margin: 0;
+    min-width: var(--fontsizer-min-width);
+    max-width: var(--fontsizer-max-width);
+}
+
+.icon-in-btn {
+    grid-area: icon-in-btn;
+    align-content: center;
+    font-size: 45px;
+    padding: 0;
+    margin: 0;
+}
+.text-in-btn {
+    grid-area: text-in-btn;
+    align-content: center;
+    font-size: 15px;
+    padding: 0;
+    margin: 0;
+}
+
+@media (orientation: landscape) {
+    .label {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .icon-in-btn {
+        font-size: 65px;
+    }
+
+    .text-in-btn {
+        font-size: 23px;
+    }
+}

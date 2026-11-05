@@ -1,0 +1,146 @@
+/* ========================================================
+   [MOBILE-FIRST] สไตล์ควบคุม Flexbox แถวตรง (ใช้แท็กเดิมของคุณ 100%)
+   ======================================================== */
+
+.sp-shell,
+.sp-page-area {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* 1. ตัวครอบนอกสุด (ต้องจำกัดความสูงไว้ และตั้งเป็น flex แนวตั้ง) */
+.sp-shell {
+    height: 100%; /* หรือใช้ความสูงที่ต้องการ เช่น 100vh หรือจำกัดตามขนาด modal */
+    max-height: 100vh; /* มั่นใจว่าตัวนอกสุดจะไม่ขยายยาวทะลุหน้าจอ */
+    overflow: hidden; /* บล็อกไม่ให้ตัวแม่เกิด scroll */
+}
+
+.sp-header {
+    display: flex;
+    justify-content: space-between; /* แยกฝั่งซ้ายปุ่มชื่อร้าน และฝั่งขวากล่องซ้อนออกจากกัน */
+    align-items: center; /* จัดของแถวหลักให้อยู่กึ่งกลางแนวตั้งเสมอกัน */
+    padding: 0;
+    min-width: 0;
+    position: relative;
+    box-sizing: border-box;
+    gap: 4px;
+    /* ถอดความสูงล็อกคงที่ออก เพื่อให้บอร์ดขยายตัวรับแนวตั้งได้เวลามีป้ายห้อยลงมา */
+    min-height: var(--sidebar-showSidebar);
+    height: auto;
+
+    background-color: var(--color-header-bg);
+    background-image: var(--image-header-bg);
+}
+
+.sp-page-area {
+    flex: 1; /* กินพื้นที่ที่เหลือทั้งหมดด้านล่าง */
+    overflow-y: auto; /* 💡 สำคัญ: ย้าย scroll containment มาไว้ที่นี่ เหมือน .page-area ของแอปหลัก */
+    min-height: 0; /* ป้องกัน layout พังใน flexbox */
+}
+
+.sp-header-shop-name {
+    font-size: x-large;
+    font-weight: bold;
+    width: 100%;
+    height: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+    flex-shrink: 1; /* ยอมให้หดตัวได้ถ้าจอมือถือแคบมาก */
+    margin-right: auto; /* 💡 พลังมหัศจรรย์: ผลักให้กล่องกลุ่มฝั่งขวาซ้อนทับดีดไปชิดขวาสุดอัตโนมัติ */
+}
+
+/* 🎯 3. กล่องแม่ฝั่งขวาตัวใหม่ที่คุณสร้างขึ้นเพื่อครอบตัวนับ ป้ายแดง และปุ่มปิด */
+.prod-count-total-price {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* ✅ บังคับให้ของทุกชิ้นในกล่องนี้ ตั้งแถวขอบขวาตรงแนบสนิทเสมอกัน */
+    gap: 4px;
+    min-width: 0;
+    flex-shrink: 0;
+    padding-right: 2px;
+    font-size: 8px;
+}
+
+.sp-count {
+    font-size: 15px;
+    padding: 2;
+    background-color: var(--color-sidebar-item-bg);
+    background-image: var(--image-sidebar-item-bg);
+    white-space: nowrap;
+    flex-shrink: 0;
+
+    margin: 0;
+}
+
+.sp-total-amount-product {
+    display: flex;
+    font-size: 14px;
+    padding: 2px;
+    background-color: darkgreen;
+    color: white;
+    border-radius: 6px;
+    font-weight: bold;
+}
+
+/* ========================================================
+   [SELECT PRODUCT] SP-PAGE-AREA + SCROLL BAR
+   ======================================================== */
+
+/* พื้นที่แสดงสินค้าด้านล่าง (ตัวจำกัดพื้นที่ Scroll ย้ายมาจาก .page-area) */
+.sp-page-area {
+    display: flex;
+    flex-direction: column;
+
+    /* ส่งผลต่อการควบคุม Scrollbar ภายในโมดูล SP */
+    overflow-y: auto;
+    min-height: 0;
+
+    scrollbar-width: thick; /* รองรับ Firefox */
+}
+
+/* ความกว้างของแถบ Scrollbar ในสไตล์แอปหลัก */
+.sp-page-area::-webkit-scrollbar {
+    width: 20px;
+}
+
+/* พื้นหลังทางเดินของแถบเลื่อน (Track) */
+.sp-page-area::-webkit-scrollbar-track {
+    background: var(--color-scrollbar-track);
+}
+
+/* ตัวจับดึงแถบเลื่อน (Thumb) ใส่รายละเอียด มิติ และกรอบเงินตามธีม */
+.sp-page-area::-webkit-scrollbar-thumb {
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    border-top: var(--border-silver-top);
+    border-left: var(--border-silver-left);
+    border-right: var(--border-silver-right);
+    border-bottom: var(--border-silver-bottom);
+    border-radius: var(--radius-theme);
+
+    background-color: var(--color-scrollbar-thumb-bg);
+    background-image: var(--image-scrollbar-thumb-bg);
+}
+
+/* เอฟเฟกต์เมื่อผู้ใช้เอาเมาส์ไปชี้ที่แถบเลื่อน (Hover) */
+.sp-page-area::-webkit-scrollbar-thumb:hover {
+    filter: var(--filter-scrollbar-thumb-hover);
+
+    background-color: var(--color-scrollbar-thumb-hover);
+    box-shadow: var(--shadow-scrollbar-thumb-hover);
+}
+
+@media (orientation: landscape) {
+    .sp-header-shop-name {
+        font-size: x-large;
+    }
+
+    .sp-count {
+        font-size: 20px;
+    }
+}

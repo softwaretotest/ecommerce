@@ -1,0 +1,51 @@
+/* THIS IS GLOBLE CSS INJECTOR
+   WILL BE CALLED ONLY ONCE ON APP START
+*/
+
+.bg-full {
+    /* BACKGROUND IMAGE STRECH FULL */
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.surface-3d {
+    /* 3D BORDER */
+    border-top: var(--border-light-top);
+    border-left: var(--border-light-left);
+    border-right: var(--border-dark-right);
+    border-bottom: var(--border-dark-bottom);
+    border-radius: var(--radius-theme);
+}
+
+.surface-3d-card {
+    /* 3D BORDER for silver surface = more shadow*/
+    border-top: var(--border-silver-top);
+    border-left: var(--border-silver-left);
+    border-right: var(--border-silver-right);
+    border-bottom: var(--border-silver-bottom);
+    border-radius: var(--radius-theme);
+}
+
+/* BUTTON STYLES */
+.btn-3d {
+    /* === CORE INTERACTION (PRESS FEEL) === */
+    transition: 0.2s ease;
+    cursor: pointer;
+
+    /* pressed / transient feel */
+    transform: scale(1);
+}
+
+/* ACTIVE */
+.btn-3d:active {
+    transform: scale(0.85);
+    filter: invert(1);
+}
+
+/* HOVER (desktop only) */
+@media (hover: hover) and (pointer: fine) {
+    .btn-3d:hover {
+        filter: invert(1);
+    }
+}
