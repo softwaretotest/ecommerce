@@ -3,7 +3,8 @@ import "./ButtonSetting.css";
 import { L } from "@/i18n";
 import { assignBackdrop } from "@/utils/backdrop";
 import RecordProfile from "@/features/record/record.profile";
-import { deleteUserProfile } from "@/services/service.user";
+// import { deleteUserProfile } from "@/services/service.user"; // old
+import { deleteUserProfile } from "@/features/user/user.service";
 import { useAuth } from "@/services/service.auth";
 
 export default function ButtonSetting({ setTheme }) {

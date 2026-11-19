@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 
-// 📄 เพิ่ม useEffect ตัวนี้เข้าไปใน record.page.jsx
-import { collection, getDocs } from "firebase/firestore"; // ➕ ตรวจสอบให้มีคำสั่ง Import นี้ด้านบน
-import { db } from "@/config/config.firebase";
+import { createRecordService } from "@/services/service.record";
 
 import RecordForm from "@/features/record/record.form";
 import RecordList from "@/features/record/record.list";
@@ -23,6 +21,8 @@ import { KEY } from "./record.config";
 import { L } from "@/i18n";
 
 import { useAuth } from "@/services/service.auth";
+
+const selectProductService = createRecordService("select_products");
 
 function RecordPage({
     setHeaderConfig,
@@ -72,24 +72,36 @@ function RecordPage({
               )
             : controller.records;
 
-    // allUsersCarts state to show all selected product in the basket
-    const [allUsersCarts, setAllUsersCarts] = useState([]); // เก็บตะกร้าของทุก
+    const [allUsersCarts, setAllUsersCarts] = useState([]);
 
     useEffect(() => {
         async function fetchAllCarts() {
             if (DEV && isPage_Product) {
                 try {
-                    console.log("DEV =", DEV);
-                    console.log("isPage_Product =", isPage_Product);
-                    const querySnapshot = await getDocs(
-                        collection(db, "select_products"),
-                    );
+                    const records = await selectProductService.getRecords();
                     const temporaryCarts = [];
 
-                    querySnapshot.forEach((doc) => {
-                        const userCart = doc.data().select_product || [];
-                        temporaryCarts.push(...userCart); // นำมารวมกันเป็นอาร์เรย์ก้อนเดียวยาวๆ
-                    });
+                    if (Array.isArray(records)) {
+                        for (const item of records) {
+                            const rawCart = item?.select_product;
+                            let userCart = [];
+
+                            if (Array.isArray(rawCart)) {
+                                userCart = rawCart;
+                            } else if (typeof rawCart === "string") {
+                                try {
+                                    const parsed = JSON.parse(rawCart);
+                                    if (Array.isArray(parsed)) {
+                                        userCart = parsed;
+                                    }
+                                } catch {
+                                    userCart = [];
+                                }
+                            }
+
+                            temporaryCarts.push(...userCart);
+                        }
+                    }
 
                     setAllUsersCarts(temporaryCarts);
                 } catch (error) {
@@ -157,11 +169,11 @@ function RecordPage({
                 setActive_ShopId={setActive_ShopId}
                 active_Order={active_Order}
                 setActive_Order={setActive_Order}
-                allUsersCarts={allUsersCarts} // ➕ ส่งตะกร้าของทุกคนลงไป
+                allUsersCarts={allUsersCarts}
                 setShowSelectProduct={setShowSelectProduct}
             />
 
-            {showSelectProduct && ( // ชื่อวาริเอเบิ้ลตาม convention ของคุณ
+            {showSelectProduct && (
                 <Modal onClose={() => setShowSelectProduct(false)}>
                     <Selected onClose={() => setShowSelectProduct(false)} />
                 </Modal>

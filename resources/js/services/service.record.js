@@ -1,7 +1,7 @@
 // ตัวอย่าง Axios Service ฝั่ง React ที่จะเอามาแทนที่ service.firestore.js เดิม
 import axios from "axios";
 
-export const createFirestoreService = (tableName) => {
+export const createRecordService = (tableName) => {
     return {
         getRecords: async () => {
             const res = await axios.get(`/api/records/${tableName}`);

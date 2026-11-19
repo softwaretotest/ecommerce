@@ -24,23 +24,6 @@ export const USER_FIELDS = [
         ],
     },
 
-    /**
-     * we don't use this but we keep it for test inputSelect() in form.fields
-     */
-    // {
-    //     key: KEY.APP_RIGHT,
-    //     label: L.app_right,
-    //     type: TYPE.SELECT,
-    //     required: true,
-
-    //     options: [
-    //         { value: OPTION.HOME, label: L.home },
-    //         { value: OPTION.ADMIN, label: L.admin },
-    //         { value: OPTION.DEV, label: L.dev },
-    //     ],
-    //     defaultValue: OPTION.HOME,
-    // },
-
     {
         key: KEY.EMAIL,
         label: L.email,
@@ -58,4 +41,21 @@ export const USER_FIELDS = [
         key: KEY.IMAGE,
         type: TYPE.IMAGE,
     },
+
+    /**
+     * we don't use this but we keep it for test inputSelect() in form.fields
+     */
+    // {
+    //     key: KEY.APP_RIGHT,
+    //     label: L.app_right,
+    //     type: TYPE.SELECT,
+    //     required: true,
+
+    //     options: [
+    //         { value: OPTION.HOME, label: L.home },
+    //         { value: OPTION.ADMIN, label: L.admin },
+    //         { value: OPTION.DEV, label: L.dev },
+    //     ],
+    //     defaultValue: OPTION.HOME,
+    // },
 ];

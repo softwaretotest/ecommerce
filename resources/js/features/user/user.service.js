@@ -1,39 +1,32 @@
-import { doc, getDoc, setDoc } from "firebase/firestore";
-
-import { db } from "@/config/config.firebase";
-
+import { createRecordService } from "@/services/service.record";
 import { KEY } from "@/features/record/record.config";
-
 import { userController } from "@/stores/store.global";
+
+const userService = createRecordService("users");
 
 export const getUserProfile = async (uid) => {
     if (!uid) return null;
 
-    const ref = doc(db, "users", uid);
-    const snap = await getDoc(ref);
+    const users = await userService.getRecords();
+    if (!Array.isArray(users)) return null;
 
-    if (!snap.exists()) return null;
-
-    return {
-        id: snap.id,
-        ...snap.data(),
-    };
+    return (
+        users.find(
+            (u) =>
+                String(u.uid) === String(uid) || String(u.id) === String(uid),
+        ) || null
+    );
 };
 
-/**
- * all shops from global store
- */
 export const getAllUsers = () => {
     return userController.getRecords();
 };
 
-/**
- * find shop by shop id
- */
 export const getUserById = (userId) => {
     const users = getAllUsers();
+    if (!Array.isArray(users)) return undefined;
 
-    return users.find((user) => user.id === userId);
+    return users.find((user) => String(user.id) === String(userId));
 };
 
 export const syncUser = async (user) => {
@@ -42,31 +35,26 @@ export const syncUser = async (user) => {
             return;
         }
 
-        const userRef = doc(db, "users", user.uid);
-
         const payload = {
             uid: user.uid,
-
             [KEY.NAME]: user.displayName || "",
-
             [KEY.EMAIL]: user.email || "",
-
             [KEY.PHONE]: user.phoneNumber || "",
-
             [KEY.IMAGE]: user.photoURL || "",
-
             [KEY.IS_ACTIVE]: true,
-
-            created_at: Date.now(),
-
-            updatedAt: Date.now(),
         };
 
-        await setDoc(userRef, payload);
+        const existing = await getUserProfile(user.uid);
 
-        console.log("🔥 USER CREATED");
+        if (existing?.id) {
+            await userService.updateRecord(existing.id, payload);
+        } else {
+            await userService.addRecord(payload);
+        }
+
+        console.log("USER SYNCED");
     } catch (error) {
-        console.error("🚨 SYNC USER ERROR");
+        console.error("SYNC USER ERROR");
         console.error(error);
         console.error(error.code);
         console.error(error.message);
@@ -74,13 +62,28 @@ export const syncUser = async (user) => {
 };
 
 export const loadCurrentUserDocument = async (uid) => {
-    const ref = doc(db, "users", uid);
-    const snap = await getDoc(ref);
+    if (!uid) return null;
 
-    if (!snap.exists()) return null;
+    const profile = await getUserProfile(uid);
+    if (!profile) return null;
 
     return {
-        uid,
-        ...snap.data(),
+        uid: profile.uid || uid,
+        ...profile,
     };
+};
+
+export const deleteUserProfile = async (uid) => {
+    if (!uid) return;
+
+    const confirmDelete = window.confirm(L.warn_deleting);
+    if (!confirmDelete) return;
+
+    const target = await getUserProfile(uid);
+    if (target?.id) {
+        await userService.deleteRecord(target.id);
+    }
+
+    await signOut(auth);
+    window.location.href = "/";
 };

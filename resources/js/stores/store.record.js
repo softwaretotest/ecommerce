@@ -1,9 +1,9 @@
 import { create } from "zustand";
 
-import { createFirestoreService } from "@/services/service.firestore";
+import { createRecordService } from "@/services/service.record";
 
 const createRecordStore = (tablename) => {
-    const service = createFirestoreService(tablename);
+    const service = createRecordService(tablename);
 
     const { getRecords, addRecord, updateRecord, deleteRecord } = service;
 
@@ -11,8 +11,8 @@ const createRecordStore = (tablename) => {
         records: [],
 
         loadingId: null,
-        isRecordLoading: false, //waiting until loading finish
-        recordError: null, // error e.g. no connection to db
+        isRecordLoading: false,
+        recordError: null,
 
         /**
          * check if records already fetched,
@@ -32,10 +32,16 @@ const createRecordStore = (tablename) => {
             try {
                 const list = await getRecords();
 
-                list.sort((a, b) => b.created_at - a.created_at);
+                const sortedList = Array.isArray(list)
+                    ? [...list].sort((a, b) => {
+                          const timeA = Number(a?.created_at ?? 0);
+                          const timeB = Number(b?.created_at ?? 0);
+                          return timeB - timeA;
+                      })
+                    : [];
 
                 set({
-                    records: list,
+                    records: sortedList,
                     hasFetched: true,
                 });
             } catch (error) {
@@ -55,21 +61,30 @@ const createRecordStore = (tablename) => {
                 created_at: Date.now(),
             };
 
-            const id = await addRecord(newItem);
+            const created = await addRecord(newItem);
+            const id = created?.id ?? created?.data?.id ?? created;
+            const recordData =
+                created && typeof created === "object" && !Array.isArray(created)
+                    ? { ...newItem, ...created, id }
+                    : { id, ...newItem };
 
             set((state) => ({
-                records: [{ id, ...newItem }, ...state.records],
+                records: [recordData, ...state.records],
             }));
 
             return id;
         },
 
         update: async (id, data) => {
-            await updateRecord(id, data);
+            const updated = await updateRecord(id, data);
+            const patch =
+                updated && typeof updated === "object" && !Array.isArray(updated)
+                    ? { ...data, ...updated }
+                    : data;
 
             set((state) => ({
                 records: state.records.map((p) =>
-                    p.id === id ? { ...p, ...data } : p,
+                    p.id === id ? { ...p, ...patch } : p,
                 ),
             }));
         },
@@ -77,12 +92,15 @@ const createRecordStore = (tablename) => {
         remove: async (id) => {
             set({ loadingId: id });
 
-            await deleteRecord(id);
+            try {
+                await deleteRecord(id);
 
-            set((state) => ({
-                records: state.records.filter((p) => p.id !== id),
-                loadingId: null,
-            }));
+                set((state) => ({
+                    records: state.records.filter((p) => p.id !== id),
+                }));
+            } finally {
+                set({ loadingId: null });
+            }
         },
     }));
 };

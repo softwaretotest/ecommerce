@@ -9,6 +9,8 @@ import {
 
 import { syncUser } from "./google.user";
 import { auth } from "@/config/config.firebase";
+import { loadSpList } from "@/features/select/select.service";
+import storeSpList from "@/features/select/select.store";
 
 const provider = new GoogleAuthProvider();
 
@@ -33,9 +35,6 @@ export const logout = () => signOut(auth);
  * e.g. if App need to break some how
  * , no use for now
  */
-import { loadSpList } from "@/features/select/select.service";
-import storeSpList from "@/features/select/select.store";
-
 export function startAuthListener({ setUser }) {
     return onAuthStateChanged(auth, async (firebaseUser) => {
         setUser(firebaseUser);
