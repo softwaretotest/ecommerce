@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\RecordService;
+use Illuminate\Support\Facades\Log;
 
 class RecordController extends Controller
 {
@@ -14,27 +15,54 @@ class RecordController extends Controller
         $this->recordService = $recordService;
     }
 
-    // ดึงข้อมูลทั้งหมดของ Entity นั้นๆ (เช่น /api/records/users หรือ /api/records/products)
+    /**
+     * ```text
+     * get all data from each Entity 
+     * (e.g. /api/records/users or /api/records/products)
+     */
+    // public function index(string $entity)
+    // {
+    //     return response()->json($this->recordService->getAll($entity));
+    // }
     public function index(string $entity)
     {
-        return response()->json($this->recordService->getAll($entity));
+        Log::info('RecordController@index called', ['entity' => $entity]);
+
+        try {
+            $data = $this->recordService->getAll($entity);
+            return response()->json($data);
+        } catch (\Throwable $e) {
+            Log::error('RecordController@index failed', [
+                'entity' => $entity,
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
+            throw $e;
+        }
     }
 
-    // สร้างข้อมูลใหม่
+    /**
+     * create new store
+     */
     public function store(Request $request, string $entity)
     {
         $id = $this->recordService->create($entity, $request->all());
         return response()->json(['id' => $id, 'success' => true]);
     }
 
-    // อัปเดตข้อมูล
+    /**
+     * update data
+     */
     public function update(Request $request, string $entity, $id)
     {
         $success = $this->recordService->update($entity, $id, $request->all());
         return response()->json(['success' => $success]);
     }
 
-    // ลบข้อมูล
+    /**
+     * delete data
+     */
     public function destroy(string $entity, $id)
     {
         $success = $this->recordService->delete($entity, $id);
