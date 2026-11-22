@@ -59,3 +59,17 @@ export const orderController = {
  * optional exports (stores)
  */
 export { storeUser, storeProduct, storeShop, storeOrder, storeSpList };
+
+export const use_Ecom_Store = create((set) => ({
+    debug_user: true,
+
+    user: {},
+    setUser: (user) =>
+        set((state) => {
+            if (state.debug || state.debug_user) {
+                console.log(`[M_STORE_DEBUG] user : ${user}`);
+                console.log("------------------------------------");
+            }
+            return { user: user };
+        }),
+}));

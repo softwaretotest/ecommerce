@@ -5,6 +5,10 @@
             "f::IS_ACTIVE",
             "f::IMAGE"
         ],
+        "OAUTH": [
+            "f::USER_ID",
+            "f::ACCOUNT_TYPE"
+        ],
         "SHOPS": [
             "f::NAME",
             "f::IMAGE",

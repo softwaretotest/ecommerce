@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import svgCode from "../../../public/favicon.svg?raw";
 import "./Dashboard.css";
+import { L } from "@/i18n";
 
 const SHAPES = "path, circle, rect, ellipse, line, polygon, polyline";
 
@@ -54,18 +55,18 @@ export default function Dashboard() {
         const doc = new DOMParser().parseFromString(raw, "image/svg+xml");
         const svg = doc.documentElement;
 
-        // ถ้าไม่มี viewBox ให้สร้างจาก width/height (เช่น 24 x 24 → "0 0 24 24")
+        // if on viewBox , then make svg from width/height (e.g. 24 x 24 → "0 0 24 24")
         const w = parseFloat(svg.getAttribute("width")) || 24;
         const h = parseFloat(svg.getAttribute("height")) || 24;
         if (!svg.hasAttribute("viewBox")) {
             svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
         }
 
-        // ลบขนาดตายตัวออก ให้ CSS เป็นคนคุมขนาด
+        // delete fix size and let CSS manage size of svg
         svg.removeAttribute("width");
         svg.removeAttribute("height");
 
-        // ถ้าไม่มี fill ให้ใส่ fill="none"
+        // if no fill , then fill="none"
         if (!svg.hasAttribute("fill")) {
             svg.setAttribute("fill", "none");
         }
@@ -89,8 +90,12 @@ export default function Dashboard() {
                     <p>
                         คลิกชิ้น: <b>{selected}</b>
                     </p>
-                    {data && <p>ยอดขาย: {data.sales}</p>}
-                    <button onClick={() => setSelected(null)}>ปิด</button>
+                    {data && (
+                        <p>
+                            {L.sale_volumne}: {data.sales}
+                        </p>
+                    )}
+                    <button onClick={() => setSelected(null)}>{L.close}</button>
                 </div>
             )}
         </div>

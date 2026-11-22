@@ -32,7 +32,7 @@ function RecordList(props) {
         return (
             <div className="card-container">
                 <h1 className="text-bg">{L.no_db_connection}</h1>
-                <h2 className="text-bg">{controller.recordError}</h2>
+                {/* <h2 className="text-bg">{controller.recordError}</h2> */}
             </div>
         );
     }

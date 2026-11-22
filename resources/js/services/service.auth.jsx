@@ -41,7 +41,18 @@ export const logout = async () => {
 };
 
 /**
+ * ```text
  * MAIN AUTH HOOK
+ * x
+ * This useEffect hook subscribes to authentication state changes
+ * when the component mounts and cleans up the subscription when it unmounts:
+ * 1. On mount ([] dependencies): Calls startAuthListener
+ * and passes a setUser callback so auth state updates (u) update local user state.
+ * It stores the returned cleanup function in unsubscribe.
+ * x
+ * 2. On unmount: Returns a cleanup function
+ * that safely invokes unsubscribe?.() to detach the listener
+ * and prevent stale updates or memory leaks.
  */
 export function useAuth() {
     const [user, setUser] = useState(null);

@@ -4,18 +4,57 @@ import { userController } from "@/stores/store.global";
 
 const userService = createRecordService("users");
 
+// export const getUserProfile = async (uid) => {
+//     if (!uid) return null;
+
+//     const users = await userService.getRecords();
+//     if (!Array.isArray(users)) return null;
+
+//     return (
+//         users.find(
+//             (u) =>
+//                 String(u.uid) === String(uid) || String(u.id) === String(uid),
+//         ) || null
+//     );
+// };
+
 export const getUserProfile = async (uid) => {
-    if (!uid) return null;
+    console.log("[getUserProfile] target uid:", uid, typeof uid);
+
+    if (!uid) {
+        console.log("[getUserProfile] missing uid -> return null");
+        return null;
+    }
 
     const users = await userService.getRecords();
-    if (!Array.isArray(users)) return null;
-
-    return (
-        users.find(
-            (u) =>
-                String(u.uid) === String(uid) || String(u.id) === String(uid),
-        ) || null
+    console.log(
+        "[getUserProfile] users count:",
+        Array.isArray(users) ? users.length : users,
     );
+
+    if (!Array.isArray(users)) {
+        return null;
+    }
+
+    const matchedUser = users.find((u, index) => {
+        const recordUid = u?.uid ?? null;
+        const recordId = u?.id ?? null;
+        const isUidMatch =
+            recordUid !== null && String(recordUid) === String(uid);
+        const isIdMatch = recordId !== null && String(recordId) === String(uid);
+
+        console.log(`[getUserProfile] [${index}]`, {
+            recordId,
+            recordUid,
+            isUidMatch,
+            isIdMatch,
+        });
+
+        return isUidMatch || isIdMatch;
+    });
+
+    console.log("[getUserProfile] matchedUser:", matchedUser ?? null);
+    return matchedUser ?? null;
 };
 
 export const getAllUsers = () => {

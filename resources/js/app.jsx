@@ -1,6 +1,5 @@
 import { useState } from "react";
 
-import { useDev } from "@/components/DevProvider";
 import useAppBootstrap from "@/hooks/useAppBootstrap";
 
 import Header from "@/components/Header";
@@ -14,8 +13,9 @@ import LoginPageGoogle from "@/flows/login/google/LoginPageGoogle";
 import Sidebar from "@/components/Sidebar";
 import ButtonSetting from "@/components/ButtonSetting";
 
+import { use_Ecom_Store } from "@/stores/store.global";
+
 export default function App() {
-    const { DEV } = useDev();
     const [page, setPage] = useState("customers");
     const [showSidebar, setShowSidebar] = useState(true);
     const [headerConfig, setHeaderConfig] = useState({
@@ -51,6 +51,36 @@ export default function App() {
                 return <SelectPage setHeaderConfig={setHeaderConfig} />;
         }
     };
+
+    // const [user, setUser] = useState(null);
+    const user = use_Ecom_Store((state) => state.user);
+    const set_User = use_Ecom_Store.getState().set_User;
+
+    /**
+     * ```text
+     * MAIN AUTH HOOK
+     * x
+     * This useEffect hook subscribes to authentication state changes
+     * when the component mounts and cleans up the subscription when it unmounts:
+     * 1. On mount ([] dependencies): Calls startAuthListener
+     * and passes a setUser callback so auth state updates (u) update local user state.
+     * It stores the returned cleanup function in unsubscribe.
+     * x
+     * 2. On unmount: Returns a cleanup function
+     * that safely invokes unsubscribe?.() to detach the listener
+     * and prevent stale updates or memory leaks.
+     */
+    useEffect(() => {
+        const unsubscribe = startAuthListener({
+            set_User: (u) => {
+                set_User(u);
+            },
+        });
+
+        return () => {
+            unsubscribe?.();
+        };
+    }, []);
 
     return (
         <div className="app-shell">

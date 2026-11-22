@@ -1,6 +1,15 @@
 {
     "_comment": "App-Data.json",
     "f": {
+        "ACCOUNT_TYPE": [
+            "account_type",
+            [
+                "d::STRING",
+                255
+            ],
+            "u::TEXT",
+            "cud::REQUIRED"
+        ],
         "IMAGE": [
             "image",
             [
@@ -112,6 +121,7 @@
         "USERS": "users",
         "SHOPS": "shops",
         "PRODUCTS": "products",
-        "ORDERS": "orders"
+        "ORDERS": "orders",
+        "OAUTH": "oauth"
     }
 }
