@@ -39,6 +39,7 @@ export default function Sidebar({
     }
 
     const user = use_Ecom_Store((state) => state.user);
+    const oauth = use_Ecom_Store((state) => state.oauth);
 
     const handleClick = (value) => {
         handleNavigate(value);
@@ -79,7 +80,7 @@ export default function Sidebar({
                 ))}
 
             {/* LOG OUT + SHOW BUTTON*/}
-            {user && (
+            {(oauth || user) && (
                 <>
                     <button
                         className="sidebar-btn-item"
@@ -107,7 +108,7 @@ export default function Sidebar({
             )}
 
             {/* LOG IN */}
-            {!user && (
+            {!(oauth || user) && (
                 <button
                     className="sidebar-btn-item"
                     onClick={async () => {

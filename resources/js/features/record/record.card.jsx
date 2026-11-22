@@ -68,7 +68,7 @@ function RecordCard({
 
         const owner = users.find((u) => u.id === ownerId);
 
-        const ownerName = owner?.[KEY.NAME] || user?.displayName || "UNKNOWN";
+        const ownerName = owner?.[KEY.NAME] || user?.name || "UNKNOWN";
 
         return (
             <p className="label" key={field.key}>
@@ -132,9 +132,9 @@ function RecordCard({
     );
 
     /**
-     * THE BIG GOLDEN BUTTON TO SHOW MODAL PRODUCT LIST
-     * @param {*} btn_name
-     * @returns
+- THE BIG GOLDEN BUTTON TO SHOW MODAL PRODUCT LIST
+- @param {*} btn_name
+- @returns
      */
     function btn_show_product(btn_name) {
         let btnClass = "btn-open-shop-product";
@@ -161,13 +161,13 @@ function RecordCard({
     }
 
     /**
-     * filter the RECORD_FIELDS
+- filter the RECORD_FIELDS
      */
     const HEADER_FIELD = RECORD_FIELDS.find((field) => field.IS_TITLE);
     const BODY_FIELDS = RECORD_FIELDS.filter((field) => !field.IS_TITLE);
     const BODY_FIELD_RENDERER = (field) => {
         /**
-         * TEXT FIELD
+- TEXT FIELD
          */
         if (
             [
@@ -182,14 +182,14 @@ function RecordCard({
         }
 
         /**
-         * NUMBER FIELD
+- NUMBER FIELD
          */
         if (field.type === TYPE.NUMBER) {
             return labelNumber(field);
         }
 
         /**
-         * CURRENCY FIELD
+- CURRENCY FIELD
          */
         if (field.type === TYPE.CURRENCY) {
             return labelCurrency(field);
@@ -220,8 +220,8 @@ function RecordCard({
     );
 
     /**
-     * in future a record can have more than 1 image,
-     * we use the 1st image to show in card
+- in future a record can have more than 1 image,
+- we use the 1st image to show in card
      */
     const IMAGE = IMAGE_FIELDS[0]?.key;
 
@@ -240,7 +240,7 @@ function RecordCard({
         OWNER = useOwnerBadge(shopName, ownerName, photo, setPreviewItem);
 
         /**
-         * calculate all product count in all user basket
+- calculate all product count in all user basket
          */
         SELECTED_COUNT = getAllUsersCarts(
             allUsersCarts,
@@ -251,7 +251,7 @@ function RecordCard({
     }
 
     /**
-     * ORDER PAGE
+- ORDER PAGE
      */
     let orderTitle = record[HEADER_FIELD?.key];
     let orderImage = record[KEY.IMAGE];

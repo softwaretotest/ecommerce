@@ -25,7 +25,7 @@ class Select_productController extends BaseController
         return $this->responseSuccess(Select_product::findOrFail($id));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id)
     {
         $request->validate(Select_productDTO::rules());
         $dto = Select_productDTO::fromArray($request->all());
@@ -34,7 +34,7 @@ class Select_productController extends BaseController
         return $this->responseSuccess($item);
     }
 
-    public function destroy($id)
+    public function destroy(int $id)
     {
         return Select_product::findOrFail($id)->delete();
     }

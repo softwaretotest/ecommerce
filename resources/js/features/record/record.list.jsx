@@ -49,6 +49,8 @@ function RecordList(props) {
     const { isPage_Shop, isPage_Product, isPage_Select, isPage_Order } =
         usePermit(PAGE_NAME, controller);
     const user = use_Ecom_Store((state) => state.user);
+    const oauth = use_Ecom_Store((state) => state.oauth);
+    const ownerId = user?.id ?? oauth?.user_id;
 
     function renderRecordCard(record) {
         return (
@@ -76,7 +78,7 @@ function RecordList(props) {
 
     if ((isPage_Shop || isPage_Product) && !DEV) {
         return controller.records
-            .filter((record) => record?.[KEY.USER_ID] === user?.uid)
+            .filter((record) => record?.[KEY.USER_ID] === ownerId)
             .map((record) => renderRecordCard(record));
     }
 
@@ -110,11 +112,11 @@ function RecordList(props) {
         );
 
         /**
-         * hide order of other shop owner
+- hide order of other shop owner
          */
         if (!DEV) {
             const shopService = createShopService();
-            const shop = shopService.getShopByUserId(user?.uid);
+            const shop = shopService.getShopByUserId(ownerId);
             return groupedByOrderNumber
                 .filter((order) => order?.shop_id === shop?.id)
                 .map((order) => renderRecordCard(order));

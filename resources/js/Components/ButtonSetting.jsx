@@ -13,10 +13,13 @@ export default function ButtonSetting({ setTheme }) {
     const [showProfile, setShowProfile] = useState(false);
     const [openKey, setOpenKey] = useState(0);
     const user = use_Ecom_Store((state) => state.user);
+    const oauth = use_Ecom_Store((state) => state.oauth);
     const ref = useRef(null);
 
+    const activeUserId = user?.id ?? oauth?.user_id;
+
     const deleteProfile = () => {
-        deleteUserProfile(user?.uid);
+        deleteUserProfile(activeUserId);
     };
 
     const handleProfile = () => {

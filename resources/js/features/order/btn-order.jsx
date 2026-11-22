@@ -5,15 +5,14 @@ import { L } from "@/i18n";
 import "./order.css";
 
 export default function ButtonOrder() {
-    const user = use_Ecom_Store((state) => state.user);
+    const oauth = use_Ecom_Store((state) => state.oauth);
 
-    // ดึงสเตตสินค้าในตะกร้าและฐานข้อมูลสินค้าหลักเพื่อนำมาแมปโครงสร้างภาพรวม
     const spItems = storeSpList((state) => state.select_product);
     const allProducts = productController.getRecords();
     const clearCart = storeSpList((state) => state.clearCart);
 
     const handleCheckout = async () => {
-        if (!user?.uid) {
+        if (!oauth?.open_auth_uid) {
             alert(L.please_login);
             return;
         }
@@ -32,7 +31,7 @@ export default function ButtonOrder() {
 
         try {
             // save to db
-            await createOrder(user.uid, selectedProducts);
+            await createOrder(oauth.open_auth_uid, selectedProducts);
 
             clearCart();
 

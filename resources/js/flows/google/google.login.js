@@ -7,7 +7,7 @@ import {
     onAuthStateChanged,
 } from "firebase/auth";
 
-import { syncUser } from "@/features/user/user.service";
+import { syncUser, syncAuthSession } from "@/features/user/user.service";
 
 import { auth } from "@/config/config.firebase";
 import { loadSpList } from "@/features/select/select.service";
@@ -38,16 +38,32 @@ export const logout = () => signOut(auth);
  * e.g. if App need to break some how
  * , no use for now
  */
-export function startAuthListener({ set_User }) {
+// export function startAuthListener({ set_user }) {
+//     return onAuthStateChanged(auth, async (firebaseUser) => {
+//         set_user(firebaseUser);
+
+//         if (!firebaseUser) return;
+
+//         await syncUser(firebaseUser, "google");
+
+//         const selectProduct = await loadSpList(firebaseUser.uid);
+
+//         storeSpList.getState().setSpList(selectProduct);
+//     });
+// }
+export function startAuthListener({ set_user, set_oauth } = {}) {
     return onAuthStateChanged(auth, async (firebaseUser) => {
-        set_User(firebaseUser);
+        if (!firebaseUser) {
+            set_user?.(null);
+            set_oauth?.(null);
+            return;
+        }
 
-        if (!firebaseUser) return;
+        const { user, oauth } = await syncAuthSession(firebaseUser, "google");
+        set_user?.(user);
+        set_oauth?.(oauth);
 
-        await syncUser(firebaseUser, "google");
-
-        const selectProduct = await loadSpList(firebaseUser.uid);
-
+        const selectProduct = await loadSpList(user?.id);
         storeSpList.getState().setSpList(selectProduct);
     });
 }

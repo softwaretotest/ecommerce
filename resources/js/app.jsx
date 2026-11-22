@@ -53,7 +53,8 @@ export default function App() {
         }
     };
 
-    const set_User = use_Ecom_Store.getState().set_User;
+    const set_user = use_Ecom_Store.getState().set_user;
+    const set_oauth = use_Ecom_Store.getState().set_oauth;
 
     /**
      * ```text
@@ -62,17 +63,34 @@ export default function App() {
      * This useEffect hook subscribes to authentication state changes
      * when the component mounts and cleans up the subscription when it unmounts:
      * 1. On mount ([] dependencies): Calls startAuthListener
-     * and passes a set_User callback so auth state updates (u) update local user state.
+     * and passes a set_user callback so auth state updates (u) update local user state.
      * It stores the returned cleanup function in unsubscribe.
      * x
      * 2. On unmount: Returns a cleanup function
      * that safely invokes unsubscribe?.() to detach the listener
      * and prevent stale updates or memory leaks.
      */
+    // useEffect(() => {
+    //     const unsubscribe = startAuthListener({
+    //         set_user: (u) => {
+    //             set_user(u);
+    //         },
+    //         set_oauth: (u) => {
+    //             set_oauth(u);
+    //         },
+    //     });
+
+    //     return () => {
+    //         unsubscribe?.();
+    //     };
+    // }, []);
     useEffect(() => {
         const unsubscribe = startAuthListener({
-            set_User: (u) => {
-                set_User(u);
+            set_user: (nextUser) => {
+                set_user(nextUser);
+            },
+            set_oauth: (nextOauth) => {
+                set_oauth(nextOauth);
             },
         });
 

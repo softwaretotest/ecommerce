@@ -27,19 +27,21 @@ function RecordForm(props) {
         addLabel,
     } = props;
     const user = use_Ecom_Store((state) => state.user);
+    const oauth = use_Ecom_Store((state) => state.oauth);
+    const ownerId = user?.id ?? oauth?.user_id;
 
     /**
-     * REFs
+- REFs
      *
-     * imageRef (new_image)
-     * - Used to track REPLACE image state inside ImageForm
-     * - Helps verify whether a new image was selected before submit
+- imageRef (new_image)
+- - Used to track REPLACE image state inside ImageForm
+- - Helps verify whether a new image was selected before submit
      */
     const imageRef = useRef(null);
 
     /**
-     * inputRef (AUTO FOCUS)
-     * - attached to the "name" in FormField
+- inputRef (AUTO FOCUS)
+- - attached to the "name" in FormField
      */
     const inputRef = useRef(null);
 
@@ -56,7 +58,7 @@ function RecordForm(props) {
         if (isPage_Product) {
             const shopService = createShopService();
 
-            shop = shopService.getMyShop(user?.uid);
+            shop = shopService.getMyShop(ownerId);
         }
 
         const image = imageRef.current?.getResolvedImage?.();
@@ -66,7 +68,7 @@ function RecordForm(props) {
 
             image,
 
-            [KEY.USER_ID]: user?.uid,
+            [KEY.USER_ID]: ownerId,
 
             ...(isPage_Product && {
                 [KEY.SHOP_ID]: shop?.id,

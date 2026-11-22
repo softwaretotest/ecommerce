@@ -1,7 +1,6 @@
 import { PAGE } from "@/config/config.app";
 import { KEY } from "@/features/record/record.config";
 import useController from "@/features/record/record.controller";
-import { productController } from "@/stores/store.global";
 
 import {
     storeShop,
@@ -9,13 +8,14 @@ import {
     storeUser,
     storeOrder,
     use_Ecom_Store,
+    productController,
 } from "@/stores/store.global";
 
 /**
- * usePermit make UI rules for all pages in this App
- * @param {*} PAGE_NAME
- * @param {*} controller
- * @returns
+- usePermit make UI rules for all pages in this App
+- @param {*} PAGE_NAME
+- @param {*} controller
+- @returns
  */
 export const usePermit = (PAGE_NAME, controller = null) => {
     const storeMap = {
@@ -27,6 +27,8 @@ export const usePermit = (PAGE_NAME, controller = null) => {
     };
 
     const user = use_Ecom_Store((state) => state.user);
+    const oauth = use_Ecom_Store((state) => state.oauth);
+    const activeUserId = user?.id ?? oauth?.user_id;
 
     if (!controller) {
         const store = storeMap[PAGE_NAME];
@@ -41,7 +43,7 @@ export const usePermit = (PAGE_NAME, controller = null) => {
     const isPage_Order = PAGE_NAME === PAGE.ORDER;
 
     /**
-     *  SHOP
+-  SHOP
      */
     const hasShop = (() => {
         if (!isPage_Shop) return false;
@@ -50,7 +52,7 @@ export const usePermit = (PAGE_NAME, controller = null) => {
 
             const shopOwnerId = shop?.[KEY.USER_ID];
 
-            if (shopOwnerId === user?.uid) {
+            if (shopOwnerId === activeUserId) {
                 return true; // found → exit immediately
             }
         }
@@ -60,27 +62,27 @@ export const usePermit = (PAGE_NAME, controller = null) => {
     const canAdd_Shop = isPage_Shop && !hasShop;
 
     /**
-     *  PRODUCT
+-  PRODUCT
      */
-    const canAdd_Product = isPage_Product && user?.uid;
+    const canAdd_Product = isPage_Product && activeUserId;
 
     const hasProduct = (() => {
-        if (!isPage_Order || !user) return false;
+        if (!isPage_Order) return false;
 
         const products = productController?.getRecords();
         const hasSomeProduct = products.some(
-            (item) => item.user_id === user?.uid,
+            (item) => item.user_id === activeUserId,
         );
 
         return hasSomeProduct;
     })();
 
     /**
-     *  CAN ADD record , e.g. for showing add button
-     *  should be used only in List not in Card
-     *  because List makes Card
+-  CAN ADD record , e.g. for showing add button
+-  should be used only in List not in Card
+-  because List makes Card
      *
-     *  if filter isPage in Card , the result could be unpredictable
+-  if filter isPage in Card , the result could be unpredictable
      */
     const canAdd = canAdd_Shop || canAdd_Product;
 

@@ -24,23 +24,23 @@ export default function SpList({ shop_id, onClose, setShowSelectProduct }) {
         (product) => product?.[KEY.SHOP_ID] === shop_id,
     );
 
-    const user = use_Ecom_Store((state) => state.user);
+    const oauth = use_Ecom_Store((state) => state.oauth);
 
     const setSpList = storeSpList((s) => s.setSpList);
 
     /**
-     * load products from db and put them into the basket
-     * if user logged in (also DEV can see getAllUsersCarts if logged in)
+- load products from db and put them into the basket
+- if user logged in (also DEV can see getAllUsersCarts if logged in)
      */
     useEffect(() => {
         async function initCart() {
-            if (!user?.uid) return;
-            const list = await loadSpList(user?.uid);
+            if (!oauth?.open_auth_uid) return;
+            const list = await loadSpList(oauth?.open_auth_uid);
             setSpList(list);
         }
 
         initCart();
-    }, [user?.uid]);
+    }, [oauth?.open_auth_uid]);
 
     const selectProduct = storeSpList((s) => s.select_product); // ดึงสเตตสินค้าในตะกร้าปัจจุบัน
 
@@ -54,7 +54,7 @@ export default function SpList({ shop_id, onClose, setShowSelectProduct }) {
     }, 0);
 
     /**
-     * Total price of selected products in a list
+- Total price of selected products in a list
      */
     const TOTAL_AMOUNT = shopTotalAmount > 0 && (
         <span className="sp-total-amount-product">

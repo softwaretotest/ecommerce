@@ -63,14 +63,25 @@ export { storeUser, storeProduct, storeShop, storeOrder, storeSpList };
 
 export const use_Ecom_Store = create((set) => ({
     debug_user: true,
+    debug_oauth: true,
 
     user: {},
-    set_User: (user) =>
+    set_user: (user) =>
         set((state) => {
             if (state.debug || state.debug_user) {
-                console.log(`[M_STORE_DEBUG] user : ${user}`);
+                console.log(`[M_STORE_DEBUG] user : `, user);
                 console.log("------------------------------------");
             }
             return { user: user };
+        }),
+
+    oauth: {},
+    set_oauth: (oauth) =>
+        set((state) => {
+            if (state.debug || state.debug_oauth) {
+                console.log(`[M_STORE_DEBUG] oauth : `, oauth);
+                console.log("------------------------------------");
+            }
+            return { oauth: oauth };
         }),
 }));

@@ -3,10 +3,9 @@ import "@/utils/fontsizer.css";
 
 import { useState } from "react";
 
-import { L } from "@/i18n";
+import { L, formatCurrency, getCurrencyLabel } from "@/i18n";
 import { KEY } from "@/features/record/record.config";
 import { useOwnerBadge } from "@/features/record/record.owner";
-import { formatCurrency, getCurrencyLabel } from "@/i18n";
 
 import "./select.card.css";
 import { storeSpList, use_Ecom_Store } from "@/stores/store.global";
@@ -16,7 +15,7 @@ import { saveSpList } from "@/features/select/select.service";
 import { getUserById } from "@/features/user/user.service";
 
 export default function ProductCard({ product, onClick, shop }) {
-    const user = use_Ecom_Store((state) => state.user);
+    const oauth = use_Ecom_Store((state) => state.oauth);
 
     const [previewItem, setPreviewItem] = useState(null);
 
@@ -35,8 +34,11 @@ export default function ProductCard({ product, onClick, shop }) {
     const setQty = storeSpList((state) => state.setQty);
 
     const saveCart = async () => {
-        if (!user) return;
-        await saveSpList(user?.uid, storeSpList.getState().select_product);
+        if (!oauth?.open_auth_uid) return;
+        await saveSpList(
+            oauth?.open_auth_uid,
+            storeSpList.getState().select_product,
+        );
     };
 
     const handleQtyChange = async (e) => {

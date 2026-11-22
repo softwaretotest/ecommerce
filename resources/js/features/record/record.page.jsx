@@ -62,11 +62,13 @@ function RecordPage({
     );
 
     const user = use_Ecom_Store((state) => state.user);
+    const oauth = use_Ecom_Store((state) => state.oauth);
+    const ownerId = user?.id ?? oauth?.user_id;
 
     const userRecords =
         !DEV && (isPage_Shop || isPage_Product)
             ? controller.records.filter(
-                  (record) => record?.[KEY.USER_ID] === user?.uid,
+                  (record) => record?.[KEY.USER_ID] === ownerId,
               )
             : controller.records;
 

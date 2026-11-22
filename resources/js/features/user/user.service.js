@@ -131,3 +131,42 @@ export const deleteUserProfile = async (openAuthUid, accountType) => {
     await signOut(auth);
     window.location.href = "/";
 };
+
+export const syncAuthSession = async (firebaseUser, accountType = "google") => {
+    if (!firebaseUser?.uid) {
+        return { user: null, oauth: null };
+    }
+
+    const synced = await syncUser(firebaseUser, accountType);
+    if (!synced) {
+        return { user: null, oauth: null };
+    }
+
+    const profile = await getUserProfile(firebaseUser.uid, accountType);
+    const oauthRow = await findOauthByOpenAuth(firebaseUser.uid, accountType);
+
+    const userRecord = profile
+        ? Object.fromEntries(
+              Object.entries(profile).filter(
+                  ([key]) => !["open_auth_uid", "account_type"].includes(key),
+              ),
+          )
+        : {
+              id: synced.id,
+              [KEY.NAME]: synced[KEY.NAME],
+              [KEY.EMAIL]: synced[KEY.EMAIL],
+              [KEY.IMAGE]: synced[KEY.IMAGE],
+              [KEY.IS_ACTIVE]: synced[KEY.IS_ACTIVE],
+          };
+
+    const oauthRecord = oauthRow || {
+        user_id: userRecord.id ?? null,
+        account_type: accountType,
+        open_auth_uid: firebaseUser.uid,
+    };
+
+    return {
+        user: userRecord,
+        oauth: oauthRecord,
+    };
+};
