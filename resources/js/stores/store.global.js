@@ -1,3 +1,4 @@
+import { create } from "zustand";
 import createRecordStore from "@/stores/store.record";
 import { PAGE } from "@/config/config.app";
 import storeSpList from "@/features/select/select.store";
@@ -64,7 +65,7 @@ export const use_Ecom_Store = create((set) => ({
     debug_user: true,
 
     user: {},
-    setUser: (user) =>
+    set_User: (user) =>
         set((state) => {
             if (state.debug || state.debug_user) {
                 console.log(`[M_STORE_DEBUG] user : ${user}`);

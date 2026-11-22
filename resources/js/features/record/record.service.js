@@ -1,4 +1,3 @@
-// ตัวอย่าง Axios Service ฝั่ง React ที่จะเอามาแทนที่ service.firestore.js เดิม
 import axios from "axios";
 
 export const createRecordService = (tableName) => {

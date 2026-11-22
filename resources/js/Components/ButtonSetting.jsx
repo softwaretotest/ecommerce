@@ -3,15 +3,16 @@ import "./ButtonSetting.css";
 import { L } from "@/i18n";
 import { assignBackdrop } from "@/utils/backdrop";
 import RecordProfile from "@/features/record/record.profile";
-// import { deleteUserProfile } from "@/services/service.user"; // old
+
 import { deleteUserProfile } from "@/features/user/user.service";
-import { useAuth } from "@/services/service.auth";
+
+import { use_Ecom_Store } from "@/stores/store.global";
 
 export default function ButtonSetting({ setTheme }) {
     const [showSettingItem, setShowSettingItem] = useState(false);
     const [showProfile, setShowProfile] = useState(false);
     const [openKey, setOpenKey] = useState(0);
-    const user = useAuth();
+    const user = use_Ecom_Store((state) => state.user);
     const ref = useRef(null);
 
     const deleteProfile = () => {

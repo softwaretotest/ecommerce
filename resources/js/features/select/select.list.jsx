@@ -1,8 +1,10 @@
 import { useEffect } from "react";
 
-import { useAuth } from "@/services/service.auth";
-
-import { productController, shopController } from "@/stores/store.global";
+import {
+    productController,
+    shopController,
+    use_Ecom_Store,
+} from "@/stores/store.global";
 
 import { L, getCurrencyLabel, formatCurrency } from "@/i18n";
 
@@ -22,7 +24,7 @@ export default function SpList({ shop_id, onClose, setShowSelectProduct }) {
         (product) => product?.[KEY.SHOP_ID] === shop_id,
     );
 
-    const user = useAuth();
+    const user = use_Ecom_Store((state) => state.user);
 
     const setSpList = storeSpList((s) => s.setSpList);
 

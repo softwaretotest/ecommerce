@@ -9,15 +9,14 @@ import { useOwnerBadge } from "@/features/record/record.owner";
 import { formatCurrency, getCurrencyLabel } from "@/i18n";
 
 import "./select.card.css";
-import { storeSpList } from "@/stores/store.global";
+import { storeSpList, use_Ecom_Store } from "@/stores/store.global";
 import Preview from "@/components/Preview";
 
-import { useAuth } from "@/services/service.auth";
 import { saveSpList } from "@/features/select/select.service";
 import { getUserById } from "@/features/user/user.service";
 
 export default function ProductCard({ product, onClick, shop }) {
-    const user = useAuth();
+    const user = use_Ecom_Store((state) => state.user);
 
     const [previewItem, setPreviewItem] = useState(null);
 

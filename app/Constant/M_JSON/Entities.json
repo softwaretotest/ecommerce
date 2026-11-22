@@ -5,9 +5,10 @@
             "f::IS_ACTIVE",
             "f::IMAGE"
         ],
-        "OAUTH": [
+        "OAUTHS": [
             "f::USER_ID",
-            "f::ACCOUNT_TYPE"
+            "f::ACCOUNT_TYPE",
+            "f::OPEN_AUTH_UID"
         ],
         "SHOPS": [
             "f::NAME",
@@ -20,6 +21,10 @@
             "f::SHOP_ID",
             "f::PRICE",
             "f::STOCK"
+        ],
+        "SELECT_PRODUCTS": [
+            "f::PRODUCT_ID",
+            "f::QUANTITY"
         ],
         "ORDERS": [
             "f::ORDER_NR",

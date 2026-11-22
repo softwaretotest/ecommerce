@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { createRecordService } from "@/services/service.record";
+import { createRecordService } from "@/features/record/record.service";
 
 import RecordForm from "@/features/record/record.form";
 import RecordList from "@/features/record/record.list";
@@ -18,9 +18,7 @@ import { useDev } from "@/components/DevProvider";
 import { usePermit } from "@/config/config.permit";
 
 import { KEY } from "./record.config";
-import { L } from "@/i18n";
-
-import { useAuth } from "@/services/service.auth";
+import { use_Ecom_Store } from "@/stores/store.global";
 
 const selectProductService = createRecordService("select_products");
 
@@ -63,7 +61,7 @@ function RecordPage({
         controller,
     );
 
-    const user = useAuth();
+    const user = use_Ecom_Store((state) => state.user);
 
     const userRecords =
         !DEV && (isPage_Shop || isPage_Product)

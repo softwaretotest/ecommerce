@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { USER_FIELDS } from "@/features/user/user.config";
-import { TYPE, KEY } from "@/features/record/record.config";
-import { useAuth } from "@/services/service.auth";
+import { KEY } from "@/features/record/record.config";
 
 import { storeUser } from "@/stores/store.global";
 import useController from "./record.controller";
@@ -10,8 +9,8 @@ import RecordForm from "@/features/record/record.form";
 import useRecordForm from "@/features/record/record.form.hook";
 import Modal from "@/components/Modal";
 import { useDev } from "@/components/DevProvider";
-// import { createUserService } from "@/services/service.user";// old
 import { getUserProfile } from "@/features/user/user.service";
+import { use_Ecom_Store } from "@/stores/store.global";
 
 /**
  * Make POP up Edit Form for login User Profile
@@ -19,9 +18,8 @@ import { getUserProfile } from "@/features/user/user.service";
 export default function RecordProfile() {
     const { DEV } = useDev();
     const [editRecord, setEditRecord] = useState();
-    const userService = createUserService();
     const controller = useController(storeUser);
-    const user = useAuth();
+    const user = use_Ecom_Store((state) => state.user);
 
     useEffect(() => {
         const load = async () => {
@@ -29,8 +27,7 @@ export default function RecordProfile() {
                 ? controller.records.find(
                       (record) => record?.[KEY.UID] === user?.uid,
                   )
-                : await getUserProfile(user?.uid);
-            // : await userService.getMyProfile(user?.uid); //old
+                : await getUserProfile(user?.uid, "google");
 
             setEditRecord(userRecord);
         };

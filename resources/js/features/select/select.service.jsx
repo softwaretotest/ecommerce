@@ -1,4 +1,4 @@
-import { createRecordService } from "@/services/service.record";
+import { createRecordService } from "@/features/record/record.service";
 
 const selectProductService = createRecordService("select_products");
 

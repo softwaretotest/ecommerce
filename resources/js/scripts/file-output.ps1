@@ -4,7 +4,7 @@
 
 
 # --------- for React Firepase ------------------
-$folders = @("src")
+$folders = @("resources", "app", "routes")
 
 
 $outputFile = "ProjectSourceCode.txt"

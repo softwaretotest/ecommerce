@@ -1,6 +1,13 @@
 {
     "_comment": "App-Data.json",
     "f": {
+        "OPEN_AUTH_UID": [
+            "open_auth_uid",
+            [
+                "d::STRING",
+                255
+            ]
+        ],
         "ACCOUNT_TYPE": [
             "account_type",
             [
@@ -122,6 +129,7 @@
         "SHOPS": "shops",
         "PRODUCTS": "products",
         "ORDERS": "orders",
-        "OAUTH": "oauth"
+        "OAUTHS": "oauths",
+        "SELECT_PRODUCTS": "select_products"
     }
 }

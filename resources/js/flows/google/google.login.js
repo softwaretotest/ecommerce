@@ -7,14 +7,17 @@ import {
     onAuthStateChanged,
 } from "firebase/auth";
 
-import { syncUser } from "./google.user";
+import { syncUser } from "@/features/user/user.service";
+
 import { auth } from "@/config/config.firebase";
 import { loadSpList } from "@/features/select/select.service";
 import storeSpList from "@/features/select/select.store";
 
+import { L } from "@/i18n";
+
 const provider = new GoogleAuthProvider();
 
-export const loginWithGoogle = async () => {
+export const login = async () => {
     await setPersistence(auth, browserLocalPersistence);
 
     return signInWithPopup(auth, provider);
@@ -35,16 +38,35 @@ export const logout = () => signOut(auth);
  * e.g. if App need to break some how
  * , no use for now
  */
-export function startAuthListener({ setUser }) {
+export function startAuthListener({ set_User }) {
     return onAuthStateChanged(auth, async (firebaseUser) => {
-        setUser(firebaseUser);
+        set_User(firebaseUser);
 
         if (!firebaseUser) return;
 
-        await syncUser(firebaseUser);
+        await syncUser(firebaseUser, "google");
 
         const selectProduct = await loadSpList(firebaseUser.uid);
 
         storeSpList.getState().setSpList(selectProduct);
+    });
+}
+
+export function openChromeFromLine() {
+    const isLineBrowser = /Line/i.test(navigator.userAgent);
+    if (!isLineBrowser) return true;
+
+    return new Promise((resolve) => {
+        const ok = confirm(L.line_browser);
+
+        if (ok) {
+            const url =
+                "googlechrome://navigate?url=" +
+                encodeURIComponent(window.location.href);
+
+            window.location.href = url;
+        }
+
+        resolve(false);
     });
 }

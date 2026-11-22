@@ -1,4 +1,4 @@
-import { loginWithGoogle } from "@/flows/login/google/google.login";
+import { login } from "@/flows/google/google.login";
 
 import "./LoginPageGoogle.css";
 
@@ -43,7 +43,7 @@ export default function LoginPageGoogle() {
 
                 <p className="login-description">{content.description}</p>
 
-                <button className="login-google-btn" onClick={loginWithGoogle}>
+                <button className="login-google-btn" onClick={login}>
                     {content.button}
                 </button>
             </div>

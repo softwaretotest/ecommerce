@@ -1,126 +1,131 @@
-import { createRecordService } from "@/services/service.record";
+import { signOut } from "firebase/auth";
+import { auth } from "@/config/config.firebase";
+import { createRecordService } from "@/features/record/record.service";
 import { KEY } from "@/features/record/record.config";
 import { userController } from "@/stores/store.global";
 
 const userService = createRecordService("users");
+const oauthService = createRecordService("oauth");
 
-// export const getUserProfile = async (uid) => {
-//     if (!uid) return null;
+export const findOauthByOpenAuth = async (openAuthUid, accountType) => {
+    if (!openAuthUid) return null;
 
-//     const users = await userService.getRecords();
-//     if (!Array.isArray(users)) return null;
+    const oauthList = await oauthService.getRecords();
+    if (!Array.isArray(oauthList)) return null;
 
-//     return (
-//         users.find(
-//             (u) =>
-//                 String(u.uid) === String(uid) || String(u.id) === String(uid),
-//         ) || null
-//     );
-// };
-
-export const getUserProfile = async (uid) => {
-    console.log("[getUserProfile] target uid:", uid, typeof uid);
-
-    if (!uid) {
-        console.log("[getUserProfile] missing uid -> return null");
-        return null;
-    }
-
-    const users = await userService.getRecords();
-    console.log(
-        "[getUserProfile] users count:",
-        Array.isArray(users) ? users.length : users,
+    return (
+        oauthList.find(
+            (row) =>
+                String(row?.open_auth_uid ?? "") === String(openAuthUid) &&
+                String(row?.account_type ?? "google") === String(accountType),
+        ) || null
     );
-
-    if (!Array.isArray(users)) {
-        return null;
-    }
-
-    const matchedUser = users.find((u, index) => {
-        const recordUid = u?.uid ?? null;
-        const recordId = u?.id ?? null;
-        const isUidMatch =
-            recordUid !== null && String(recordUid) === String(uid);
-        const isIdMatch = recordId !== null && String(recordId) === String(uid);
-
-        console.log(`[getUserProfile] [${index}]`, {
-            recordId,
-            recordUid,
-            isUidMatch,
-            isIdMatch,
-        });
-
-        return isUidMatch || isIdMatch;
-    });
-
-    console.log("[getUserProfile] matchedUser:", matchedUser ?? null);
-    return matchedUser ?? null;
-};
-
-export const getAllUsers = () => {
-    return userController.getRecords();
 };
 
 export const getUserById = (userId) => {
-    const users = getAllUsers();
+    const users = userController.getRecords();
     if (!Array.isArray(users)) return undefined;
 
-    return users.find((user) => String(user.id) === String(userId));
+    return users.find((user) => String(user?.id) === String(userId));
 };
 
-export const syncUser = async (user) => {
-    try {
-        if (!user) {
-            return;
-        }
+export const getUserProfile = async (openAuthUid, accountType) => {
+    if (!openAuthUid) return null;
 
-        const payload = {
-            uid: user.uid,
-            [KEY.NAME]: user.displayName || "",
-            [KEY.EMAIL]: user.email || "",
-            [KEY.PHONE]: user.phoneNumber || "",
-            [KEY.IMAGE]: user.photoURL || "",
-            [KEY.IS_ACTIVE]: true,
-        };
+    const oauthRow = await findOauthByOpenAuth(openAuthUid, accountType);
+    if (!oauthRow?.user_id) return null;
 
-        const existing = await getUserProfile(user.uid);
+    const users = await userService.getRecords();
+    if (!Array.isArray(users)) return null;
 
-        if (existing?.id) {
-            await userService.updateRecord(existing.id, payload);
-        } else {
-            await userService.addRecord(payload);
-        }
+    const matchedUser =
+        users.find((u) => String(u?.id) === String(oauthRow.user_id)) || null;
 
-        console.log("USER SYNCED");
-    } catch (error) {
-        console.error("SYNC USER ERROR");
-        console.error(error);
-        console.error(error.code);
-        console.error(error.message);
-    }
-};
-
-export const loadCurrentUserDocument = async (uid) => {
-    if (!uid) return null;
-
-    const profile = await getUserProfile(uid);
-    if (!profile) return null;
+    if (!matchedUser) return null;
 
     return {
-        uid: profile.uid || uid,
-        ...profile,
+        ...matchedUser,
+        open_auth_uid: oauthRow.open_auth_uid,
+        account_type: oauthRow.account_type,
     };
 };
 
-export const deleteUserProfile = async (uid) => {
-    if (!uid) return;
+export const syncUser = async (firebaseUser, accountType) => {
+    try {
+        if (!firebaseUser?.uid) return null;
 
-    const confirmDelete = window.confirm(L.warn_deleting);
-    if (!confirmDelete) return;
+        const openAuthUid = firebaseUser.uid;
+        const userPayload = {
+            [KEY.NAME]: firebaseUser.displayName || "",
+            [KEY.EMAIL]: firebaseUser.email || "",
+            [KEY.IMAGE]: firebaseUser.photoURL || "",
+            [KEY.IS_ACTIVE]: true,
+        };
 
-    const target = await getUserProfile(uid);
-    if (target?.id) {
-        await userService.deleteRecord(target.id);
+        const existingOauth = await findOauthByOpenAuth(
+            openAuthUid,
+            accountType,
+        );
+        const users = await userService.getRecords();
+        let userRecord =
+            existingOauth?.user_id && Array.isArray(users)
+                ? users.find(
+                      (u) => String(u?.id) === String(existingOauth.user_id),
+                  ) || null
+                : null;
+
+        let targetUserId = userRecord?.id ?? existingOauth?.user_id ?? null;
+
+        if (targetUserId) {
+            await userService.updateRecord(targetUserId, userPayload);
+            userRecord = {
+                ...(userRecord || {}),
+                id: targetUserId,
+                ...userPayload,
+            };
+        } else {
+            const createdId = await userService.addRecord(userPayload);
+            targetUserId = createdId;
+            userRecord = { id: createdId, ...userPayload };
+        }
+
+        const oauthPayload = {
+            user_id: targetUserId,
+            account_type: accountType,
+            open_auth_uid: openAuthUid,
+        };
+
+        if (existingOauth?.id) {
+            await oauthService.updateRecord(existingOauth.id, oauthPayload);
+        } else {
+            await oauthService.addRecord(oauthPayload);
+        }
+
+        return {
+            ...userRecord,
+            open_auth_uid: openAuthUid,
+            account_type: accountType,
+        };
+    } catch (error) {
+        console.error("SYNC USER ERROR", error);
+        return null;
+    }
+};
+
+export const loadCurrentUserDocument = async (openAuthUid, accountType) => {
+    if (!openAuthUid) return null;
+    return getUserProfile(openAuthUid, accountType);
+};
+
+export const deleteUserProfile = async (openAuthUid, accountType) => {
+    if (!openAuthUid) return;
+
+    const oauthRow = await findOauthByOpenAuth(openAuthUid, accountType);
+    if (oauthRow?.id) {
+        await oauthService.deleteRecord(oauthRow.id);
+    }
+    if (oauthRow?.user_id) {
+        await userService.deleteRecord(oauthRow.user_id);
     }
 
     await signOut(auth);

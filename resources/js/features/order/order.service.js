@@ -1,11 +1,15 @@
-import { createRecordService } from "@/services/service.record";
+import { createRecordService } from "@/features/record/record.service";
 import { KEY } from "@/features/record/record.config";
 import { storeSpList } from "@/stores/store.global";
 
 const orderService = createRecordService("orders");
 
 export async function createOrder(buyerUid, selectedProducts) {
-    if (!buyerUid || !Array.isArray(selectedProducts) || selectedProducts.length === 0) {
+    if (
+        !buyerUid ||
+        !Array.isArray(selectedProducts) ||
+        selectedProducts.length === 0
+    ) {
         return;
     }
 

@@ -2,10 +2,11 @@ import RecordCard from "@/features/record/record.card";
 import LoadingView from "@/components/LoadingView";
 import { usePermit } from "@/config/config.permit";
 import { L } from "@/i18n";
-import { TYPE, KEY } from "@/features/record/record.config";
-import { useAuth } from "@/services/service.auth";
+import { KEY } from "@/features/record/record.config";
+
 import { useDev } from "@/components/DevProvider";
 import { createShopService } from "@/features/shop/shop.service";
+import { use_Ecom_Store } from "@/stores/store.global";
 
 function RecordList(props) {
     const {
@@ -47,7 +48,7 @@ function RecordList(props) {
 
     const { isPage_Shop, isPage_Product, isPage_Select, isPage_Order } =
         usePermit(PAGE_NAME, controller);
-    const user = useAuth();
+    const user = use_Ecom_Store((state) => state.user);
 
     function renderRecordCard(record) {
         return (

@@ -1,4 +1,3 @@
-import { useAuth } from "@/services/service.auth";
 import { PAGE } from "@/config/config.app";
 import { KEY } from "@/features/record/record.config";
 import useController from "@/features/record/record.controller";
@@ -9,6 +8,7 @@ import {
     storeProduct,
     storeUser,
     storeOrder,
+    use_Ecom_Store,
 } from "@/stores/store.global";
 
 /**
@@ -26,7 +26,7 @@ export const usePermit = (PAGE_NAME, controller = null) => {
         [PAGE.ORDER]: storeOrder,
     };
 
-    const user = useAuth();
+    const user = use_Ecom_Store((state) => state.user);
 
     if (!controller) {
         const store = storeMap[PAGE_NAME];

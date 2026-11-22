@@ -3,10 +3,10 @@ import "./Sidebar.css";
 import { PAGE } from "@/config/config.app";
 import { useDev } from "@/components/DevProvider";
 import { assignBackdrop } from "@/utils/backdrop";
-import { login, logout, openChromeFromLine } from "@/services/service.auth";
+import { login, logout, openChromeFromLine } from "@/flows/google/google.login";
 import { usePermit } from "@/config/config.permit";
-import { useAuth } from "@/services/service.auth";
-import { storeSpList } from "@/stores/store.global";
+
+import { storeSpList, use_Ecom_Store } from "@/stores/store.global";
 
 export default function Sidebar({
     handleNavigate,
@@ -38,7 +38,7 @@ export default function Sidebar({
         storeSpList.getState().clearCart();
     }
 
-    const user = useAuth();
+    const user = use_Ecom_Store((state) => state.user);
 
     const handleClick = (value) => {
         handleNavigate(value);

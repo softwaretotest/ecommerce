@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-import { createRecordService } from "@/services/service.record";
+import { createRecordService } from "@/features/record/record.service";
 
 const createRecordStore = (tablename) => {
     const service = createRecordService(tablename);
@@ -64,7 +64,9 @@ const createRecordStore = (tablename) => {
             const created = await addRecord(newItem);
             const id = created?.id ?? created?.data?.id ?? created;
             const recordData =
-                created && typeof created === "object" && !Array.isArray(created)
+                created &&
+                typeof created === "object" &&
+                !Array.isArray(created)
                     ? { ...newItem, ...created, id }
                     : { id, ...newItem };
 
@@ -78,7 +80,9 @@ const createRecordStore = (tablename) => {
         update: async (id, data) => {
             const updated = await updateRecord(id, data);
             const patch =
-                updated && typeof updated === "object" && !Array.isArray(updated)
+                updated &&
+                typeof updated === "object" &&
+                !Array.isArray(updated)
                     ? { ...data, ...updated }
                     : data;
 

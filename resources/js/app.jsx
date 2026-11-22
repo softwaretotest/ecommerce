@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import useAppBootstrap from "@/hooks/useAppBootstrap";
 
@@ -9,11 +9,12 @@ import UserPage from "@/features/user/user.page";
 import OrderPage from "@/features/order/order.page";
 import SelectPage from "@/features/select/select.page";
 
-import LoginPageGoogle from "@/flows/login/google/LoginPageGoogle";
 import Sidebar from "@/components/Sidebar";
 import ButtonSetting from "@/components/ButtonSetting";
 
 import { use_Ecom_Store } from "@/stores/store.global";
+
+import { startAuthListener } from "@/flows/google/google.login";
 
 export default function App() {
     const [page, setPage] = useState("customers");
@@ -52,8 +53,6 @@ export default function App() {
         }
     };
 
-    // const [user, setUser] = useState(null);
-    const user = use_Ecom_Store((state) => state.user);
     const set_User = use_Ecom_Store.getState().set_User;
 
     /**
@@ -63,7 +62,7 @@ export default function App() {
      * This useEffect hook subscribes to authentication state changes
      * when the component mounts and cleans up the subscription when it unmounts:
      * 1. On mount ([] dependencies): Calls startAuthListener
-     * and passes a setUser callback so auth state updates (u) update local user state.
+     * and passes a set_User callback so auth state updates (u) update local user state.
      * It stores the returned cleanup function in unsubscribe.
      * x
      * 2. On unmount: Returns a cleanup function

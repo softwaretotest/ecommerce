@@ -5,12 +5,12 @@ import { L } from "@/i18n";
 import Preview from "@/components/Preview";
 import RecordFormFields from "./record.form.fields";
 import { TYPE, KEY } from "@/features/record/record.config";
-import { useAuth } from "@/services/service.auth";
+
 import { createShopService } from "@/features/shop/shop.service";
 import { usePermit } from "@/config/config.permit";
 import { PAGE } from "@/config/config.app";
 import useController from "./record.controller";
-import { storeShop } from "@/stores/store.global";
+import { storeShop, use_Ecom_Store } from "@/stores/store.global";
 
 function RecordForm(props) {
     const {
@@ -26,7 +26,7 @@ function RecordForm(props) {
         RECORD_FIELDS,
         addLabel,
     } = props;
-    const user = useAuth();
+    const user = use_Ecom_Store((state) => state.user);
 
     /**
      * REFs

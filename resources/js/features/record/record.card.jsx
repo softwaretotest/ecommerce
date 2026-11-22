@@ -2,11 +2,7 @@ import { useState } from "react";
 
 import { L, formatCurrency, formatNumberLabel, getCurrencyLabel } from "@/i18n";
 
-import { storeUser } from "@/stores/store.global";
-
-import { useAuth } from "@/services/service.auth";
-
-import { PAGE } from "@/config/config.app";
+import { storeUser, use_Ecom_Store } from "@/stores/store.global";
 
 import Preview from "@/components/Preview";
 import { useDev } from "@/components/DevProvider";
@@ -39,7 +35,7 @@ function RecordCard({
     setShowSelectProduct,
 }) {
     const { DEV } = useDev();
-    const user = useAuth();
+    const user = use_Ecom_Store((state) => state.user);
     const users = storeUser((state) => state.records);
 
     const [previewItem, setPreviewItem] = useState(null);

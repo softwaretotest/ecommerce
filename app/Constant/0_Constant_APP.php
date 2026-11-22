@@ -4,6 +4,7 @@ namespace App\Constant;
 
 class f
 {
+    public const OPEN_AUTH_UID = ['open_auth_uid', [d::STRING, 255]];
     public const ACCOUNT_TYPE = ['account_type', [d::STRING, 255], u::TEXT, cud::REQUIRED];
     public const IMAGE = ['image', [d::STRING, 255], u::FILE, [cd::DEFAULT, '']];
     public const NAME = ['name', [d::STRING, 255], u::TEXT, cud::REQUIRED];
@@ -25,5 +26,6 @@ class t
     public const SHOPS = 'shops';
     public const PRODUCTS = 'products';
     public const ORDERS = 'orders';
-    public const OAUTH = 'oauth';
+    public const OAUTHS = 'oauths';
+    public const SELECT_PRODUCTS = 'select_products';
 }
