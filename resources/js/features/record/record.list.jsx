@@ -91,8 +91,9 @@ function RecordList(props) {
                 );
 
                 if (existingGroup) {
-                    existingGroup.qty =
-                        (existingGroup.qty || 0) + (currentRecord?.qty || 0);
+                    existingGroup.quantity =
+                        (existingGroup.quantity || 0) +
+                        (currentRecord?.quantity || 0);
                 } else {
                     resultGroup.push({
                         id: currentRecord.id,
@@ -100,7 +101,7 @@ function RecordList(props) {
                         user_id: currentRecord?.user_id,
                         shop_id: currentRecord?.shop_id,
                         product_id: currentRecord?.product_id,
-                        qty: currentRecord?.qty || 0,
+                        quantity: currentRecord?.quantity || 0,
                     });
                 }
                 return resultGroup;

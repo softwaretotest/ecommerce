@@ -14,7 +14,7 @@ export default function OrderCard({ order }) {
     const product = products.find((p) => p.id === order?.product_id);
     const shop = shopController.getById(order?.shop_id);
 
-    const qty = Number(order?.qty) || 0;
+    const qty = Number(order?.quantity) || 0;
     const price = Number(product?.[KEY.PRICE]) || 0;
     const itemTotalPrice = price * qty;
 

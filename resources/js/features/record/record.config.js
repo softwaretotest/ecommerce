@@ -31,7 +31,7 @@ export const KEY = Object.freeze({
 
     PRICE: "price",
 
-    QUANTITY: "qty",
+    QUANTITY: "quantity",
 
     STOCK: "stock",
 

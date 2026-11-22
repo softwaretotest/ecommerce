@@ -25,7 +25,7 @@ export default function ButtonOrder() {
                 );
                 return {
                     ...productDetail,
-                    qty: spItem.qty,
+                    quantity: spItem.quantity,
                 };
             })
             .filter((p) => p.id);

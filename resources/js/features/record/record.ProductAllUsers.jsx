@@ -4,7 +4,7 @@
 export function getAllUsersCarts(allUsersCarts, isPage_Product, record, DEV) {
     const totalQtyAcrossAllUsers = allUsersCarts
         .filter((item) => item.product_id === record.id)
-        .reduce((sum, item) => sum + item.qty, 0);
+        .reduce((sum, item) => sum + item.quantity, 0);
 
     const SELECTED_COUNT = DEV &&
         isPage_Product &&

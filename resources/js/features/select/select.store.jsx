@@ -19,7 +19,7 @@ const storeSpList = create((set, get) => {
                     // case product already exist in the basket
                     const updated = state.select_product.map((item) =>
                         item.product_id === product_id
-                            ? { ...item, qty: item.qty + 1 }
+                            ? { ...item, quantity: item.quantity + 1 }
                             : item,
                     );
 
@@ -29,7 +29,7 @@ const storeSpList = create((set, get) => {
                 const updated = [
                     // case product not exist
                     ...state.select_product,
-                    { product_id, qty: 1 }, // then add new
+                    { product_id, quantity: 1 }, // then add new
                 ];
 
                 return { select_product: updated };
@@ -77,10 +77,10 @@ const storeSpList = create((set, get) => {
             const result = get()
                 .select_product.map((item) =>
                     item.product_id === product_id
-                        ? { ...item, qty: item.qty - 1 } //minus button click once , quantity - 1
+                        ? { ...item, quantity: item.quantity - 1 } //minus button click once , quantity - 1
                         : item,
                 )
-                .filter((item) => item.qty > 0); // and return only product which quantity > 0
+                .filter((item) => item.quantity > 0); // and return only product which quantity > 0
 
             set({ select_product: result });
         },

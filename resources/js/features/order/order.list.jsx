@@ -24,7 +24,7 @@ export default function OrderList({ user_id, order_number, onClose }) {
         const productDetail = products.find(
             (p) => p.id === orderItem?.product_id,
         );
-        const qty = Number(orderItem?.qty) || 0;
+        const qty = Number(orderItem?.quantity) || 0;
         const price = Number(productDetail?.[KEY.PRICE]) || 0;
         return totalSum + price * qty;
     }, 0);

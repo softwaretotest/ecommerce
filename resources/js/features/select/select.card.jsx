@@ -28,7 +28,7 @@ export default function ProductCard({ product, onClick, shop }) {
 
     const item = selectProduct.find((x) => x.product_id === product.id);
 
-    const qty = item?.qty ?? 0;
+    const qty = item?.quantity ?? 0;
 
     const itemTotalPrice = (Number(product?.[KEY.PRICE]) || 0) * qty;
 

@@ -7,7 +7,7 @@ export default function ButtonSpList({
 }) {
     const selectProduct = storeSpList((state) => state.select_product);
 
-    const count = selectProduct.reduce((sum, item) => sum + item.qty, 0);
+    const count = selectProduct.reduce((sum, item) => sum + item.quantity, 0);
 
     const handleClick = () => {
         // 💡 เช็กว่าถ้ามีฟังก์ชันส่งลงมา ค่อยสั่งให้ทำงานสลับหน้า

@@ -23,7 +23,7 @@ export default function Selected({ onClose }) {
             );
             return {
                 ...productDetail, // name, price, image
-                qty: spItem.qty,
+                quantity: spItem.quantity,
             };
         })
         .filter((p) => p.id); // handle filter in case no found (e.g. deleted), prevent crash undefined
@@ -31,7 +31,7 @@ export default function Selected({ onClose }) {
     const shopService = createShopService();
 
     const grandTotalAmount = selectedProducts.reduce((totalSum, product) => {
-        const qty = product?.qty ?? 0;
+        const qty = product?.quantity ?? 0;
         const price = Number(product?.price) || 0;
         return totalSum + price * qty;
     }, 0);

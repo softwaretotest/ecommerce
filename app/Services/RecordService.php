@@ -13,7 +13,7 @@ class RecordService
     protected function resolveModel(string $entity)
     {
         // change e.g. "users" -> "User", "products" -> "Product"
-        $modelName = 'App\\Models\\' . Str::studly(Str::singular($entity));
+        $modelName = 'App\\Models\\' . ucfirst(Str::singular($entity));
 
         if (!class_exists($modelName)) {
             throw new Exception("Entity [{$entity}] not found.");

@@ -32,7 +32,7 @@ export async function createOrder(buyerUid, selectedProducts) {
                 order_number: customOrderNumber,
                 [KEY.USER_ID]: buyerUid,
                 [KEY.PRODUCT_ID]: product.id,
-                [KEY.QUANTITY]: Number(product?.qty) || 0,
+                [KEY.QUANTITY]: Number(product?.quantity) || 0,
                 [KEY.SHOP_ID]: product?.shop_id ?? null,
             });
         }

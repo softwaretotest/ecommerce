@@ -48,7 +48,7 @@ export default function SpList({ shop_id, onClose, setShowSelectProduct }) {
         const cartItem = selectProduct.find(
             (item) => item.product_id === product.id,
         );
-        const qty = cartItem?.qty ?? 0;
+        const qty = cartItem?.quantity ?? 0;
         const price = Number(product?.[KEY.PRICE]) || 0;
         return totalSum + price * qty;
     }, 0);
