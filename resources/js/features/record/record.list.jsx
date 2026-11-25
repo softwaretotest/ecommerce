@@ -24,7 +24,14 @@ function RecordList(props) {
         allUsersCarts, // ➕ ส่งตะกร้าของทุกคนลงไป
         setShowSelectProduct,
     } = props;
+
+    const { isPage_Shop, isPage_Product, isPage_Select, isPage_Order } =
+        usePermit(PAGE_NAME, controller);
+    const user = use_Ecom_Store((state) => state.user);
+    const oauth = use_Ecom_Store((state) => state.oauth);
+    const ownerId = user?.id ?? oauth?.user_id;
     const { DEV } = useDev();
+
     if (controller?.isRecordLoading) {
         return <LoadingView loadingName={title} />;
     }
@@ -45,12 +52,6 @@ function RecordList(props) {
             </div>
         );
     }
-
-    const { isPage_Shop, isPage_Product, isPage_Select, isPage_Order } =
-        usePermit(PAGE_NAME, controller);
-    const user = use_Ecom_Store((state) => state.user);
-    const oauth = use_Ecom_Store((state) => state.oauth);
-    const ownerId = user?.id ?? oauth?.user_id;
 
     function renderRecordCard(record) {
         return (

@@ -1,43 +1,70 @@
 export const compressImage = async (file, maxSizeKB = 200) => {
-  return new Promise((resolve) => {
-    const img = new Image();
-    const reader = new FileReader();
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        const reader = new FileReader();
 
-    reader.onload = (e) => {
-      img.src = e.target.result;
-    };
+        reader.onload = (e) => {
+            img.src = e.target.result;
+        };
 
-    img.onload = () => {
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
+        reader.onerror = (err) => reject(err);
 
-      // 🔥 ลดขนาด (max width 800px)
-      const maxWidth = 800;
-      let width = img.width;
-      let height = img.height;
+        img.onload = () => {
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
 
-      if (width > maxWidth) {
-        height *= maxWidth / width;
-        width = maxWidth;
-      }
+            const maxWidth = 800;
+            let width = img.width;
+            let height = img.height;
 
-      canvas.width = width;
-      canvas.height = height;
+            if (width > maxWidth) {
+                height *= maxWidth / width;
+                width = maxWidth;
+            }
 
-      ctx.drawImage(img, 0, 0, width, height);
+            canvas.width = width;
+            canvas.height = height;
+            ctx.drawImage(img, 0, 0, width, height);
 
-      let quality = 0.9;
-      let base64;
+            let quality = 0.9;
+            const minQuality = 0.3;
+            const step = 0.05;
 
-      // 🔁 loop ลด quality จนขนาดเล็กพอ
-      do {
-        base64 = canvas.toDataURL("image/jpeg", quality);
-        quality -= 0.05;
-      } while (base64.length / 1024 > maxSizeKB && quality > 0.3);
+            const tryCompress = () => {
+                canvas.toBlob(
+                    (blob) => {
+                        if (!blob) {
+                            reject(new Error("Canvas toBlob failed"));
+                            return;
+                        }
 
-      resolve(base64);
-    };
+                        const sizeKB = blob.size / 1024;
+                        if (sizeKB <= maxSizeKB || quality <= minQuality) {
+                            const fileName =
+                                (file?.name
+                                    ? file.name.replace(/\.[^/.]+$/, "")
+                                    : "image") + ".jpg";
 
-    reader.readAsDataURL(file);
-  });
+                            const compressedFile = new File([blob], fileName, {
+                                type: "image/jpeg",
+                                lastModified: Date.now(),
+                            });
+
+                            resolve(compressedFile);
+                            return;
+                        }
+
+                        quality = Number((quality - step).toFixed(2));
+                        tryCompress();
+                    },
+                    "image/jpeg",
+                    quality,
+                );
+            };
+
+            tryCompress();
+        };
+
+        reader.readAsDataURL(file);
+    });
 };

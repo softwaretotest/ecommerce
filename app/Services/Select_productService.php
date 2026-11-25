@@ -4,11 +4,9 @@ namespace App\Services;
 
 use App\Models\User;
 
-class SelectProductService
+class Select_productService
 {
-    public function __construct(private readonly UserService $userService)
-    {
-    }
+    public function __construct(private readonly UserService $userService) {}
 
     public function canAccess(?User $user, string|int $ownerId): bool
     {
