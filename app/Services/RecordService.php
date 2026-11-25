@@ -2,10 +2,8 @@
 
 namespace App\Services;
 
-use Exception;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use App\Constant\Logger;
 
 class RecordService
@@ -45,7 +43,7 @@ class RecordService
             caller_class: static::class
         );
 
-        if (!$result['ok']) {
+        if (false === $result['ok']) {
             Logger::error($result['message'] ?: 'Failed to save uploaded image.');
         }
 
@@ -54,27 +52,12 @@ class RecordService
         return $data;
     }
 
-    // public function getAll(string $entity)
-    // {
-    //     $model = $this->resolveModel($entity);
-    //     return $model->all();
-    // }
-
-    // public function getAll(string $entity)
-    // {
-    //     $model = $this->resolveModel($entity);
-    //     $records = $model->all();
-
-    //     \Illuminate\Support\Facades\Log::info('RecordService@getAll return', [
-    //         'entity' => $entity,
-    //         'model' => get_class($model),
-    //         'count' => $records->count(),
-    //         'data' => $records->toArray(),
-    //     ]);
-
-    //     return $records;
-    // }
-
+    /**
+     * Resolve field names defined as file inputs from the entity DTO metadata.
+     *
+     * @param string $entity Entity name (e.g. 'shops')
+     * @return array<int, string> File field names (e.g. ['image'])
+     */
     protected function getFileFields(string $entity): array
     {
         $dtoClass = $this->resolveDtoClass($entity);
@@ -92,29 +75,53 @@ class RecordService
         return $fileFields;
     }
 
+    /**
+     * Replace stored file names on file-input fields with public URLs.
+     *
+     * @param \Illuminate\Support\Collection $records Records returned from Eloquent
+     * @param string $entity Entity name used as storage folder (e.g. 'shops')
+     * @return \Illuminate\Support\Collection Updated records collection
+     */
+    protected function hydrate_file_URL($records, string $entity)
+    {
+        $fileFields = $this->getFileFields($entity);
+        if (empty($fileFields) || $records->isEmpty()) {
+            return $records;
+        }
+
+        return $records->transform(function ($record) use ($entity, $fileFields) {
+            foreach ($fileFields as $field) {
+                $filename = $record->getAttribute($field);
+                if (!is_string($filename) || $filename === '') {
+                    continue;
+                }
+
+                $record->setAttribute(
+                    $field,
+                    $this->fileService->get_public_url(
+                        $filename,
+                        folder: $entity,
+                        disk: FileService::DISK_PUBLIC
+                    )
+                );
+            }
+
+            return $record;
+        });
+    }
+
+    /**
+     * Retrieve all records for an entity and resolve file field URLs.
+     *
+     * @param string $entity Entity name (e.g. 'shops')
+     * @return \Illuminate\Database\Eloquent\Collection Collection of records
+     */
     public function getAll(string $entity)
     {
         $model = $this->resolveModel($entity);
         $records = $model->all();
-        $fileFields = $this->getFileFields($entity);
 
-        if (!empty($fileFields)) {
-            $records->transform(function ($record) use ($entity, $fileFields) {
-                foreach ($fileFields as $field) {
-                    $value = $record->getAttribute($field);
-                    if (is_string($value) && $value !== '') {
-                        $record->setAttribute(
-                            $field,
-                            $this->fileService->get_public_url($value, folder: $entity, disk: FileService::DISK_PUBLIC)
-                        );
-                    }
-                }
-
-                return $record;
-            });
-        }
-
-        return $records;
+        return $this->hydrate_file_URL($records, $entity);
     }
 
     public function create(string $entity, array $data, ?UploadedFile $file = null)

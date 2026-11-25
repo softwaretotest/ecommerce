@@ -7,7 +7,7 @@ import { userController } from "@/stores/store.global";
 const userService = createRecordService("users");
 const oauthService = createRecordService("oauth");
 
-export const findOauthByOpenAuth = async (openAuthUid, accountType) => {
+export const get_OAuth = async (openAuthUid, accountType) => {
     if (!openAuthUid) return null;
 
     const oauthList = await oauthService.getRecords();
@@ -16,8 +16,8 @@ export const findOauthByOpenAuth = async (openAuthUid, accountType) => {
     return (
         oauthList.find(
             (row) =>
-                String(row?.open_auth_uid ?? "") === String(openAuthUid) &&
-                String(row?.account_type ?? "google") === String(accountType),
+                String(row?.open_auth_uid) === String(openAuthUid) &&
+                String(row?.account_type) === String(accountType),
         ) || null
     );
 };
@@ -32,7 +32,7 @@ export const getUserById = (userId) => {
 export const getUserProfile = async (openAuthUid, accountType) => {
     if (!openAuthUid) return null;
 
-    const oauthRow = await findOauthByOpenAuth(openAuthUid, accountType);
+    const oauthRow = await get_OAuth(openAuthUid, accountType);
     if (!oauthRow?.user_id) return null;
 
     const users = await userService.getRecords();
@@ -50,6 +50,88 @@ export const getUserProfile = async (openAuthUid, accountType) => {
     };
 };
 
+export const loadCurrentUserDocument = async (openAuthUid, accountType) => {
+    if (!openAuthUid) return null;
+    return getUserProfile(openAuthUid, accountType);
+};
+
+export const deleteUserProfile = async (openAuthUid, accountType) => {
+    if (!openAuthUid) return;
+
+    const oauthRow = await get_OAuth(openAuthUid, accountType);
+    if (oauthRow?.id) {
+        await oauthService.deleteRecord(oauthRow.id);
+    }
+    if (oauthRow?.user_id) {
+        await userService.deleteRecord(oauthRow.user_id);
+    }
+
+    await signOut(auth);
+    window.location.href = "/";
+};
+
+// export const syncUser = async (firebaseUser, accountType) => {
+//     try {
+//         if (!firebaseUser?.uid) return null;
+
+//         const openAuthUid = firebaseUser.uid;
+//         const userPayload = {
+//             [KEY.NAME]: firebaseUser.displayName || "",
+//             [KEY.EMAIL]: firebaseUser.email || "",
+//             [KEY.IMAGE]: firebaseUser.photoURL || "",
+//             [KEY.IS_ACTIVE]: true,
+//         };
+
+//         const existingOauth = await get_OAuth(
+//             openAuthUid,
+//             accountType,
+//         );
+//         const users = await userService.getRecords();
+//         let userRecord =
+//             existingOauth?.user_id && Array.isArray(users)
+//                 ? users.find(
+//                       (u) => String(u?.id) === String(existingOauth.user_id),
+//                   ) || null
+//                 : null;
+
+//         let targetUserId = userRecord?.id ?? existingOauth?.user_id ?? null;
+
+//         if (targetUserId) {
+//             await userService.updateRecord(targetUserId, userPayload);
+//             userRecord = {
+//                 ...(userRecord || {}),
+//                 id: targetUserId,
+//                 ...userPayload,
+//             };
+//         } else {
+//             const createdId = await userService.addRecord(userPayload);
+//             targetUserId = createdId;
+//             userRecord = { id: createdId, ...userPayload };
+//         }
+
+//         const oauthPayload = {
+//             user_id: targetUserId,
+//             account_type: accountType,
+//             open_auth_uid: openAuthUid,
+//         };
+
+//         if (existingOauth?.id) {
+//             await oauthService.updateRecord(existingOauth.id, oauthPayload);
+//         } else {
+//             await oauthService.addRecord(oauthPayload);
+//         }
+
+//         return {
+//             ...userRecord,
+//             open_auth_uid: openAuthUid,
+//             account_type: accountType,
+//         };
+//     } catch (error) {
+//         console.error("SYNC USER ERROR", error);
+//         return null;
+//     }
+// };
+
 export const syncUser = async (firebaseUser, accountType) => {
     try {
         if (!firebaseUser?.uid) return null;
@@ -62,10 +144,7 @@ export const syncUser = async (firebaseUser, accountType) => {
             [KEY.IS_ACTIVE]: true,
         };
 
-        const existingOauth = await findOauthByOpenAuth(
-            openAuthUid,
-            accountType,
-        );
+        const existingOauth = await get_OAuth(openAuthUid, accountType);
         const users = await userService.getRecords();
         let userRecord =
             existingOauth?.user_id && Array.isArray(users)
@@ -95,16 +174,24 @@ export const syncUser = async (firebaseUser, accountType) => {
             open_auth_uid: openAuthUid,
         };
 
+        let oauthRecord = null;
         if (existingOauth?.id) {
             await oauthService.updateRecord(existingOauth.id, oauthPayload);
+            oauthRecord = {
+                ...existingOauth,
+                ...oauthPayload,
+            };
         } else {
-            await oauthService.addRecord(oauthPayload);
+            const createdOauthId = await oauthService.addRecord(oauthPayload);
+            oauthRecord = {
+                id: createdOauthId,
+                ...oauthPayload,
+            };
         }
 
         return {
-            ...userRecord,
-            open_auth_uid: openAuthUid,
-            account_type: accountType,
+            user: userRecord,
+            oauth: oauthRecord,
         };
     } catch (error) {
         console.error("SYNC USER ERROR", error);
@@ -112,27 +199,7 @@ export const syncUser = async (firebaseUser, accountType) => {
     }
 };
 
-export const loadCurrentUserDocument = async (openAuthUid, accountType) => {
-    if (!openAuthUid) return null;
-    return getUserProfile(openAuthUid, accountType);
-};
-
-export const deleteUserProfile = async (openAuthUid, accountType) => {
-    if (!openAuthUid) return;
-
-    const oauthRow = await findOauthByOpenAuth(openAuthUid, accountType);
-    if (oauthRow?.id) {
-        await oauthService.deleteRecord(oauthRow.id);
-    }
-    if (oauthRow?.user_id) {
-        await userService.deleteRecord(oauthRow.user_id);
-    }
-
-    await signOut(auth);
-    window.location.href = "/";
-};
-
-export const syncAuthSession = async (firebaseUser, accountType = "google") => {
+export const syncAuthSession = async (firebaseUser, accountType) => {
     if (!firebaseUser?.uid) {
         return { user: null, oauth: null };
     }
@@ -142,31 +209,76 @@ export const syncAuthSession = async (firebaseUser, accountType = "google") => {
         return { user: null, oauth: null };
     }
 
-    const profile = await getUserProfile(firebaseUser.uid, accountType);
-    const oauthRow = await findOauthByOpenAuth(firebaseUser.uid, accountType);
+    let userRecord = synced.user ?? null;
+    let oauthRecord = synced.oauth ?? null;
 
-    const userRecord = profile
-        ? Object.fromEntries(
-              Object.entries(profile).filter(
-                  ([key]) => !["open_auth_uid", "account_type"].includes(key),
-              ),
-          )
-        : {
-              id: synced.id,
-              [KEY.NAME]: synced[KEY.NAME],
-              [KEY.EMAIL]: synced[KEY.EMAIL],
-              [KEY.IMAGE]: synced[KEY.IMAGE],
-              [KEY.IS_ACTIVE]: synced[KEY.IS_ACTIVE],
-          };
+    if (!userRecord) {
+        const profile = await getUserProfile(firebaseUser.uid, accountType);
+        if (profile) {
+            userRecord = Object.fromEntries(
+                Object.entries(profile).filter(
+                    ([key]) => !["open_auth_uid", "account_type"].includes(key),
+                ),
+            );
+            if (!oauthRecord) {
+                oauthRecord = {
+                    user_id: userRecord.id ?? null,
+                    account_type: profile.account_type ?? accountType,
+                    open_auth_uid: profile.open_auth_uid ?? firebaseUser.uid,
+                };
+            }
+        }
+    }
 
-    const oauthRecord = oauthRow || {
-        user_id: userRecord.id ?? null,
-        account_type: accountType,
-        open_auth_uid: firebaseUser.uid,
-    };
+    if (!oauthRecord) {
+        oauthRecord = (await get_OAuth(firebaseUser.uid, accountType)) || {
+            user_id: userRecord?.id ?? null,
+            account_type: accountType,
+            open_auth_uid: firebaseUser.uid,
+        };
+    }
 
     return {
         user: userRecord,
         oauth: oauthRecord,
     };
 };
+
+// export const syncAuthSession = async (firebaseUser, accountType = "google") => {
+//     if (!firebaseUser?.uid) {
+//         return { user: null, oauth: null };
+//     }
+
+//     const synced = await syncUser(firebaseUser, accountType);
+//     if (!synced) {
+//         return { user: null, oauth: null };
+//     }
+
+//     const profile = await getUserProfile(firebaseUser.uid, accountType);
+//     const oauthRow = await get_OAuth(firebaseUser.uid, accountType);
+
+//     const userRecord = profile
+//         ? Object.fromEntries(
+//               Object.entries(profile).filter(
+//                   ([key]) => !["open_auth_uid", "account_type"].includes(key),
+//               ),
+//           )
+//         : {
+//               id: synced.id,
+//               [KEY.NAME]: synced[KEY.NAME],
+//               [KEY.EMAIL]: synced[KEY.EMAIL],
+//               [KEY.IMAGE]: synced[KEY.IMAGE],
+//               [KEY.IS_ACTIVE]: synced[KEY.IS_ACTIVE],
+//           };
+
+//     const oauthRecord = oauthRow || {
+//         user_id: userRecord.id ?? null,
+//         account_type: accountType,
+//         open_auth_uid: firebaseUser.uid,
+//     };
+
+//     return {
+//         user: userRecord,
+//         oauth: oauthRecord,
+//     };
+// };

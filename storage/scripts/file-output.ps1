@@ -1,8 +1,8 @@
-$folders = @("app", "routes")
+# $folders = @("app", "routes")
 # $folders = @("app", "resources", "routes")
 # $folders = @("resources/js/Components", "routes")
 # $folders = @("app/Constant", "app/Http/Controllers")
-# $folders = @("resources")
+$folders = @("resources")
 $outputFile = "ProjectSourceCode.txt"
 
 # ล้างไฟล์เดิมถ้ามี

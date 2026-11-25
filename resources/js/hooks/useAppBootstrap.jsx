@@ -22,7 +22,7 @@ export default function useAppBootstrap() {
     useEffect(() => {
         initCssInjectorObserver();
 
-        storeUser.getState().fetch();
+        // storeUser.getState().fetch();
         storeShop.getState().fetch();
         storeProduct.getState().fetch();
     }, []);

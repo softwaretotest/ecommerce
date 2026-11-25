@@ -6,10 +6,6 @@ export const createRecordService = (tableName) => {
             const res = await axios.get(`/api/records/${tableName}`);
             return res.data;
         },
-        // addRecord: async (data) => {
-        //     const res = await axios.post(`/api/records/${tableName}`, data);
-        //     return res.data.id;
-        // },
 
         addRecord: async (data) => {
             console.log("[addRecord] raw data (before wrap):", data, {
@@ -26,6 +22,9 @@ export const createRecordService = (tableName) => {
                     (v) => v instanceof File || v instanceof Blob,
                 );
 
+            /**
+             * Wrab data to send to backend with formData if file exists
+             */
             let payload = data;
             if (hasFile) {
                 const formData = new FormData();

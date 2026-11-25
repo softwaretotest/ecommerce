@@ -70,20 +70,6 @@ export default function App() {
      * that safely invokes unsubscribe?.() to detach the listener
      * and prevent stale updates or memory leaks.
      */
-    // useEffect(() => {
-    //     const unsubscribe = startAuthListener({
-    //         set_user: (u) => {
-    //             set_user(u);
-    //         },
-    //         set_oauth: (u) => {
-    //             set_oauth(u);
-    //         },
-    //     });
-
-    //     return () => {
-    //         unsubscribe?.();
-    //     };
-    // }, []);
     useEffect(() => {
         const unsubscribe = startAuthListener({
             set_user: (nextUser) => {
