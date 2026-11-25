@@ -22,7 +22,9 @@ export default function useAppBootstrap() {
     useEffect(() => {
         initCssInjectorObserver();
 
+        // no reason to load user before check oauth
         // storeUser.getState().fetch();
+
         storeShop.getState().fetch();
         storeProduct.getState().fetch();
     }, []);

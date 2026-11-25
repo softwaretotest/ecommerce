@@ -9,7 +9,7 @@ import RecordForm from "@/features/record/record.form";
 import useRecordForm from "@/features/record/record.form.hook";
 import Modal from "@/components/Modal";
 import { useDev } from "@/components/DevProvider";
-import { getUserProfile } from "@/features/user/user.service";
+import { get_User } from "@/features/user/user.service";
 
 /**
 - Make POP up Edit Form for login User Profile
@@ -26,7 +26,7 @@ export default function RecordProfile() {
                 ? controller.records.find(
                       (record) => record?.[KEY.UID] === oauth?.open_auth_uid,
                   )
-                : await getUserProfile(oauth?.open_auth_uid, "google");
+                : await get_User(oauth?.open_auth_uid, "google");
 
             setEditRecord(userRecord);
         };

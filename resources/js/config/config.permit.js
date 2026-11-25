@@ -67,7 +67,7 @@ export const usePermit = (PAGE_NAME, controller = null) => {
     const canAdd_Product = isPage_Product && activeUserId;
 
     const hasProduct = (() => {
-        if (!isPage_Order) return false;
+        if (!isPage_Product) return false;
 
         const products = productController?.getRecords();
         const hasSomeProduct = products.some(

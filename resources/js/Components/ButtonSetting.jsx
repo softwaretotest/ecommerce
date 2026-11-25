@@ -4,7 +4,7 @@ import { L } from "@/i18n";
 import { assignBackdrop } from "@/utils/backdrop";
 import RecordProfile from "@/features/record/record.profile";
 
-import { deleteUserProfile } from "@/features/user/user.service";
+import { delete_User } from "@/features/user/user.service";
 
 import { use_Ecom_Store } from "@/stores/store.global";
 
@@ -19,7 +19,7 @@ export default function ButtonSetting({ setTheme }) {
     const activeUserId = user?.id ?? oauth?.user_id;
 
     const deleteProfile = () => {
-        deleteUserProfile(activeUserId);
+        delete_User(activeUserId);
     };
 
     const handleProfile = () => {

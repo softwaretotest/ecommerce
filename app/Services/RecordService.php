@@ -130,7 +130,9 @@ class RecordService
         $payload = $this->handleUploadedImage($entity, $data, $file);
         $record = $model->create($payload);
 
-        return $record->id ?? $record->getKey();
+        $hydrated = $this->hydrate_file_URL(collect([$record]), $entity)->first();
+
+        return $hydrated ?? $record;
     }
 
     public function update(string $entity, int $id, array $data, ?UploadedFile $file = null)
