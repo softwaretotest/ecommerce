@@ -11,6 +11,12 @@ Route::prefix('records')->group(function () {
     Route::delete('/{entity}/{id}', [RecordController::class, 'destroy']);
 });
 
+/**
+ * do not remove middleware('web') , because if in middleware statefulApi() = off,
+ * these points are necessary
+ * 1. login_With_Google() must save login session
+ * 2. destroy (logout) must clean session
+ */
 Route::middleware('web')->group(function () {
     Route::get('/auth/me', [Google_Session_Controller::class, 'me']);
     Route::post('/auth/google', [Google_Session_Controller::class, 'login_With_Google']);
