@@ -16,16 +16,6 @@ class Google_Session_Controller extends Controller
 {
     public function me(Request $request): JsonResponse
     {
-        Log::info('auth.me diagnostic', [
-            'session_cookie_received' => $request->cookies->has(
-                config('session.cookie')
-            ),
-            'has_session' => $request->hasSession(),
-            'session_fingerprint' => $request->hasSession()
-                ? substr(hash('sha256', $request->session()->getId()), 0, 12)
-                : null,
-        ]);
-
         $user = $request->user();
 
         if (!$user) {
@@ -35,18 +25,6 @@ class Google_Session_Controller extends Controller
                 'oauth' => null,
             ]);
         }
-
-        Log::info('auth.me diagnostic', [
-            'session_cookie_received' => $request->cookies->has(
-                config('session.cookie')
-            ),
-            'session_fingerprint' => substr(
-                hash('sha256', $request->session()->getId()),
-                0,
-                12
-            ),
-            'session_keys' => array_keys($request->session()->all()),
-        ]);
 
         return response()->json([
             'authenticated' => true,

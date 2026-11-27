@@ -143,6 +143,19 @@ export const logout = async (callbacks = {}) => {
     applyAuthState({ user: null, oauth: null }, callbacks);
 };
 
+/**
+ * we don't use auth listener now, but can be usefull in future
+ * onAuthStateChanged
+ * @param {*} auth usecase e.g. auth.currentUser
+ * auth changed e.g. when:
+ * login
+ * logout
+ * token refresh
+ * session restore
+ * @return unsubscribe() if call it = stop listening , but not logout
+ * e.g. if App need to break some how
+ * , no use for now
+ */
 export function startAuthListener({ set_user, set_oauth } = {}) {
     let active = true;
     const requestUrl = new URL("/api/auth/me", window.location.href);

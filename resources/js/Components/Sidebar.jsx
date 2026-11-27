@@ -121,9 +121,11 @@ export default function Sidebar({
                     onClick={async () => {
                         const ok = await openChromeFromLine();
                         if (!ok) return;
+
                         const idToken =
                             await requestGoogleIdToken(GOOGLE_CLIENT_ID);
                         await login(idToken);
+
                         handleAccess();
                     }}
                 >
