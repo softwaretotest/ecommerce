@@ -16,6 +16,16 @@ class Google_Session_Controller extends Controller
 {
     public function me(Request $request): JsonResponse
     {
+        Log::info('auth.me diagnostic', [
+            'session_cookie_received' => $request->cookies->has(
+                config('session.cookie')
+            ),
+            'has_session' => $request->hasSession(),
+            'session_fingerprint' => $request->hasSession()
+                ? substr(hash('sha256', $request->session()->getId()), 0, 12)
+                : null,
+        ]);
+
         $user = $request->user();
 
         if (!$user) {
@@ -48,9 +58,17 @@ class Google_Session_Controller extends Controller
             'oauth' => [
                 'user_id' => $user->id,
                 'account_type' => 'google',
-                'open_auth_uid' => $user->google_sub,
+                'open_auth_uid' => $this->get_oauth($user->id, 'google')?->open_auth_uid,
             ],
         ]);
+    }
+
+    private function get_oauth(int|string $userId, string $accountType): ?object
+    {
+        return \Illuminate\Support\Facades\DB::table('oauths') // <-- เปลี่ยนเป็นชื่อตารางจริงใน pgAdmin
+            ->where('user_id', $userId)
+            ->where('account_type', $accountType)
+            ->first();
     }
 
     public function login_With_Google(Request $request): JsonResponse
@@ -137,7 +155,6 @@ class Google_Session_Controller extends Controller
 
             return response()->json([
                 'authenticated' => true,
-                'debug_id' => $debug_Id,
                 'user' => [
                     'id' => $user->id,
                     'name' => $user->name,
@@ -146,7 +163,7 @@ class Google_Session_Controller extends Controller
                 'oauth' => [
                     'user_id' => $user->id,
                     'account_type' => 'google',
-                    'open_auth_uid' => $user->google_sub,
+                    'open_auth_uid' => $this->get_oauth($user->id, 'google')?->open_auth_uid,
                 ],
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
