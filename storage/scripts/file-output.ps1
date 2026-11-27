@@ -1,7 +1,7 @@
-# $folders = @("app", "routes")
 # $folders = @("app", "resources", "routes")
 # $folders = @("resources/js/Components", "routes")
 # $folders = @("app/Constant", "app/Http/Controllers")
+# $folders = @("app", "routes")
 $folders = @("resources")
 $outputFile = "ProjectSourceCode.txt"
 

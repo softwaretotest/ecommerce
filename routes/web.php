@@ -31,4 +31,12 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::get('/_debug/session-id', function () {
+    return response()->json([
+        'has_cookie' => request()->hasCookie('e-commerce-session'),
+        'session_id' => session()->getId(),
+        'request_session_id' => request()->session()->getId(),
+    ]);
+});
+
 require __DIR__ . '/auth.php';

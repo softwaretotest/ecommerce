@@ -3,10 +3,17 @@ import "./Sidebar.css";
 import { PAGE } from "@/config/config.app";
 import { useDev } from "@/components/DevProvider";
 import { assignBackdrop } from "@/utils/backdrop";
-import { login, logout, openChromeFromLine } from "@/flows/google/google.login";
+import {
+    login,
+    logout,
+    openChromeFromLine,
+    requestGoogleIdToken,
+} from "@/flows/google/google.login";
 import { usePermit } from "@/config/config.permit";
 
 import { storeSpList, use_Ecom_Store } from "@/stores/store.global";
+
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 export default function Sidebar({
     handleNavigate,
@@ -114,7 +121,9 @@ export default function Sidebar({
                     onClick={async () => {
                         const ok = await openChromeFromLine();
                         if (!ok) return;
-                        await login();
+                        const idToken =
+                            await requestGoogleIdToken(GOOGLE_CLIENT_ID);
+                        await login(idToken);
                         handleAccess();
                     }}
                 >

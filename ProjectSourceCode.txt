@@ -2145,7 +2145,117 @@ export const usePermit = (PAGE_NAME, controller = null) => {
     const canAdd_Product = isPage_Product && activeUserId;
 
     const hasProduct = (() => {
-        if (!isPage_Order) return false;
+        if (!isPage_Product) return false;
+
+        const products = productController?.getRecords();
+        const hasSomeProduct = products.some(
+            (item) => item.user_id === activeUserId,
+        );
+
+        return hasSomeProduct;
+    })();
+
+    /**
+-  CAN ADD record , e.g. for showing add button
+-  should be used only in List not in Card
+-  because List makes Card
+     *
+-  if filter isPage in Card , the result could be unpredictable
+     */
+    const canAdd = canAdd_Shop || canAdd_Product;
+
+    if (isPage_Shop) {
+        // console.log("records.length = ", records.length);
+        // console.log("hasShop = ", hasShop);
+        // console.log("canAdd_Shop = ", canAdd_Shop);
+        // console.log("canAdd_Product = ", canAdd_Product);
+    }
+
+    return {
+        canAdd,
+        hasShop,
+        hasProduct,
+        isPage_Shop,
+        isPage_Product,
+        isPage_Select,
+        isPage_Order,
+    };
+};
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\config\config.permit_old.js]
+
+import { PAGE } from "@/config/config.app";
+import { KEY } from "@/features/record/record.config";
+import useController from "@/features/record/record.controller";
+
+import {
+    storeShop,
+    storeProduct,
+    storeUser,
+    storeOrder,
+    use_Ecom_Store,
+    productController,
+} from "@/stores/store.global";
+
+/**
+- usePermit make UI rules for all pages in this App
+- @param {*} PAGE_NAME
+- @param {*} controller
+- @returns
+ */
+export const usePermit_old = (PAGE_NAME, controller = null) => {
+    const storeMap = {
+        [PAGE.USER]: storeUser,
+        [PAGE.SHOP]: storeShop,
+        [PAGE.PRODUCT]: storeProduct,
+        [PAGE.HOME]: storeShop,
+        [PAGE.ORDER]: storeOrder,
+    };
+
+    const user = use_Ecom_Store((state) => state.user);
+    const oauth = use_Ecom_Store((state) => state.oauth);
+    const activeUserId = user?.id ?? oauth?.user_id;
+
+    if (!controller) {
+        const store = storeMap[PAGE_NAME];
+
+        controller = useController(store);
+    }
+    const records = controller?.records || [];
+
+    const isPage_Shop = PAGE_NAME === PAGE.SHOP;
+    const isPage_Product = PAGE_NAME === PAGE.PRODUCT;
+    const isPage_Select = PAGE_NAME === PAGE.HOME;
+    const isPage_Order = PAGE_NAME === PAGE.ORDER;
+
+    /**
+-  SHOP
+     */
+    const hasShop = (() => {
+        if (!isPage_Shop) return false;
+        for (let i = 0; i < records.length; i++) {
+            const shop = records[i];
+
+            const shopOwnerId = shop?.[KEY.USER_ID];
+
+            if (shopOwnerId === activeUserId) {
+                return true; // found → exit immediately
+            }
+        }
+        return false;
+    })();
+
+    const canAdd_Shop = isPage_Shop && !hasShop;
+
+    /**
+-  PRODUCT
+     */
+    const canAdd_Product = isPage_Product && activeUserId;
+
+    const hasProduct = (() => {
+        if (!isPage_Product) return false;
 
         const products = productController?.getRecords();
         const hasSomeProduct = products.some(
@@ -6400,6 +6510,125 @@ export const syncAuthSession = async (firebaseUser, accountType) => {
 
 
 [FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\flows\google\google.login.js]
+
+import {
+    GoogleAuthProvider,
+    signInWithPopup,
+    signOut,
+    browserLocalPersistence,
+    setPersistence,
+    onAuthStateChanged,
+} from "firebase/auth";
+
+import { syncAuthSession } from "@/features/user/user.service";
+import { auth } from "@/config/config.firebase";
+import { loadSpList } from "@/features/select/select.service";
+import storeSpList from "@/features/select/select.store";
+import { L } from "@/i18n";
+
+const provider = new GoogleAuthProvider();
+const LARAVEL_AUTH_ENDPOINT = "/api/auth/google";
+const LARAVEL_LOGOUT_ENDPOINT = "/api/auth/logout";
+
+async function sync_Laravel_Session(firebaseUser) {
+    const idToken = await firebaseUser.getIdToken(true);
+
+    const response = await fetch(LARAVEL_AUTH_ENDPOINT, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+        },
+        body: JSON.stringify({ id_token: idToken }),
+    });
+
+    if (!response.ok) {
+        throw new Error(`Laravel session sync failed: ${response.status}`);
+    }
+
+    return response.json();
+}
+
+async function clear_Laravel_Session() {
+    await fetch(LARAVEL_LOGOUT_ENDPOINT, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+            Accept: "application/json",
+        },
+    });
+}
+
+export const login = async () => {
+    await setPersistence(auth, browserLocalPersistence);
+    const credential = await signInWithPopup(auth, provider);
+    await sync_Laravel_Session(credential.user);
+    return credential;
+};
+
+export const logout = async () => {
+    await clear_Laravel_Session();
+    return signOut(auth);
+};
+
+export function startAuthListener({ set_user, set_oauth } = {}) {
+    let listenerSeq = 0;
+
+    return onAuthStateChanged(auth, (firebaseUser) => {
+        const currentSeq = ++listenerSeq;
+
+        (async () => {
+            if (!firebaseUser) {
+                if (currentSeq !== listenerSeq) return;
+                set_user?.(null);
+                set_oauth?.(null);
+                storeSpList.getState().setSpList([]);
+                return;
+            }
+
+            await sync_Laravel_Session(firebaseUser);
+            const { user, oauth } = await syncAuthSession(
+                firebaseUser,
+                "google",
+            );
+            if (currentSeq !== listenerSeq) return;
+
+            set_user?.(user);
+            set_oauth?.(oauth);
+
+            const selectProduct = await loadSpList(user?.id);
+            if (currentSeq !== listenerSeq) return;
+
+            storeSpList.getState().setSpList(selectProduct);
+        })().catch((err) => {
+            console.error("Auth listener error:", err);
+        });
+    });
+}
+
+export function openChromeFromLine() {
+    const isLineBrowser = /Line/i.test(navigator.userAgent);
+    if (!isLineBrowser) return true;
+
+    return new Promise((resolve) => {
+        const ok = confirm(L.line_browser);
+
+        if (ok) {
+            const url =
+                "googlechrome://navigate?url=" +
+                encodeURIComponent(window.location.href);
+
+            window.location.href = url;
+        }
+
+        resolve(false);
+    });
+}
+
+
+
+[FILE: C:\Users\o\.vscode\react\ecommerce\resources\js\flows\google\google.login_old.js]
 
 import {
     GoogleAuthProvider,

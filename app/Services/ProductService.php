@@ -2,41 +2,42 @@
 
 namespace App\Services;
 
+use App\Models\Product;
 use App\Models\User;
+use Illuminate\Support\Collection;
 
 class ProductService
 {
-    public function __construct(private readonly UserService $userService)
-    {
-    }
+    public function __construct(
+        private readonly PermitService $permit_service,
+    ) {}
 
-    public function canCreate(?User $user, array $payload, ?array $shop): bool
+    public function index_for_user(?User $user, ?int $shop_id = null): Collection
     {
-        if ($this->userService->isDev($user)) {
-            return true;
+        $shop_ids = $this->permit_service->shop_ids($user);
+
+        $query = Product::query();
+
+        if ($shop_id !== null) {
+            if (!$this->permit_service->is_dev($user) && !$shop_ids->contains($shop_id)) {
+                return collect();
+            }
+            $query->where('shop_id', $shop_id);
+        } elseif (!$this->permit_service->is_dev($user)) {
+            if ($shop_ids->isEmpty()) {
+                return collect();
+            }
+            $query->whereIn('shop_id', $shop_ids);
         }
 
-        return $user !== null
-            && isset($payload['user_id'], $payload['shop_id'])
-            && (string) $payload['user_id'] === (string) $user->id
-            && $shop !== null
-            && isset($shop['user_id'])
-            && (string) $shop['user_id'] === (string) $user->id;
-    }
+        return $query->get()->map(function (Product $product) use ($user) {
+            $flags = $this->permit_service->product_ui_permit($user, $product);
 
-    public function canUpdate(?User $user, array $product): bool
-    {
-        if ($this->userService->isDev($user)) {
-            return true;
-        }
+            foreach ($flags as $key => $value) {
+                $product->setAttribute($key, $value);
+            }
 
-        return $user !== null
-            && isset($product['user_id'])
-            && (string) $product['user_id'] === (string) $user->id;
-    }
-
-    public function canDelete(?User $user, array $product): bool
-    {
-        return $this->canUpdate($user, $product);
+            return $product;
+        });
     }
 }
